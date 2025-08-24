@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Smart Series MCQs</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        color: #333;
+    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    h1 {
+        text-align: center;
+        background-color: #00796b;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    /* form card */
+    .form-card {
+        background: #ffffffd9;
+        border-left: 6px solid #00796b;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    label {
+        display:block;
+        margin:6px 0 4px 0;
+        font-weight:600;
+    }
+    textarea, input[type="text"], input[type="password"] {
+        width:100%;
+        padding:8px;
+        border-radius:6px;
+        border:1px solid #cfcfcf;
+        box-sizing:border-box;
+        font-size:14px;
+        font-family: inherit;
+    }
+    .button-row { margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
+    .btn {
+        background:#00796b;
+        color:#fff;
+        padding:10px 14px;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        font-weight:700;
+    }
+    .btn.secondary { background:#4db6ac; }
+    .btn.warn { background:#ff7043; }
+    .note { font-size:13px; color:#444; margin-top:8px; }
+    .mcq {
+        background: #ffffffd9;
+        border-left: 6px solid #00796b;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .mcq:hover { transform: scale(1.01); }
+    .question { font-size: 18px; font-weight: bold; }
+    .options { margin-top: 15px; }
+    .option { margin: 6px 0; padding-left: 10px; }
+    .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
+    /* login screen */
+    #loginPanel {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    #loginError {
+        color: red;
+        font-size: 14px;
+        margin-top: 8px;
+        display: none;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Smart Series MCQs</h1>
+<div class="mcq"><div class="question">Q1. The pole shoes of DC machines are fastened to the pole core by</div><div class="options"><div class="option">A. Welding</div><div class="option">B. Soldering</div><div class="option">C. Steel clumps</div><div class="option">D. Countersunk screws</div></div><div class="answer">Answer: D</div></div>
+<div class="mcq"><div class="question">Q2. Which of the following are considered as disadvantage(s) of Gauss-Seidel method over Newton's method in load flow programs?</div><div class="options"><div class="option">A. More iteration</div><div class="option">B. More memory requirement and less accuracy</div><div class="option">C. less interactions but more memory</div><div class="option">D. More accuracy and more memory</div></div><div class="answer">Answer: A</div></div>
+<div class="mcq"><div class="question">Q3. The quantity "Rm" which relates dependent voltage to controlling current is called</div><div class="options"><div class="option">A. Trans Conductance</div><div class="option">B. Maximum Resistance</div><div class="option">C. Trans Resistance</div><div class="option">D. Limiting Resistance</div></div><div class="answer">Answer: C</div></div>
+<div class="mcq"><div class="question">Q4. For which purpose bundled conductors are employed to a power system</div><div class="options"><div class="option">A. Appearance of the transmission line</div><div class="option">B. Mechanical stability of line</div><div class="option">C. Decrease system stability</div><div class="option">D. Increase the short circuit current</div></div><div class="answer">Answer: D</div></div>
+<div class="mcq"><div class="question">Q5. Radio frequency chocks are air cored to</div><div class="options"><div class="option">A. Keep frequency low</div><div class="option">B. Keep inductive reactance low</div><div class="option">C. Keep frequency high</div><div class="option">D. Keep inductive reactance high</div></div><div class="answer">Answer: B</div></div>
+<div class="mcq"><div class="question">Q6. Fundamental property used in single node pair circuit analyzer is that across all elements is same</div><div class="options"><div class="option">A. Current</div><div class="option">B. Voltage</div><div class="option">C. Resistance</div><div class="option">D. inductance</div></div><div class="answer">Answer: B</div></div>
+<div class="mcq"><div class="question">Q7. Landfill gas is actually used in thermal power plants.</div><div class="options"><div class="option">A. Methane</div><div class="option">B. Ethane</div><div class="option">C. Black liquor</div><div class="option">D. Ethane</div></div><div class="answer">Answer: A</div></div>
+<div class="mcq"><div class="question">Q8. The average fossil fuel plant converts about is % of the power going in to the power going out.</div><div class="options"><div class="option">A. 33</div><div class="option">B. 40</div><div class="option">C. 25</div><div class="option">D. 50</div></div><div class="answer">Answer: A and B</div></div>
+<div class="mcq"><div class="question">Q9. If field resistance of a dc shunt generator is increased beyond its critical value, the generator.</div><div class="options"><div class="option">A. output voltage will exceed its name plate rating</div><div class="option">B. will not build up.</div><div class="option">C. may burn out if loaded to its name plate rating</div><div class="option">D. power output may exceed its name plate rating</div></div><div class="answer">Answer: B</div></div>
+<div class="mcq"><div class="question">Q10. A semiconductor device is connected in a series circuit with a battery and a resistance. If the polarity of battery is reversed, the current drops almost to zero. The device may be</div><div class="options"><div class="option">A. P-type semiconductor</div><div class="option">B. N-type semiconductor</div><div class="option">C. P-N junction</div></div><div class="answer">Answer: C</div></div>
+<div class="mcq"><div class="question">Q11. What is the probability of a number "2" when a dice is thrown?</div><div class="options"><div class="option">A. 2/6</div><div class="option">B. 1/3</div><div class="option">C. 1/6</div><div class="option">D. 1/4</div></div><div class="answer">Answer: C</div></div>
+<div class="mcq"><div class="question">Q12. If the input capacitor of a power supply is shorted; it will result In</div><div class="options"><div class="option">A. Excessive hum ꞏ</div><div class="option">B. Reduced voltage output</div><div class="option">C. No voltage output</div><div class="option">D. Low voltage output</div></div><div class="answer">Answer: C</div></div>
+<div class="mcq"><div class="question">Q13. Admittance is the reciprocal of</div><div class="options"><div class="option">A. Capacitive reactance</div><div class="option">B. Inductive reactance</div><div class="option">C. Reactive power</div><div class="option">D. Impedance</div></div><div class="answer">Answer: D</div></div>
+<div class="mcq">
+        <div class="question">Q14. ______ Is a by-product of paper industry, which is used by many Industries as a primary source of electricity.</div>
+        <div class="options">
+            <div class="option">A. Landfill Gas</div>
+            <div class="option">B. Sludge Waste</div>
+            <div class="option">C. Black Liquor</div>
+            <div class="option">D. Wood Waste</div>
+        </div>
+        <div class="answer">Answer: C</div>
+    </div>
+<div class="mcq">
+        <div class="question">Q15. Which of the following Ideas means deciding at runtime what strategy to summon?</div>
+        <div class="options">
+            <div class="option">A. Dynamic typing</div>
+            <div class="option">B. Dynamic hiding</div>
+            <div class="option">C. Dynamic loading</div>
+            <div class="option">D. Dynamic blinding</div>
+        </div>
+        <div class="answer">Answer: D</div>
+    </div>
+<div class="mcq">
+        <div class="question">Q16. If the firing angle in an SCR rectifier is decreased, output will be</div>
+        <div class="options">
+            <div class="option">A. Maximum</div>
+            <div class="option">B. Increased</div>
+            <div class="option">C. Decreased</div>
+            <div class="option">D. Unaffected</div>
+        </div>
+        <div class="answer">Answer: B</div>
+    </div>
+<div class="mcq">
+        <div class="question">Q17. The_____time signal is described for all values of time.</div>
+        <div class="options">
+            <div class="option">A. Discrete</div>
+            <div class="option">B. Continuos</div>
+            <div class="option">C. Random</div>
+            <div class="option">D. Digital</div>
+        </div>
+        <div class="answer">Answer: B</div>
+    </div>
+<div class="mcq">
+        <div class="question">Q18. Which of the following conditions relate line resistance 'R' and line reactance 'X' for maximum steady state power transmission on a transmission line?</div>
+        <div class="options">
+            <div class="option">A. X=R</div>
+            <div class="option">B. R= sqrt (3) X</div>
+            <div class="option">C. X= sqrt (3) R</div>
+            <div class="option">D. X=R / sqrt (2)</div>
+        </div>
+        <div class="answer">Answer: C</div>
+    </div>
+<div class="mcq">
+        <div class="question">Q19.	There are_____types of dependent sources, depending on the controlling variable and output of the source.</div>
+        <div class="options">
+            <div class="option">A. Two</div>
+            <div class="option">B. Three</div>
+            <div class="option">C. Four</div>
+            <div class="option">D. Five</div>
+        </div>
+        <div class="answer">Answer: C</div>
+    </div>
+<div class="mcq">
+        <div class="question">Q20. Discrete device field effect transistor is classified on the basis of the</div>
+        <div class="options">
+            <div class="option">A. Resistive state</div>
+            <div class="option">B. Conducting state</div>
+            <div class="option">C. Voltaic state</div>
+            <div class="option">D. Control gate construction</div>
+        </div>
+        <div class="answer">Answer: D</div>
+    </div>
+  
+
+  
+</div>
+</body>
+</html>
