@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SMART SERIES — 100 MCQ Random Quiz</title>
+<style>
+  :root{
+    --bg:#0f172a; --card:#111827; --muted:#9ca3af; --txt:#e5e7eb; --accent:#22c55e; --bad:#ef4444; --mid:#3b82f6; --warn:#f59e0b;
+  }
+  html,body { background-color: #ffffff; color: teal; font-family: Arial, sans-serif; }
+  .wrap { background-color: #ffffff; color: teal; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 15px; margin: auto; max-width: 900px; }
+  h1{font-size:clamp(20px,3vw,28px);margin:0 0 10px}
+  .sub{color:var(--muted);margin-bottom:18px}
+  .panel{background:var(--card);border:1px solid #1f2937;border-radius:16px;padding:16px;margin:16px 0}
+  button{border:0;border-radius:999px;padding:10px 16px;background:var(--mid);color:white;font-weight:600;cursor:pointer}
+  button.secondary{background:#374151}
+  button.warn{background:var(--warn)}
+  button.good{background:var(--accent)}
+  button.bad{background:var(--bad)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .meta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+  .chip{background:#0b1225;border:1px solid #1f2a44;color:#cbd5e1;border-radius:999px;padding:6px 10px;font-size:13px}
+  .qcard{background:#0b1020;border:1px solid #1f2937;border-radius:14px;padding:14px;margin:14px 0}
+  .qhead{font-weight:700;margin-bottom:8px}
+  .opts{display:grid;gap:8px;margin-top:6px}
+  .opt{display:flex;gap:8px;align-items:flex-start;background:#0c1327;border:1px solid #1b2550;border-radius:10px;padding:10px;cursor:pointer}
+  .opt input{margin-top:3px}
+  .opt.correct{outline:2px solid var(--accent)}
+  .opt.incorrect{outline:2px solid var(--bad)}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  progress{width:100%;height:10px;border:0;border-radius:999px;overflow:hidden;background:#0a1020}
+  progress::-webkit-progress-bar{background:#0a1020}
+  progress::-webkit-progress-value{background:var(--mid)}
+  .score{font-size:22px;font-weight:800}
+  .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .right{margin-left:auto}
+  .pill{padding:4px 10px;border-radius:999px;background:#0c1327;border:1px solid #20305c}
+  .danger{color:#fecaca}
+  .small{font-size:12px}
+  .sticky-submit{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.7));padding-top:10px;margin-top:16px}
+
+.sticky-progress {
+  position: sticky;
+  top: 0;
+  background: #fdfdfd;
+  padding: 5px 10px;
+  z-index: 1000;
+  border-bottom: 1px solid #ddd;
+}
+body { background-color: #ffffff; color: teal; font-family: Arial, sans-serif; }
+.wrap { background-color: #ffffff; color: teal; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 15px; margin: auto; max-width: 900px; }
+.qcard {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+    
+.qcard { background-color: #ffffff; border: 1px solid #ccc; color: teal; }
+.qhead { font-weight: bold; margin-bottom: 8px; }
+.opts label.opt { display: block; padding: 5px; margin-bottom: 4px; border-radius: 4px; border: 1px solid #ddd; background-color: #f9f9f9; color: teal; }
+.opts label.opt:hover { background-color: #eef; }
+.correct { background-color: #c8e6c9 !important; }
+.incorrect { background-color: #ffcdd2 !important; }
+
+
+progress::-webkit-progress-bar {
+  background-color: #e0e0e0;
+}
+progress::-webkit-progress-value {
+  background-color: #1976d2;
+}
+progress::-moz-progress-bar {
+  background-color: #1976d2;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .toolbar {
+    flex-direction: column;
+    width: 100%;
+  }
+  .toolbar button {
+    width: 100%;
+    text-align: center;
+  }
+  .qcard {
+    padding: 10px;
+  }
+  .opts {
+    grid-template-columns: 1fr;
+  }
+  .flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pill {
+    margin-top: 5px;
+  }
+  .sticky-submit .flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  progress {
+    height: 12px;
+  }
+}
+
+/* Hide score pills until submit */
+#scoreLabel, .pill { display: none; }
+@media (max-width: 600px) {
+  .sticky-submit .flex {
+    flex-wrap: wrap;
+  }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SMART SERIES — Random 100-MCQ Quiz</h1>
+  <div class="sub">Built from first 1000 MCQs of NTS Smart Series. Click <b>Shuffle 100</b> to start.</div>
+  <div class="panel">
+    <div class="meta">
+      <div class="chip">In database: <span id="count">0</span> Qs</div>
+      <div class="chip">Selected: <span id="sel">0</span>/100</div>
+      <div class="chip">Answered: <span id="answered">0</span>/100</div>
+    </div>
+    <div class="toolbar">
+      <button id="btnShuffle" class="good">Shuffle 100</button>
+      </div>
+  </div>
+  <div id="quiz"></div>
+  <div class="sticky-submit" style="display:none;">
+    <div class="panel">
+<div class="sticky-progress" style="margin-bottom:8px;"><progress id="prog" max="100" value="0" style="width:100%;background-color:#e0e0e0;"></progress></div>
+      <div class="flex">
+        <div class="score" id="scoreLabel">Score: —/100</div>
+        <div class="pill">Correct: <span id="correct">0</span></div>
+        <div class="pill danger">Wrong: <span id="wrong">0</span></div>
+        <div class="pill">Unanswered: <span id="unans">100</span></div>
+        <div class="right">
+          <button id="btnReview" class="secondary" disabled>Review</button>
+          <button id="btnReset" class="secondary" disabled>Reset</button>
+          <button id="btnSubmit" class="good" disabled>Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="results" class="panel" style="display:none"></div>
+  <div class="small">For corrections, naeemuddin458@yahoo.com</div>
+</div>
+<script>
+
+const ALL = [
+{id:1,q:"Smart series mcqS",options:["The pole shoes of DC machines are fastened to the pole core by","Welding","Soldering","Steel clumps","Countersunk screws"],correct:[3]},
+{id:2,q:"Which of the following are considered as disadvantage(s) of Gauss-Seidel method over Newton's method in load flow programs?",options:["More iteration","More memory requirement and less accuracy","less interactions but more memory","More accuracy and more memory"],correct:[0]},
+{id:3,q:"The quantity \"Rm\" which relates dependent voltage to controlling current is called",options:["Trans Conductance","Maximum Resistance","Trans Resistance","Limiting Resistance"],correct:[2]},
+{id:4,q:"For which purpose bundled conductors are employed to a power system",options:["Appearance of the transmission line","Mechanical stability of line","Decrease system stability","Increase the short circuit current"],correct:[3]},
+{id:5,q:"Radio frequency chocks are air cored to",options:["Keep frequency low","Keep inductive reactance low","Keep frequency high","Keep inductive reactance high"],correct:[1]},
+{id:6,q:"Fundamental property used in single node pair circuit analyzer is thatacross all",options:["elements is same","Current","Voltage","Resistance","inductance"],correct:[1]},
+{id:7,q:"Landfill gas is actuallyused in thermal power plants.",options:["Methane","Ethane","Black liquor","Ethane"],correct:[0]},
+{id:8,q:"The average fossil fuel plant converts about is  % of the power going in to the power going out.",options:["33","40","25","50"],correct:[0,1]},
+{id:9,q:"If field resistance of a dc shunt generator is increased beyond its critical value, the generator.",options:["output voltage will exceed its name plate rating","will not build up.","may burn out if loaded to its name plate rating","power output may exceed its name plate rating"],correct:[1]},
+{id:10,q:"A semiconductor device is connected in a series circuit with a battery and a resistance. If the polarity of battery is reversed, the current drops almost to zero. The device may be",options:["P-type semiconductor","N-type semiconductor","P-N junction","An intrinsic semiconductor"],correct:[2]},
+{id:11,q:"What is the probability of a number \"2\" when a dice is thrown?",options:["2/6","1/3","1/6","1/4"],correct:[2]},
+{id:12,q:"If the input capacitor of a power supply is shorted; it will result In",options:["Excessive hum ꞏ","Reduced voltage output","No voltage output","Low voltage output"],correct:[2]},
+{id:13,q:"Admittance is the reciprocal of",options:["Capacitive reactance","Inductive reactance","Reactive power","Impedance"],correct:[3]},
+{id:14,q:"Is a by-product of paper industry, which is used by many Industries as a primary source of electricity.",options:["Landfill gas","Sludge waste","Black Liquor","Wood waste"],correct:[2]},
+{id:15,q:"Which of the following Ideas means deciding at runtime what strategy to summon?",options:["Dynamic typing","Dynamic hiding","Dynamic loading","Dynamic blinding"],correct:[3]},
+{id:16,q:"If the firing angle in an SCR rectifier is decreased, output will be",options:["Maximum","Increased","Decreased","Unaffected"],correct:[1]},
+{id:17,q:"Thetime signal is described for all values of time.",options:["Discrete","Continuous","Random","Digital"],correct:[1]},
+{id:18,q:"Which of the following conditions relate line resistance 'R' and line reactance 'X' for maximum steady state power transmission on a transmission line?",options:["X=R","R= sqrt (3) X","X= sqrt (3) R","X=R / sqrt (2)"],correct:[2]},
+{id:19,q:"These aretypes of dependent sources, depending on the controlling variable and output of the source.",options:["Two","Three","Four","Five"],correct:[2]},
+{id:20,q:"Discrete device field effect transistor is classified on the basis of the",options:["Resistive state","Conducting state","Voltaic state","Control gate construction"],correct:[3]},
+{id:21,q:"At very sunny places this source(s) of energy can be found",options:["Jet fuel","Geothermal","Solar","Both B & C"],correct:[2]},
+{id:22,q:"Main purpose of modulation process is to",options:["Distort the original signal","Add extra noise to the signal","Reduce the mutual interference","Time shift in frequency","Increase signal to noise ratio"],correct:[3]},
+{id:23,q:"Which line is obtained by the method of least square?",options:["Straight line","Second degree equation line","Polynomial equation line","Best fit line"],correct:[3]},
+{id:24,q:"A transformer transforms",options:["Voltage","Power","Current","Frequency"],correct:[0,2]},
+{id:25,q:"Conjugation x /\\ y behaves on binary digits as  in ordinary algebra",options:["Addition","Subtraction","Multiplication","Division"],correct:[2]},
+{id:26,q:"Power in an AC circuit is found by",options:["VI sin","VI tan","VI cos","VI"],correct:[2]},
+{id:27,q:"Modulation index in amplitude modulation",options:["Is defined as the measure or extent of amplitude variation about an un-modulated carrier.","Does not impact power dissipation","Is independent of integral multiple of amplitude","None of these"],correct:[0]},
+{id:28,q:"Fourier series are infinite series of elementary trigonometric functions i.e., sine and",options:["Cosine","Sec","Cosec","Tan"],correct:[0]},
+{id:29,q:"SCR (Silicon controlled rectifier) goes into saturation, when gate-cathode junction is",options:["Forward biased","Reverse biased","In steady state","Polarized"],correct:[0]},
+{id:30,q:"Drop out to cut off ratio for most relays is of the order of",options:["0.2 to 0.3","0.3 to 0.4","0.4 to 0.6","0.6 to 1.0"],correct:[3]},
+{id:31,q:"A copper oxide  allows current to flow through a meter in only one direction.",options:["Diac","Transistor","Rectifier","Voltmeter"],correct:[2]},
+{id:32,q:"DC generators have  on rotating shafts that convert AC into DC.",options:["Diodes","Commutator","Compressor","Rotor"],correct:[1]},
+{id:33,q:"There are two types of overload protection; instantaneous over current and",options:["A, Variable over current","Time over current","Constant over current","Delay feedback current"],correct:[1]},
+{id:34,q:"Single sideband techniques are mostly employed for",options:["Conservation of transmitted power","Conservation of transmitted bandwidth","Conservation of transmitted power and bandwidth","Improving the performance of frequency modulation"],correct:[2]},
+{id:35,q:"For the same peak value of voltage which waveform will have the least RMS value?",options:["Sine wave","Square wave","Triangular wave","Full wave rectified sine wave"],correct:[2]},
+{id:36,q:"Which of the following sources have highest power generation capacity?",options:["Oil","Biogas","Nuclear","Natural Gas"],correct:[2]},
+{id:37,q:"High tension cables can be used for electric power transmission but the voltage should not exceed",options:["11 kV","22 kV","32 kV","110 kV"],correct:[0]},
+{id:38,q:"The line integral of the electric field around a closed loop is equal to negative of rate of change of magnetic flux through the area enclosed by the loop. This statement is known as",options:["Ampere's law ꞏ","Faraday's law of induction","Gauss' law of magnetism","Maxwell’s equation ꞏ"],correct:[1]},
+{id:39,q:"The partial derivatives \"fxy\" and \"fyx\" are called  derivatives.",options:["Dependent partl.al","Independent partial","Mixed partial","Universal partial"],correct:[2]},
+{id:40,q:"Green function method is a useful technique for solving.",options:["Ordinary differential equation","Partial differential equation","1st order ODEs","2nd order ODEs"],correct:[1]},
+{id:41,q:"The sum of all potential differences in a complete loop through the circuit should be",options:["Equal to zero","Equal to individual voltages","Equal to Individual currents","Equal to individual resistances"],correct:[0]},
+{id:42,q:"Note: NTS marks C as correct answer.",options:["Unguided propagation involves","Propagation through computer LANs","Propagation through telephone channels","Propagation through optical fiber","Propagation through coaxial cable","Free space propagation"],correct:[4]},
+{id:43,q:"Preferring a  consists of using OHM's law to take an existing voltage source in series with a resistance and replace it with a current source in parallel with same resistance.",options:["Voltage transformation","Current transformation","Source transformation","Resistance transformation"],correct:[2]},
+{id:44,q:"Dynamic resistance of diode",options:["Remains constant with time","Cannot be calculated for a diode","Doesn't depend on voltage and current change across diode","Changes as a function of applied voltage"],correct:[3]},
+{id:45,q:"The TRIAC Is a  device with control terminal",options:["Uni-directional","Bi-directional","Tri-directional","Two terminals"],correct:[1]},
+{id:46,q:"If all conductive objects are bonded to same earth grounding system, the risk of electric shock is",options:["Maximized","Minimized","Zero","Neglected"],correct:[1]},
+{id:47,q:"In open loop control system, input is  output.",options:["Dependent of","Independent of","Equal to","Exponent of"],correct:[1]},
+{id:48,q:"If A is a square matrix with 3 x 3 order having det(A)=21, then what will be the det (2A)? Whereas det is determinant",options:["168","42","21","126"],correct:[0]},
+{id:49,q:"Error in a computer program is called",options:["Virus","Crash","Bug","Worm"],correct:[2]},
+{id:50,q:"A system is  if the natural response neither decays nor grows, but remains constant or oscillates.",options:["Asymptomatically stable","Marginally stable","Fully stable","Absolute stable"],correct:[1]},
+{id:51,q:"N-type material Is formed by doping pure silicon with",options:["Trivalent Impurity","Tetravalent impurity","Pentavalent impurity","Divalent impurity"],correct:[2]},
+{id:52,q:"The main criterion for selection of the size of power distribution using a radial distribution system is",options:["Voltage drops","Corona loss","Capital cost","Temperature rise"],correct:[0]},
+{id:53,q:"Self-induction of a solenoid is",options:["Directly proportional to the current flowing through the coil.","Inversely proportional to its area of cross-section","Directly proportional to its length","Directly proportional to its area of cross-section"],correct:[3]},
+{id:54,q:"Transmission lines mostly use high voltage  alternating current.",options:["Single phase","Two phases","Three phases","Neutral Phase"],correct:[2]},
+{id:55,q:"In a DC generator, brushes on the commutator are shifted from geometrical neutral position to",options:["Obtain highest generator voltage","Avoid sparking","Obtain highest generator efficiency","Produce spark"],correct:[1]},
+{id:56,q:"The electric dipole moment per unit volume of the dielectric is called",options:["Dipole density","Polarization of dielectric","Electric displacement vector","Polarization density"],correct:[1]},
+{id:57,q:"The negative maximum of cosine wave occurs at",options:["270o","180o","90o","0o"],correct:[1]},
+{id:58,q:"For current amplification in BJT, we mostly use",options:["Common base configuration","Common emitter configurationꞏ","Both common base and common emitter configuration","Common collector configuration","Both common collector and common emitter configuration"],correct:[3]},
+{id:59,q:"Let Vab, then  is taken as reference.",options:["Node A","Node B","Origin point","Both"],correct:[0]},
+{id:60,q:"Stepper motor is a/an  motor which divides full rotation into large number of steps.",options:["Direct current","Alternating current","Powerless","Small"],correct:[0]},
+{id:61,q:"A state during which nothing happens is known as",options:["LOA","Nop","MAR","Op Code"],correct:[1]},
+{id:62,q:"A relay used for protection of motors against overload is",options:["Impedance relay","Electromagnetic attraction type","Thermal relay ꞏ","Buchholz's relay"],correct:[2]},
+{id:63,q:"Which of the following relays is used on transformers?",options:["MHO Relay","Merz Price Relay","Buchholz's relay","None"],correct:[2]},
+{id:64,q:"Solid Grounding is used for Voltages",options:["Above 220 kV","Above 11 kV","Below 660V","Below 115 kV"],correct:[2]},
+{id:65,q:"An ideal voltage source has  internal resistance",options:["Zero","Infinity","High ꞏ","Low"],correct:[0]},
+{id:66,q:"An Ideal current source has  internal resistance.",options:["Zero","Infinite","High","Low"],correct:[1]},
+{id:67,q:"A moving iron ammeter coil has few turns of thick wire in order to have",options:["Low resistance","High sensitivity","Effective damping","Large scale"],correct:[0]},
+{id:68,q:"Electric lines of force about a negative charge are",options:["Circular and anticlockwise","Circular and clockwise","Radially Inward","Radially outward"],correct:[2]},
+{id:69,q:"A digital signal is",options:["Discrete","Discrete in time","Discrete in amplitude","Discrete in neither time nor amplitude","Discrete in both amplitude and time"],correct:[4]},
+{id:70,q:"is defined as the measure of instrument by which it Is error free.",options:["Accuracy","Precision","Resolution","None of above"],correct:[0]},
+{id:71,q:"A diode that has a negative resistance characteristic is the",options:["Schott key diode","Tunnel diode","Hot carrier diode","Laser diode","Zener diode"],correct:[1]},
+{id:72,q:"Which type of engine uses maximum air fuel ratio?",options:["Petrol engine","Gas engine","Diesel engine","Gas turbine","Hydro turbine"],correct:[3]},
+{id:73,q:"Which Instrument has same calibration for AC & DC values?",options:["Induction type","Hot wire type","Moving coil type","Moving iron type"],correct:[1]},
+{id:74,q:"The EM field and current are concentrated close to the surface of conductor. The phenomenon is called",options:["Skin effect","Faraday effect","EM concentration effect","Ohm’s effect"],correct:[0]},
+{id:75,q:"Light is produced in electric discharge lamps by",options:["Ionization in vapor or gas","Heating effect","Magnetic effect","Carbon electrodes"],correct:[0]},
+{id:76,q:"diode acts as a voltage controlled variable capacitor.",options:["Varactor","Zener","Avalanche","Light emitting"],correct:[0]},
+{id:77,q:"By which a meter after checking with no current returns to its previous state ꞏ",options:["Controlling torque","Damping torque","Deflecting torque","None of the above"],correct:[0]},
+{id:78,q:"By connecting a shunt of higher value in ammeter what will happen",options:["Current sensitivity increases","Current sensitivity decreases","Damping increases","Controlling torque decreases"],correct:[1]},
+{id:79,q:"Current chopping occurs in",options:["Air blast circuit breaker.","Vacuum filled","Oil filled","SF6"],correct:[0]},
+{id:80,q:"For the signal Cos (pi/4) the fundamental period is",options:["2","4","8","10"],correct:[2]},
+{id:81,q:"In Z- Transform, the ROC must be centered at",options:["Origin","Z = i","Poles ꞏ","zeros"],correct:[0]},
+{id:82,q:"For a single-phase rotary convertor, when the power factor is unity, the AC line to DC current ratio will be",options:["1.4","1.0","0.707","0.5"],correct:[0]},
+{id:83,q:"A rectifier is a",options:["Bilateral device","Linear device","Nonlinear device","Passive device"],correct:[2]},
+{id:84,q:"A permanent magnet coil meter has which features",options:["Low power consumption","No hysteresis loss","Reduced eddy current","Reduced damping","All"],correct:[4]},
+{id:85,q:"Electric energy is stored by",options:["Nickel cadmium battery","Lead acid battery ꞏ","Dry cell battery","None"],correct:[1]},
+{id:86,q:"What is handoff?",options:["Call activation","Call termination","shifting call from one cell to another","All"],correct:[2]},
+{id:87,q:"When electric field is parallel to the plane of incident, electromagnetic wave is said to be",options:["linearly polarized","Elliptically polarized","circularly polarized","hyperbolically polarized / parallel polarized"],correct:[3]},
+{id:88,q:"Moving coil ammeter can measure",options:["AC current","DC current","stray current","Eddy current"],correct:[1]},
+{id:89,q:"Due to velocity saturation, MOSFET enters in saturation region",options:["Before pinch off","After pinch off","At pinch off","at Q point","After Q point"],correct:[0]},
+{id:90,q:"Which of the following is not bilateral?",options:["Resistor","Diode","Capacitor","Inductor"],correct:[1]},
+{id:91,q:"Which of the following contact point metals has the highest melting point?",options:["Silver","Tungsten","Gold","Copper"],correct:[1]},
+{id:92,q:"In a rotary converter",options:["Armature currents are DC only","Armature currents are AC only","Partly AC & partly DC","All"],correct:[2]},
+{id:93,q:"Which bulb operates on lowest power?",options:["Night Bulb","Neon Bulb","GLS Bulb","Torch lamp"],correct:[3]},
+{id:94,q:"Which Instrument cannot be used for DC measurements?",options:["Moving iron attraction type ꞏ","Moving coil permanent magnet type","Hot wire type","Induction type"],correct:[3]},
+{id:95,q:"Which type of system is referred by pneumatic system?",options:["Pressure","Hydraulic","Fluid","None of these"],correct:[0]},
+{id:96,q:"The voltage above 230kV is called",options:["Extra high voltage","Ultra-high voltage","High voltage","None"],correct:[0]},
+{id:97,q:"Lower voltages like 66kv and 33kv are considered to be",options:["Sub transmission voltage","Distribution voltage","Generation voltage","None"],correct:[0]},
+{id:98,q:"Every pre-amplifier in amplifier circuits contain  to achieve linearity:",options:["Class A","Class B","Class AB","Class C"],correct:[0]},
+{id:99,q:"DIAC is a semi-conductor device which act as a",options:["2 terminal unidirectional switch","2 terminal bidirectional switch","3 terminal bidirectional switch","4 terminal multi-directional switch"],correct:[1]},
+{id:100,q:"What is reciprocal of power factor?",options:["Gain","Q factor","Reactive power","Real power"],correct:[1]},
+{id:101,q:"What is the percentage of symmetrical faults in power system?",options:["5%","10%","15%","20%"],correct:[0]},
+{id:102,q:"Transmission lines are considered to be  kV and above.",options:["110kv","140kv","130kv","150kv"],correct:[0]},
+{id:103,q:"The product of V-rms and I-rms",options:["Apparent power","Real power","Virtual power","Reactive power"],correct:[0]},
+{id:104,q:"State variable analysis is used for the modelling of  type of systems.",options:["Linear","Non-linear","Time variant","Time invariant","All of above"],correct:[4]},
+{id:105,q:"Aero derivative turbines do not have",options:["Stator","Compressor","Fuel Intake system","Fan"],correct:[3]},
+{id:106,q:"Commercial digital/analog convertor modules are available with precision ranging from 6 bit to",options:["10","12","32","18"],correct:[3]},
+{id:107,q:"In superposition theorem, all voltage Sources are replaced by",options:["Open circuit ꞏ","Closed circuit","Short Circuit","Open circuit with parallel branch"],correct:[2]},
+{id:108,q:"The principle of  can be used to analyze fault in power system network.",options:["Thevenin","Norton","Jordon","Superposition"],correct:[3]},
+{id:109,q:"In submarine power system, power Is transmitted through  cables.",options:["High voltage direct current","Low voltage direct current","Under current","Under ampere"],correct:[0]},
+{id:110,q:"RC snubber circuit is used to limit the rate of  In off state.",options:["Rise of current in SCR","Rise of voltage in SCR","Conduction period","All of above"],correct:[1]},
+{id:111,q:"Which system Is used for dc-to-dc high voltage gain?",options:["Solar cell energy conversion system","Battery backup system","Fuel cell energy conversion system ꞏ","High intensity discharge lamp ballasts for automobile headlamps","All of the above"],correct:[4]},
+{id:112,q:"UJT has same characteristics like",options:["CE","BJT","FET","Diodes"],correct:[2]},
+{id:113,q:"Rechargeable batteries or Pbs batteries are of  type.",options:["Primary batteries","Secondary batteries","Electrochemical batteries","None"],correct:[1]},
+{id:114,q:"Superposition theorem is applicable to",options:["linear system","Linear time variant","Linear and non-linear","Linear time invariant"],correct:[0]},
+{id:115,q:"Four wires are available in  system",options:["Star","Delta","Both A and B","Interconnected"],correct:[0]},
+{id:116,q:"Over Current protection for motor s provided by",options:["Kit kat fuses","Overcurrent Relay","Cartage fuses","None"],correct:[1]},
+{id:117,q:"Inductance can be measured by",options:["Wien's bridge","Anderson bridge","Shearing bridge","Maxwell bridge"],correct:[3]},
+{id:118,q:"For a fixed number of poles and armature conductors  winding will give high emf",options:["Lap winding","Wave winding","Copper winding"],correct:[1]},
+{id:119,q:"Maxwell loop current method of solving electrical network uses",options:["Branch currents","Kirchhoff’s voltage law","Is confined to single loop circuit"],correct:[1]},
+{id:120,q:"Which of the following is not the type of transformer?",options:["Resonant transformer","Cast Iron transformer"],correct:[1]},
+{id:121,q:"Which of the prime movers Is least efficient?",options:["Gas turbine","Petrol engine","Diesel engine","Steam engine"],correct:[3]},
+{id:122,q:"When electromagnetic waves collide with hurdles their frequencies",options:["Increase","Decrease","Remains same","Bounce back"],correct:[2]},
+{id:123,q:"In 3-phase 4-wire system, how many voltages. are available?",options:["Two","Three","Four"],correct:[0]},
+{id:124,q:"meter is used a null detector In Wheatstone bridge",options:["Ammeter","Voltmeter","Galvanometer","Wattmeter"],correct:[2]},
+{id:125,q:"If \"Rt\" is the resistance of a coil of copper at t° C and RT Is the resistance at To C and also the resistance temperature coefficient of copper per degree centigrade at 0°C is 1/234.45, then Rt/RT",options:["(1 + t) / (l + T)","(1+ 234.45t) / (1+234.45 T)","(234.45 + t) / (234.45 + T)","(234.45 + t2) / (234.45 + T2)"],correct:[2]},
+{id:126,q:"The wavelength of an electromagnetic wave after reflection at an angle on a surface",options:["Increases in the actual direction of propagation","Decreases In the actual direction of propagation","Remains the same as the wavelength perpendicular to the surface","Remains the same as in free space"],correct:[0]},
+{id:127,q:"Δ x H=J + D is",options:["Maxwell equation","Continuity","Laplace equation","Poisson equation"],correct:[0]},
+{id:128,q:"The channel of a JFET Is between the",options:["Gate and drain","Drain and source","Gate and source","Input arid output"],correct:[1]},
+{id:129,q:"LTI system can be completely characterized by",options:["Impulse response","Step input","Output","Step response"],correct:[0]},
+{id:130,q:"If a signal having different frequency and different sampling frequency are time division multiplexes then it is called",options:["Pulse stuffing","Synchronous multiplexing","Asynchronous multiplexing","FDMA"],correct:[0]},
+{id:131,q:"We build control systems for",options:["Remote control","Convenience of Input form","Power amplification","Compensation for disturbance","All of the above"],correct:[4]},
+{id:132,q:"Natural frequency of a system gives",options:["Nature of transient","Overshoot","Oscillation","Speed of response"],correct:[3]},
+{id:133,q:"Hay bridge is used for the measurement of",options:["Inductance","Resistance","Capacitance","None of these"],correct:[0]},
+{id:134,q:"bridge is used for the measurement of resistance.",options:["Shearing bridge","Hay bridge","Wheatstone bridge","Maxwell bridge"],correct:[2]},
+{id:135,q:"In an LTI system, if all the poles and zeros are inside the unit circle then",options:["Its inverse does not exist","The system is causal and stable","The Inverse of system ls causal and stable","Both system and its inverse are causal and stable"],correct:[3]},
+{id:136,q:"Under-damped systems have",options:["Damping ratio > 1","0 < damping ratio < 1","Damping ratio = 1","Damping ratio = 0"],correct:[1]},
+{id:137,q:"An alternator is operating on unity PF load, then",options:["Armature reaction will be cross magnetizing","Armature reaction will be de-magnetizing","Armature reaction will be magnetizing","None of the above"],correct:[0]},
+{id:138,q:"ROC converges if poles and Zeroes lies inside",options:["Origin","Z=l","Poles","Zeros"],correct:[1]},
+{id:139,q:"is the fastest possible response without the overshoot",options:["Under damped","Over damped","Critically damped","General response"],correct:[2]},
+{id:140,q:"Which oscillator is the most stable oscillator?",options:["Crystal","Wien bridge","Colpitts","Hartley"],correct:[0]},
+{id:141,q:"Fourier series representation of continuous signal requires  number of harmonically complex components.",options:["N","2pi/ N","n + N","1","Infinite"],correct:[4]},
+{id:142,q:"Any constant of time domain is an impulse in frequency domain with",options:["Infinite height, infinite width, infinite area ꞏ","Infinite height, infinite width, zero area","Infinite height, zero width, zero area","Infinite height, zero width, unit area"],correct:[3]},
+{id:143,q:"Which statement is true about continuous and discrete LTI system?",options:["Convolution sum Is approximation to convolution integral","Convolution integral ls approximation to convolution sum","Convolution sum and integral are explicit realization","All"],correct:[2]},
+{id:144,q:"Which of the following has super linear rate of convergence?",options:["Bisection method","Newton Raphson method ꞏ","Secant method","False position method"],correct:[2]},
+{id:145,q:"The modulation technique in which carrier is switched between two different carrier levels 0 &1 is called",options:["Amplitude shift keying","On off keying","Frequency shift keying","Phase shift keying"],correct:[1]},
+{id:146,q:"LTI system is stable when",options:["Zero is inside a unit circle","Poles are Inside a unit circle","Zero at origin","Poles at origin ꞏ"],correct:[1]},
+{id:147,q:"Which of the following converts thermal energy to kinetic energy?",options:["Thermocouple","Fuel cell","Rocket","Storage battery"],correct:[2]},
+{id:148,q:"For constant voltage transmission, voltage drop is compensated by installing",options:["Synchronous motors","Inductors","Capacitors","All of above"],correct:[0]},
+{id:149,q:"Which of the following voltage is usually not the generating voltage?",options:["6.66kv","9.9kv","11kv","13kv"],correct:[1]},
+{id:150,q:"Boosters are basically",options:["inductors","Capacitors","Transformers","Synchronous motors"],correct:[2]},
+{id:151,q:"Difference between D-MOSFET and JFET is the absence of",options:["P-N Junction","Drain","Gate","Source"],correct:[0]},
+{id:152,q:"FET is beneficial due to",options:["Low noise","High power gain","Small size","All"],correct:[3]},
+{id:153,q:"Vce (voltage between collector and emitter) of a transistor is very important in checking whether transistor is",options:["Working in saturation","Working in cut off","Defective","All"],correct:[3]},
+{id:154,q:"FIR filter can be designed to achieve",options:["Linear phase","Inverting phase","Non-inverting phase","Both A & B"],correct:[0]},
+{id:155,q:"In 8051 the contents of the Instruction register are split Into",options:["2 nibbles","3 nibbles","4 nibbles","5 nibbles"],correct:[0]},
+{id:156,q:"One of the properties of FIR filters Is that Is not required for FIR filters.",options:["Input","Transfer function","Feedback","Output"],correct:[2]},
+{id:157,q:"Optical power cable depends on  associated with optical fiber receiver.",options:["Quantum","Dark current","Thermal","All"],correct:[3]},
+{id:158,q:"The parameter hfe of a transistor corresponds to",options:["Beta dc","Beta ac","Re'","Rc'"],correct:[1]},
+{id:159,q:"Oscillator whose frequency can be changed by a DC control voltage is",options:["Triangular wave oscillator","Wien-bridge oscillator","Crystal oscillator","Voltage controlled oscillator"],correct:[3]},
+{id:160,q:"DC operating point of an amplifier specified by voltage and current value is called ꞏ",options:["Gain","Q point","load line","None of above"],correct:[1]},
+{id:161,q:"In RLC circuits, at low frequency, Z is larger due to",options:["XC is larger ꞏ","XL is larger","XC is smaller","None"],correct:[0]},
+{id:162,q:"is the part of instruction which tells. the computer which operation to perform next.",options:["OP code","On code","RAM","ROM"],correct:[0]},
+{id:163,q:"In 8085ls the part of a control unit.",options:["ROM","RAM","Instruction registers","OP code"],correct:[2]},
+{id:164,q:"A JFET has main drawback of",options:["Having low input impedence","Noise distortion","Having small gain-bandwidth product","None"],correct:[2]},
+{id:165,q:"In order to have a lower cost of electrical energy generation",options:["The load factor and diversity factor should be low","T1ie load factor and diversity factor should be high","The load factor should be low and diversity factor should be high","The load factor should be high and diversity factor should be low"],correct:[1]},
+{id:166,q:"When the current in the light bulb drops by 2%, its power decreases by",options:["4 %","2 %","8 %","16 %"],correct:[0]},
+{id:167,q:"What is common mode rejection ratio CMRS?",options:["It Is ratio of differential mode gain to common mode gain","It Is the ratio of common mode gain to differential mode gain","It is the product of common mode pin and differential mode gain","None of these '"],correct:[0]},
+{id:168,q:"Resolution of ADC is defined as the no of bits In",options:["Output","Input","I/O","None"],correct:[0]},
+{id:169,q:"The most common method for measurement of low resistance Is",options:["Wheatstone bridge method","Potentiometer method","Kelvin bridge method"],correct:[2]},
+{id:170,q:"If the height of transmission tower is Increased, which of the following parameters are likely to change?",options:["capacitance","Inductance"],correct:[0]},
+{id:171,q:"If ROC (Region of convergence) does not include unit circle then",options:["Fourier transforme converges","Z-transforme converges","Harley transforme converges","Chirplet transforme converges"],correct:[1]},
+{id:172,q:"***For small scale integration 0 to 10 transistors",options:["TTL (Transistor Transistor Logic) of chip Integration uses","Bipolar Junction transistor","Field effect","Complementary symmetry metal oxide","None"],correct:[0]},
+{id:173,q:"For getting the sampled signal without any distortion, Nyquist criteria, the minimum sampling period must be according to",options:["Double the max period","Equal to the max period","Greater than the max period","Half the max period"],correct:[3]},
+{id:174,q:"How is thyristor turned off?",options:["By forced commutation","Forward biasing","Reverse gating","None"],correct:[0]},
+{id:175,q:"For a silicon diode. the value of the forward bias voltage is",options:["0.1","0.3","0.7","Depends on the concentration of majority carriers"],correct:[2]},
+{id:176,q:"In high frequency applications we use",options:["Pulse transformer","Air core transformers","Ferrite core transformers","None"],correct:[1]},
+{id:177,q:"If there are less than 4 electrons in the valence shell, then the element is generally, a",options:["Conductor","Insulator","Semiconductor","none of these"],correct:[0]},
+{id:178,q:"Which is not a type of substation?",options:["Line","Collector","Converter","Switching"],correct:[0]},
+{id:179,q:"What is the basic principle behind motor operation?",options:["Electromagnetism","Electrostatic induction","Magnetism","None"],correct:[0]},
+{id:180,q:"Most squirrel cage rotors are made by die casting ofconductor bars.",options:["Copper","Aluminum","Zinc","Silver"],correct:[1]},
+{id:181,q:"The  of measurement is a measure of change in the instrument output, which occurs when the quantity being measured changes by a given amount. ꞏ",options:["Sensitivity","Accuracy","Threshold","None"],correct:[0]},
+{id:182,q:"transforms voltage from high to low and reverse and perform any of several other important functions. ꞏ",options:["Substation","Grid","Switchyard","None"],correct:[0]},
+{id:183,q:"The input for a distribution substation is typically at least  transmission lines or sub- transmission lines.",options:["Two","three","Four","None"],correct:[0]},
+{id:184,q:"When a small resistance or impedence is Inserted between two points of different potentials, accidentally or intentionally. It is called",options:["Short circuit","Open","Close circuit","None"],correct:[0]},
+{id:185,q:"Hollow conductors are use in transmission line to",options:["To reduce corona","To reduce weight of the copper","Improve stability","Increase power transmission capacity"],correct:[0]},
+{id:186,q:"Shunt reactors are connected with transmission lines for",options:["Limiting fault current","Limiting fault voltage","Absorbing reactive power","Absorbing High voltage surges"],correct:[2]},
+{id:187,q:"In a DC machine, what is the angle between rotor and stator fields",options:["45","90","120","180"],correct:[1]},
+{id:188,q:"Which of the following motor has the highest torque?",options:["DC series motor","AC series motor","Induction motor","Synchronous motor"],correct:[0]},
+{id:189,q:"Motor that should not be used with load removed is",options:["Series motor","Shunt motor","C Both","None"],correct:[0]},
+{id:190,q:"The process of conversion of AC into DC is called",options:["Magnification","Amplification","Purification","Rectification"],correct:[3]},
+{id:191,q:"The region of operation of transistors is______if emitter junction is forward biased and collector junction is reverse biased.",options:["Active","Saturation ꞏ","Cutoff","Inverted"],correct:[0]},
+{id:192,q:"When no signal input, a bipolar transistor would have least Ic where",options:["Emitter base junction is reverse biased","Emitter grounded","Emitter base Junction forward biased","Emitter base current high"],correct:[0]},
+{id:193,q:"An N-type and P-type semiconductor can be obtained by doping silicon with ꞏ.",options:["Sodium and magnesium respectively","Phosphorus and boron respectively","Indium and sodium respectively","Boron and arsenic respectively"],correct:[1]},
+{id:194,q:"The form factor in reference to alternating current waveform represents the ratio of",options:["The average value to RMS value","The peak value to RMS value","The RMS value to average value","The RMS value to peak value"],correct:[2]},
+{id:195,q:"Power factor of-magnetizing component of a transformer is",options:["Zero","Unity","0.8 lagging","Always leading"],correct:[0]},
+{id:196,q:"If the horizontal and vertical components of Earth's magnetic field are equal then angle of dip is",options:["45•","90•","60°","30•"],correct:[0]},
+{id:197,q:"The  field lasts as long' as current is flowing through the conductor",options:["Gravitational","Electric","Magnetic","Kinetic"],correct:[2]},
+{id:198,q:"Waves which do not require material medium for their propagation are called",options:["Electromagnetic","Electrostatic","Electrical","Mechanical"],correct:[0]},
+{id:199,q:"SCR Is a device having  layers and  Junctions.",options:["Four, three","Three, four","Three, two","Four, two"],correct:[0]},
+{id:200,q:"The AC motors used in servo applications Is a",options:["Single phase Induction motor","Two phase Induction motor","Three phase induction motor","Synchronous motor"],correct:[1]},
+{id:201,q:"Transfer of ASCII codes from a microprocessor to a printer must be done on handshake basis because",options:["open collector buffers are used on a signal & data line","Microprocessor can send characters much faster than printer can print them","Sometimes parallel printer in a system don't have BIOS procedure","Both A and C"],correct:[1]},
+{id:202,q:"Which is not a type of key switch?",options:["Mechanical key switch","Capacitive key switch","Hall effect key switch","Maxwell's key switch"],correct:[3]},
+{id:203,q:"Specifying the kind of Input, processing and output required for a program occur when",options:["Defining the problem","Planning the problem","Flowcharting the problem","Coding the problem"],correct:[0]},
+{id:204,q:"In bus topology, what is 'backbone'?",options:["Hup","TAP","Log cable","Backup server"],correct:[2]},
+{id:205,q:"Which statement is not true about VHDL (VHSIC hardware description language)?",options:["VHDL is an IEEE standard language","VHDL is strongly typed language","VHDL is case sensitive","VHDL Is developed as a part of very high-speed integrated circuit (VHSIC)"],correct:[2]},
+{id:206,q:"The main drawback of a feedback system is",options:["Inaccuracy","Inefficiency","Instability","Insensitivity"],correct:[2]},
+{id:207,q:"Transient response of system is basically due to",options:["Coupling","Forces","Friction","Stored energy"],correct:[3]},
+{id:208,q:"If current and voltage are out of phase by 90 degrees then power is",options:["Zero","Minimum","Maximum","√3 VI"],correct:[0]},
+{id:209,q:"The instantaneous value of sinusoidal AC current at 45o Is called",options:["Peak to peak value","RMS value","Peak value","Average value"],correct:[1]},
+{id:210,q:"Which wave has the least value of form factor?",options:["Square wave","Triangle wave","Sine wave","Rectangle wave"],correct:[0]},
+{id:211,q:"The unit of Inductive susceptance is",options:["Siemens","mH","Henry","Ohm"],correct:[0]},
+{id:212,q:"When sole purpose of AC is to give heat then selection of conductor is based on",options:["Peak value of current","Average value of current","RMS value of current","None"],correct:[2]},
+{id:213,q:"The power factor of DC supply voltage is always",options:["Unity","Zero","infinite","None"],correct:[0]},
+{id:214,q:"Potential barriers are measured in",options:["Volts","Amps","Ohms","Coulombs"],correct:[0]},
+{id:215,q:"Transistor means transfer of",options:["Transfer of resistance","Transfer of capacitance","Transfer of inductance","None"],correct:[0]},
+{id:216,q:"Depletion region carries",options:["Positive charge","Negative charge","No charge","None of above"],correct:[2]},
+{id:217,q:"Which is not an integrating instrument",options:["Ampere hour meter","Watt hour meter","Voltmeter","Odometer"],correct:[2]},
+{id:218,q:"The memory unit using only gates is",options:["RAM","ROM","Core","Disc"],correct:[0]},
+{id:219,q:"Ladder network used in digital to analog converter is",options:["R-C ladder","R-2R ladder","R-L ladder","R-2L ladder"],correct:[1]},
+{id:220,q:"In DLD, a function that includes all the 2n min terms is equal to the logic",options:["0","1","Infinity","22n - l"],correct:[1]},
+{id:221,q:"Which triggering method is used for flip flop?",options:["Master slave","King slave","Boss employ","None"],correct:[0]},
+{id:222,q:"How many general purposes registers the execution unit has?",options:["2","8","12","18"],correct:[1]},
+{id:223,q:"8086 allows to set aside an entire 64k-byte segment as stack. The upper 16 bits of the starting address for this segment are kept in",options:["Stack pointer","Data register","Segment register","All of above"],correct:[2]},
+{id:224,q:"When all the terms in a row of Routh array are zero, the characteristic equation has roots on",options:["Positive real axis","Negative real axis","Imaginary axis","Real axis"],correct:[2]},
+{id:225,q:"Addition of poles in a transfer function causes",options:["Lead compensation","Lag compensation","Lead lag compensation","Interval compensation"],correct:[1]},
+{id:226,q:"If a system is critically damped and the gain is increased then system becomes",options:["Over damped","Under damped","Oscillatory","Remains critically damped"],correct:[1]},
+{id:227,q:"Which cannot be treated as an amplifier in control system?",options:["DC generator","DC motor","Metadyne","Amplidyne"],correct:[1]},
+{id:228,q:"In PCM system, quantization noise depends upon",options:["Number of quantization levels only","Sampling rate","Index number","Both B and C"],correct:[0]},
+{id:229,q:"Coupling used in Stoneman transmission bridge is",options:["Resistive","Capacitive","Inductive","Combination of all"],correct:[1]},
+{id:230,q:"One can provide two or more voice circuits on same carrier by using",options:["DSB-SC","SSB with pilot carrier","ISB systems","SSB-BC system"],correct:[2]},
+{id:231,q:"Frequency frogging is used in carrier system to",options:["Conserve frequencies","Reduce distortion","Reduce crosstalk","Destroy frequencies"],correct:[2]},
+{id:232,q:"Video transmission In TV broadcast is usually on",options:["FM","PM","AM","SM"],correct:[2]},
+{id:233,q:"In FM power has the modulation Index that",options:["Increases","Decreases","Remains constant","Become zero"],correct:[2]},
+{id:234,q:"A single flip flop can be constructed by using which digital gate",options:["NAND","OR","NOR","AND"],correct:[0]},
+{id:235,q:"Duration of pulse response is finite for",options:["FIR filters","IIR filters","Electronic","None"],correct:[0]},
+{id:236,q:"For N-channel MOSFET  terminal acts as a control electrode",options:["Gate","Source","Drain","All"],correct:[0]},
+{id:237,q:"Graphical difference between nFET and pFET is",options:["Inversion bubble at the gate","Inversion bubble at the source","Inversion bubble at the drain","All"],correct:[0]},
+{id:238,q:"Functionality of PLC contains",options:["Sequential control relay","Process control relay","Distributed control relay","All of above"],correct:[3]},
+{id:239,q:"Injection laser is a  device",options:["Breakdown","Avalanche","Threshold","None of above"],correct:[1]},
+{id:240,q:"Quality factor (Q-factor) of tuned circuit is referred to as which property",options:["Selectivity","Sensitivity","Fidelity","Connectivity"],correct:[0]},
+{id:241,q:"If scale of voltmeter is uniform its type is",options:["Hotwire","Induction","Moving coil permanent magnet type","Moving coil dynamometer"],correct:[2]},
+{id:242,q:"Voltage applied across parallel RLC circuit is 100V, what is the resonant frequency when inductance is 0.1 H, capacitance is 0.1 μF and resistance ls 100 ohms",options:["1.259 KHz","1.359 KHz","1.539 KHz","1.739 KHz"],correct:[2]},
+{id:243,q:"The flag register in 8051 microcontroller is",options:["Program status word","Memory register","Bit status","Location of data"],correct:[0]},
+{id:244,q:"An oscillator converts which type of input to AC waveform signal",options:["AC power input","DC power input","Both AC and DC power inputs","None of above"],correct:[1]},
+{id:245,q:"Consistency of an instrument is related with",options:["Precision","Accuracy","Validity","Reliability"],correct:[3]},
+{id:246,q:"When an electric current passes through a bucket full of water, lot of bubbling is observed. This suggests that the type of supply is ꞏ",options:["C","C","Can be any of these","None"],correct:[1]},
+{id:247,q:"What happens to the resistance of carbon filament lamp as the applied voltage is increased",options:["Increases","Decreases","Remains same","None of above"],correct:[1]},
+{id:248,q:"A 6 KHz sinusoidal voltage is applied to a series RC circuit. The frequency of voltage across the resistor is",options:["0 Hz","12 kHz","6 kHz","18 kHz"],correct:[2]},
+{id:249,q:"When the frequency of source voltage decreases, the impedance of parallel RC circuit",options:["Increases","Decreases","Does not change","Decreases to zero"],correct:[0]},
+{id:250,q:"In a complex plane, the number 4 + j3 is located in",options:["First quadrant","Second quadrant","Third quadrant","Fourth quadrant"],correct:[0]},
+{id:251,q:"For a large value of VDS FET behaves as",options:["Voltage controlled current source","Current controlled voltage source","Variable resistance","None of above"],correct:[0]},
+{id:252,q:"Removing bypass capacitor across emitter leg resistor in a CE ac amplifier causes",options:["Increase in voltage gain","Short circuit","Decrease in voltage gain","Exponential rise in current"],correct:[2]},
+{id:253,q:"When a step input is given to an OP-amp integrator the output will be",options:["Integral function","Differential function","Exponential function","Ramp function"],correct:[3]},
+{id:254,q:"Hysteresis is desirable In Schmitt trigger because",options:["It protects the circuit","It constantly magnetizes and de magnetizes it","Devices in the circuit should be allowed time for saturation and desaturation","None"],correct:[2]},
+{id:255,q:"In a full wave rectifier without filter, the ripple factor is",options:["0.75","0.65","0.482","3.14"],correct:[2]},
+{id:256,q:"Minimum number of flip flops required to construct mod75 counter is",options:["7","9","4","1"],correct:[0]},
+{id:257,q:"In a clamping circuit, the peak-to-peak voltage of the waveform being clamped is",options:["Independent of the input voltage","Not affected by the clamping","Depends on the input voltage","All of above"],correct:[1]},
+{id:258,q:"A Zener diode has a sharp breakdown",options:["At low reverse voltage","In Forward biased state","In Reverse biased state","Never breaks down"],correct:[0]},
+{id:259,q:"N channel FETs are superior to P channel because",options:["Of greater concentrations of impurity","Mobility of electrons is greater than holes","Low breakdown voltage","Higher stability"],correct:[1]},
+{id:260,q:"Negative feedback in an amplifier",options:["Increases the voltage gain","Reduces the voltage gain","Does not affect the gain of amplifier","None of above"],correct:[1]},
+{id:261,q:"For generating 1 kHz signal most suitable circuit is",options:["Crystal oscillator","Wheatstone bridge","Wien Bridge Oscillator","Both A & C"],correct:[2]},
+{id:262,q:"The main feature or prominent property of the crystal oscillator",options:["Economy","Reliability","Stability","High frequency"],correct:[2]},
+{id:263,q:"Primary of a machine is stationary while secondary is rotating. This rotating transformer is known as",options:["Conduction motor","Current transformer","Potential transformer","Induction motor"],correct:[3]},
+{id:264,q:"For rectification, which of the following is used?",options:["Capacitors","Resistors","Diodes","Inductors"],correct:[2]},
+{id:265,q:"Conduction angle in amplifier in class A amplifiers is",options:["180","90","270","360"],correct:[3]},
+{id:266,q:"In amplifiers, the common mode rejection ratio (CMRR) should be",options:["High (in ideal differential amplifier CMRR Is Infinity)","low","Keeps modulating between high and low","None or above"],correct:[0]},
+{id:267,q:"A transformer with a winding ratio of 20:1 means",options:["For every 20 turns of primary, there shall be one secondary turn","there are 20 turns on primary and 1 turn on secondary"],correct:[0]},
+{id:268,q:"Power 'P' Is required to be transmitted by overhead lines over the length 'L'ꞏ For the same power loss and the same voltage between conductor and earth, the least conductor material Is required In",options:["3 wire AC system","2 wire DC system","4 wire AC system","3 wire DC system"],correct:[1]},
+{id:269,q:"A 100V bulb has a resistance of 500 ohm. The number of hours it can work for every KWH of energy consumed will be",options:["10 hours","35 hours","55 hours","50 hours"],correct:[3]},
+{id:270,q:"If the poles are in the left half of s-plane then the system Is",options:["Marginally stable","Unstable","Stable","Critically stable"],correct:[2]},
+{id:271,q:"In which circuit, current leads the voltage by 90",options:["Inductive","Resistive","Capacitive","None"],correct:[2]},
+{id:272,q:"The efficiency of a transformer will be maximum when",options:["Power factor Is closer to unity","When it is fully loaded","Copper losses equal to the iron losses","When it is loaded at half of its capacity"],correct:[2]},
+{id:273,q:"The instrument which senses the fault and initiates the trip",options:["Fuse","Protective relays","Circuit breaker","Barriers"],correct:[1]},
+{id:274,q:"The storage of electric charge is possible in  and it is charged and discharged continuously.",options:["Lelanche cells","Edison cells","Lead acid battery","Nickel chromium battery"],correct:[2]},
+{id:275,q:"Which type of instrument cannot be used for both AC and DC?",options:["Dynamometer type","Electrostatic type","Induction type","None of these"],correct:[2]},
+{id:276,q:"U235 is an isotope of Uranium making up about% of natural uranium.",options:["0.7%","0.9%.","0.10%","0.5%"],correct:[0]},
+{id:277,q:"Which of the following is used as a moderator in nuclear reactor?",options:["Graphite","Boron","Uranium","Hydrogen"],correct:[0]},
+{id:278,q:"Occurrence of electric potential (usually less than 10 V) between two isolated objects that Ideally should not have any voltage difference between them is due to",options:["Stray voltage","Dim voltage","Tame voltage","Ground voltage"],correct:[0]},
+{id:279,q:"PMMC (Permanent Magnet Moving Coil) instruments have following features.",options:["low hysteresis loss","Uniform scale","Reduced Eddy current","Low power consumption","All of above"],correct:[4]},
+{id:280,q:"Common base amplifier when compared to FET is represented as",options:["Common gate","Common drain","Common source","None"],correct:[0]},
+{id:281,q:"In electrodynamometer type wattmeter",options:["Current coil is fixed","Pressure coil is fixed","Both are fixed","Both are moving"],correct:[0]},
+{id:282,q:"A Hall's effect sensor can be used for measuring",options:["Pressure","Magnetic flux","Relative humidity","Current"],correct:[1]},
+{id:283,q:"In an Oscilloscope, time base is generated by",options:["Horizontal amplifier","Vertical amplifier","Sweep generator","Signal generator"],correct:[2]},
+{id:284,q:"Each stage of a four-stage amplifier has a voltage gain of 12. The overall voltage gain is",options:["12","34","20736","None"],correct:[2]},
+{id:285,q:"Seismic transducer is used for measuring",options:["Linear velocity","Angular velocity","Acceleration","Pressure"],correct:[2]},
+{id:286,q:"Spectrum analyzer graphically presents energy distribution of a signal as function of",options:["frequency","Phase","Amplitude","None"],correct:[0]},
+{id:287,q:"Signal generators generate",options:["Signals of varying amplitude and varying frequency","Repeating and non-repeating electronic signals","Signals of constant amplitude and constant frequency","None of above"],correct:[1]},
+{id:288,q:"A triangular wave shape is obtained by",options:["Integrating sine wave","Integrating rectangular waves","Integrating square wave","All of above"],correct:[2]},
+{id:289,q:"wave analyzer is an instrument to measure relative amplitude of single frequency component in a",options:["Complex waveform","Sinusoidal waveforms","Both A& B","None of above"],correct:[0]},
+{id:290,q:"For an OP-AMP with negative feedback the output is",options:["Equal to the input","Increased","Feedback to the inverting input","Feedback to the non-inverting Input"],correct:[2]},
+{id:291,q:"In an operational amplifier the common mode gain is",options:["Zero","Infinity","Very low","Very high"],correct:[0]},
+{id:292,q:"An electronic oscillator is",options:["Just like an alternator","Nothing but an amplifier","An amplifier with feedback","A converter of ac to de energy"],correct:[2]},
+{id:293,q:"In RC phase shift oscillator circuit",options:["There ls no need for feedback signal","Pure sine wave output is Possible","feedback factor is less than unity","None of above"],correct:[1]},
+{id:294,q:"Closed loop gain of a feedback amplifier is the gain obtained when",options:["Its output terminals are closed","Negative feedback is applied","Feedback loop is closed","Feedback factor exceeds unity"],correct:[2]},
+{id:295,q:"Feedback in an amplifier always helps to",options:["Control its output","Increase its gain","Decrease its input impedance","Stabilize its gain"],correct:[0]},
+{id:296,q:"The internal resistance of a saturated Weston cell is of the order of",options:["A few hundred ohms","Negligible","Infinite","Thousand ohms"],correct:[0]},
+{id:297,q:"If two or more interrupts occur during execution, the sequence of appearance of interrupt’s Is called",options:["Multi-interrupt","Nested Interrupt","interrupt within interrupt","Nested Interrupt and Interrupt within interrupt"],correct:[3]},
+{id:298,q:"The condition occurring when two or more devices try to write data to a bus simultaneously is",options:["Address decoding","Bus contention","Bus collisions","Address multiplexing"],correct:[1]},
+{id:299,q:"1n memory mapped scheme, the devices are viewed as",options:["Distinct I/O devices","Memory locations","Only Input devices","Only output devices"],correct:[1]},
+{id:300,q:"The process of refreshing the data In RAM to reduce the possibility of data loss Is known as",options:["Data cycle","Retain cycle","Regain cycle","Refresh cycle"],correct:[3]},
+{id:301,q:"The Instruction, MOV AX, 2 OH Is an example of",options:["Register addressing mode","Direct-addressing mode","Immediate addressing mode","Based indexed addressing mode"],correct:[2]},
+{id:302,q:"The instruction that unconditionally transfer the control of execution to the specified address Is",options:["JMP","RET","CALL","IRET"],correct:[0]},
+{id:303,q:"Unlike microprocessors, micro controllers make use of batteries because they have",options:["High power dissipation","Low power consumption","Low voltage consumption","Low current consumption"],correct:[1]},
+{id:304,q:"Ripple factor of a bridge rectifier Is",options:["0.5","l","2","0.75"],correct:[0]},
+{id:305,q:"Which of the following is NOT a purpose of Disturbance Monitoring?",options:["Model validation","Disturbance investigation","incorrect relay setting","Assessment of system protection performance"],correct:[2]},
+{id:306,q:"Which of the following is not a basic category of measurement?",options:["Null","Validity","Direct","Indirect"],correct:[1]},
+{id:307,q:"Use of functions is that they can be used to  and to make program more understandable",options:["Increase code duplication","Decrease code duplication","Sub Program"],correct:[1]},
+{id:308,q:"The large or surge impedance loading of a long transmission line can be increased without adversely affecting its stability by connecting a lumped",options:["Inductance in series with the line","Inductance in shunt with the line","Capacitance in shunt with the line","Capacitance in series with the line"],correct:[3]},
+{id:309,q:"As compared to oscillators, inverter provides",options:["Low voltage output","Low frequency output","Distortion less output","Noise less output"],correct:[1]},
+{id:310,q:"A  can be used to make automated potentiometer in comparison measurements.",options:["Analog to digital converter","Digital to analog converter","Electrometer","Precision meter"],correct:[1]},
+{id:311,q:"Depletion region of diode contains",options:["No mobile charge carriers","A small number of mobile carriers","A large number of mobile carriers","The number of mobile carriers depend upon temperature"],correct:[0]},
+{id:312,q:"The analog to digital converter provides  of input signal.",options:["Representation","Quantization","Maximum value","All Information"],correct:[1]},
+{id:313,q:"A higher directivity is specified by",options:["High gain low bandwidth","High gain high bandwidth","Low gain low bandwidth","Low gain high bandwidth"],correct:[0]},
+{id:314,q:"GSM uses",options:["FDMA","TDMA","Both","None of above"],correct:[2]},
+{id:315,q:"Advanced mobile phone systems (AMPS)",options:["FDMA","TDMA","Both","None"],correct:[0]},
+{id:316,q:"Which Modulation has higher data rates?",options:["AM","FM","QAM","QPSK"],correct:[2]},
+{id:317,q:"Fly back converter is used for",options:["AC-AC","AC-DC","DC-DC","DC-AC","Both B&C"],correct:[4]},
+{id:318,q:"Large phase mercury arc rectifier is used as",options:["Inverter","Rectifier","Both","None"],correct:[1]},
+{id:319,q:"In a transformer it is difficult to measure the efficiency by output-Input measurement methods because",options:["The output Is sinusoidal and hence cannot be determined","Losses are abnormally high","Efficiency of transformer Is usually high and hence extremely accurate measurements will be necessary","Outputs out of phase with respect to input"],correct:[2]},
+{id:320,q:"Series capacitor compensation is used to",options:["Increase the series reactance between load and supply","Reduce the series reactance between load and supply","Supply the reactive power","Increase voltage dip on load"],correct:[1]},
+{id:321,q:"Shunt reactors are needed",options:["To boost receiving end voltage under light loads","To boost receiving end voltage under heavy loads","To bring down receiving end voltage at light loads","To bring down receiving end voltage under heavy loads"],correct:[2]},
+{id:322,q:"In a transfer function gain k=0 root locus roots are",options:["Break In point","Open loop poles","Break away points","Open loop zeros"],correct:[1]},
+{id:323,q:"TDMA uses",options:["Phase modulation","Frequency modulation","Amplitude modulation","All of above"],correct:[0]},
+{id:324,q:"Output occurring due to only Input with zero Initial conditions is called",options:["Zero state","Zero Input","Absolute state","Real state"],correct:[0]},
+{id:325,q:"The maximum loads attached to a device called",options:["Fan In","Fan out","Phase In","Phase out"],correct:[1]},
+{id:326,q:"Link layer design is also called",options:["Transport layer","Access layer","Data layer","Protocol design layer","Network layer"],correct:[2]},
+{id:327,q:"TCP/IP address is how many bits",options:["16 bits","32 bits","64 bits","128 bits"],correct:[1]},
+{id:328,q:"If two 16-bit numbers are multiplied then the result Is",options:["Two bytes","Four bytes","Six bytes","Eight bytes"],correct:[1]},
+{id:329,q:"Differential amplifier uses which coupling",options:["Transformer coupling","RC coupling","Direct coupling","None of above"],correct:[2]},
+{id:330,q:"The main advantage of autotransformer over a two winding transformer is that",options:["No cooling is required","Hysteresis losses are minimized","Eddy current losses are minimized","Only one winding is used as a result there is substantial saving in material"],correct:[3]},
+{id:331,q:"In a line to ground fault on a system, the fault current is 1500 A, The-zero sequence current is",options:["1500A","0A","750 A","500A"],correct:[3]},
+{id:332,q:"The torque of an Induction motor is",options:["Directly proportional to slip","Inversely proportional to slip","Proportional to the square of slip","Directly proportional to current"],correct:[0]},
+{id:333,q:"In which. form, waves reach at the antenna",options:["Modulated digital","Modulated analog","Aligned waves","All of above"],correct:[3]},
+{id:334,q:"Why are pole tips in DC machine chamfered?",options:["To improve commutation characteristics","To reduce armature reaction effect"],correct:[1]},
+{id:335,q:"The phase difference between the primary and secondary voltage of a transformer",options:["0","90","180","Between 30 and 60"],correct:[2]},
+{id:336,q:"Why is it important to maintain an Impedance match from the source to the load when sending signals?",options:["To reduce external noise","to keep the line balanced","To reduce reflected energy","To reduce attenuation"],correct:[2]},
+{id:337,q:"Power input to a transformer at no load and rated voltage consists of",options:["Eddy current loss","Hysteresis loss","Copper loss","Core loss"],correct:[3]},
+{id:338,q:"Number of cycles generated in 8 pole alternator in one revolution",options:["2","4","8","16"],correct:[1]},
+{id:339,q:"What limits design of long transmission line?",options:["Thermal considerations","Conductor area","Both A & B","None of above"],correct:[1]},
+{id:340,q:"Which of following terms are related to PWM?",options:["NRZ","RZ","Both","None of the above"],correct:[2]},
+{id:341,q:"What Is the main task of power electronics?",options:["AC-DC conversion","AC-AC conversion","DC-AC conversion","A & C"],correct:[0]},
+{id:342,q:"The bit used for error detection and retransmission is named as",options:["Parity bit","First bit","Low bit","High bit"],correct:[0]},
+{id:343,q:"In a DC machine, the angle between the stator and rotor fields is",options:["0","90","180","270"],correct:[1]},
+{id:344,q:"Torque of an indicating meter depends upon",options:["Spring","Gravity","Both","None"],correct:[2]},
+{id:345,q:"If gauge of copper is increased in impedance matching transformer what will happen",options:["Resistance will Increase","Resistance will decrease","Resistance remains the same","None of the above"],correct:[0]},
+{id:346,q:"A 440V, 100W bulb on 220V will behave like a",options:["25W","50W","75W","None"],correct:[0]},
+{id:347,q:"Doped semiconductor material has temperature coefficient of",options:["Positive","Negative","Neither positive nor negative","Either positive or 'negative"],correct:[0]},
+{id:348,q:"Laplace transform is used for solving",options:["Complex equations","Differential equations","Linear equation","Quadratic equations"],correct:[1]},
+{id:349,q:"If 1 Hz frequency is applied to the field of dc machine armature EMF will be",options:["1 Hz sinusoidal","DC","1 Hz square wave","None of above"],correct:[0]},
+{id:350,q:"Heating value is measured by",options:["Hygrometer","Barometer","Altimeter","Bomb calorimeter"],correct:[3]},
+{id:351,q:"Which of the following is not running cost of the thermal power plant?",options:["Equipment","Fuel","Workers","Maintenance"],correct:[0]},
+{id:352,q:"Calorific value Is usually given by unit of energy divided by",options:["Mass (usually)","Volume","Weight","Density"],correct:[0]},
+{id:353,q:"Efficiency of thermal power plant is measured by subtracting efficiency of turbine from",options:["Boiler","Condenser","Compressor","None of these"],correct:[0]},
+{id:354,q:"The time of power plant which is obtained by dividing average time by total time Is called",options:["Plant operating factor","Demand factor","Plant capacity factor","Diversity Factor"],correct:[0]},
+{id:355,q:"Total number of stages in gas turbine power plant",options:["Four","Two","Six","None"],correct:[0]},
+{id:356,q:"The method in which customer pays some fixed cost along with Peak demand cost and total electricity usage cost",options:["Two-part tariff","Three-part tariff","Commercial tariff","None of the above"],correct:[1]},
+{id:357,q:"Which hydel plant has lowest production capacity?",options:["Rasul Barrage","Dargai Hydro Plant","Gomal Zam Dam","Duber Khawar Hydro"],correct:[2]},
+{id:358,q:"Calorific value of which fuel is highest",options:["Anthracite","Hydrogen","Coal","Natural gas"],correct:[1]},
+{id:359,q:"Which winding of transformer has less cross-sectional area?",options:["Primary winding","Secondary Winding","Low voltage winding","High voltage winding"],correct:[3]},
+{id:360,q:"A helical antenna is used in satellite tracking because of its",options:["Circular polarization","Maneuverability","Broad bandwidth","Good front to back ratio"],correct:[0]},
+{id:361,q:"A heterodyne frequency changer is called a",options:["Modulator","Mixer","Demodulator","frequency translator"],correct:[1]},
+{id:362,q:"The process in which the signal is first compressed before modulation and expanded after demodulation so as to allow the use of a uniformly quantizing rate is known as",options:["Pre emphasis","De-emphasis","Quantization","Companding"],correct:[3]},
+{id:363,q:"Frequency shift keying Is used mostly In",options:["Radio transmission","Telegraphy","Telephone","Satellite communication"],correct:[1]},
+{id:364,q:"LVDT (linear variable differential transformer) is a  device",options:["Electrodynamic","Electromechanical","Electromagnetic","Electrostatic"],correct:[1]},
+{id:365,q:"The autocorrelation function is",options:["An odd function","An even function","An exponential function in to","None"],correct:[1]},
+{id:366,q:"Probability density function of thermal noise is",options:["Binomial","Poisson","Gaussian","None of these"],correct:[2]},
+{id:367,q:"If 360 coulomb charge is stored for a time period of 30 minutes. What will be the current?",options:["200mA","20A","2A","20mA"],correct:[0]},
+{id:368,q:"The potential difference between two similar charges is",options:["Same","Infinite","Nil","None of above"],correct:[2]},
+{id:369,q:"Mass, in Force-voltage analogy, is analogous.to",options:["Charge","Current","Inductance","Resistance"],correct:[2]},
+{id:370,q:"Top loading is sometimes used with an antenna in order to",options:["Decrease its input impedance","Increase its height","Increase its effective height"],correct:[2]},
+{id:371,q:"A rhombic antenna is a",options:["Resonant","Non resonant","Either of the above"],correct:[1]},
+{id:372,q:"The carrier of a 100% modulated AM wave is suppressed, the % power saving is",options:["100%","83%","50%","66.66%"],correct:[3]},
+{id:373,q:"Burning material such as wood, paper and textile constitute which type of fire",options:["Class A","Class B","Class C","Class D"],correct:[0]},
+{id:374,q:"The radiation pattern of a parabolic-antenna is",options:["Omni directional","A figure of eight","Highly directional","None"],correct:[2]},
+{id:375,q:"Execution of program Instruction in computer takes place in",options:["RAM","ROM","Hard disk","Mother board"],correct:[0]},
+{id:376,q:"The breakdown voltage in gases depends on",options:["Distance between electrodes","Relative air density","Humidity","All of these"],correct:[3]},
+{id:377,q:"Turbo alternators are characterized by",options:["Short diameter and great axial length","Large diameters and great axial lengths"],correct:[0]},
+{id:378,q:"An ammeter is convertible to a voltmeter by",options:["Changing the scale","Putting a large resistance in parallel with the actual measuring part of the Instrument","Putting a large resistance in series with the actual measuring part of the Instrument"],correct:[2]},
+{id:379,q:"Transformers are designed to have  leakage Induction.",options:["Zero","Low","High","Medium"],correct:[1]},
+{id:380,q:"The path of the magnetic flux in transformer should have",options:["Low reluctance","Low resistance","High reluctance","High resistance"],correct:[0]},
+{id:381,q:"For transmitting power on a 20-25-km line which voltage should be used",options:["5kV","11KV","33KV","66kV"],correct:[1]},
+{id:382,q:"Due to low budget the weight of the conductor is to be reduced by 25 %. using the same conductor material, as a power engineer what will you do",options:["Reduce the voltage level","Double the voltage level","Reduce the frequency level","None of the above"],correct:[1]},
+{id:383,q:"In a  current is induced with mechanical motion of the conductor",options:["Transformer","Generator","Thyristor","None of the above"],correct:[1]},
+{id:384,q:"1000 million tons coal is required to generate 1000 MW for a year, for uranium this fuel amount to",options:["10-15%","20-25%","30-35%","40-45%"],correct:[2]},
+{id:385,q:"E= N dφ/ dt is called",options:["Lenz's law","Faraday's law","Gauss's Law","Amperes Law"],correct:[1]},
+{id:386,q:"Capacity factor =0.628, maximum demand is 325 MW, plant capacity is 350 MW, calculate load factor, Average load= 250 MW",options:["0.8","0.67"],correct:[1]},
+{id:387,q:"For transmission lines the standing wave ratio is the ratio of",options:["Maximum voltage to minimum voltage","Maximum current to minimum voltage","Peak voltage to RMS voltage","Maximum reactance to minimum reactance"],correct:[0]},
+{id:388,q:"In order to improve the steady state stability of overhead transmission lines, which of the following methods can be adopted",options:["Reducing impedance between the stations","Adopting quick response excitation","Using series capacitors to make X = √3R","Any of the above"],correct:[3]},
+{id:389,q:"Difference between AC and DC generator?",options:["The AC generators carry slip rings while DC require commutator","The DC generators carry slip rings while AC generators require a commutator","Both AC and DC generators carry slip rings","Both AC and DC generators require a commutator"],correct:[0]},
+{id:390,q:"In shunt generator, the shunt winding is parallel with the armature its advantage is",options:["Single source is used to excite both","Eliminates need for external excitation","Both","None of above"],correct:[1]},
+{id:391,q:"The turbines of run of river hydel power plant (low head turbines) deal with which kind of water",options:["Less volume and low pressure","Less volume and high pressure","High volume and low pressure","High volume and high pressure"],correct:[2]},
+{id:392,q:"If a large load is disconnected suddenly from an alternator or a power system, then",options:["Turbine speed increases and frequency also increases","Turbine speed decreases and frequency also decreases","Turbine speed increases and frequency decrease","Turbine speed decreases but frequency increases"],correct:[0]},
+{id:393,q:"The probability that a loss of load occurs for a given combination of system demand and generators availabilities is called",options:["(OR) A loss of load occurs when system load exceeds the available generation capacity. The overall probability that there will be a shortage of power called","Loss of load probability","Load loss detachability","Load probability","None of above"],correct:[0]},
+{id:394,q:"The power in the circuit other than that which keeps on flowing from source to load and back is called",options:["Active power","Reactive power","Apparent power","None of above"],correct:[0]},
+{id:395,q:"The current flowing through negative sequence Impedance is called",options:["Positive sequence current","Zero sequence current","Negative sequence current","Neutral current"],correct:[2]},
+{id:396,q:"In a DC generator, eddy current is proportional to",options:["Thickness of lamination","Square of thickness of laminations","Inverse of square of thickness of laminations","Inverse of Thickness or laminations"],correct:[1]},
+{id:397,q:"When an induction motor is connected to the supply, the rotation caused by",options:["Rotating magnetic field of stator","Rotating magnetic field of rotor","Electric field of stator","Electric field of rotor"],correct:[0]},
+{id:398,q:"The fault shown in the figure is",options:["Symmetric","Asymmetric","Lopified","Skewed"],correct:[0]},
+{id:399,q:"Ratio of magnetic flux density in material to the field in vacuum is called",options:["Absolute permeability","Relative permeability","Relative permittivity","Absolute permittivity"],correct:[1]},
+{id:400,q:"Plasma frequency of copper",options:["2.6 X 1015","2.6 X 106","2.6 X 1012","2.6 x 103"],correct:[0]},
+{id:401,q:"When a current carrying conductor is placed in a magnetic field it is subjected to Electromagnetic or Lorentz force which is",options:["Parallel to field","Perpendicular to field","45 degrees to field","135 degrees to field"],correct:[1]},
+{id:402,q:"In an infinite sheet charge is uniformly distributed in YZ plane, the direction of electric field will be",options:["Along x-axis","Along z-axis","Along y-axis","can be along any of these"],correct:[0]},
+{id:403,q:"Dq/ Dt is called ꞏ",options:["Current","Charge","Capacitance","Voltage"],correct:[0]},
+{id:404,q:"Four inductors 10mH, 20mH, 25mH, and 5mH are connected in series net inductance will be",options:["10mH","25mH","60mH","75mH"],correct:[2]},
+{id:405,q:"Four inductors 10mH, 10.5mH, 20 mH and 20.5mH are connected in parallel, the equivalent inductance will be",options:["4.3mH","3.4mH","6mH","7mH"],correct:[1]},
+{id:406,q:"In series RLC circuit R=2-ohm, L=l H, C=l F, the system response would be",options:["Damped","Underdamped","Critically damped","Overdamped"],correct:[2]},
+{id:407,q:"(Formula: ζ = (R/2)*√[C/L] For the critically damped circuit ζ = 1, but if ζ < 1 then circuit is under damped & if ζ > 1 and the circuit is over damped)",options:["For undamped system, R=l ohm, L=2 H, C=2 F, the value of frequency","0.l","0.5","1.0","1.5","2.0"],correct:[1]},
+{id:408,q:"Electrical field with uniform charge density on sphere",options:["X>R","X<R","X=R","None"],correct:[1]},
+{id:409,q:"Addition of small displacements along a zig-zag path and summing is",options:["Equal to vector pointing from initial to final point","Work done","Impossible to find","Not equal to single vector"],correct:[0]},
+{id:410,q:"In Kirchhoff’s law summation of all the currents entering or leaving a node are",options:["Unity","Zero","Infinity","None of these"],correct:[1]},
+{id:411,q:"In cathode Ray Oscilloscope vertical axis represent  and horizontal axis represents",options:["Volts/Division; Time/Division","Time/Division; Volts/Division I","Voltage, Resistance","Resistance, Current"],correct:[0]},
+{id:412,q:"Instrument for measuring ocular focus or refraction of eyes",options:["Drum meter","Ellipsographs","Durometer","Dioptometer","Electroretinography"],correct:[3]},
+{id:413,q:"For input function of 2 Boolean variables there are  Boolean algebra functions.",options:["12","8","16","4"],correct:[2]},
+{id:414,q:"Boolean functions: 2^(2^n)",options:["Diode clampers are used to shift AC voltage waveform up or down in positive and negative peak by inserting","DC level","AC level","Both AC and DC level","None of above"],correct:[0]},
+{id:415,q:"Rectifiers employ  operational amplifier to eliminate diode voltage",options:["Passive circuit","Active circuit","Saturation circuit","Non-saturation circuit"],correct:[0]},
+{id:416,q:"Which of the following statements is incorrect?",options:["Switching regulators use switching speeds of 20 kHz or more","great advantage of switching regulators is that their power consumption is very low","Both bipolar transistors and FETs have very good switching characteristics","The output voltage of a switching regulator is controlled by altering the switching frequency"],correct:[3]},
+{id:417,q:"SCR is turned on by applying gate pulse, now it can be turned off when",options:["Anode current falls below holding current","Anode current falls below latching current","Anode current Increase above the holding current","None of the above"],correct:[0]},
+{id:418,q:"Which of the following Is normal operation of NPN TRANSISTOR?",options:["Emitter to base junction Is forward biased and collector to base junction reverse biased","Emitter to base junction is forward biased and collector to base junction forward biased","Emitter to base junction is reverse biased and collector to base junction reverse biased","Emitter to base Junction is reverse biased and, collector to base junction forward biased"],correct:[0]},
+{id:419,q:"If first byte of the data is stored at  address, 8086 can read the entire word in one operation.",options:["Odd address","Even address","0521H","Any segment"],correct:[1]},
+{id:420,q:"Instead of establishing different connections of wires, modern device are built with virtual relay contacts, these are programmed using",options:["Assembly language","Machine language","Ladder logic","Visual basic"],correct:[2]},
+{id:421,q:"First generation of computers use",options:["Microprocessors","IC's","vacuum tubes","None of the above"],correct:[2]},
+{id:422,q:"Program counter is used to",options:["Store address of the next instruction to be executed","Store address of the previous instructions","Store address of the segment","None of these"],correct:[0]},
+{id:423,q:"Intel MCS51 is commonly known as ꞏ",options:["8080","8051","5151","None of the above"],correct:[1]},
+{id:424,q:"Data storage system is provided by",options:["Control mechanism","Register","Logic gates","Both A & B"],correct:[1]},
+{id:425,q:"Inverse of even function",options:["Even","Odd","Linear","Does not exist"],correct:[3]},
+{id:426,q:"For multiple video channels, digital modulation and  diodes are necessary.",options:["Zener","Schottky","Laser","Light emitting"],correct:[2]},
+{id:427,q:"Proper way to apply time shifting and scaling on a signal is",options:["Time shifting Is applied first and then scaling","Scaling is applied first and then time shifting","Anyone can be applied irrespective of order","Only one operation can be performed"],correct:[0]},
+{id:428,q:"In closed loop control system feedback strategy is",options:["Input dependent","Fail safe","Error driven","Both A & B"],correct:[2]},
+{id:429,q:"Asymptotic stability of a control system is determined by",options:["Eigen values","Poles and zeros","Only zeros","None of above"],correct:[0]},
+{id:430,q:"Baseband analog Intensity modulation Is done by modulating  applied to LED",options:["Voltage","Curent","Frequency","Amplitude"],correct:[1]},
+{id:431,q:"Two coherent modes in optical fiber detection are homodyne and",options:["Heterodyne","Balanced detection"],correct:[0]},
+{id:432,q:"Identify correct statement about FM and AM",options:["More power is required for FM than AM","Less power ls required for FM than AM","Equal power Is required for FM and AM","None of the above"],correct:[1]},
+{id:433,q:"The autocorrelation of discrete Pseudo noise sequence is similar to",options:["Random atmospheric generator","White noise","Ground clutches","Audio distortion"],correct:[1]},
+{id:434,q:"Bandwidth should be  to avoid distortion of the signal",options:["Equal","Twice","Thrice 4 times"],correct:[1]},
+{id:435,q:"To avoid aliasing of the signal, signal frequency should be",options:["Equal","Twice ꞏ","Thrice","Half"],correct:[2]},
+{id:436,q:"y'+2y = 4 (X + y )2 is  order equation",options:["First","Second"],correct:[0]},
+{id:437,q:"π Method is used",options:["line to neutral capacitance is divided by two halves","Capacitance C and reactance are equally localized at midpoint and sending, receiving end"],correct:[0]},
+{id:438,q:"In a power plant, coal is carried from storage place to boilers generally by means of",options:["Bucket","V belts","Trolleys","Manually"],correct:[1]},
+{id:439,q:"A condenser in a thermal power plant condenses steam coming out of",options:["Boiler","Super heater","Economizer","Turbine"],correct:[3]},
+{id:440,q:"Which variety of coal has lowest calorific value?",options:["Steam coal","Bituminous coal","lignite","Anthracite"],correct:[2]},
+{id:441,q:"In position control systems, the device used for providing rated feedback voltage is called",options:["Potentiometer","Synchro transmitter","Synchro transformer","Tachogenerator"],correct:[3]},
+{id:442,q:"Phase margin of system specifies",options:["Absolute stability","Frequency response","Relative stability","instability"],correct:[2]},
+{id:443,q:"In force voltage analogy the moment of inertia is analogous to",options:["Capacitance","Inductance","Inverse capacitance","Inverse inductance"],correct:[1]},
+{id:444,q:"Which of the following non linearity is caused by servo motor?",options:["Coulomb friction","Dead space","Saturation","Dissemination"],correct:[2]},
+{id:445,q:"The transfer function of a system is used for the calculation of",options:["Output for a given input","Steady state gain","Order of the system","Time constant"],correct:[0]},
+{id:446,q:"A balanced modulator produces",options:["AM","SSBꞏ","VSB","DSB"],correct:[3]},
+{id:447,q:"In common base amplifier circuit, the output is taken from",options:["Collector","Emitter","Base","Both A & C"],correct:[0]},
+{id:448,q:"The greatest possible amplification is obtained in",options:["Common emitter circuit","Common base circuit","Common coilect6r circuit","None"],correct:[0]},
+{id:449,q:"An Inductor is operated at 50 Vac with a frequency of 10 KHz and current of 7.96 mA then the value of L is",options:["100mH","10mH","1mH","1H"],correct:[0]},
+{id:450,q:"Which type of copper wire will have the highest tensile strength?",options:["Soft drawn","Medium drawn","Hard drawn","None"],correct:[2]},
+{id:451,q:"At breakaway point, several branches of root loci coalesce because system characteristics equation has",options:["Single root","All roots on right hand side of S plane","Several roots","Imaginary roots only"],correct:[2]},
+{id:452,q:"Excessive noise in a control system may result in",options:["Reduction in gain","Reduction in bandwidth","Oscillation","Saturation in amplifying stages"],correct:[3]},
+{id:453,q:"If 3000 kW power is to be transmitted over a distance of 30 km what will be the voltage level to transmit the power?",options:["11kV","33 kV","66 kV","132 kV"],correct:[1]},
+{id:454,q:"Basically, a controller is a",options:["Amplifier","Clipper","Comparator","Summer"],correct:[2]},
+{id:455,q:"In a 3-phase half wave diode rectifier, the ratio of average output voltage to per phase maximum AC voltage is",options:["0.827","1.57","3.2","0.25"],correct:[0]},
+{id:456,q:"AGC voltage is applied to the stages which are",options:["Before the detector stage","After the detector stage","Detector stage","Both A & C"],correct:[3]},
+{id:457,q:"Receiver having poorer IF selectivity will have poor",options:["Sensitivity","Blocking of adjacent channels","Diverse reception","None"],correct:[1]},
+{id:458,q:"Padders are provided in a radio receiver",options:["To improve sensitivity","Improve tracking","For reducing noise of","For fine tunning"],correct:[1]},
+{id:459,q:"Fidelity in a communication receiver is provided by",options:["Audio stage","Detector stage","Mixer stage","All of above"],correct:[3]},
+{id:460,q:"***If ‘all of the above’ is not given then tick audio stage",options:["Which of the following communication system is digital?","FM","AM","PAM","PCM"],correct:[3]},
+{id:461,q:"A PWM signal can be generated by",options:["A monostable multivibrator","Unstable multivibrator","Integrating the PPM signal","Differentiating the PPM signal"],correct:[3]},
+{id:462,q:"Optical fibers rely for their operation on the phenomenon of",options:["Reflection","Refraction","Dispersion","Total internal reflection"],correct:[3]},
+{id:463,q:"In order to get the original signal from the sampled signal, which of the following filters should be necessarily used",options:["Band stop signal","Low pass filter","High pass filter","Band pass filter"],correct:[1]},
+{id:464,q:"In an AC circuit which of the following elements consume power",options:["Inductor","Capacitor","Resistor","All"],correct:[2]},
+{id:465,q:"Which of the following is a closed loop system?",options:["Electric switches","Car starter","Auto pilot of an aircraft"],correct:[2]},
+{id:466,q:"Which of the following losses of dc motor decrease with the increase in load?",options:["Friction & windage loss","Brush contact loss.","Core loss","None of above"],correct:[3]},
+{id:467,q:"For Zener regulation we don't want Zener current to fall below knee current because",options:["It will damage the physical structure of Zener diode","A lot amount of heat Will be Produced","It will consume more electrical Power"],correct:[0]},
+{id:468,q:"A wire mesh or electrode between the cathode and anode is known as",options:["A Plate","Grid","Filament","None"],correct:[1]},
+{id:469,q:"Collection of structured data which may be manipulated at some or all of the data held is called",options:["Information","Database","Controlling","Security"],correct:[1]},
+{id:470,q:"The control unit directs the ALU to perform an arithmetic operation, the machine cycles is involved in its",options:["First step","Third step","Second step","Fifth step"],correct:[1]},
+{id:471,q:"In Poisson distribution, the probability of success is",options:["1","0.5","0.2","0"],correct:[3]},
+{id:472,q:"In a light bulb factory, it is found that the probability of bulb being defective is 0.12. Estimate how many defective bulbs will be produced in total of 8000 bulbs",options:["260","960","9600","96000"],correct:[1]},
+{id:473,q:"Technique which Is used to enable multiple broadbands transmitted over single mode fiber",options:["Subscriber multiplexing","Wavelength division multiplexing","Time division multiplexing","Frequency division multiplexing"],correct:[0]},
+{id:474,q:"cells make concentration layer of the lens.",options:["Strong","Fibrous","Weak","Optical"],correct:[1]},
+{id:475,q:"Most data communications involving telegraph lines use",options:["Simplex lines","Wideband lines","Narrowband lines","Dialed service"],correct:[2]},
+{id:476,q:"In a critically damped system, the damping factor is",options:["Zero","Less than unity","Greater than unity","Unity"],correct:[3]},
+{id:477,q:"If two vectors a and b are anti-parallel to each other, then the resultant vector is",options:["2b","a + b","a - b","2a"],correct:[2]},
+{id:478,q:"The scalar product of two parallel vectors is equal to the",options:["The product of their magnitude","Equal to their magnitude","The product of their directions","All of the above"],correct:[0]},
+{id:479,q:"A thyristor has  alternating semiconductor layers and  Junctions are present.",options:["Three, four","Four, three","Three, two","None"],correct:[1]},
+{id:480,q:"A programmer would most likely prepare a flow chart for a",options:["Specific program flow","General program flow chart","Specific system design","General system design"],correct:[0]},
+{id:481,q:"In digital electronics, numbers of basic operations or functions are",options:["5","1","2","4"],correct:[2]},
+{id:482,q:"127 may be represented in binary number system as",options:["0001 1111B","1000 0000B","111 1111","11111111"],correct:[2]},
+{id:483,q:"Which gate is called universal gate?",options:["AND","NOT","NOR","XNOR","OR"],correct:[2]},
+{id:484,q:"The phenomenon in which changing current in one coil induces emf in another coil placed near to the first is called",options:["Mutual induction","Self-induction","Primary induction","Secondary induction"],correct:[0]},
+{id:485,q:"Transformer oil must be free from",options:["Odour","Gases","Sulphur","Moisture"],correct:[3]},
+{id:486,q:"A current transformer should not have",options:["A movable secondary winding","A high resistance across secondary","Primary and secondary open circuited","None of above"],correct:[1]},
+{id:487,q:"In a piston the maximum temperature occurs at",options:["Ring section","Top sides","Top center"],correct:[2]},
+{id:488,q:"Which of the following enters the super heater of a boiler?",options:["Cold steam","Hot water","Wet steam","superheated steam"],correct:[2]},
+{id:489,q:"In outdoor substation the lightning arresters are placed nearer to",options:["Isolator","Current transformer","Power transformer","Circuit breaker"],correct:[2]},
+{id:490,q:"Which of the following type tests are conducted on isolator?",options:["Temperature rise test","Impulse voltage withstand test","Short time current test","All"],correct:[3]},
+{id:491,q:"Curl of vector is  cross product of Δ with that vector",options:["Two dimensional","Three dimensional","One dimensional","None"],correct:[1]},
+{id:492,q:"The current is flowing in to positive terminal of the battery, the power is being",options:["Absorbed","Discharged","Unaltered","None of above"],correct:[0]},
+{id:493,q:"Difference between synchronous speed and  is called slip",options:["Actual speed","Asynchronous speed","None of above"],correct:[0]},
+{id:494,q:"EMF is  Integral of non-conservational electric field generated by power source.",options:["Line","Constant","Surface","None of above"],correct:[0]},
+{id:495,q:"Electronic circuits with high gain and phase shift condition produce",options:["Oscillations","Damping","Resonance","Fluctuations"],correct:[0]},
+{id:496,q:"Squirrel cage rotor with  number of bars prevent current induced from imposing back to supply",options:["Even","Odd","Prime","Natural"],correct:[2]},
+{id:497,q:"The definite integral of dy / dx = cos x is",options:["Sin X","Tan X","-Sin X","None of these"],correct:[0]},
+{id:498,q:"The disadvantage of a half wave rectifier is that",options:["Components are expensive","Diode must have a high-power rating","Output is difficult to filter","None"],correct:[2]},
+{id:499,q:"Noise in resistance depends upon",options:["Temperature","Sampling rate","Material","All of above"],correct:[0]},
+{id:500,q:"In a parallel resonance circuit, at resonance",options:["Impedance is zero","Current is maximum","Voltage is maximum","impedance is minimum"],correct:[2]},
+{id:501,q:"What Is meant by Admittance?",options:["Measure of how a circuit or device will oppose the flow of current","Measure of how easily, circuit or device will allow the flow of current","Measure of how easily, circuit or device will divert the flow of current","None of the above"],correct:[1]},
+{id:502,q:"Force on one meter length of conductor in magnetic field created by a current of 1 ampere Is",options:["EMF","Voltage","Electric intensity","Magnetic Induction"],correct:[3]},
+{id:503,q:"In right hand rule thumb points in the direction of current and finger curl in the direction of",options:["Electric field","Electric force","Magnetic field","None of above"],correct:[2]},
+{id:504,q:"Radius of curvature of the path of a charged particle in a uniform magnetic field is directly proportional to",options:["Flux density of field","Particle's energy","Particle's momentum","Particle's charge"],correct:[2]},
+{id:505,q:"effect determines the sign of charge.",options:["Thomson","Seeback","Hall","Peltier"],correct:[2]},
+{id:506,q:"Time constant of a series R-L circuit equals",options:["L/R","C/R","R/L","All"],correct:[0]},
+{id:507,q:"Amperes law is concerned with",options:["A unit magnetic pole","Electrochemical equivalent","Force on wire carrying current in a magnetic field","RMS value"],correct:[2]},
+{id:508,q:"Resistance, Capacitance and inductance are",options:["Active","Redundant.","Passive elements","None of above"],correct:[2]},
+{id:509,q:"Magnets were first used by",options:["Indians","Europeans","Chinese","Japanese"],correct:[2]},
+{id:510,q:"A bridge used for the measurement of capacitance or dielectric loss of an Insulator",options:["Shearing bridge","Hay bridge","Wheatstone bridge","None"],correct:[0]},
+{id:511,q:"Long wire wound tightly on a cylinder core Is called",options:["Toroid","Solenoid","Cable","Conductor"],correct:[1]},
+{id:512,q:"Lenz’s law Is law of conservation of",options:["Momentum","Charge","EMF","Energy"],correct:[0]},
+{id:513,q:"A material having strong magnetic properties is called",options:["Paramagnetic","Ferromagnetic","Diamagnetic","None of above"],correct:[1]},
+{id:514,q:"For a fuse rating of. 2.5 KW and 220V Volt microwave the rating of the current is",options:["5A","10 A","12A"],correct:[2]},
+{id:515,q:"The brush voltage drops in  DC motor is usually of the order of",options:["4","6","11","2"],correct:[3]},
+{id:516,q:"What will happen if relative speed b/w rotating flux of the stator rotor of induction motor Is zero",options:["Torque produced will be very large","Rotor will not run","Rotor runs at high speed","Slip of motor Is 5%"],correct:[1]},
+{id:517,q:"If the oscillations per minute of a rotor are 120 with a stator frequency of 50 Hz, slip will be",options:["10%","12%","4%","8%"],correct:[2]},
+{id:518,q:"The power scale, of circle diagram of an induction motor can be found from",options:["Stator resistance test","No load test only","Short circuit test only","None of above"],correct:[2]},
+{id:519,q:"Variation in supply mains, frequency is compensated by    In industrial motors",options:["Overcurrent relays","VFD","Opto-electronic devices","Centre tapped transformers"],correct:[1]},
+{id:520,q:"Critical resistance of a DC generator Varies with",options:["1/N2","1/N","N2","N"],correct:[3]},
+{id:521,q:"Which statement is valid for a single-phase capacitor start motor in steady state?",options:["Forward flux by rotor current is equal to backward flux by rotor","Net forward flux is equal to net backward flax by rotor current","Net forward flux is less than net backward flux by rotor current","None of above"],correct:[1]},
+{id:522,q:"Hopkinson test is conducted at",options:["Full load","Low load","Part load","No load"],correct:[0]},
+{id:523,q:"The back EMF of a DC motor depends on",options:["Field flux","Shape of conductors","Type of slip rings","Brush material"],correct:[0]},
+{id:524,q:"Equalizer connections are required when paralleling two",options:["Bipolar generators","Series generators","shunt generators","Compound generator"],correct:[3]},
+{id:525,q:"Highest losses in a DC motor are",options:["Copper losses","Core losses","Mechanical losses","None of the above"],correct:[0]},
+{id:526,q:"A DC motor can easily be identified by",options:["Yoke","Commutator","Size of conductor","Winding"],correct:[3]},
+{id:527,q:"Usually very wide and sensitive speed control method is used for",options:["Reciprocating pumps","Colliery winders","Centrifugal bellows","Lathe machine"],correct:[1]},
+{id:528,q:"A large size alternator is protected against over loads by providing",options:["Overcurrent relays","Thermal relays","A combination of A & B","Temperature sensitive relays"],correct:[3]},
+{id:529,q:"Which of the following test can be used to determine the efficiency of two identical transformer?",options:["open circuit test","short circuit test","Type tests","back-to-back test"],correct:[3]},
+{id:530,q:"Ratio error of a current transformer due to the presence of",options:["Exciting current","Stray magnetism","corona effects","Lagging power factor"],correct:[0]},
+{id:531,q:"Device which compares difference between the voltages and sends Signals",options:["Oscillator","Voltage comparator","None","controller"],correct:[1]},
+{id:532,q:"In JFET, shunt sampling gate has",options:["Voltage","current","AC","DC"],correct:[1]},
+{id:533,q:"sampling gate is",options:["OR","NAND","linear","Random"],correct:[2]},
+{id:534,q:"circuits always have memory elements",options:["Combinational","Sequential","Elemental","None of these"],correct:[1]},
+{id:535,q:"Early effect of BJT refers to",options:["Avalanche breakdown","Thermal runaway","Base narrowing","Zener breakdown"],correct:[2]},
+{id:536,q:"Voltage gain of common collector is",options:["Equal to 1","Greater than 10","Greater than 1","Less than 1"],correct:[3]},
+{id:537,q:"In transistor circuit  capacitor Is used",options:["Mica","Air","Paper","Electrolyte"],correct:[3]},
+{id:538,q:"The output Impedance of a CB transistor Is",options:["High","Zero","Low","Very low"],correct:[0]},
+{id:539,q:"The Input Impedance of a CB transistor is",options:["High","Zero","Low","Very low"],correct:[2]},
+{id:540,q:"In an ideal op amp if a different signal is applied at both the ends the output will be",options:["Zero","Infinite","Input 2 - input 1","None"],correct:[1]},
+{id:541,q:"If same signal of 0.4 V is applied on both ends of the op amp with 100 dB gain. The output will",options:["Zero","Infinite","1","None of above"],correct:[0]},
+{id:542,q:"Multiplexer converts ꞏ",options:["Parallel data into parallel data","serial data into parallel data","Parallel data into serial data","Serial data into serial data"],correct:[2]},
+{id:543,q:"ASCII (American standard code for information interchange) is    bits code",options:["5","7","12","18"],correct:[1]},
+{id:544,q:"Decoders convert binary Input to output.",options:["Decimal","Hexadecimal","octal","Binary"],correct:[0]},
+{id:545,q:"In a radio receiver",options:["All stages contribute to equally to noise","RF stage has no effect on S/N ratio","Mixer stage contributes most of the noise generated u","RF stage has effect on S/N ratio"],correct:[2]},
+{id:546,q:"A radio receiver has  of amplification",options:["Double stage","Single stage","Three stages","More than 3 stages"],correct:[3]},
+{id:547,q:"Hot wire anemometers are used to measure",options:["velocity of air stream","Pressure","Leakage reactance"],correct:[0]},
+{id:548,q:"The letter DPDT is for",options:["Switch","Conductor","Thick wire","Fuse"],correct:[0]},
+{id:549,q:"Due to burning of 1 Kg of pure carbon with a 'minimum quantity of air required, the percentage of carbon dioxide in the exhaust gas would be",options:["10%","19%","29%","39%"],correct:[2]},
+{id:550,q:"A graphical representation between discharge and time is known as",options:["Monograph","Hectography","Hectograph","Hydrograph"],correct:[3]},
+{id:551,q:"In an ideal diesel cycle, the working substance is",options:["Air","Diesel","Mixture of air and diesel","Any combustible material"],correct:[0]},
+{id:552,q:"Which of the following is generally not a constitute of coal?",options:["Sulphur","Moisture","Chromium","Hydrogen"],correct:[2]},
+{id:553,q:"coal rank classifies coal according to its",options:["carbon percentage","Ash content","Degree of metamorphism","Density"],correct:[2]},
+{id:554,q:"Power plants using coal work closely on which of the following cycle",options:["Otto cycle","Binary vapor cycle","Baryton cycle","Rankine cycle"],correct:[3]},
+{id:555,q:"The air standard efficiency of a diesel engine depends on",options:["Compression ratio","Speed","Torque","All of above"],correct:[0]},
+{id:556,q:"Coking is",options:["Formation of lumps or masses of coke in boiler surfaces at high temperatures","Heating of coal in absence of air, driving out CO2 and leaving in the residue and carbon"],correct:[1]},
+{id:557,q:"Deuterium oxide in nuclear reactors",options:["Moderator","Fuel","Shield"],correct:[0]},
+{id:558,q:"The output of a solar cell of the order of",options:["0.1W","0.5W","1W"],correct:[2]},
+{id:559,q:"As compared to steam at enter to the turbine, which of the following will larger at exit",options:["flow rate","specific enthalpy","specific volume","pressure"],correct:[2]},
+{id:560,q:"The model of transmission line in which full charging current flows over half of the line",options:["Nominal T","short line","Nominal N","Equivalent N"],correct:[0]},
+{id:561,q:"which of the following is called \"certain length of actual transmission line\"?",options:["Electronic delay line","Distribution delay line","Electromagnetic delay line","Magnetic delay line"],correct:[1]},
+{id:562,q:"Transient state stability is generally improved by",options:["Using high speed governors on machines","Using low inertia machines","Dispensing with neutral grounding","Any of above"],correct:[0]},
+{id:563,q:"The surge resistance of transmission is about",options:["50 ohms","400 ohms","800 ohms"],correct:[1]},
+{id:564,q:"In high voltage transmission line, the top most conductor is",options:["R-phase conductor","Y-phase conductor","B-phase conductor","Earth conductor"],correct:[3]},
+{id:565,q:"Skin effect is proportional to",options:["Diameter of conductor","(Diameter of conductor)2"],correct:[1]},
+{id:566,q:"Shunt capacitance is usually neglected in the analysis of",options:["Short transmission lines","Medium transmission","Long transmission lines","Medium as well as long transmission lines"],correct:[0]},
+{id:567,q:"In order to reduce skin effect at UHF",options:["Conductors are painted","Conductors are anodized","Copper tubes with silver plating are used","Copper rods with silver plating are used"],correct:[2]},
+{id:568,q:"Transmission lines linkꞏ",options:["Service point to consumer premises","Distribution transformer to consumer premise","Receiving end ꞏstation to distribution","Generating station to receiving end station"],correct:[3]},
+{id:569,q:"The flow chart of a thermal power plant consists of  main circuits.",options:["Four","Five","Six","Seven"],correct:[0]},
+{id:570,q:"In  the furnace is arranged as a horizontal cylinder.",options:["horizontal boiler","Vertical boiler","Cylindrical boiler","Cyclone fired boiler"],correct:[3]},
+{id:571,q:"Fossil fuel power plants often have a  section in the steam generating furnace.",options:["Heat recovery","Heat exchanger","Super heater","None of above"],correct:[2]},
+{id:572,q:"Overload protection requires  which simply measure the current in circuit and is used with protection device for measuring.",options:["power transformer","auto transformer","current transformer","None"],correct:[2]},
+{id:573,q:"measure both voltage and current at the relaying point",options:["Earth fault protection","Differential protection","Distance protection ꞏ","None E."],correct:[2]},
+{id:574,q:"Protective device  is the process of determining the \"best fit\" timing of current interruption when fault occurs",options:["Diagnosis","Coordination","Calibration","All of above"],correct:[1]},
+{id:575,q:"In  one or two phases become connected to earth via low Impedance path, their magnitudes will increase dramatically as current will imbalance.",options:["Earth fault","Phase to phase fault","Symmetrical fault","None"],correct:[0]},
+{id:576,q:"is used because they offer precise control of voltage, frequency, VARS and Watts.",options:["Induction generator","Synchronous generator","DC generator","AC-generator"],correct:[1]},
+{id:577,q:"In process control system, there are three main terms or factors manipulated variable,  and uncontrolled variables.",options:["Controlled variable","Disturbance","Both A& B","None of above"],correct:[1]},
+{id:578,q:"Process control consists of four essential elements such as process, measurement, and control",options:["Analysis","Evaluation","Quality","None of above"],correct:[1]},
+{id:579,q:"provide a conductive path for DC for rotating field winding.",options:["Termina1 ends","Collector ring","commutator","None of above"],correct:[1]},
+{id:580,q:"Internal parts of a motor are protected from environmental elements by",options:["Frame","Enclosure","Housing","Capsule","casing"],correct:[1]},
+{id:581,q:"exciter gets field power from generator output voltage",options:["Series type","Shunt type","Brushless type","Brush type","Console type"],correct:[1]},
+{id:582,q:"which feeds its own field current from its output",options:["Self-excited generator","Separately excited generator"],correct:[0]},
+{id:583,q:"Modern voltage regulators are designed to maintain the generator line voltage within better than  of nominal for wide variations of machine load.",options:["±1%","5%","±3%","±7%"],correct:[0]},
+{id:584,q:"Sinusoidal voltage and current at constant frequency are characterized by 2 parameters; A maximum value and",options:["Phase angle","Value of load angle","R value","Load angle"],correct:[0]},
+{id:585,q:"Reactive power that can be generated at low load is determined by",options:["Field current heating limit","Field current cooling limit","Field current overheating limit","None of above"],correct:[0]},
+{id:586,q:"Power system  is a word used in connection with the power system denoting a condition wherein, the various alternators in the system remain in synchronism with each other.",options:["Range","Loop","Gain","Conservation","Stability"],correct:[4]},
+{id:587,q:"Transformers are used for voltage of low values and  transformers for high voltages.",options:["Electronic; Power","Power; Electronic","Neither A or B","Current; Instrument"],correct:[0]},
+{id:588,q:"Which of following circuits are used to measure performance of transformer?",options:["Equivalent circuit","Power circuit","Electronic circuit","Both A& B"],correct:[0]},
+{id:589,q:"Which transformer splits secondary voltage into two equal voltages?",options:["Power transformer","Centre tapped transformer","Current transformer","Step up transformer"],correct:[1]},
+{id:590,q:"Which of the following is not a type of thyristor?",options:["DIAC","TRIAC","Light activated","Inverter gate"],correct:[3]},
+{id:591,q:"Steam pressure can be classified by shaft position, method of drive,  and action of steam.",options:["Exhaust pressure","Blade design","Boiler type","Inlet feed to the boilers"],correct:[0]},
+{id:592,q:"Strength of magnetic field is increased by",options:["Increasing number of turns","Increasing air gap","Decreasing number of turns","Decreasing air gap"],correct:[0]},
+{id:593,q:"Skin effect Is proportional to",options:["(Diameter of conductor)2","(Diameter of conductor)4","Diameter of conductor"],correct:[0]},
+{id:594,q:"rotor has too weak magnetic field",options:["Salient pole type","Non-Salient pole type","Both A and B","None"],correct:[0]},
+{id:595,q:"Which of following is not a type of transformer?",options:["Resonant transformer","laminated transformer","Single Instrument transformer","Ferrite core transformer","Cast iron transformer"],correct:[4]},
+{id:596,q:"Which of the following is semi controlled power switch?",options:["Thyristor","Transistor","Diode","All"],correct:[2]},
+{id:597,q:"Stator core ls made of any thin metal plates or sheets joined together called ꞏ",options:["Wallet","Slots","laminations","Pastes"],correct:[2]},
+{id:598,q:"In  substation is a substation without a transformer where there is no step up or step- down voltage transformation and operating at only a single voltage level.",options:["Switching","Collector","Converter","None of above"],correct:[0]},
+{id:599,q:"A  transfers power from transmission system to distribution system of an area. It is uneconomical to directly connect electricity consumers to the main transmission network, unless they use large, amounts of power",options:["Distribution substation","Transmission substation","Generating substation","None"],correct:[0]},
+{id:600,q:"In air blast circuit breaker, the pressure of air is of the order of",options:["3 to 5 kg/cm","20 to 30kg/cm","30 to 50 kg/cm","None"],correct:[1]},
+{id:601,q:"In induction motor when the length of the air gap is increased, the magnetizing current of the motor increases while the short circuit current",options:["Decreased","Increased","Remains unchanged","Grows exponentially"],correct:[2]},
+{id:602,q:"In DC choppers per unit ripple is maximum when duty cycle alpha (a) is",options:["0.1","0.3","0.5","0.7"],correct:[2]},
+{id:603,q:"In control systems with increases feedback",options:["System stability and system gain decreases","System stability decreases and system gain increases","System stability decreases and system gain decreases","System stability as well as gain increases"],correct:[0]},
+{id:604,q:"The electrostatic potential inside a hollow conductor is",options:["Constant","Minimum","Maximum","Zero"],correct:[0]},
+{id:605,q:"Inside a hollow spherical conductor electric field is",options:["Constant","Minimum","Maximum","Zero"],correct:[3]},
+{id:606,q:"In an FM signal, the power",options:["Increases as the modulation index increases","Reduces as the modulation index increases","Reduces as the modulation index decreases","Remains constant when modulation index increases"],correct:[3]},
+{id:607,q:"Microprocessor at most elemental level is made of",options:["Transistors","Flip flops","Digital logic gates & latches"],correct:[2]},
+{id:608,q:"16-bit binary word provides approximately how many combinations?",options:["2n code combinations","256 codes combinations","65000","0001.10"],correct:[2]},
+{id:609,q:"S2 - 4RT > 0 is type of wave equation.",options:["Elliptic","Parabolic","Hyperbolic","Semi-circle"],correct:[2]},
+{id:610,q:"S2 - 4 RT = 0 is type of wave equation.",options:["Elliptic","Parabolic","Hyperbolic","Semi-circle"],correct:[1]},
+{id:611,q:"S2 - 4 RT < 0 is type of wave equation.",options:["Elliptic","Parabolic","Hyperbolic","Semi-circle"],correct:[0]},
+{id:612,q:"Let y = x2 + 1, then the average rate of change of ' y' with respect to ' x' over interval (3, 5) is",options:["-8","2x","8","16"],correct:[1]},
+{id:613,q:"A 5 feet ladder leg against the wall slips in such a way that its base is moving away from the wall at the rate of 2 feet/sec. At that instant when base is 4 feet from the wall. How fast is top of the ladder moving down the wall of that instant?",options:["2 ft/sec","-4 ft/sec","-8 ft/sec","-8/3 ft/sec"],correct:[3]},
+{id:614,q:"If a large number of gate inputs are connected in a TTL circuit, what will happen to Voh and Voh-min?",options:["Voh and Voh-min are unaffected","Voh exceeds V ohn","Voh-min drops be milow Voh","Voh chops below Voh-min"],correct:[3]},
+{id:615,q:"The execution unit has a 16-bit architectural unit (ALU). Which of the following has not been performed by ALU?",options:["AND","OR","XOR","NAND"],correct:[3]},
+{id:616,q:"A signal is defined as power signal if and only if",options:["Its power is normalized by assuming R to be 1 ohm","Power is de-normalized of normal value","It has infinite energy but non zero power 0 < P < infinity for all time","It is periodic"],correct:[2]},
+{id:617,q:"Purpose of a transfer function is to decide.",options:["System is FIFO","System is not stable","System is stable BIBO","None"],correct:[2]},
+{id:618,q:"Efficiency of electric motors is usually between",options:["80 - 90%","70 - 80%","75-98%","60 - 98%"],correct:[0]},
+{id:619,q:"The Primary and secondary induced EMFs (El and E2) in a two winding transformer are always",options:["Equal in magnitude","Anti-phase with each other","In phase with each other","Determined by load on transformer"],correct:[2]},
+{id:620,q:"The main difference between electric lines and magnetic lines of force",options:["Electric lines are closed curves whereas magnetic lines of force are not","Electric lines are in the form of open curves whereas the magnetic linen are closed curves","Electric lines tend to contract lengthwise whereas magnetic lines do not","None"],correct:[1]},
+{id:621,q:"In synchronous motor if load (same) is off suddenly then motor",options:["Begins to speed up","Begins to slow","Suddenly have to carry load","Remains working"],correct:[0]},
+{id:622,q:"A shunt generator delivers 195 A at a terminal potential is 270V. The armature resistances are 0.02 0 and 50 0 respectively. What is the value of generated EMF?",options:["246V","28V","254V","2V"],correct:[2]},
+{id:623,q:"A 220 V shunt motor takes a total current of 80A and runs at 800RPM. Resistance of shunt field is 50 ohms and that of armature is 0.1 ohms. Iron and friction losses amount to 1600 W. What is driving power of motor?",options:["16050 W","14500 W","12600 W","18500 W"],correct:[0]},
+{id:624,q:"wave is a high frequency waveform (sinusoidal usually) that is modulated with an input signal.",options:["Modulated","Carrier","Sinusoidal","Amplitude"],correct:[1]},
+{id:625,q:"What principle is used by indicating instruments?",options:["Electromagnet principle","Gravity and spring","Lenz law","None of above"],correct:[1]},
+{id:626,q:"Power Carrying capability of system is limited by",options:["Thermal conditions","Design of system","None of above"],correct:[0]},
+{id:627,q:"A transformer has negative voltage regulation when its load power factor",options:["Zero","Unity","Leading","Lagging"],correct:[2]},
+{id:628,q:"The commercial efficiency of a transformer while on open circuit is",options:["Zero","Maximum","Either zero or 100%","100%"],correct:[0]},
+{id:629,q:"In large power transformer, best utilization of available core space can be made by employing  cross section.",options:["Rectangular","Square","Stepped","None of above"],correct:[2]},
+{id:630,q:"Arrangement of data in a specific order is called",options:["Merging","Sorting","Classification","Verification"],correct:[1]},
+{id:631,q:"When covalent bonds break",options:["Holes and electrons pair are produced","Ions are created","Both A & B","None of above"],correct:[0]},
+{id:632,q:"The duration of the pulse in a pulse triggering system for SCRs should at least",options:["60 micro seconds","40 micro seconds","20 micro seconds","10 micro seconds"],correct:[3]},
+{id:633,q:"IBM 360 series was introduced in 642",options:["First generation","second generation","Third generation","1950"],correct:[2]},
+{id:634,q:"The power factor of ac circuit lies between",options:["0 and 1","-1 and 1","0 and -1","None of above"],correct:[0]},
+{id:635,q:"The heat developed in an electric iron is attributed to  power",options:["Apparent","Reactive","True","True and reactive"],correct:[2]},
+{id:636,q:"When the power factor in the transmission line is leading, which device is employed at substation to reduce the power factor?",options:["CVT","Shunt Reactor","Synchronous condenser","None of above"],correct:[1]},
+{id:637,q:"In a circuit, low reactive power compared to true power indicates",options:["Low power factor","High power factor","Low efficiency","High efficiency"],correct:[1]},
+{id:638,q:"The rating of given on the name plate of a transformer indicates the",options:["True power which it can supply","Apparent power which it can supply","Apparent power which it draws from the supply mains","True power which it draws from the supply mains"],correct:[1]},
+{id:639,q:"In a stepper motor the speed of rotation is determined by",options:["Frequency of the waveform","Input Current","Voltage applied to the motor","All of these"],correct:[0]},
+{id:640,q:"Electrical field Intensity on equipotential surface is",options:["Parallel to surface","Adjacent to surface","Alongside the surface","Perpendicular to surface"],correct:[3]},
+{id:641,q:"Mechanical energy is supplied to a DC generator at the rate of 4200 J/s. The generator delivers 32.2 Amp at 120 V. How much energy is cost per minute of operation?",options:["20060 J","20160 J","23060 J","25060 J"],correct:[1]},
+{id:642,q:"Norton equivalent current is",options:["An open circuit","A pure resistive circuit","Short circuit through load","None of above"],correct:[2]},
+{id:643,q:"The main current crossing the collector junction in a normally biased NPN transistor is",options:["Diffusion current","Base current","Equal current","Drift current"],correct:[3]},
+{id:644,q:"The only place where slip ring induction motors used in thermal power plants is",options:["Boilers","Coal handling plant","Not used in thermal plants","None of above"],correct:[1]},
+{id:645,q:"An input transducer",options:["Converts voltage to current","Converts current to voltage","Converts electrical quantity to non-electrical","Non electrical quantity to electrical quantity"],correct:[3]},
+{id:646,q:"Low attenuation rate and  bandwidth is the cause of use of optical fiber system for communication.",options:["Low","Narrow","High","Constant"],correct:[2]},
+{id:647,q:"peak time is constant along",options:["Imaginary axis","Diagonal","Real axis","None of above"],correct:[2]},
+{id:648,q:"A voltmeter using thermocouple measures",options:["Peak value","RMS value","Average value","Peak to peak value"],correct:[1]},
+{id:649,q:"Which coal will have highest ash content?",options:["Bituminous coal","Grade 1 steam coal","Coking coal","Lignite"],correct:[3]},
+{id:650,q:"What is the main disadvantage of phase advancers?",options:["Cannot be used for motors below 200 H.P","Produces noise","Can be used where synchronous motors is inadmissible","None of these"],correct:[0]},
+{id:651,q:"Under what condition is D.C supply applied safely to the primary of a transformer?",options:["We can connect directly to DC; no condition is required","We cannot connect to DC supply","High resistance should be connected in series with primary, but circuit will be useless","Above statements are wrong"],correct:[2]},
+{id:652,q:"In a Transformer, the primary flux is always  the secondary flux.",options:["Greater","Smaller","Twice","Equal"],correct:[3]},
+{id:653,q:"Bandwidth can be increased by use of  network.",options:["Phase lag","Phase lead","None","Mesh"],correct:[1]},
+{id:654,q:"Which of the following is the source of non-linearity?",options:["Backlash in gear","Saturation in effective is amplified","Threshold season","All of above"],correct:[3]},
+{id:655,q:"The program for early PLC was in",options:["Boolean algebra","Ladder logic","Arithmetic logic","All of above"],correct:[1]},
+{id:656,q:"The pointer which cannot he used in the register indirect addressing mode",options:["BX","BP","SI","DI","AX"],correct:[4]},
+{id:657,q:"compensation is used to decrease steady state error.",options:["Lag","Lead","Lead and lag","Lag and lead","None of above"],correct:[0]},
+{id:658,q:"The mutual inductance between two coils is zero when the fluxes produced by them",options:["Aid each other","Oppose each other","Are at right angle to each other","None of above"],correct:[2]},
+{id:659,q:"If the admittance of a parallel AC circuit is increased, the circuit currents",options:["Decreased","Increased","Remains constant","None"],correct:[1]},
+{id:660,q:"Impedance is for AC circuit and resistance is for DC circuit, the difference is because of",options:["AC is vector while DC is scalar","AC changes its direction quantity while DC does not","Voltage phasor or current phasor","None of above"],correct:[2]},
+{id:661,q:"40 W, 60 W, 100 W and 200 W bulbs are connected in series which bulb will glow brighter?",options:["40 W","60 W","100 W","200 W"],correct:[0]},
+{id:662,q:"Which of the following is true?",options:["Transducer and actuator are sensor","Sensor and actuator are transducer","Sensor and transducer are actuator","None"],correct:[1]},
+{id:663,q:"Peak to peak 200 Volt will be read by an AC voltmeter as",options:["141.7 V","100 V","200 V","70.7 V"],correct:[3]},
+{id:664,q:"The square law of photo detector gives current. This current is proportional to  of combined optical field.",options:["Square","Cube","Square root","None of above"],correct:[0]},
+{id:665,q:"Intensity of light depends on",options:["Wavelength","Frequency","Velocity","Amplitude"],correct:[3]},
+{id:666,q:"The  is an electromagnetic carrier wave which is modulated to carry information.",options:["Air","Sound","Light","Electricity"],correct:[2]},
+{id:667,q:"A super conductor may be used for generating",options:["Voltage","Current","Pressure","Magnetic field"],correct:[3]},
+{id:668,q:"Materials in superconducting state have the property of",options:["Absorbing magnetic field","Repelling magnetic field","Absorbing electric field","Repelling electric field"],correct:[1]},
+{id:669,q:"Stability of LC tuned circuit depends on",options:["Quality factor","Inductor","Capacitor","None of above"],correct:[0]},
+{id:670,q:"Primary and secondary winding of an ordinary 2-winding transformer always has",options:["Different number of turns","Same size of copper wire","A common magnetic","Separate magnetic circuit"],correct:[2]},
+{id:671,q:"In a transformer, the leakage flux of each winding is proportional to the current in that winding because",options:["Ohm's law applied to magnetic circuits","Leakage paths do not saturate","The two windings are electrically isolated","Magnetic flux is confined to core"],correct:[1]},
+{id:672,q:"Common emitter is used for amplification of",options:["Current","Voltage","Power","All"],correct:[2]},
+{id:673,q:"Transformer is rated as KVA instead of KW because",options:["Load power factor is unknown","Transformer loss depends on volt-amperes","It has become customary","All of above"],correct:[1]},
+{id:674,q:"Reverse bias of JFET increases its width of depletion layer and",options:["Decrease its channel capacitance","Increase its channel capacitance","Decrease its channel resistance","Increase its channel resistance"],correct:[3]},
+{id:675,q:"Net reactance in RLC at resonance is",options:["Maximum","Minimum","Zero","Infinity"],correct:[2]},
+{id:676,q:"Circuit current is  in series RLC at resonance.",options:["Maximum","Minimum","Zero","Infinity"],correct:[0]},
+{id:677,q:"is current in transistor due to minority charge carriers.",options:["Forward leakage current","Reverse leakage current","Forward resistance of transistor","Reverse resistance of transistor"],correct:[1]},
+{id:678,q:"Which configuration can be used to convert high impedance into low impedance by using OP-AMP?",options:["Inverting","Non-inverting","Summing amplifier","Voltage follower"],correct:[3]},
+{id:679,q:"The CMRR should be for better noise cancellation in OP-AMP.",options:["Low","Zero","High","None of above"],correct:[2]},
+{id:680,q:"The VI characteristics of UJT is",options:["Similar to CE with a linear and saturation region","Similar to tunnel diode in some respects","Similar to FET with a linear and pinch-off region","Similar to PN junction in some respects"],correct:[1]},
+{id:681,q:"A DC-DC converter with a high step-up voltage gain is used for many applications such as",options:["High intensity discharge lamp ballasts for automobile headlamps","Fuel energy conversion system","Solar cell energy conversion system","Battery backup systems","All"],correct:[4]},
+{id:682,q:"Transfer function is",options:["Mathematical model","System with no physical structure","System with no defined inputs","Can be calculated through differential equations","All"],correct:[4]},
+{id:683,q:"Which system needs more stability?",options:["Automatic washing machine","Traffic signal system","Home heating system","Motor with position control","Remote control"],correct:[3]},
+{id:684,q:"In parallel resonance RLC circuit",options:["Impedance is minimum","Power factor is unity","Current is maximum","None of above"],correct:[1]},
+{id:685,q:"Cross over distortion is maximum in  amplifier.",options:["Class A","Class B","Class H","Class C","Class AB"],correct:[1]},
+{id:686,q:"is maximum when RLC circuit is in resonance.",options:["Inductive current","Power dissipation","Capacitive voltage","None"],correct:[1]},
+{id:687,q:"Group diversity factor is",options:["Less than 1","Greater than 1","Zero","Equal to 1"],correct:[1]},
+{id:688,q:"Like 3 phases gives constant power transfer to the linear load.",options:["HVDC","Spilt phase","Two phases","Single phase"],correct:[2]},
+{id:689,q:"Which of the following technique/method is-used for the measurements of ac high frequency voltages?",options:["Peak voltmeter","Series resistance micro ammeter","Resistance potential divider","Any of above"],correct:[0]},
+{id:690,q:"Paschen's law is associated with",options:["Breakdown voltage","Ionization","Thermal radiations","None"],correct:[0]},
+{id:691,q:"A Tesla coil is a",options:["Cascaded transformer","Coreless transformer","High frequency resonant transformer","Low impedance transformer"],correct:[2]},
+{id:692,q:"Van de Graaff generators are useful for",options:["Very high voltage and low current applications","Very high voltage and high current applications"],correct:[0]},
+{id:693,q:"The phenomenon of corona Is generally accompanied by",options:["Bang","Hissing sound","Magnetic hum","All of above"],correct:[1]},
+{id:694,q:"Which of the following is a polar dielectric?",options:["Teflon","Quartz","Nylon","Polyethylene"],correct:[2]},
+{id:695,q:"Polar dielectrics are normally used for",options:["High frequencies","Microwaves","DC and power frequencies","None of above"],correct:[2]},
+{id:696,q:"The moving system in the indicating instruments is subjected to",options:["Deflecting torque","Damping torque","Controlling torque","All of above"],correct:[3]},
+{id:697,q:"If there are three resistances in parallel which path current will chose",options:["High resistance","High impedance","High conductance","None"],correct:[2]},
+{id:698,q:"The basic requirement of a DC armature winding is that it must be",options:["Closed one","Lap winding","Wave winding","Either B or C"],correct:[0]},
+{id:699,q:"Among the following damping method, the most effective and efficient damping is",options:["Air friction","Fluid friction","Eddy current","All are equally efficient"],correct:[2]},
+{id:700,q:"Capacitor start, capacitor run single phase induction motor is basically a",options:["AC series motor","DC series motor","Two phase induction motor","Three phase induction motor"],correct:[2]},
+{id:701,q:"A capacitor start single phase induction motor will usually have a power factor",options:["0.8 lagging","0.8 leading","0.6 leading","0.6 lagging"],correct:[3]},
+{id:702,q:"In ultrasonic welding the frequency range is generally",options:["100-4000 cps","4000 - 20,000 cps","20,000 - 80,000 cps","80,000 - 800,000 cps","800,000 - 5,000,000 cps"],correct:[1]},
+{id:703,q:"kWh meter is a type of meter.",options:["Recording","Digital","Integrating","None"],correct:[2]},
+{id:704,q:"If resistance decreases with increasing temperature, the coefficient will be.",options:["Positive","Negative","Zero","None"],correct:[1]},
+{id:705,q:"Synchronous motor is operating on leading PF when the motor is",options:["Over excited","Under excited","Non excited","None"],correct:[0]},
+{id:706,q:"Regarding skewing of motor bars in a squirrel cage induction motor (SCIM) which statement is false.",options:["It prevents cogging","it increases starting torque","It produces more uniform torque","It reduces motor 'hum' during its operation"],correct:[1]},
+{id:707,q:"If the series resistance increases in an unloaded Zener regulator, Zener current",options:["Decreases","Stays the same","Increases","Equals the voltage divided by the Zener resistance"],correct:[0]},
+{id:708,q:"If the load resistance increases in a Zener regulator, Zener current",options:["Decreases","Stays the same","Increase","Equals the source voltage divided by the series resistance"],correct:[2]},
+{id:709,q:"If the base supply voltage increases, the Q point moves",options:["Down","Up","Nowhere","Off the load line"],correct:[1]},
+{id:710,q:"Active power and apparent power are respectively represented by",options:["kW and kVAR","kVAR and kVA","kVA and kVAR","kW and kVA"],correct:[3]},
+{id:711,q:"For a consumer what is the most economical power factor?",options:["0.25-0.5 lagging","0.25 - 0.5 leading","0.85 - 0.95 lagging","0.85 - 0.95 leading"],correct:[2]},
+{id:712,q:"The primary reason for the low power factor is due to the installation of",options:["DC motors","Synchronous motors","Induction motors","Commutator motors"],correct:[2]},
+{id:713,q:"The most suitable location for the power factor improvement device is",options:["Near the electrical appliance which is responsible for the poor power factor","At the sending end","At receiving end in case of transmission lines","Both (a) and (c)"],correct:[3]},
+{id:714,q:"In order to improve the power factor of equipment operating at lagging power factor, a capacitor is connected",options:["In series with the equipment","In parallel with the equipment","In series-parallel with the equipment","Either (a) or (b)"],correct:[1]},
+{id:715,q:"If the load resistance decreases in a Zener regulator, the series current",options:["Decreases","Stays the same","Increases","Equals the source voltage divided by the series resistance"],correct:[1]},
+{id:716,q:"The device associated with voltage-controlled capacitance is a",options:["Light emitting diode","Photodiode","Varactor diode","Zener diode"],correct:[2]},
+{id:717,q:"To isolate an output circuit from an input circuit, which is the device to use",options:["Back diode","Optocoupler","Seven-segment indicator","Tunnel diode"],correct:[1]},
+{id:718,q:"The danger of electric shock is maximum",options:["During arcing","After arcing","While inserting electrode into the holder","None of above"],correct:[2]},
+{id:719,q:"The average DC output voltage for a half-wave rectifier is 13.05 V. Average value for a full-wave rectifier will be",options:["26.1","28","10","None of these"],correct:[0]},
+{id:720,q:"The major advantage of a photo-transistor as compared to a photo-diode is",options:["Response to higher frequencies","AC operation","Increase sensitivity","Durability"],correct:[2]},
+{id:721,q:"When transistors are used in digital circuits they usually operate the",options:["Active region","Breakdown region","Saturation and cut off regions","Linear region"],correct:[2]},
+{id:722,q:"Power amplifiers in high frequency applications are mainly used",options:["As a switch","For amplification","As protective devices","Voltage Controller"],correct:[0]},
+{id:723,q:"Input impedance of an inverting OP-AMP is",options:["Zero","Infinity","10Mohms","None of these"],correct:[1]},
+{id:724,q:"Switching surge is",options:["High voltage DC","High voltage AC","Short duration transient voltage","Hyperbolically dying voltage"],correct:[2]},
+{id:725,q:"Insulators for high voltage applications are tested for",options:["Power frequency tests","Impulse tests","Both (A) & (B)","None of above"],correct:[2]},
+{id:726,q:"Transformers contribute to radio interference due to",options:["Corona discharges in air","Internal or partial discharges in insulation","Sparking","Any of above"],correct:[3]},
+{id:727,q:"Surge voltage originate in power systems due to",options:["Lightening","Switching operations","Faults","Any of above"],correct:[3]},
+{id:728,q:"The torque developed by a split phase motor is proportional to",options:["Sine of angle between Im and Is","Cosine of angle between Im and Is","Main winding current, Im","Auxiliary winding current, Is"],correct:[0]},
+{id:729,q:"The power factor of an alternator depends on",options:["Load","Speed of rotor","Core losses","Armature loses"],correct:[0]},
+{id:730,q:"A welding generator has characteristics.",options:["Rising","Drooping","None of them","Linear"],correct:[1]},
+{id:731,q:"A 4-pole, 12-slot lap-wound DC armature has two coil-sides/slots. Assuming single turn coils and progressive winding, the back pitch would be",options:["5","7","3","None of above"],correct:[1]},
+{id:732,q:"If the load on a DC shunt motor is increases, its speed is slightly reduced due to",options:["Increase in armature current","Increase in flux","Decrease in reactance","Decrease in back emf"],correct:[3]},
+{id:733,q:"Frequency of voltage generated by an alternator having 4-poles and rotating at 1800 rpm is",options:["hertz.","60","7200","120","450"],correct:[0]},
+{id:734,q:"The main disadvantage of using short Pitch winding in alternators is, it",options:["Reduces harmonics in the generated voltage","Reduces the total voltage around the armature coils","Produces asymmetry in the three phase windings","Increases Cu of end connections"],correct:[1]},
+{id:735,q:"The efficiency and power factor of a Squirrel Cage induction motor increases in proportion to its",options:["Speed","Mechanical load","Rotor torque","Voltage"],correct:[1]},
+{id:736,q:"A 4-band resistor has Red, Black, Green, Blue bands, its resistance",options:["1 M ohms","3 M ohms","2 M ohms","None"],correct:[2]},
+{id:737,q:"An AC waveform having DC equivalent value",options:["Effective value","0.707 peak value","Both A & B","None of above"],correct:[2]},
+{id:738,q:"If V = 5 + 5 sin 100*f*t then what will be the average current value of half sine wave",options:["0","5","10","None"],correct:[1]},
+{id:739,q:"Absence of skin effect, lower line cost, less corona effect are features of the which transmission system",options:["High voltage direct current (HVDC)","AC transmission system","Subsurface distribution system","Both A & B"],correct:[0]},
+{id:740,q:"Extra high voltage (EHV) transmission has which of the following advantages",options:["Reduction in noise","Increase in transmission efficiency","Improves voltage regulation","All of these"],correct:[3]},
+{id:741,q:"The purpose of comparator is to",options:["Amplify an input voltage","Detect the occurrence of a changing input voltage","Maintain a constant output when the DC input voltage changes","Produce a change in input voltage when an input voltage equals the reference"],correct:[3]},
+{id:742,q:"DOG-ACSR conductor has",options:["1 strand of steel 6 strand of aluminum","6 strand of steel 1 strand of aluminum","6 strand of steel 7 strand of aluminum","7 strand of steel 6 strand of aluminum"],correct:[3]},
+{id:743,q:"Manufacturers measure the resistance of conductor at which temperature",options:["0","20","25","27"],correct:[2]},
+{id:744,q:"Standard voltage supply in Pakistan is",options:["220","230","240","400"],correct:[1]},
+{id:745,q:"One horse power (hp) equals how many pounds per feet of engine",options:["22000 foot-pounds per minute","22000 foot-pounds per second","22000 foot-pounds per hour","33000 foot-pounds per minute"],correct:[3]},
+{id:746,q:"A piece of wire is stretched to double its length the resistance of wire becomes",options:["2R","4R","R/2","R/4"],correct:[1]},
+{id:747,q:"One ton of air conditioner means",options:["One ton of ice in 1 hour","One ton of ice in 12 hours","One ton of ice in 24 hours","None"],correct:[2]},
+{id:748,q:"A 50-ohm resistance with 5% tolerance will have color code",options:["Green, black, black","Green, black, black, gold","Green, black, brown, gold","Green, black, gold"],correct:[3]},
+{id:749,q:"Cost saving of conductor in three phase over single phase",options:["100%","200%","300%","400%"],correct:[2]},
+{id:750,q:"In electrical traction, speed of DC motor can be varied by varying",options:["Terminal voltage","Field current","1st varying terminal voltage then field current","None"],correct:[1]},
+{id:751,q:"In case the air gap in an induction motor is increased",options:["The magnetizing current of rotor will decrease","The power factor will decrease","Speed of motor will increase","Windage losses will increase"],correct:[1]},
+{id:752,q:"The number of slip rings on a squirrel cage induction motor is usually",options:["Two","Three","Four","None"],correct:[3]},
+{id:753,q:"What is the dielectric strength of porcelain (kV Per inch)?",options:["20","100","203","405"],correct:[2]},
+{id:754,q:"What is the dielectric strength of glass (kV Per inch)?",options:["355","500","600","750"],correct:[0]},
+{id:755,q:"Cost of underground cables over overhead transmission lines is",options:["Same","Double","More than double","None of above"],correct:[2]},
+{id:756,q:"For percentage voltage-drop expression which of the following voltage is used",options:["Sending end voltage","Receiving end voltage","System nominal voltage","Any of above"],correct:[2]},
+{id:757,q:"Which gas is used in gas insulated substation?",options:["Nitrogen","Sulphur hexachloride","Sulphur hexafluoride","Air"],correct:[2]},
+{id:758,q:"The speed of squirrel-cage induction motor can be controlled by all of the following except",options:["Changing supply frequency","Changing number of poles","Changing winding resistance","Reducing supply voltage"],correct:[2]},
+{id:759,q:"In case of a three-phase induction motor, plugging means",options:["Pulling the motor directly on line without a starter","Locking of rotor due to harmonics","Starting the motor on load which is more than the rated load","Interchanging two supply phases for quick stopping"],correct:[3]},
+{id:760,q:"The speed of an alternator is changed from 3000 rpm to 1500 rpm, generated emf/phase will become",options:["One fourth","Half","Double","Unchanged"],correct:[1]},
+{id:761,q:"Alternators used in aircraft systems usually have frequency of",options:["50Hz","60Hz","25Hz","400Hz"],correct:[3]},
+{id:762,q:"Single phase induction motor torque at the instant of starting is",options:["More than the rated torque","Equal to the rated torque","Zero","Less than the rated torque"],correct:[2]},
+{id:763,q:"Which motor has the highest power factor?",options:["Capacitor start motor","Capacitor run motor","Shaded pole motor","Repulsion motor"],correct:[1]},
+{id:764,q:"The electric motor used in portable drill is",options:["Capacitor run motor","Hysteresis motor","Universal motor","Repulsion motor"],correct:[2]},
+{id:765,q:"The direction of rotation of universal motor can be reversed by reversing the flow of current through",options:["Armature winding","Field winding","Both A & B","None of above"],correct:[2]},
+{id:766,q:"Which system is used in industrial process for monitoring and self-correction?",options:["Coal-slurry","Closed loop","Open loop","Feed forward"],correct:[1]},
+{id:767,q:"50 micro-Amp and 2k ohm voltmeter will show half scale deflection with voltage",options:["0.05 V","0.01 volt","0.1 volt","1 volt"],correct:[2]},
+{id:768,q:"A magnetic shield or screen used to protect a delicate instrument should be made of which of the following materials",options:["Plastic","Soft iron","Copper","Aluminum"],correct:[1]},
+{id:769,q:"For generating 1MHz following oscillator could be used",options:["Colpitts","Wein-bridge","RC phase shift","Hartley"],correct:[0]},
+{id:770,q:"Dielectric strength in case of mica can be expected to be more than",options:["500kV/mm","1500kV/mm","2500kV/mm","3500kV/mm"],correct:[0]},
+{id:771,q:"Which impurity is present in liquid dielectric which strengthens the dielectric effect?",options:["Dust","Dissolved gases","Moisture","Ionic impurity"],correct:[2]},
+{id:772,q:"Circuit breaker is used for",options:["Fault detection","Interruption","Both A & B","None"],correct:[1]},
+{id:773,q:"What is the relative speed of stator and rotor fluxes?",options:["Ns","Nr","Ns - Nr","0"],correct:[2]},
+{id:774,q:"What is the synchronous speed of 960 rpm and 4% slip induction motor?",options:["1000 rpm","900 rpm","2000rpm","3000rpm"],correct:[0]},
+{id:775,q:"The principle of operation of a 3-phase induction motor is most similar that of a",options:["Synchronous motor","Repulsion starts induction motor","Transformer with short secondary","Capacitor starts"],correct:[2]},
+{id:776,q:"The three-phase induction motor with rotor circuit open will",options:["Run normally","Make noise","Not run","Get over heated"],correct:[2]},
+{id:777,q:"Poly phase field mean",options:["Pulsating and stationary field","Pulsating and rotating field","Constant amplitude and rotating field","Constant amplitude and stationary field"],correct:[2]},
+{id:778,q:"The main reason for generation of harmonics in a transformer could be",options:["Fluctuating load","Poor insulation","Mechanical vibrations","Saturation of core"],correct:[3]},
+{id:779,q:"Tertiary winding is used in which transformer",options:["Star-delta","Delta-delta","Star-star","Any of above"],correct:[2]},
+{id:780,q:"A power transformer has a single primary winding and three secondary windings producing 5.0volts, 12.6 volts and 150 volts. Assuming similar wire sizes, which of the three secondary windings will have the highest measured DC resistance?",options:["5-volt winding","150-volt winding","12.6-volt winding","All will have equal resistance"],correct:[2]},
+{id:781,q:"A 230 DC motor is run on 230 Volt AC supply then",options:["It will run smoothly","It will stop","It will burn out","It will run with less efficiency and high sparks"],correct:[3]},
+{id:782,q:"A good dielectric should have all these parameters except",options:["High mechanical strength","High thermal deterioration","High dielectric loss","Freedom from gaseous inclusion"],correct:[2]},
+{id:783,q:"Corona effect can be identified by",options:["Bushy sparks","Faint violet glow","Red light","Arcing between conductors and earth"],correct:[1]},
+{id:784,q:"Van de Graff generator output voltage can be controlled by",options:["Controlling the corona source voltage","Controlling the belt speed","Controlling the lower spray point","Any of above"],correct:[0]},
+{id:785,q:"Which of following materials is not used in fuses?",options:["Copper","Silver","Aluminum","Carbon"],correct:[3]},
+{id:786,q:"Resistive type transducer is used in",options:["Carbon microphone","Strain-gauge","Thermistor","All"],correct:[3]},
+{id:787,q:"Speed of induction motor can be varied by varying",options:["Frequency.","Voltage of supply","Both A & B","None"],correct:[2]},
+{id:788,q:"Operation of induction motor above base speed can be done With",options:["High voltage and high frequency","Constant voltage and high frequency","Constant frequency and high voltage","3rd harmonics"],correct:[1]},
+{id:789,q:"Rotating wheel electrode is used in -",options:["Arc welding","Resistive spot welding","Resistive seam welding","Dielectric welding"],correct:[2]},
+{id:790,q:"Voltage regulators normally use",options:["Negative feedback","Positive feedback","No feedback","Phase limiting"],correct:[0]},
+{id:791,q:"A power supply with low output impedance has low",options:["Load regulation","Current limiting","Line regulation","Efficiency"],correct:[0]},
+{id:792,q:"When electrical and mechanical degrees become same in DC machine",options:["Speed more than 360 rpm","Less than 360 rpm","In 4 pole machines","In 2 pole machines"],correct:[3]},
+{id:793,q:"In which braking method of induction motor, the motor stops dissipating heat in the resistor",options:["Regenerative braking","Dynamic braking","Plugging","All of above"],correct:[1]},
+{id:794,q:"In AC systems, ground or earth is connected to",options:["Neutral","One of the phases","Midpoint","None"],correct:[0]},
+{id:795,q:"Bus bar is at",options:["Constant voltage","Constant current","Both A & B","None of above","Variable voltage and current"],correct:[0]},
+{id:796,q:"For which of following loads voltage drop is minimum",options:["Load at the end of feeder","Uniformly distributed load","Uniformly increasing load","Uniformly decreasing load"],correct:[3]},
+{id:797,q:"In a DC machine, hysteresis loss is",options:["Proportional to frequency","Inversely proportional to frequency","Proportional to square of frequency","None of above"],correct:[0]},
+{id:798,q:"In a DC machine, eddy current loss is",options:["Proportional to frequency","Inversely proportional to frequency","Proportional to square of frequency","None of above"],correct:[2]},
+{id:799,q:"The Common Collector configuration is used for",options:["Impedance matching","Voltage gain","High power applications","None of above"],correct:[0]},
+{id:800,q:"The current in a copper wire is because of",options:["Free electrons","Holes","Holes and free electrons","Ions"],correct:[0]},
+{id:801,q:"DC transmission is economical for",options:["Short transmission lines","Medium transmission lines","Long transmission lines","Both medium and long transmission lines"],correct:[2]},
+{id:802,q:"When the receiving end voltage is greater than the sending end voltage this is called",options:["Skin effect","Proximity effect","Corona effect","Ferranti effect"],correct:[3]},
+{id:803,q:"In modern computers which of the following technology is used now a days.",options:["MOSFET","BJT","JFET","TTL"],correct:[3]},
+{id:804,q:"In domestic wiring earth is provided to",options:["Protect human beings from electric shock","To protect machines","To protect human and machines","To protect birds"],correct:[0]},
+{id:805,q:"Fuse wire is installed",options:["In series with the wire circuit","In series with the neutral wire","In parallel with the neutral wire","In parallel with earth wire in the circuit"],correct:[0]},
+{id:806,q:"The merging of a free electron and a hole is called",options:["Covalent bonding","Lifetime","Recombination","Thermal energy"],correct:[2]},
+{id:807,q:"In an intrinsic semiconductor, the number of free electrons",options:["Equals the number of holes","Is greater than the number of holes","Is less than the number of holes","None of above"],correct:[0]},
+{id:808,q:"At absolute zero temperature (-273.10 C) an intrinsic semiconductor has",options:["Few free electrons","Many holes","many free electrons","No holes or free electrons"],correct:[3]},
+{id:809,q:"When the graph of current versus voltage is a straight line, the device is referred to as",options:["Active","Linear","Non linear","Passive"],correct:[1]},
+{id:810,q:"Meggar test is used to measure",options:["To measure the insulation resistance","To check the calibration of instrument","To find the unknown resistance","None of above"],correct:[0]},
+{id:811,q:"Transformer oil is used for",options:["Insulation","Cooling","Both A & B","Lubrication"],correct:[2]},
+{id:812,q:"Which circuit breakers are normally used for 11 KV?",options:["Oil circuit breaker","SF6","Vacuum circuit breaker","Air blast circuit breaker"],correct:[2]},
+{id:813,q:"Trans conductance indicates how effectively the input voltage controls the",options:["Voltage gain","Input resistance","Supply voltage","Output voltage"],correct:[3]},
+{id:814,q:"Demand factor is the ratio of",options:["Maximum demand to connected load","Connected load to maximum demand","Maximum demand to average load","Average load to maximum load"],correct:[0]},
+{id:815,q:"An Over excited synchronous generator supplies  to the grid",options:["Active power","Reactive power","Active load","Reactive load"],correct:[1]},
+{id:816,q:"The amount of heat necessary to raise the temperature of one kg (or 1 liter) of pure water by 1 Celsius degree at normal atmospheric pressure is called",options:["1 calorie","Kcal","Joule","None of above"],correct:[1]},
+{id:817,q:"Power FETs are",options:["Integrated circuits","Small signal devices","Used mostly with analog signals","Used to switch large currents"],correct:[3]},
+{id:818,q:"Most power FETS are",options:["Used in high current applications","Digital computers","RF stages","Integrated circuits"],correct:[0]},
+{id:819,q:"Monolithic ICs are",options:["Forms of discrete circuits","On a single chip","Combinations of thin film and thick film circuits","Also called hybrid ICs"],correct:[1]},
+{id:820,q:"For ceiling fans generally, the single-phase motor used is",options:["Split phase type","Capacitor start type","Capacitor start and run type","Permanent capacitor type"],correct:[3]},
+{id:821,q:"The gain of two cascaded amplifiers is",options:["Added","Subtracted","Multiplied","Divided"],correct:[2]},
+{id:822,q:"Kirchhoff s second law is based on the law of conservation of",options:["Charge","Energy","Momentum","Mass"],correct:[1]},
+{id:823,q:"Which of the following is not the same as watt?",options:["Joule/sec","Amperes/volt","Amperes x volts","(amperes)2 x ohm"],correct:[1]},
+{id:824,q:"Which method can be used for absolute measurement of resistances?",options:["Ohm's law method","Whetstone bridge method","Releigh method","Lortentz method"],correct:[1]},
+{id:825,q:"A standard 60W bulb is in series with a room heater and connected across the mains. If 60W bulb is replaced by 100W bulb",options:["The heater output will increase","The heater output will reduce","The heater output remains unaltered","None of above"],correct:[0]},
+{id:826,q:"Which material is expected to have least resistivity?",options:["Copper","Lead","Mercury","Zinc"],correct:[0]},
+{id:827,q:"Certain substances lose their electrical resistance completely at finite low temperatures.",options:["Such substances are called","Dielectrics","Super conductors","Semi-conductors","Perfect conductors"],correct:[1]},
+{id:828,q:"The plates of a lead acid battery are made of",options:["Rolled zinc-copper alloy","Cast antimonial lead alloy","Perforated nickel cadmium alloy","Pressed antimony bismuth alloy"],correct:[1]},
+{id:829,q:"In a lead acid battery, during charging",options:["Anode becomes whitish in color","Voltage drops","Specific gravity of acid increases","The cell gives out energy"],correct:[2]},
+{id:830,q:"The value of specific gravity of acid when a lead acid battery is fully charged is",options:["1.285","2.185","2.585","2.9585"],correct:[0]},
+{id:831,q:"The indication of the state of charge of a battery is best given by",options:["Specific gravity of electrolyte","Temperature of electrolyte","Color of electrolyte","Level of electrolyte"],correct:[0]},
+{id:832,q:"On watt hour basis the efficiency of a lead acid battery is in the range",options:["90 to 95 percent","80 to 85 percent","70 to 85 percent","60 to 70 percent"],correct:[2]},
+{id:833,q:"The internal resistance of a dry cell is of the order of",options:["0.2 to 0.4 ohm","1 to 1.5 ohm","2 to 5 ohms","1 to 15 ohms"],correct:[0]},
+{id:834,q:"The electrode for a battery must be",options:["A good conductor of electricity","A bad conductor of electricity","A semi-conductor","An insulator"],correct:[0]},
+{id:835,q:"The specific gravity of acid is checked with the help of a",options:["Hygrometer","Lactometer","Hydrometer","Cell tester"],correct:[2]},
+{id:836,q:"Cells are connected in series to",options:["Increase the voltage output","Decrease the Voltage output","decrease the internal resistance","Increase the current capacity"],correct:[0]},
+{id:837,q:"A battery whose EMF is 45 volts is connected to a 20-ohm resistance and current of 2.1A flows. The terminal voltage is",options:["42V","45V","40V","54V"],correct:[0]},
+{id:838,q:"The best instrument for the measurement of EMF of a cell is",options:["Voltmeter","Ammeter","Potentiometer","Wheatstone bridge"],correct:[2]},
+{id:839,q:"The RMS value of sinusoidal 200V peak to peak wave is",options:["200V","100/ sqrt (2) V","200/ sqrt (2) V","100V"],correct:[1]},
+{id:840,q:"Which wave has the highest value of form factor?",options:["Sine wave","Triangular wave","Square wave","Half wave rectified sine wave"],correct:[3]},
+{id:841,q:"The form factor of DC supply voltage is always",options:["Zero","0.5","Unity","Infinite"],correct:[2]},
+{id:842,q:"Which of the following relation is incorrect? Power factor=",options:["Real power / Apparent power","kW/kVA","Resistance / Impedance","Conductance / Susceptance"],correct:[3]},
+{id:843,q:"The capacitors for power factor correction are rated in terms of",options:["Voltage","VA","KW","KVAR"],correct:[3]},
+{id:844,q:"Power factor of an Inductive circuit can be improved by connecting capacitor to it in",options:["Series","parallel","Depends on value of C","Either series or parallel"],correct:[1]},
+{id:845,q:"A series circuit consisting of R=1.2 k ohms and C= 0.4 micro-F is supplied with 45 V at a frequency of 1kHz. The reactive power will be",options:["0.1 VAR","0.4 VAR","0.81 VAR","1.62 VAR"],correct:[2]},
+{id:846,q:"A non-linear network does not satisfy",options:["Homogeneity condition","Super position condition","Both A & B","None of above"],correct:[2]},
+{id:847,q:"A coil with 1000 turns carrying a current of 8A produces a flux of 6 x 10-6 Wb. The inductance of coil would be",options:["0.75 H","0.075 H","0.0075 H","0.00075 H"],correct:[3]},
+{id:848,q:"The super position theorem is applicable to",options:["Linear responses only","Linear and non-linear responses only","Linear, non-linear and time variant responses","None of above"],correct:[0]},
+{id:849,q:"The super position theorem is applicable to",options:["Current only","Voltage only","Both current and voltage","Current, voltage and power"],correct:[3]},
+{id:850,q:"A unit ramp function when integrated yields",options:["Unit parabolic function","Unit ramp function","Unit doublet","Unit impulse function"],correct:[0]},
+{id:851,q:"The system with characteristic equation s4 +3s3 + 6s2+ 9s+12= 0",options:["Stable","Unstable","Marginality stable","None"],correct:[1]},
+{id:852,q:"If a zero appears in first column of the Routh table, the system is",options:["Necessarily stable","Necessarily unstable","Marginally stable","None"],correct:[1]},
+{id:853,q:"The main application of transfer function is in the study of",options:["Steady behaviors of system","Steady as well as transient behaviors of systems","Only transient behaviors of system","Neither steady nor transient behaviors of system"],correct:[1]},
+{id:854,q:"Which signal will become zero when the feedback-signal and reference signs are equal?",options:["Actuating signal","Reference signal","Feedback signal","Input signal"],correct:[0]},
+{id:855,q:"The output of a thermocouple is",options:["DC current","AC current","DC voltage","AC voltage"],correct:[2]},
+{id:856,q:"The Bode plot is used to analyze",options:["All phase network","Lag lead network","Minimum phase network","Maximum phase network"],correct:[2]},
+{id:857,q:"Non linearity caused by servo motor is",options:["Saturation","Backlash","Static friction","None of above"],correct:[0]},
+{id:858,q:"Resistivity of metals is expressed in terms of",options:["micro-ohm","Micro ohm/cm","Micro ohm-cm2","micro-ohm-cm"],correct:[3]},
+{id:859,q:"Constantan contains",options:["Copper and nickel","Copper and tungsten","Tungsten and silver","Silver and tin"],correct:[0]},
+{id:860,q:"Bakelite is",options:["A semiconductor","Incombustible","Low resistance conductor","Highly inflammable"],correct:[1]},
+{id:861,q:"Dielectric constant for vacuum is",options:["Infinity","100","1","Zero"],correct:[2]},
+{id:862,q:"Which material can be used at temperatures above 100?",options:["Polythene","Teflon","Rubber","Paraffin wax"],correct:[1]},
+{id:863,q:"A force of 1 Newton is experienced between 2 equal charges in space, separated by 1m and having a magnitude of",options:["1 coulomb","10 micro-coulombs","100 pico-coulombs","None of above"],correct:[1]},
+{id:864,q:"Which medium has least dielectric strength?",options:["Air","Quartz","Glass","Paraffin wax"],correct:[0]},
+{id:865,q:"A region around a stationary electric charge has",options:["Magnetic field","Electric field","Both magnetic and electric field","Neither magnetic nor electric field"],correct:[1]},
+{id:866,q:"One volt is same as",options:["One joule","One joule/sec","One joule/coulomb","One coulomb/joule"],correct:[2]},
+{id:867,q:"One farad is the same as",options:["One coulomb/volt","One joule/ volt","One joule/coulomb","One coulomb/joule"],correct:[0]},
+{id:868,q:"Two infinitely long parallel conductors in vacuum are separated by a distance of 1 meter between centers, when a current of 1 ampere flows through each conductor. The magnitude of force exerted by the two conductors on each other will be",options:["2 x 10-7 N per meter length","2 x 10-5 N per meter length","2 x 10-3 N per meter length","2 x 10-2 N per meter length"],correct:[0]},
+{id:869,q:"A device that converts from decimal to binary number is called",options:["Decoder","Encoder","CPU","Converter"],correct:[1]},
+{id:870,q:"The hexadecimal number 86C7 is equivalent to decimal number",options:["49761","46791","47691","49761"],correct:[1]},
+{id:871,q:"Monolithic technology is widely used in the manufacture of",options:["Antenna","Transistors","Integrated circuits","All of above"],correct:[2]},
+{id:872,q:"64K is",options:["6400","64000","65536","66536"],correct:[2]},
+{id:873,q:"Microprocessor 8085 is the enhanced version of the  with essentiality same construction set.",options:["6800","68000","8080","8000"],correct:[2]},
+{id:874,q:"Opcode",options:["That part of construction which tells the computer what operation to perform","An auxiliary register that stores the data to be added or subtracted from the accumulator","The register that receives the constructions from the memory","One of the constructions in the memory set"],correct:[0]},
+{id:875,q:"In 8085, the instruction register is part of the control unit. The contents of the instruction register are split into two nibbles. The upper nib goes to the",options:["Memory address","Controller sequence","Micro-instruction","Source program"],correct:[1]},
+{id:876,q:"Interaction between a CPU and a peripheral device that takes place during an I/O operation is known as",options:["Handshaking","Flagging","Relocating","Subroutine"],correct:[0]},
+{id:877,q:"Equalizer rings are required in a lap winding DC machine",options:["To decrease armature reaction","To improve commutation","To filter out harmonics","To prevent flow of circulating currents through the brushes"],correct:[3]},
+{id:878,q:"If the no load voltage of a certain generator is 220 V and the rated voltage is 200 V, then the voltage regulation is",options:["1%","10%","20%","9%"],correct:[1]},
+{id:879,q:"The critical resistance of DC generator refers to the resistance of",options:["Armature","Load","Field","Brushes"],correct:[0]},
+{id:880,q:"The armature reaction of an unsaturated DC machine is",options:["Non-magnetizing","Magnetizing","Demagnetizing","Cross-magnetizing"],correct:[3]},
+{id:881,q:"The speed of a series-wound DC motor",options:["Can be controlled by shunt field regulator","Cannot be controlled by diverter","Increases as flux decreases","Increases as armature circuit resistance increases"],correct:[2]},
+{id:882,q:"The function of breather in a transformer is",options:["To provide oxygen to the cooling oil","To provide cooling air","To arrest flow of moisture when outside air enters the transformer","To filter the transformer oil"],correct:[2]},
+{id:883,q:"Power transformers are usually designed to have maximum efficiency at",options:["Near full load","At 75% of full load","At 50% of full load","Between 50% and 75% of full load"],correct:[0]},
+{id:884,q:"Distribution transformers are usually designed to have Maximum efficiency at",options:["Near full load","Near 75% of full load","Near 50% of full load","Near no load"],correct:[2]},
+{id:885,q:"Which value of flux is involved in the emf equation of transformer?",options:["Maximum value","Average value","RMS value","Critical value"],correct:[0]},
+{id:886,q:"An alternator is said to be over excited when it is operating at",options:["Unity power factor","Leading power factor","Lagging power factor","Lagging to leading power factor"],correct:[2]},
+{id:887,q:"For an alternator when the power factor of load is unity",options:["The armature flux will have square waveform","The armature flux will be de magnetizing","The armature flux will be cross magnetizing","The armature flux will reduce to zero"],correct:[2]},
+{id:888,q:"Which of the following is likely to be the full load power factor of a three-phase induction motor?",options:["0.2 leading","0.2 lagging","0.8 lagging","0.8 leading"],correct:[2]},
+{id:889,q:"Which single phase motor has relatively high-power factor?",options:["Universal motor","Split phase motor","Repulsion motor","Synchronous motor"],correct:[0]},
+{id:890,q:"Out of following which one is not an unconventional source of energy",options:["Tidal power","Geothermal energy","Nuclear energy","Wind power"],correct:[2]},
+{id:891,q:"Overall thermal efficiency of a steam Power station is in the range of",options:["18 -24%","30- 40%","44-62%","68 - 79%"],correct:[0]},
+{id:892,q:"Most of the generators in thermal power plants run at",options:["3000 rpm","1500 rpm","1000 rpm","750 rpm"],correct:[0]},
+{id:893,q:"In power station practice \"spinning reserve\" is",options:["Reserve generating capacity that is in operation but not in reserve","Reserve generating capacity that is connected to bus and ready to take the load","Reserve generating capacity that is available for service but not in operation","Capacity of part of plant that remains under maintenance"],correct:[1]},
+{id:894,q:"The overall efficiency of boiler in a thermal power plant is of the order of",options:["10%","25 to 30%","40 to 50%","70 to 80%"],correct:[3]},
+{id:895,q:"Cost of operation of which plant is least?",options:["Gas turbine plant","Thermal power plant","Nuclear power plant","Hydroelectric plant"],correct:[3]},
+{id:896,q:"In a hydro-electric plant a conduit system for taking water from the intake works to the turbine is known as",options:["Dam","Reservoir","Penstock","surge tank"],correct:[2]},
+{id:897,q:"In a thermal power plant cooling towers are used to",options:["Condense low pressure steam","Cool condensed steam","Cool water used in condenser for condensing steam","Cool feed water of boiler"],correct:[2]},
+{id:898,q:"Advantage(s) of hydroelectric power station is",options:["Low operating cost","Free from pollution problems","No fuel transportation problems","All of above"],correct:[3]},
+{id:899,q:"When coal analysis gives fixed carbon, volatile combustible matter, and moisture the analysis is termed as",options:["Ultimate analysis","Proximate analysis","Orsat analysis","Gross analysis"],correct:[1]},
+{id:900,q:"Generally, the major constituent of exhaust gases from a thermal power plant is",options:["Oxygen","Carbon Monoxide","Nitrogen","Carbon dioxide"],correct:[2]},
+{id:901,q:"In hydro plants",options:["Initial cost is high and operating cost is low","Initial cost as well as operating cost is high","Initial cost is low and operating cost is high","Initial cost as well as operating cost is low"],correct:[0]},
+{id:902,q:"In which of the following power plants, availability of power Is least reliable?",options:["Solar power plant","Wind power plant","Tidal power plant","Geothermal power plant"],correct:[1]},
+{id:903,q:"The major disadvantage with solar cells for power generation is",options:["Lack of availability","Large area requirement","Variable power","High cost"],correct:[3]},
+{id:904,q:"The total power of a wind stream is proportional to",options:["Velocity of stream","(Velocity of stream)2","(Velocity of stream)3","None of above"],correct:[2]},
+{id:905,q:"Load factor during a period is",options:["Average load/ Installed capacity","Average load/Maximum load","Maximum load/Average load","Maximum load/Installed capacity"],correct:[1]},
+{id:906,q:"Which plant can never have 100% load factor?",options:["Nuclear power plant","Hydro- electric plant","Peak load plant","Base load plant"],correct:[2]},
+{id:907,q:"Which equipment provides fluctuating load?",options:["Lathe machine","Exhaust fan","Welding transformer","All of above"],correct:[2]},
+{id:908,q:"In a power plant a reserve generating capacity which is in operation but not in service is known as",options:["Hot reserve","Cold reserve","Spinning reserve","Firm power"],correct:[0]},
+{id:909,q:"A steam power station will run with maximum efficiency when it is run",options:["At low steam pressure","At higher speeds","On pulverized coal","Near full load"],correct:[3]},
+{id:910,q:"Which of the following is likely to result in lower efficiency of a power station?",options:["Varying loads","Low voltage generation","Low turbine speeds","Non-automatic controls"],correct:[0]},
+{id:911,q:"The life of underground cable is taken as",options:["1 year","2 years","5 years","40 years"],correct:[3]},
+{id:912,q:"A diesel power plant is best suited as",options:["Base load plant","Stand-by plant","Peak load plant","General purpose plant"],correct:[1]},
+{id:913,q:"Which power plant cannot have single unit of 100 MW?",options:["Steam power plant","Nuclear power plant","Hydroelectric power plant","Diesel power plant"],correct:[3]},
+{id:914,q:"Hydrogen is used for cooling of large sized generators because",options:["It has high thermal conductivity","It is light","It offers reduced fire risk","All of above"],correct:[3]},
+{id:915,q:"A nuclear power plant is invariably used as a",options:["Base load plant","Peak load plant","Stand by plant","Spinning reserve plant"],correct:[0]},
+{id:916,q:"For the same plant size, initial cost of which plant is the highest?",options:["Steam power plant","Diesel engine plant","Nuclear power plant","Gas turbine plant"],correct:[2]},
+{id:917,q:"Base load plants have",options:["High capital cost, high operating cost and high load factor","High capital cost, low operating cost and high load factor","Low capital cost low operating cost and low load factor","Low capital cost, high operating cost and high load factor"],correct:[1]},
+{id:918,q:"Which of the following is protective device against lightening over voltages?",options:["Rod gaps","Surge absorbers","Horn gaps","All of above"],correct:[3]},
+{id:919,q:"In power plants insurance cover is provided for",options:["Equipment only","Skilled workers only","Unskilled workers only","All of above"],correct:[3]},
+{id:920,q:"Skin effect results in",options:["Reduced effective resistance but increased effective internal reactance of the conductor","Increased effective resistance but reduced effective internal reactance of conductor","Reduced effective resistance as well as effective internal reactance","Increased effective resistance as well as effective reactance"],correct:[1]},
+{id:921,q:"Strain type insulators are used where the conductors are",options:["Dead ended","At intermediate anchor towers","Any of the above","None of above"],correct:[2]},
+{id:922,q:"The current drawn by line due to corona losses is",options:["Sinusoidal","Square","Non-sinusoidal","None of above"],correct:[2]},
+{id:923,q:"The effect of wind pressure is more predominant on",options:["Transmission lines","Neutral lines","Insulator","Supporting towers"],correct:[3]},
+{id:924,q:"In transmission system a feeder feeds power to",options:["Service mains","Generating stations","Distributors","All of above"],correct:[2]},
+{id:925,q:"In a transmission line following are the distributed constants",options:["Resistance and inductance only","Resistance, inductance and capacitance","Resistance, inductance, capacitance and short conductance","None of above"],correct:[2]},
+{id:926,q:"A relay used on long transmission lines is",options:["Mho's relay","Reactance relay","Impedance relay","No relay is used"],correct:[0]},
+{id:927,q:"Total load transmitted through a 3-phase transmission line is 10,000 kW at 0.8 power factor lagging. The 12 R losses are 900kW. The efficiency of transmission line is",options:["60%","90%","95%","99%"],correct:[1]},
+{id:928,q:"The power transmitted will be maximum when",options:["Sending end voltage is more","Receiving end voltage is more","Reactance is high","Corona losses are least"],correct:[0]},
+{id:929,q:"Stranded conductors are used for transmitting power at high voltages because of",options:["Increased tensile strength","Better in wind resistance","Ease in handling","Low cost"],correct:[2]},
+{id:930,q:"In case the height of transmission tower is increased",options:["The line capacitance and inductance will not change","line capacitance will decrease but line inductance will remain unaltered"],correct:[1]},
+{id:931,q:"Under no load conditions the current in a transmission line is due to",options:["Corona effects","Capacitance of line","Back flow from earth","Spinning reserve"],correct:[1]},
+{id:932,q:"Which distribution system is more reliable?",options:["Ring main system","Tree system","Radial system","All are equally reliable"],correct:[0]},
+{id:933,q:"In a substation the equipment used to limit short circuit current level is",options:["Series reactor","Coupling capacitor","Lightening switch","Isolator"],correct:[0]},
+{id:934,q:"In order to increase the limit of distance of transmission line",options:["Series resistances are used","Synchronous condensers are used","Shunt capacitors and series reactors are used","Series capacitors and shunt reactors are used"],correct:[3]},
+{id:935,q:"All of the following are leading power factor systems except",options:["Under excited synchronous generator","Series and shunt capacitors","Induction motors","Overexcited synchronous motors"],correct:[2]},
+{id:936,q:"The fault clearing time of a circuit breaker is usually",options:["One sec","Few seconds","Few mints","Few cycles of supply voltage"],correct:[3]},
+{id:937,q:"In modern EHV system circuit breakers, the operating time between instant of receiving trip signal and final contact separation is",options:["0.001 sec","0.015 sec","0.003 sec","0.03 sec"],correct:[3]},
+{id:938,q:"For motor circuit breakers, the time of closing the cycle is",options:["0.001 sec","0.01 sec","0.10 sec","0.003 sec"],correct:[3]},
+{id:939,q:"The fuse current in amperes is related with fuse wire diameter as",options:["I  1/D","I  D","I  D3/2","I  D2"],correct:[2]},
+{id:940,q:"Fuse wire protection system is usually not used beyond",options:["10 A","25 A","50 A","100 A"],correct:[3]},
+{id:941,q:"The number of cycles in which a high-speed circuit breaker can complete its operation is",options:["3 to 8","10 to 18","20 to 30","40 to 50"],correct:[0]},
+{id:942,q:"In a circuit breaker the current which exists at the instant of contact separation is known as",options:["Restriking current","Surge current","Breaking current","Recovery current"],correct:[2]},
+{id:943,q:"A Merz-price protection is suitable for",options:["Transformers","Alternators","Feeders","Transmission lines"],correct:[1]},
+{id:944,q:"Breaking capacity of a circuit breaker is usually expressed in terms of",options:["Amperes","Volts","MW","MVA"],correct:[3]},
+{id:945,q:"The arc voltage produced in the circuit breaker is always",options:["In phase with the arc current","Leading the arc current by 90°","Lagging the arc current by 90°","In between the lead and lag angles"],correct:[0]},
+{id:946,q:"In a circuit breaker the time duration from the instant of fault to the instant of energizing of trip coil is known as",options:["Lag time","Lead time","Protection time","Operation time"],correct:[2]},
+{id:947,q:"In a circuit breaker, time duration from the instant of fault to the instant of closing of contact is known as",options:["Recycle time","Total time","Gross time","Reclosing time"],correct:[3]},
+{id:948,q:"For a high-speed circuit breaker, the total clearing time is nearly",options:["1 to 2 cycles","5 to 10 cycles","10 to 15 cycles","Less than 50 cycles"],correct:[0]},
+{id:949,q:"Which relay is used for feeders?",options:["MHO relay","Translay relay","Merz price protection","Buchholz relay"],correct:[1]},
+{id:950,q:"A fuse wire should have",options:["Low specific resistance and high melting point","Low specific resistance and low melting point","High specific resistance and high melting point","High specific resistance and low melting point"],correct:[3]},
+{id:951,q:"Cables can be generally used up to",options:["400V","1000V","11kV","33kV"],correct:[3]},
+{id:952,q:"The size of conductor of power cables depends on",options:["Type of insulation","Current","Voltage","Power factor"],correct:[1]},
+{id:953,q:"A zero-watt lamp consumes.",options:["No power","About 5 to 7 watts of power","About 15 to 20 watts of power","About 25 to 30 watts of power"],correct:[1]},
+{id:954,q:"A DC generator used for AC welding should have",options:["Rising characteristics","Drooping characteristics","Straight characteristics","None of above"],correct:[1]},
+{id:955,q:"The power factor of load using welding transformer least depends on",options:["Arc length","Type of electrode","No. of operating stations","Material to be welded"],correct:[3]},
+{id:956,q:"Which type of wattmeter cannot be used for both A.C and D.C?",options:["Dynamometer type","Electrostatic type","Induction type","None of above"],correct:[2]},
+{id:957,q:"When the damping of an instrument is adjusted to enable the pointer rise quickly to its deflected position without overshooting, in that case the instrument is said to be",options:["Dead beat","Off beat","Over damped","Under damped"],correct:[0]},
+{id:958,q:"When damping force is more than optimum, instrument will become",options:["Oscillating","Fast and sensitive","Slow and lethargic"],correct:[2]},
+{id:959,q:"When shunt resistance of a galvanometer circuit is increased, its",options:["Current sensitivity increases","Current sensitivity decreases","Damping increases","Controlling torque decreases"],correct:[1]},
+{id:960,q:"Bridge used to measure dielectric loss of an insulator is",options:["Anderson bridge","Wein's bridge","Schearing bridge","Any of above"],correct:[0]},
+{id:961,q:"Synchro is a transducer",options:["Variable reluctance","Angular position","Parabolic","Synchronizing"],correct:[1]},
+{id:962,q:"A Ryan Crest voltmeter is used to measure",options:["Peak voltage","RMS voltage","DC voltage","All of above"],correct:[0]},
+{id:963,q:"In a three-phase half wave rectifier, each diode conducts for a duration of",options:["180°","120°","90°","60°"],correct:[1]},
+{id:964,q:"Which of the following finds application in speed control of DC motor?",options:["FET","NPN transistor","SCR","None of above"],correct:[2]},
+{id:965,q:"A device that does not exhibit negative resistance characteristics is",options:["FET","WI","Tunnel diode","SCR"],correct:[0]},
+{id:966,q:"Thyristor is turned off when anode current falls below",options:["Forward current","Latching current","Holding current","Break over current"],correct:[2]},
+{id:967,q:"In thyristor, dv/dt protection is achieved through the use of",options:["L across thyristor","R across thyristor","RC across thyristor","RL across thyristor"],correct:[2]},
+{id:968,q:"In 1 phase full converter, for load current I ripple free, average thyristor current is",options:["(1/4) I","(1/2) I","(3/4) I","I"],correct:[1]},
+{id:969,q:"In 1 phase full converter, number of SCRs conducting during overlap",options:["2","4","6","8"],correct:[1]},
+{id:970,q:"When one of three series resistors is removed from a circuit and the circuit is reconnected, the current",options:["Increases","Increase by one third","Decreases by one third","Decreases by the amount of current through the removed resistor"],correct:[0]},
+{id:971,q:"The total power in a certain circuit is 12 W. Each of the four equal value series resistors making up the circuit dissipates",options:["12 W","48 W","3 W","8 W"],correct:[2]},
+{id:972,q:"All the voltage drops and the source voltage added together in a series circuit is equal to",options:["The total of the voltage drops","The source voltage","Zero","The total of source voltage and voltage drops"],correct:[2]},
+{id:973,q:"If a 24 V and a 6 V battery are series opposing, the total voltage is",options:["30 V","24 V","18 V","0"],correct:[2]},
+{id:974,q:"The output of a certain voltage divider is 12 V with no load. When a load is connected, the output voltage",options:["Decreases","Increases","Remains same","Becomes zero"],correct:[0]},
+{id:975,q:"The parallel combination of a 470 ohms resistor and a 1.5 k ohms resistor is in series with parallel combination of five 1 k resistors. The source voltage is 50 V. The percentage of the load current through any single 1 k resistor is",options:["25%","20%","100%","50%"],correct:[1]},
+{id:976,q:"In a certain series resonant circuit, VC = 125 V, VL = 125 V, and VR = 40 V. The value of source voltage is",options:["125 V","250 V","290 V","40 V"],correct:[3]},
+{id:977,q:"In a series RC circuit 12 Vrms is measured across the resistor and 15 V(rms) is measured across the capacitor. The rms source voltage is",options:["3v","27V","19.2V","1.9V"],correct:[2]},
+{id:978,q:"When the frequency of the source voltage decreases, the impedance of a parallel RC circuit",options:["Increases","Decreases","Does not change","Decreases to zero"],correct:[0]},
+{id:979,q:"An AC circuit consists of a resistor and a capacitor. To increase the phase angle above 45°, the following condition must exist:",options:["R = XC","R > XC","R < XC","R = 5XC"],correct:[2]},
+{id:980,q:"A 5mH, a 4.3mH and a 0.6mH inductors are connected in parallel. The total inductance is",options:["9.9mH","Greater than 5mH","9.9mH or greater than 5mH","Less than 0.6mH"],correct:[3]},
+{id:981,q:"A 2mH, a 3.3mH and a 2.2mH inductors are connected in series. The total inductance is",options:["55mH","Less than 0.2mH","Less than 5.5mH","7.5mH"],correct:[3]},
+{id:982,q:"The winding resistance of a coil can be increased by",options:["Increasing the number of turns","Using a thinner wire","Changing the core material","Increasing the number of turns or using thinner wire"],correct:[3]},
+{id:983,q:"When the current through an inductor decreases, the amount of energy stored in the electromagnetic field",options:["Increases","Decreases","Remains the same","Doubles"],correct:[1]},
+{id:984,q:"The inductance of an iron-core coil decreases if",options:["The number of turns is decreased","The iron core is removed","The length of the coil decreases","None of the above"],correct:[0]},
+{id:985,q:"When the current through an inductor is cut in half, the amount of energy stored in the electromagnetic field",options:["Is quartered","Quadruples","Doubles","Does not change"],correct:[0]},
+{id:986,q:"In applying the superposition theorem",options:["The sources are considered one at a time with all other's replaced by their internal impedance","All sources are considered independently","All sources are considered simultaneously","The sources are considered one at a time with all others replaced by their internal resistance"],correct:[0]},
+{id:987,q:"In order to get maximum power transfer from a capacitive source, the load must",options:["Have a capacitive reactance equal to circuit resistance","Have an impedance that is the complex conjugate of the source impedance","Be as capacitive as it is inductive","None of the above"],correct:[1]},
+{id:988,q:"1000.  A 6 V battery is connected to a 300 cl load. Under these conditions, it is rated at 40 Ah.",options:["How long can it supply current to the load?","1 h","200 h","2,000 h","10 h"],correct:[2]}
+];
+
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+let CURRENT = []; let ANSWERS = {};
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const el = id=>document.getElementById(id);
+  const quizEl = el('quiz');
+  const countEl = el('count'), selEl = el('sel'), ansEl = el('answered');
+  const progEl = el('prog');
+  const scoreLabel = el('scoreLabel');
+  const correctEl = el('correct'), wrongEl = el('wrong'), unansEl = el('unans');
+  const resultsEl = el('results');
+  let showing=false;
+
+  function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function updateProgress(){
+    const answered = Object.values(ANSWERS).filter(v=>Array.isArray(v)&&v.length>0).length;
+    ansEl.textContent = answered.toString();
+    progEl.value = Math.min(100,Math.round(answered));
+    el('unans').textContent = (100-answered).toString();
+  }
+  function renderQuiz(){
+    quizEl.innerHTML=''; ANSWERS={}; resultsEl.style.display='none';
+    scoreLabel.textContent='Score: —/100';
+    correctEl.textContent='0'; wrongEl.textContent='0'; unansEl.textContent='100';
+    progEl.value=0; ansEl.textContent='0';
+    CURRENT.forEach((q,idx)=>{
+      const card = document.createElement('div'); card.className='qcard'; card.dataset.qid=q.id;
+      const head = document.createElement('div'); head.className='qhead'; head.innerHTML=(idx+1)+'. '+esc(q.q); card.appendChild(head);
+      const opts = document.createElement('div'); opts.className='opts';
+      const multi = q.correct.length>1;
+      q.options.forEach((o,oi)=>{
+        const lab = document.createElement('label'); lab.className='opt';
+        const input = document.createElement('input'); input.type = multi ? 'checkbox' : 'radio'; input.name='q_'+q.id; input.value=oi;
+        input.addEventListener('change',()=>{
+          if(multi){ const chosen=[...opts.querySelectorAll('input:checked')].map(x=>parseInt(x.value,10)); ANSWERS[q.id]=chosen; }
+          else { ANSWERS[q.id]=[parseInt(input.value,10)]; }
+          updateProgress();
+        });
+        const span = document.createElement('span'); span.innerHTML=esc(o);
+        lab.appendChild(input); lab.appendChild(span); opts.appendChild(lab);
+      });
+      card.appendChild(opts); quizEl.appendChild(card);
+    });
+    el('btnSubmit').disabled=false; el('btnReset').disabled=false; el('btnReview').disabled=false;
+  }
+  function grade(){
+    let correct=0, wrong=0, unans=0;
+    CURRENT.forEach(q=>{
+      const pick = ANSWERS[q.id];
+      if(!pick || pick.length===0){ unans++; return; }
+      const a = Array.from(new Set(pick)).sort((x,y)=>x-y); const b=q.correct;
+      const equal = (a.length===b.length)&&a.every((v,i)=>v===b[i]);
+      if(equal) correct++; else wrong++;
+    });
+    correctEl.textContent=String(correct); wrongEl.textContent=String(wrong); unansEl.textContent=String(unans);
+    scoreLabel.textContent=`Score: ${correct}/100`;
+    resultsEl.style.display='block'; resultsEl.innerHTML = `<div>Your Marks: <b>${correct}</b> / 100</div>`;
+  }
+  function review(show){
+    CURRENT.forEach(q=>{
+      const card = quizEl.querySelector(`.qcard[data-qid="${q.id}"]`); if(!card) return;
+      const labs=[...card.querySelectorAll('.opt')];
+      labs.forEach((lab,idx)=>{
+        lab.classList.remove('correct','incorrect');
+        if(show){ if(q.correct.includes(idx)) lab.classList.add('correct'); const picked=(ANSWERS[q.id]||[]).includes(idx); if(picked&&!q.correct.includes(idx)) lab.classList.add('incorrect'); }
+      });
+    });
+  }
+  el('btnShuffle').addEventListener('click',()=>{ CURRENT = shuffle([...ALL]).slice(0,100); el('sel').textContent='100'; renderQuiz(); window.scrollTo({top:0,behavior:'smooth'}); });
+  el('btnSubmit').addEventListener('click',()=>{ grade(); review(true); window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); });
+  el('btnReset').addEventListener('click',()=>{ ANSWERS={}; document.querySelectorAll('#quiz input').forEach(i=>i.checked=false); review(false); updateProgress(); resultsEl.style.display='none'; scoreLabel.textContent='Score: —/100'; correctEl.textContent='0'; wrongEl.textContent='0'; unansEl.textContent='100'; });
+  el('btnReview').addEventListener('click',()=>{ window.__showing= !window.__showing; review(window.__showing); el('btnReview').textContent = window.__showing? 'Hide Review':'Review'; });
+  el('count').textContent=String(ALL.length);
+});
+
+
+// --- Added fix for top buttons ---
+document.getElementById('btnReview').addEventListener('click', function () {
+    document.getElementById('btnReviewBottom').click();
+});
+
+document.getElementById('btnReset').addEventListener('click', function () {
+    document.getElementById('btnResetBottom').click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.getElementById('btnSubmit').addEventListener('click', function () {
+    document.getElementById('btnSubmitBottom').click();
+});
+// --- End fix ---
+
+
+// Add scroll-to-top on reset button click while keeping original functionality
+document.addEventListener('DOMContentLoaded', function() {
+  var resetBtn = document.getElementById('btnReset');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+});
+
+// Show bottom navigation when Shuffle button clicked
+document.addEventListener('DOMContentLoaded', function() {
+  var shuffleBtn = document.getElementById('btnShuffle');
+  var bottomNav = document.querySelector('.sticky-submit');
+  if (shuffleBtn && bottomNav) {
+    shuffleBtn.addEventListener('click', function() {
+      bottomNav.style.display = 'block';
+    });
+  }
+  // Show results only after submit click
+  var submitBtn = document.getElementById('btnSubmit');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', function() {
+      document.querySelectorAll('#scoreLabel, .pill').forEach(function(el) {
+        el.style.display = 'inline-flex';
+      });
+    });
+  }
+});
+
+// Extend Reset button behavior
+document.addEventListener('DOMContentLoaded', function() {
+  var resetBtn = document.getElementById('btnReset');
+  var shuffleBtn = document.getElementById('btnShuffle');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      // Hide score pills
+      document.querySelectorAll('#scoreLabel, .pill').forEach(function(el) {
+        el.style.display = 'none';
+      });
+      // Show shuffle button again
+      if (shuffleBtn) {
+        shuffleBtn.style.display = 'inline-block';
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
