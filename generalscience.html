@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Smart Series MCQs — General Science (1–200)</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        color: #333;
+    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    h1 {
+        text-align: center;
+        background-color: #00796b;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .mcq {
+        background: #ffffffd9;
+        border-left: 6px solid #00796b;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .mcq:hover { transform: scale(1.01); }
+    .question { font-size: 18px; font-weight: bold; }
+    .options { margin-top: 15px; }
+    .option { margin: 6px 0; padding-left: 10px; }
+    .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
+    .pagination { text-align: center; margin-top: 30px; }
+    .pagination button {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #00796b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .pagination button:hover { background-color: #004d40; }
+    .pagination input {
+        width: 50px;
+        padding: 8px;
+        font-size: 16px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 0 5px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Smart Series MCQs — General Science (1–200)</h1>
+<div id="mcq-container"></div>
+<div class="pagination">
+    <button onclick="prevPage()">Previous</button>
+    <input type="number" id="pageInput" min="1" />
+    <button onclick="goToPage()">Go</button>
+    <button onclick="nextPage()">Next</button>
+</div>
+</div>
+
+<script>
+const mcqs = [
+  {"q":"What is the chemical symbol for water?","o":["A) W","B) H2O","C) O2","D) HO"],"a":"ANS. B"},
+  {"q":"Which organ pumps blood around the human body?","o":["A) Liver","B) Lungs","C) Heart","D) Kidney"],"a":"ANS. C"},
+  {"q":"What gas do plants take in for photosynthesis?","o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Hydrogen"],"a":"ANS. C"},
+  {"q":"What is the unit of electric current?","o":["A) Volt","B) Ohm","C) Ampere","D) Watt"],"a":"ANS. C"},
+  {"q":"Which particle has a negative charge?","o":["A) Proton","B) Neutron","C) Electron","D) Positron"],"a":"ANS. C"},
+  {"q":"Which planet is known as the Red Planet?","o":["A) Venus","B) Mars","C) Jupiter","D) Saturn"],"a":"ANS. B"},
+  {"q":"What does DNA stand for?","o":["A) Deoxyribonucleic Acid","B) Deoxyribose Nucleic Acid","C) Dicarboxy Nucleic Acid","D) Deoxy Nucleic Acid"],"a":"ANS. A"},
+  {"q":"Which vitamin is produced when skin is exposed to sunlight?","o":["A) Vitamin A","B) Vitamin B12","C) Vitamin C","D) Vitamin D"],"a":"ANS. D"},
+  {"q":"What is the boiling point of water at sea level (°C)?","o":["A) 90°C","B) 100°C","C) 110°C","D) 120°C"],"a":"ANS. B"},
+  {"q":"Which gas is most abundant in Earth's atmosphere?","o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Argon"],"a":"ANS. B"},
+  {"q":"What is the main sugar found in blood?","o":["A) Fructose","B) Sucrose","C) Glucose","D) Lactose"],"a":"ANS. C"},
+  {"q":"Which organelle is known as the powerhouse of the cell?","o":["A) Nucleus","B) Ribosome","C) Mitochondrion","D) Chloroplast"],"a":"ANS. C"},
+  {"q":"What is the chemical formula of table salt?","o":["A) NaCl","B) KCl","C) HCl","D) Na2SO4"],"a":"ANS. A"},
+  {"q":"Which metal is liquid at room temperature?","o":["A) Iron","B) Mercury","C) Gold","D) Aluminum"],"a":"ANS. B"},
+  {"q":"Which phenomenon causes the splitting of white light into colors?","o":["A) Diffraction","B) Reflection","C) Refraction","D) Dispersion"],"a":"ANS. D"},
+  {"q":"What is the SI unit of force?","o":["A) Joule","B) Newton","C) Pascal","D) Watt"],"a":"ANS. B"},
+  {"q":"Which gas is produced in large amounts during fermentation?","o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Hydrogen"],"a":"ANS. C"},
+  {"q":"What is the main function of red blood cells?","o":["A) Fight infection","B) Carry oxygen","C) Clot blood","D) Produce hormones"],"a":"ANS. B"},
+  {"q":"What is photosynthesis?","o":["A) Breaking down food for energy","B) Conversion of light energy into chemical energy","C) Respiration in animals","D) Decomposition by bacteria"],"a":"ANS. B"},
+  {"q":"Which device measures temperature?","o":["A) Barometer","B) Thermometer","C) Hygrometer","D) Ammeter"],"a":"ANS. B"},
+  {"q":"Which phenomenon keeps planets in orbit around the Sun?","o":["A) Magnetism","B) Friction","C) Gravity","D) Inertia"],"a":"ANS. C"},
+  {"q":"What is the chemical symbol for gold?","o":["A) Gd","B) Au","C) Ag","D) Go"],"a":"ANS. B"},
+  {"q":"Which organ removes waste products from the blood?","o":["A) Heart","B) Kidney","C) Liver","D) Pancreas"],"a":"ANS. B"},
+  {"q":"What type of bond involves sharing electron pairs between atoms?","o":["A) Ionic bond","B) Covalent bond","C) Metallic bond","D) Hydrogen bond"],"a":"ANS. B"},
+  {"q":"Which particle has no electric charge?","o":["A) Electron","B) Proton","C) Neutron","D) Positron"],"a":"ANS. C"},
+  {"q":"What is the nearest star to Earth?","o":["A) Proxima Centauri","B) Sirius","C) Alpha Centauri A","D) The Sun"],"a":"ANS. D"},
+  {"q":"Which organ produces insulin?","o":["A) Liver","B) Pancreas","C) Stomach","D) Spleen"],"a":"ANS. B"},
+  {"q":"What is the process of changing from liquid to gas called?","o":["A) Condensation","B) Freezing","C) Evaporation","D) Sublimation"],"a":"ANS. C"},
+  {"q":"Which acid is found in the human stomach?","o":["A) Sulfuric acid","B) Hydrochloric acid","C) Nitric acid","D) Acetic acid"],"a":"ANS. B"},
+  {"q":"Which element is most abundant in the Earth's crust?","o":["A) Iron","B) Silicon","C) Oxygen","D) Aluminum"],"a":"ANS. C"},
+  {"q":"What is the pH of pure water at 25°C?","o":["A) 0","B) 7","C) 14","D) 1"],"a":"ANS. B"},
+  {"q":"Which vitamin is essential for blood clotting?","o":["A) Vitamin A","B) Vitamin D","C) Vitamin K","D) Vitamin C"],"a":"ANS. C"},
+  {"q":"Which gas is used in light bulbs to prevent the filament from burning?","o":["A) Oxygen","B) Nitrogen","C) Argon","D) Helium"],"a":"ANS. C"},
+  {"q":"What is the primary component of natural gas?","o":["A) Ethane","B) Methane","C) Propane","D) Butane"],"a":"ANS. B"},
+  {"q":"Which instrument is used to measure atmospheric pressure?","o":["A) Thermometer","B) Hygrometer","C) Barometer","D) Anemometer"],"a":"ANS. C"},
+  {"q":"What is the largest organ of the human body?","o":["A) Heart","B) Liver","C) Skin","D) Brain"],"a":"ANS. C"},
+  {"q":"What is the study of fungi called?","o":["A) Bacteriology","B) Mycology","C) Virology","D) Phycology"],"a":"ANS. B"},
+  {"q":"Which type of electromagnetic wave has the shortest wavelength?","o":["A) Radio waves","B) Visible light","C) X-rays","D) Gamma rays"],"a":"ANS. D"},
+  {"q":"What process do plants use to release energy from glucose?","o":["A) Glycolysis only","B) Photosynthesis","C) Cellular respiration","D) Fermentation only"],"a":"ANS. C"},
+  {"q":"What is the speed of light in vacuum approximately (km/s)?","o":["A) 300,000 km/s","B) 150,000 km/s","C) 30,000 km/s","D) 3,000 km/s"],"a":"ANS. A"},
+  {"q":"Which organelle contains chlorophyll?","o":["A) Mitochondrion","B) Nucleus","C) Endoplasmic reticulum","D) Chloroplast"],"a":"ANS. D"},
+  {"q":"Which disease is caused by a deficiency of vitamin C?","o":["A) Scurvy","B) Rickets","C) Beriberi","D) Pellagra"],"a":"ANS. A"},
+  {"q":"Which scale is used to measure earthquake magnitude?","o":["A) Beaufort scale","B) Richter scale","C) Celsius scale","D) Mohs scale"],"a":"ANS. B"},
+  {"q":"Which element is used as the primary fuel in nuclear fission reactors?","o":["A) Uranium","B) Thorium","C) Plutonium","D) Hydrogen"],"a":"ANS. A"},
+  {"q":"What is the chemical formula for carbon dioxide?","o":["A) CO","B) CO2","C) C2O","D) O2C2"],"a":"ANS. B"},
+  {"q":"Which device converts chemical energy into electrical energy?","o":["A) Motor","B) Generator","C) Battery","D) Transformer"],"a":"ANS. C"},
+  {"q":"What is the main function of white blood cells?","o":["A) Carry oxygen","B) Aid digestion","C) Fight infections","D) Store fats"],"a":"ANS. C"},
+  {"q":"Which gas causes the greenhouse effect most significantly?","o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Neon"],"a":"ANS. C"},
+  {"q":"Which organ is primarily responsible for detoxification in the body?","o":["A) Kidney","B) Liver","C) Lung","D) Heart"],"a":"ANS. B"},
+  {"q":"What type of energy is stored in food molecules?","o":["A) Kinetic energy","B) Thermal energy","C) Chemical energy","D) Nuclear energy"],"a":"ANS. C"},
+  {"q":"Which force is responsible for friction?","o":["A) Gravity","B) Electromagnetic interactions between surfaces","C) Nuclear force","D) Strong force"],"a":"ANS. B"},
+  {"q":"Which organelles synthesize proteins?","o":["A) Ribosomes","B) Lysosomes","C) Golgi bodies","D) Vacuoles"],"a":"ANS. A"},
+  {"q":"Which electromagnetic waves are used for cooking in microwave ovens?","o":["A) Infrared","B) Radio waves","C) Microwaves","D) Ultraviolet"],"a":"ANS. C"},
+  {"q":"What is the process by which plants lose water vapor through leaves?","o":["A) Transpiration","B) Respiration","C) Perspiration","D) Condensation"],"a":"ANS. A"},
+  {"q":"Which mineral is essential for strong bones and teeth?","o":["A) Sodium","B) Potassium","C) Calcium","D) Magnesium"],"a":"ANS. C"},
+  {"q":"What is the primary cause of tides on Earth?","o":["A) Wind","B) Moon's gravitational pull","C) Earth's rotation only","D) Sun's radiation"],"a":"ANS. B"},
+  {"q":"What is the tendency of a liquid to resist an external force called?","o":["A) Viscosity","B) Surface tension","C) Elasticity","D) Density"],"a":"ANS. A"},
+  {"q":"Which blood type is considered the universal donor?","o":["A) AB+","B) O-","C) A+","D) B-"],"a":"ANS. B"},
+  {"q":"Which organ helps in digestion by producing bile?","o":["A) Stomach","B) Liver","C) Pancreas","D) Gallbladder"],"a":"ANS. B"},
+  {"q":"What is the chemical symbol for iron?","o":["A) Ir","B) Fe","C) I","D) Fr"],"a":"ANS. B"},
+  {"q":"Which gas is essential for human respiration?","o":["A) Carbon dioxide","B) Nitrogen","C) Oxygen","D) Argon"],"a":"ANS. C"},
+  {"q":"Which type of neuron carries impulses toward the central nervous system?","o":["A) Motor neurons","B) Sensory neurons","C) Interneurons","D) Peripheral neurons"],"a":"ANS. B"},
+  {"q":"What is the main unit of heredity?","o":["A) Chromosome","B) Gene","C) Allele","D) Nucleotide"],"a":"ANS. B"},
+  {"q":"Which planetary body has rings visible from Earth?","o":["A) Mars","B) Venus","C) Saturn","D) Mercury"],"a":"ANS. C"},
+  {"q":"What is the main greenhouse gas emitted by human activities?","o":["A) Methane","B) Carbon dioxide","C) Nitrous oxide","D) Ozone"],"a":"ANS. B"},
+  {"q":"What is the phenomenon where light bends when passing from one medium to another?","o":["A) Reflection","B) Refraction","C) Diffusion","D) Dispersion"],"a":"ANS. B"},
+  {"q":"Which element is required for the formation of thyroid hormones?","o":["A) Iron","B) Iodine","C) Calcium","D) Zinc"],"a":"ANS. B"},
+  {"q":"Which rock is formed by cooling and solidification of magma?","o":["A) Sedimentary","B) Metamorphic","C) Igneous","D) Limestone"],"a":"ANS. C"},
+  {"q":"What is the study of the Earth's atmosphere called?","o":["A) Geology","B) Oceanography","C) Meteorology","D) Ecology"],"a":"ANS. C"},
+  {"q":"What is the major component of the Sun?","o":["A) Helium","B) Hydrogen","C) Oxygen","D) Carbon"],"a":"ANS. B"},
+  {"q":"Which biological molecule speeds up chemical reactions in cells?","o":["A) Lipids","B) Carbohydrates","C) Enzymes","D) DNA"],"a":"ANS. C"},
+  {"q":"What is the main purpose of the ozone layer?","o":["A) Trap heat","B) Block UV radiation","C) Produce rain","D) Cool the Earth"],"a":"ANS. B"},
+  {"q":"What is the measure of the amount of matter in an object?","o":["A) Weight","B) Mass","C) Density","D) Volume"],"a":"ANS. B"},
+  {"q":"Which component of blood helps clotting?","o":["A) Plasma","B) Red blood cells","C) Platelets","D) White blood cells"],"a":"ANS. C"},
+  {"q":"Which instrument is used to view very small objects like bacteria?","o":["A) Telescope","B) Microscope","C) Periscope","D) Spectrometer"],"a":"ANS. B"},
+  {"q":"Which process converts nitrogen gas into a usable form for plants?","o":["A) Photosynthesis","B) Nitrogen fixation","C) Respiration","D) Denitrification"],"a":"ANS. B"},
+  {"q":"Which hormone regulates blood sugar levels?","o":["A) Thyroxine","B) Insulin","C) Adrenaline","D) Estrogen"],"a":"ANS. B"},
+  {"q":"Which part of the eye controls the amount of light entering?","o":["A) Retina","B) Cornea","C) Iris","D) Lens"],"a":"ANS. C"},
+  {"q":"What is the common name for sodium bicarbonate?","o":["A) Baking powder","B) Baking soda","C) Table salt","D) Vinegar"],"a":"ANS. B"},
+  {"q":"Which type of organism makes its own food using sunlight?","o":["A) Heterotroph","B) Autotroph","C) Parasite","D) Saprophyte"],"a":"ANS. B"},
+  {"q":"Which property describes how much mass is contained in a given volume?","o":["A) Mass","B) Weight","C) Density","D) Viscosity"],"a":"ANS. C"},
+  {"q":"Which planet has the strongest gravity among these?","o":["A) Earth","B) Mars","C) Venus","D) Jupiter"],"a":"ANS. D"},
+  {"q":"What causes rusting of iron?","o":["A) Exposure to dry air","B) Exposure to water and oxygen","C) Exposure to cold only","D) Exposure to sunlight only"],"a":"ANS. B"},
+  {"q":"Which process describes solid directly turning into gas?","o":["A) Melting","B) Freezing","C) Sublimation","D) Condensation"],"a":"ANS. C"},
+  {"q":"Which organelles are involved in packaging and shipping proteins?","o":["A) Ribosomes","B) Golgi apparatus","C) Lysosomes","D) Mitochondria"],"a":"ANS. B"},
+  {"q":"Which blood vessel carries blood away from the heart?","o":["A) Vein","B) Artery","C) Capillary","D) Venule"],"a":"ANS. B"},
+  {"q":"Which device increases voltage in an AC circuit?","o":["A) Motor","B) Generator","C) Transformer","D) Battery"],"a":"ANS. C"},
+  {"q":"Which gas is used for respiration in cellular processes?","o":["A) Nitrogen","B) Oxygen","C) Carbon dioxide","D) Methane"],"a":"ANS. B"},
+  {"q":"What is the dominant gas in natural air-bags in cars when inflated?","o":["A) Carbon dioxide","B) Nitrogen","C) Argon","D) Oxygen"],"a":"ANS. B"},
+  {"q":"Which organ produces bile but does not store it?","o":["A) Gallbladder","B) Pancreas","C) Liver","D) Stomach"],"a":"ANS. C"},
+  {"q":"What do we call a change in the DNA sequence?","o":["A) Mutation","B) Translation","C) Transcription","D) Replication"],"a":"ANS. A"},
+  {"q":"Which force acts between electrically charged particles?","o":["A) Gravitational force","B) Electromagnetic force","C) Strong nuclear force","D) Weak nuclear force"],"a":"ANS. B"},
+  {"q":"Which substance speeds up a chemical reaction without being consumed?","o":["A) Reactant","B) Catalyst","C) Solvent","D) Product"],"a":"ANS. B"},
+  {"q":"Which is an example of a renewable energy source?","o":["A) Coal","B) Oil","C) Natural gas","D) Solar energy"],"a":"ANS. D"},
+  {"q":"What is the main gas in 'laughing gas' used as an anesthetic?","o":["A) Nitrous oxide","B) Carbon monoxide","C) Sulfur dioxide","D) Nitrogen dioxide"],"a":"ANS. A"},
+  {"q":"Which term describes the variety of life in an area?","o":["A) Biomass","B) Biodiversity","C) Biome","D) Biosphere"],"a":"ANS. B"},
+  {"q":"Which part of a neuron receives signals?","o":["A) Axon","B) Dendrite","C) Synapse","D) Myelin sheath"],"a":"ANS. B"},
+  {"q":"Which bond is formed between amino acids?","o":["A) Peptide bond","B) Glycosidic bond","C) Phosphodiester bond","D) Ester bond"],"a":"ANS. A"},
+  {"q":"Which device measures electric potential difference?","o":["A) Ammeter","B) Voltmeter","C) Ohmmeter","D) Galvanometer"],"a":"ANS. B"},
+  {"q":"What is the chemical name for rust?","o":["A) Iron oxide","B) Iron sulfate","C) Iron chloride","D) Iron nitrate"],"a":"ANS. A"},
+  {"q":"Which process produces most of the Earth's oxygen?","o":["A) Animal respiration","B) Photosynthesis by plants and phytoplankton","C) Volcanic activity","D) Combustion"],"a":"ANS. B"},
+  {"q":"Which organ system includes lungs and trachea?","o":["A) Circulatory system","B) Digestive system","C) Respiratory system","D) Nervous system"],"a":"ANS. C"},
+  {"q":"Which chemical element is essential for respiration and makes up about 21% of air?","o":["A) Nitrogen","B) Oxygen","C) Argon","D) Carbon dioxide"],"a":"ANS. B"},
+  {"q":"Which process converts light energy into chemical energy in plants?","o":["A) Respiration","B) Photosynthesis","C) Fermentation","D) Transpiration"],"a":"ANS. B"},
+  {"q":"Which organ is primarily responsible for sensing balance?","o":["A) Inner ear","B) Eye","C) Lung","D) Kidney"],"a":"ANS. A"},
+  {"q":"Which natural resource is formed from compressed plant material over millions of years?","o":["A) Iron ore","B) Coal","C) Granite","D) Clay"],"a":"ANS. B"},
+  {"q":"Which mineral deficiency causes anemia?","o":["A) Calcium","B) Iron","C) Iodine","D) Sodium"],"a":"ANS. B"},
+  {"q":"What is the freezing point of water in Celsius?","o":["A) 0°C","B) -10°C","C) 10°C","D) 100°C"],"a":"ANS. A"},
+  {"q":"Which biological process produces gametes?","o":["A) Mitosis","B) Meiosis","C) Binary fission","D) Budding"],"a":"ANS. B"},
+  {"q":"Which instrument is used to detect bacteria colony growth in labs?","o":["A) Spectrophotometer","B) Incubator","C) Microscope","D) Petri dish"],"a":"ANS. D"},
+  {"q":"Which vitamin deficiency causes rickets?","o":["A) Vitamin A","B) Vitamin B12","C) Vitamin D","D) Vitamin C"],"a":"ANS. C"},
+  {"q":"Which of these is NOT a state of matter at common conditions?","o":["A) Solid","B) Liquid","C) Plasma at room temp","D) Gas"],"a":"ANS. C"},
+  {"q":"Which property determines how much an object resists acceleration?","o":["A) Mass","B) Weight","C) Force","D) Energy"],"a":"ANS. A"},
+  {"q":"Which gas is commonly used to fill balloons so they float?","o":["A) Oxygen","B) Nitrogen","C) Helium","D) Carbon dioxide"],"a":"ANS. C"},
+  {"q":"Which organ helps regulate body temperature through sweat?","o":["A) Kidney","B) Skin","C) Liver","D) Brain"],"a":"ANS. B"},
+  {"q":"What is the normal human body temperature (°C) approximately?","o":["A) 34°C","B) 36-37°C","C) 39°C","D) 32°C"],"a":"ANS. B"},
+  {"q":"Which process splits a nucleus into two smaller nuclei releasing energy?","o":["A) Fusion","B) Fission","C) Combustion","D) Ionization"],"a":"ANS. B"},
+  {"q":"Which instrument measures wind speed?","o":["A) Anemometer","B) Hygrometer","C) Barometer","D) Thermometer"],"a":"ANS. A"},
+  {"q":"Which type of cell has no nucleus?","o":["A) Plant cell","B) Animal cell","C) Red blood cell (mammalian)","D) Fungal cell"],"a":"ANS. C"},
+  {"q":"Which gas is responsible for the ozone layer depletion?","o":["A) CO2","B) CFCs (chlorofluorocarbons)","C) Methane","D) O2"],"a":"ANS. B"},
+  {"q":"Which vitamin helps in iron absorption and immune function?","o":["A) Vitamin A","B) Vitamin C","C) Vitamin K","D) Vitamin B12"],"a":"ANS. B"},
+  {"q":"Which is a non-renewable source of energy?","o":["A) Wind","B) Solar","C) Coal","D) Hydropower"],"a":"ANS. C"},
+  {"q":"Which soil layer is richest in organic matter?","o":["A) Bedrock","B) Subsoil","C) Topsoil","D) Parent material"],"a":"ANS. C"},
+  {"q":"Which organ produces digestive enzymes and insulin?","o":["A) Liver","B) Pancreas","C) Gallbladder","D) Spleen"],"a":"ANS. B"},
+  {"q":"Which part of the plant transports water from roots to leaves?","o":["A) Phloem","B) Xylem","C) Stomata","D) Epidermis"],"a":"ANS. B"},
+  {"q":"What do we call the process by which plants lose water through stomata?","o":["A) Perspiration","B) Transpiration","C) Condensation","D) Evaporation"],"a":"ANS. B"},
+  {"q":"Which chemical element is needed for hemoglobin to carry oxygen?","o":["A) Calcium","B) Iron","C) Sodium","D) Potassium"],"a":"ANS. B"},
+  {"q":"Which branch of science studies insects?","o":["A) Entomology","B) Ornithology","C) Herpetology","D) Ichthyology"],"a":"ANS. A"},
+  {"q":"Which process forms sedimentary rocks?","o":["A) Cooling of magma","B) Heat and pressure","C) Compaction and cementation","D) Metamorphism"],"a":"ANS. C"},
+  {"q":"Which organelle is involved in detoxification and lipid synthesis?","o":["A) Smooth endoplasmic reticulum","B) Rough endoplasmic reticulum","C) Lysosome","D) Ribosome"],"a":"ANS. A"},
+  {"q":"Which of the following is an alkaline substance?","o":["A) Vinegar","B) Lemon juice","C) Sodium hydroxide","D) Carbonic acid"],"a":"ANS. C"},
+  {"q":"Which layer of Earth is liquid and generates Earth's magnetic field?","o":["A) Crust","B) Mantle","C) Outer core","D) Inner core"],"a":"ANS. C"},
+  {"q":"Which sugar is present in RNA but not DNA?","o":["A) Deoxyribose","B) Ribose","C) Glucose","D) Fructose"],"a":"ANS. B"},
+  {"q":"Which gas is a byproduct of photosynthesis?","o":["A) Nitrogen","B) Oxygen","C) Carbon dioxide","D) Methane"],"a":"ANS. B"},
+  {"q":"What is the study of animals called?","o":["A) Botany","B) Zoology","C) Microbiology","D) Ecology"],"a":"ANS. B"},
+  {"q":"Which instrument is used to measure electric current?","o":["A) Voltmeter","B) Ammeter","C) Ohmmeter","D) Thermometer"],"a":"ANS. B"},
+  {"q":"Which of these is NOT a carbohydrate?","o":["A) Glucose","B) Cellulose","C) Starch","D) Alanine (an amino acid)"],"a":"ANS. D"},
+  {"q":"What is the main cause of acid rain?","o":["A) Carbon dioxide only","B) Sulfur and nitrogen oxides","C) Oxygen","D) Methane"],"a":"ANS. B"},
+  {"q":"Which tissue connects muscles to bones?","o":["A) Ligament","B) Tendon","C) Cartilage","D) Epithelium"],"a":"ANS. B"},
+  {"q":"Which gas is poisonous and produced by incomplete combustion?","o":["A) Carbon monoxide","B) Carbon dioxide","C) Nitrogen","D) Oxygen"],"a":"ANS. A"},
+  {"q":"Which organ stores bile?","o":["A) Liver","B) Gallbladder","C) Pancreas","D) Stomach"],"a":"ANS. B"},
+  {"q":"Which layer of the atmosphere contains the ozone layer?","o":["A) Troposphere","B) Stratosphere","C) Mesosphere","D) Thermosphere"],"a":"ANS. B"},
+  {"q":"What is the study of relationships among organisms and their environment?","o":["A) Ecology","B) Zoology","C) Botany","D) Geology"],"a":"ANS. A"},
+  {"q":"Which element is liquid metal used in thermometers historically?","o":["A) Mercury","B) Lead","C) Sodium","D) Potassium"],"a":"ANS. A"},
+  {"q":"Which organ helps to produce lymphocytes and is part of immune system?","o":["A) Spleen","B) Gallbladder","C) Pancreas","D) Appendix"],"a":"ANS. A"},
+  {"q":"What is the major component of bone?","o":["A) Cellulose","B) Collagen and calcium phosphate","C) Keratin","D) Glycogen"],"a":"ANS. B"},
+  {"q":"Which device measures the electrical resistance of a component?","o":["A) Voltmeter","B) Ammeter","C) Ohmmeter","D) Ammeter-Ohmmeter"],"a":"ANS. C"},
+  {"q":"Which gas do humans exhale in the largest quantity after respiration?","o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Methane"],"a":"ANS. C"},
+  {"q":"Which type of radiation can cause sunburn and damage DNA?","o":["A) Radio waves","B) Infrared","C) Ultraviolet","D) Microwaves"],"a":"ANS. C"},
+  {"q":"Which is the hardest natural substance on Earth?","o":["A) Gold","B) Iron","C) Diamond","D) Quartz"],"a":"ANS. C"},
+  {"q":"Which process produces energy in the Sun?","o":["A) Chemical combustion","B) Nuclear fission","C) Nuclear fusion","D) Electric discharge"],"a":"ANS. C"},
+  {"q":"Which device is used to separate mixtures based on density (centrifugal force)?","o":["A) Evaporator","B) Centrifuge","C) Distillation column","D) Filtration unit"],"a":"ANS. B"},
+  {"q":"Which gas is used to keep food packages oxygen-free and extend shelf life?","o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Helium"],"a":"ANS. B"},
+  {"q":"Which molecule forms the genetic code?","o":["A) Proteins","B) DNA","C) Lipids","D) Carbohydrates"],"a":"ANS. B"},
+  {"q":"Which instrument is used for measuring electric resistance?","o":["A) Voltmeter","B) Ammeter","C) Ohmmeter","D) Spectrometer"],"a":"ANS. C"},
+  {"q":"Which disease is caused by the bacterium Mycobacterium tuberculosis?","o":["A) Malaria","B) Tuberculosis","C) Influenza","D) Diabetes"],"a":"ANS. B"},
+  {"q":"Which plant tissue transports sugars from leaves to other parts?","o":["A) Xylem","B) Phloem","C) Epidermis","D) Cambium"],"a":"ANS. B"},
+  {"q":"Which biological macromolecule is primarily used for long-term energy storage in animals?","o":["A) Carbohydrates","B) Fats (lipids)","C) Proteins","D) Nucleic acids"],"a":"ANS. B"},
+  {"q":"What is the term for an organism that eats both plants and animals?","o":["A) Herbivore","B) Carnivore","C) Omnivore","D) Detritivore"],"a":"ANS. C"},
+  {"q":"What is the visible part of electromagnetic spectrum that human eyes detect?","o":["A) Infrared","B) Ultraviolet","C) Visible light","D) Gamma rays"],"a":"ANS. C"},
+  {"q":"Which process in cells makes RNA from DNA?","o":["A) Translation","B) Transcription","C) Replication","D) Mutation"],"a":"ANS. B"},
+  {"q":"Which part of the brain controls voluntary movement and balance?","o":["A) Cerebrum","B) Cerebellum","C) Medulla","D) Hypothalamus"],"a":"ANS. B"},
+  {"q":"Which mineral is important for nerve function and muscle contraction?","o":["A) Calcium","B) Sodium","C) Potassium","D) Magnesium"],"a":"ANS. C"},
+  {"q":"Which phenomenon explains why the sky appears blue?","o":["A) Absorption","B) Scattering of short wavelengths (Rayleigh scattering)","C) Reflection","D) Refraction"],"a":"ANS. B"},
+  {"q":"Which organelle contains the cell's genetic material in eukaryotic cells?","o":["A) Mitochondrion","B) Nucleus","C) Ribosome","D) Chloroplast"],"a":"ANS. B"},
+  {"q":"Which element is most commonly used in semiconductor devices (chips)?","o":["A) Silicon","B) Germanium","C) Gallium","D) Carbon"],"a":"ANS. A"},
+  {"q":"Which chemical is commonly used as household disinfectant?","o":["A) Ethanol","B) Sodium hypochlorite (bleach)","C) Sulfuric acid","D) Hydrochloric acid"],"a":"ANS. B"},
+  {"q":"What is the biological term for programmed cell death?","o":["A) Necrosis","B) Apoptosis","C) Autophagy","D) Mitosis"],"a":"ANS. B"},
+  {"q":"Which nutrient is essential for tissue repair and enzyme synthesis?","o":["A) Carbohydrates","B) Proteins","C) Fats","D) Vitamins"],"a":"ANS. B"},
+  {"q":"Which process increases the concentration of a solution by removing solvent?","o":["A) Dilution","B) Evaporation","C) Filtration","D) Precipitation"],"a":"ANS. B"},
+  {"q":"Which planet is the largest in our solar system?","o":["A) Earth","B) Saturn","C) Jupiter","D) Neptune"],"a":"ANS. C"},
+  {"q":"Which tissue covers body surfaces and lines cavities?","o":["A) Connective tissue","B) Epithelial tissue","C) Muscle tissue","D) Nervous tissue"],"a":"ANS. B"},
+  {"q":"Which type of chemical reaction releases energy and gives off heat?","o":["A) Endothermic","B) Exothermic","C) Reversible","D) Dehydration"],"a":"ANS. B"},
+  {"q":"Which instrument is used to measure the mass of an object precisely?","o":["A) Ruler","B) Balance","C) Thermometer","D) Hygrometer"],"a":"ANS. B"},
+  {"q":"What is the main function of the large intestine?","o":["A) Digest proteins","B) Absorb water and form feces","C) Break down fats","D) Absorb nutrients"],"a":"ANS. B"},
+  {"q":"Which gas is used in scuba tanks for breathing mixture?","o":["A) Pure oxygen only","B) Nitrogen-oxygen mix (air) or special mixes","C) Carbon dioxide","D) Helium only"],"a":"ANS. B"},
+  {"q":"Which instrument is used to separate liquids with different boiling points?","o":["A) Distillation apparatus","B) Filtration funnel","C) Centrifuge","D) Chromatograph"],"a":"ANS. A"},
+  {"q":"Which method preserves food by removing water to inhibit microbial growth?","o":["A) Pasteurization","B) Dehydration/drying","C) Freezing only","D) Fermentation"],"a":"ANS. B"},
+  {"q":"Which organ in plants is mainly responsible for photosynthesis?","o":["A) Roots","B) Stem","C) Leaves","D) Flowers"],"a":"ANS. C"},
+  {"q":"Which disease is transmitted by mosquitoes and caused by Plasmodium species?","o":["A) Dengue","B) Malaria","C) Typhoid","D) Cholera"],"a":"ANS. B"},
+  {"q":"Which device is used to magnify distant objects like stars?","o":["A) Microscope","B) Telescope","C) Periscope","D) Binoculars (general)"],"a":"ANS. B"},
+  {"q":"Which biological molecules are main components of cell membranes?","o":["A) Proteins and lipids (phospholipids)","B) Carbohydrates only","C) Nucleic acids only","D) Minerals"],"a":"ANS. A"},
+  {"q":"Which process converts atmospheric nitrogen into ammonia by industrial method?","o":["A) Haber process","B) Photosynthesis","C) Nitrogen fixation by bacteria only","D) Electrolysis"],"a":"ANS. A"},
+  {"q":"Which part of the ear translates vibrations into nerve impulses?","o":["A) Outer ear","B) Middle ear bones","C) Cochlea (inner ear)","D) Eustachian tube"],"a":"ANS. C"},
+  {"q":"Which device is used to measure the concentration of solutes by light absorbance?","o":["A) pH meter","B) Spectrophotometer","C) Centrifuge","D) Osmometer"],"a":"ANS. B"},
+  {"q":"Which type of cell division results in two genetically identical daughter cells?","o":["A) Meiosis","B) Mitosis","C) Binary fission","D) Conjugation"],"a":"ANS. B"},
+  {"q":"Which process uses bacteria to clean oil spills by breaking down pollutants?","o":["A) Phytoremediation","B) Bioremediation","C) Chemical remediation","D) Thermal remediation"],"a":"ANS. B"},
+  {"q":"Which phenomenon causes water droplets to form on the outside of a cold glass?","o":["A) Evaporation","B) Condensation","C) Sublimation","D) Freezing"],"a":"ANS. B"},
+  {"q":"Which gas dissolves in water to form carbonic acid affecting aquatic life?","o":["A) Oxygen","B) Carbon dioxide","C) Nitrogen","D) Methane"],"a":"ANS. B"},
+  {"q":"Which organelle is responsible for intracellular digestion?","o":["A) Ribosome","B) Lysosome","C) Golgi apparatus","D) Chloroplast"],"a":"ANS. B"},
+  {"q":"Which soil component improves soil aeration and drainage?","o":["A) Clay","B) Silt","C) Sand","D) Humus"],"a":"ANS. C"},
+  {"q":"What is the primary cause of seasonal changes on Earth?","o":["A) Distance from the Sun","B) Earth's axial tilt","C) Moon's phases","D) Solar flares"],"a":"ANS. B"},
+  {"q":"Which property allows metals to be drawn into wires?","o":["A) Malleability","B) Ductility","C) Hardness","D) Density"],"a":"ANS. B"},
+  {"q":"Which vitamin deficiency leads to night blindness?","o":["A) Vitamin B1","B) Vitamin A","C) Vitamin D","D) Vitamin C"],"a":"ANS. B"},
+  {"q":"Which process in wastewater treatment reduces pathogens by using sunlight and microorganisms?","o":["A) Primary sedimentation","B) Secondary biological treatment","C) Tertiary disinfection (including UV)","D) Sludge drying"],"a":"ANS. C"},
+  {"q":"Which molecule stores genetic information in most organisms?","o":["A) RNA","B) DNA","C) Proteins","D) Lipids"],"a":"ANS. B"},
+  {"q":"Which gas is required for combustion to occur?","o":["A) Carbon dioxide","B) Nitrogen","C) Oxygen","D) Argon"],"a":"ANS. C"},
+  {"q":"Which part of a flowering plant becomes the fruit?","o":["A) Petal","B) Ovary","C) Stamen","D) Sepal"],"a":"ANS. B"},
+  {"q":"Which mineral deficiency causes goiter?","o":["A) Iron deficiency","B) Iodine deficiency","C) Calcium deficiency","D) Vitamin D deficiency"],"a":"ANS. B"},
+  {"q":"Which machine converts mechanical energy into electrical energy?","o":["A) Motor","B) Generator","C) Battery","D) Transformer"],"a":"ANS. B"},
+  {"q":"Which gas is essential for anaerobic digestion to generate biogas?","o":["A) Oxygen","B) Methane","C) Carbon dioxide (as product)","D) Nitrogen"],"a":"ANS. B"},
+  {"q":"Which particles determine the identity of an element?","o":["A) Protons","B) Neutrons","C) Electrons","D) Ions"],"a":"ANS. A"},
+  {"q":"Which ocean current influences climate by transporting warm water?","o":["A) Gulf Stream","B) Humboldt Current","C) Canary Current","D) Benguela Current"],"a":"ANS. A"},
+  {"q":"Which condition results from blocked airways and inflammation in lungs causing difficulty breathing?","o":["A) Asthma","B) Bronchitis only","C) Pneumonia only","D) Tuberculosis"],"a":"ANS. A"},
+  {"q":"Which wavelength range is visible to humans?","o":["A) 10–400 nm","B) 400–700 nm","C) 700–1000 nm","D) 1000–2000 nm"],"a":"ANS. B"},
+  {"q":"Which process in cells produces most ATP (energy) under aerobic conditions?","o":["A) Glycolysis only","B) Krebs cycle + oxidative phosphorylation","C) Fermentation only","D) Photosynthesis"],"a":"ANS. B"},
+  {"q":"Which of the following is essential for electric circuits to work?","o":["A) A voltage source and a closed path (circuit)","B) Open switch","C) Insulator only","D) No current flow"],"a":"ANS. A"},
+  {"q":"Which chemical is used to lower the pH of soil in agriculture if soil is too alkaline?","o":["A) Lime (calcium carbonate)","B) Sulfuric acid or elemental sulfur (acidifying)","C) Sodium hydroxide","D) Soda ash"],"a":"ANS. B"},
+  {"q":"Which type of wave requires a medium for propagation?","o":["A) Electromagnetic waves","B) Light waves","C) Mechanical waves (e.g., sound)","D) Radio waves"],"a":"ANS. C"},
+  {"q":"Which blood vessels have the thinnest walls allowing exchange of gases and nutrients?","o":["A) Arteries","B) Veins","C) Capillaries","D) Arterioles"],"a":"ANS. C"},
+  {"q":"Which term describes a species that no longer exists?","o":["A) Endangered","B) Extinct","C) Vulnerable","D) Threatened"],"a":"ANS. B"},
+  {"q":"Which vitamin is primarily obtained from citrus fruits and helps prevent scurvy?","o":["A) Vitamin A","B) Vitamin B12","C) Vitamin C","D) Vitamin D"],"a":"ANS. C"},
+  {"q":"Which biological structure stores genetic information in viruses?","o":["A) DNA only","B) RNA only","C) DNA or RNA depending on the virus","D) Proteins only"],"a":"ANS. C"},
+  {"q":"Which process is used by plants to open and close stomata controlling gas exchange?","o":["A) Osmosis and turgor changes in guard cells","B) Active transport only","C) Photosynthesis only","D) Respiration only"],"a":"ANS. A"},
+  {"q":"Which type of lens is used to correct nearsightedness (myopia)?","o":["A) Convex lens","B) Concave lens","C) Cylindrical lens","D) Bifocal lens"],"a":"ANS. B"},
+  {"q":"What is the main component of dry air by volume?","o":["A) Oxygen","B) Carbon dioxide","C) Nitrogen","D) Argon"],"a":"ANS. C"},
+  {"q":"Which chemical process is used to produce ammonia industrially?","o":["A) Haber-Bosch process","B) Photosynthesis","C) Fermentation","D) Electrolysis"],"a":"ANS. A"},
+  {"q":"Which type of radiation is used in medical imaging to view bones?","o":["A) Gamma rays","B) Radio waves","C) X-rays","D) Infrared"],"a":"ANS. C"},
+  {"q":"Which unit is used to measure frequency?","o":["A) Hertz (Hz)","B) Newton","C) Joule","D) Watt"],"a":"ANS. A"},
+  {"q":"Which process converts a gas directly into a solid?","o":["A) Freezing","B) Condensation","C) Deposition","D) Sublimation"],"a":"ANS. C"},
+  {"q":"Which molecule in cells carries amino acids to ribosomes during protein synthesis?","o":["A) rRNA","B) mRNA","C) tRNA","D) DNA"],"a":"ANS. C"},
+  {"q":"Which type of muscle is involuntary and found in organs like the intestines?","o":["A) Skeletal muscle","B) Cardiac muscle","C) Smooth muscle","D) Striated muscle"],"a":"ANS. C"},
+  {"q":"Which planet is known for its prominent ring system?","o":["A) Neptune","B) Uranus","C) Saturn","D) Mars"],"a":"ANS. C"},
+  {"q":"Which engineering field primarily deals with electricity and power systems?","o":["A) Mechanical engineering","B) Civil engineering","C) Electrical engineering","D) Chemical engineering"],"a":"ANS. C"},
+  {"q":"Which process uses bacteria to convert atmospheric nitrogen to a form plants can use in soil?","o":["A) Nitrogen fixation","B) Denitrification","C) Nitrification","D) Ammonification"],"a":"ANS. A"},
+  {"q":"Which fluid in the human body helps transport nutrients and remove waste from tissues?","o":["A) Air","B) Lymph and blood","C) Urine","D) Bile"],"a":"ANS. B"},
+  {"q":"Which type of chemical reaction involves the gain of electrons?","o":["A) Oxidation","B) Reduction","C) Neutralization","D) Combustion"],"a":"ANS. B"},
+  {"q":"Which scale measures the hardness of minerals?","o":["A) Richter scale","B) Mohs scale","C) Beaufort scale","D) pH scale"],"a":"ANS. B"},
+  {"q":"Which structure in plants allows gas exchange and transpiration?","o":["A) Stomata","B) Lenticels","C) Root hairs","D) Xylem"],"a":"ANS. A"},
+  {"q":"Which process produces drinking water from seawater?","o":["A) Irrigation","B) Desalination","C) Distillation of freshwater","D) Filtration only"],"a":"ANS. B"},
+  {"q":"Which type of reaction forms polymers from monomers by releasing water?","o":["A) Hydrolysis","B) Condensation (dehydration synthesis)","C) Oxidation","D) Reduction"],"a":"ANS. B"},
+  {"q":"Which unit is used to measure electric charge?","o":["A) Volt","B) Coulomb","C) Ohm","D) Ampere"],"a":"ANS. B"},
+  {"q":"Which part of a cell is involved in protein modification and packaging?","o":["A) Mitochondria","B) Golgi apparatus","C) Nucleus","D) Cytoskeleton"],"a":"ANS. B"},
+  {"q":"Which process in geologic cycle transforms sedimentary rock into metamorphic rock?","o":["A) Melting","B) Heat and pressure","C) Weathering","D) Erosion"],"a":"ANS. B"},
+  {"q":"Which organ is primarily responsible for filtering pathogens in the blood and recycling red blood cells?","o":["A) Liver","B) Spleen","C) Kidney","D) Pancreas"],"a":"ANS. B"},
+  {"q":"Which gas is responsible for ozone formation at ground level causing smog?","o":["A) Nitrogen oxides and volatile organic compounds (VOCs)","B) Oxygen only","C) Carbon dioxide only","D) Methane only"],"a":"ANS. A"},
+  {"q":"Which phenomenon explains why boats seem to float?","o":["A) Friction","B) Buoyancy (Archimedes' principle)","C) Adhesion","D) Surface tension"],"a":"ANS. B"},
+  {"q":"Which instrument is used to measure humidity?","o":["A) Hygrometer","B) Barometer","C) Anemometer","D) Thermometer"],"a":"ANS. A"},
+  {"q":"Which biological molecules are main components of hair and nails?","o":["A) Collagen","B) Keratin (a protein)","C) Cellulose","D) Starch"],"a":"ANS. B"},
+  {"q":"Which simple machine is an inclined plane wrapped around a cylinder?","o":["A) Lever","B) Wheel and axle","C) Screw","D) Pulley"],"a":"ANS. C"},
+  {"q":"Which organ helps regulate blood pH by removing hydrogen ions and reabsorbing bicarbonate?","o":["A) Heart","B) Kidney","C) Liver","D) Lungs"],"a":"ANS. B"},
+  {"q":"Which chemical is commonly used as an antiseptic on skin?","o":["A) Ethanol or isopropyl alcohol","B) Sulfuric acid","C) Sodium hydroxide","D) Hydrochloric acid"],"a":"ANS. A"},
+  {"q":"Which layer of skin contains sweat glands and hair follicles?","o":["A) Epidermis","B) Dermis","C) Hypodermis","D) Stratum corneum"],"a":"ANS. B"},
+  {"q":"Which energy transformation happens in an electric heater?","o":["A) Chemical to mechanical","B) Electrical to thermal (heat)","C) Thermal to electrical","D) Nuclear to electrical"],"a":"ANS. B"},
+  {"q":"Which compound forms the structural framework of cell membranes?","o":["A) Proteins only","B) Phospholipids and proteins","C) Carbohydrates only","D) Nucleic acids"],"a":"ANS. B"},
+  {"q":"Which organ secretes digestive enzymes into the small intestine through the pancreatic duct?","o":["A) Liver","B) Pancreas","C) Stomach","D) Gallbladder"],"a":"ANS. B"},
+  {"q":"Which instrument measures the intensity of earthquakes and is used to detect seismic waves?","o":["A) Thermometer","B) Seismograph (seismometer)","C) Barometer","D) Magnetometer"],"a":"ANS. B"},
+  {"q":"Which chemical family contains compounds with a -OH group?","o":["A) Alkanes","B) Alcohols","C) Carboxylic acids","D) Alkynes"],"a":"ANS. B"},
+  {"q":"Which process in the carbon cycle returns carbon from organisms back to the atmosphere?","o":["A) Photosynthesis","B) Respiration and decomposition","C) Carbon fixation","D) Mineralization only"],"a":"ANS. B"},
+  {"q":"Which disease is prevented by vaccination and affects the liver?","o":["A) Tuberculosis","B) Hepatitis B","C) Influenza","D) Malaria"],"a":"ANS. B"},
+  {"q":"Which planetary motion causes day and night?","o":["A) Revolution around the Sun","B) Rotation on its axis","C) Precession","D) Orbital eccentricity"],"a":"ANS. B"}
+];
+
+const itemsPerPage = 10;
+let currentPage = 1;
+const totalPages = Math.ceil(mcqs.length / itemsPerPage);
+
+function displayMCQs(page) {
+    const container = document.getElementById("mcq-container");
+    container.innerHTML = "";
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageItems = mcqs.slice(start, end);
+
+    pageItems.forEach((item, index) => {
+        const mcqDiv = document.createElement("div");
+        mcqDiv.classList.add("mcq");
+        const qNumber = start + index + 1;
+        mcqDiv.innerHTML = `
+            <div class="question">${qNumber}. ${item.q}</div>
+            <div class="options">
+                ${item.o.map(opt => `<div class="option">${opt}</div>`).join("")}
+            </div>
+            <div class="answer">${item.a}</div>
+        `;
+        container.appendChild(mcqDiv);
+    });
+
+    document.getElementById("pageInput").value = currentPage;
+    window.scrollTo(0,0);
+}
+
+function nextPage() {
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayMCQs(currentPage);
+    }
+}
+
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        displayMCQs(currentPage);
+    }
+}
+
+function goToPage() {
+    const page = parseInt(document.getElementById("pageInput").value);
+    if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        displayMCQs(currentPage);
+    }
+}
+
+displayMCQs(currentPage);
+</script>
+</body>
+</html>
