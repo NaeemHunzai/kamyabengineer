@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Smart Series MCQs — General Knowledge (1–200)</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        color: #333;
+    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    h1 {
+        text-align: center;
+        background-color: #00796b;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .mcq {
+        background: #ffffffd9;
+        border-left: 6px solid #00796b;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .mcq:hover { transform: scale(1.01); }
+    .question { font-size: 18px; font-weight: bold; }
+    .options { margin-top: 15px; }
+    .option { margin: 6px 0; padding-left: 10px; }
+    .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
+    .pagination { text-align: center; margin-top: 30px; }
+    .pagination button {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #00796b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .pagination button:hover { background-color: #004d40; }
+    .pagination input {
+        width: 50px;
+        padding: 8px;
+        font-size: 16px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 0 5px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Smart Series MCQs — General Knowledge (1–200)</h1>
+<div id="mcq-container"></div>
+<div class="pagination">
+    <button onclick="prevPage()">Previous</button>
+    <input type="number" id="pageInput" min="1" />
+    <button onclick="goToPage()">Go</button>
+    <button onclick="nextPage()">Next</button>
+</div>
+</div>
+
+<script>
+const mcqs = [
+  {"q":"1. Which gas makes up most of the Earth's atmosphere?", "o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Argon"], "a":"ANS. B"},
+  {"q":"2. Who wrote 'Romeo and Juliet'?", "o":["A) Charles Dickens","B) William Shakespeare","C) Jane Austen","D) Mark Twain"], "a":"ANS. B"},
+  {"q":"3. What is the chemical symbol for gold?", "o":["A) Au","B) Ag","C) Gd","D) Go"], "a":"ANS. A"},
+  {"q":"4. Which planet is known as the Red Planet?", "o":["A) Venus","B) Mars","C) Jupiter","D) Saturn"], "a":"ANS. B"},
+  {"q":"5. What is the capital city of France?", "o":["A) Berlin","B) Madrid","C) Paris","D) Rome"], "a":"ANS. C"},
+  {"q":"6. Who is credited with the theory of relativity?", "o":["A) Isaac Newton","B) Albert Einstein","C) Galileo Galilei","D) Niels Bohr"], "a":"ANS. B"},
+  {"q":"7. What is H2O commonly known as?", "o":["A) Hydrogen peroxide","B) Salt","C) Water","D) Oxygen"], "a":"ANS. C"},
+  {"q":"8. Which is the largest ocean on Earth?", "o":["A) Atlantic Ocean","B) Pacific Ocean","C) Indian Ocean","D) Arctic Ocean"], "a":"ANS. B"},
+  {"q":"9. Who painted the Mona Lisa?", "o":["A) Vincent van Gogh","B) Pablo Picasso","C) Leonardo da Vinci","D) Claude Monet"], "a":"ANS. C"},
+  {"q":"10. Which organ pumps blood through the body?", "o":["A) Liver","B) Brain","C) Heart","D) Kidney"], "a":"ANS. C"},
+  {"q":"11. Which year did World War II end?", "o":["A) 1940","B) 1945","C) 1939","D) 1950"], "a":"ANS. B"},
+  {"q":"12. What is the largest continent?", "o":["A) Africa","B) Asia","C) Europe","D) North America"], "a":"ANS. B"},
+  {"q":"13. Who invented the telephone?", "o":["A) Thomas Edison","B) Alexander Graham Bell","C) Nikola Tesla","D) Guglielmo Marconi"], "a":"ANS. B"},
+  {"q":"14. Which element has atomic number 1?", "o":["A) Helium","B) Hydrogen","C) Lithium","D) Oxygen"], "a":"ANS. B"},
+  {"q":"15. What is the freezing point of water in Celsius?", "o":["A) 0°C","B) 32°C","C) 100°C","D) -10°C"], "a":"ANS. A"},
+  {"q":"16. Who was the first woman to fly solo across the Atlantic Ocean?", "o":["A) Amelia Earhart","B) Bessie Coleman","C) Harriet Quimby","D) Jacqueline Cochran"], "a":"ANS. A"},
+  {"q":"17. What is the capital of Japan?", "o":["A) Beijing","B) Seoul","C) Tokyo","D) Bangkok"], "a":"ANS. C"},
+  {"q":"18. Which country hosted the 2016 Summer Olympics?", "o":["A) China","B) Brazil","C) UK","D) Russia"], "a":"ANS. B"},
+  {"q":"19. What does DNA stand for?", "o":["A) Deoxyribonucleic acid","B) Dynamic Nucleic Acid","C) Deoxy Nitrogen Acid","D) Di-Nucleotide Acid"], "a":"ANS. A"},
+  {"q":"20. Which scientist proposed the law of universal gravitation?", "o":["A) Albert Einstein","B) Galileo Galilei","C) Isaac Newton","D) Johannes Kepler"], "a":"ANS. C"},
+  {"q":"21. The Great Barrier Reef is located in which country?", "o":["A) USA","B) Australia","C) Philippines","D) Indonesia"], "a":"ANS. B"},
+  {"q":"22. Who composed the Four Seasons?", "o":["A) Bach","B) Vivaldi","C) Mozart","D) Beethoven"], "a":"ANS. B"},
+  {"q":"23. Which city is the seat of the United Nations headquarters?", "o":["A) Geneva","B) New York","C) Vienna","D) The Hague"], "a":"ANS. B"},
+  {"q":"24. What is the smallest prime number?", "o":["A) 0","B) 1","C) 2","D) 3"], "a":"ANS. C"},
+  {"q":"25. Which metal is liquid at room temperature?", "o":["A) Iron","B) Mercury","C) Lead","D) Gold"], "a":"ANS. B"},
+  {"q":"26. What is the capital of Canada?", "o":["A) Toronto","B) Vancouver","C) Ottawa","D) Montreal"], "a":"ANS. C"},
+  {"q":"27. Who discovered penicillin?", "o":["A) Louis Pasteur","B) Alexander Fleming","C) Marie Curie","D) Robert Koch"], "a":"ANS. B"},
+  {"q":"28. Which language has the most native speakers in the world?", "o":["A) English","B) Spanish","C) Mandarin Chinese","D) Hindi"], "a":"ANS. C"},
+  {"q":"29. Which volcano destroyed Pompeii in AD 79?", "o":["A) Vesuvius","B) Etna","C) Stromboli","D) Krakatoa"], "a":"ANS. A"},
+  {"q":"30. The study of earthquakes is called:", "o":["A) Meteorology","B) Volcanology","C) Seismology","D) Cartography"], "a":"ANS. C"},
+  {"q":"31. Which is the longest river in the world (commonly cited)?", "o":["A) Amazon","B) Nile","C) Yangtze","D) Mississippi"], "a":"ANS. B"},
+  {"q":"32. Who was the first person to reach the South Pole?", "o":["A) Roald Amundsen","B) Robert Falcon Scott","C) Ernest Shackleton","D) Edmund Hillary"], "a":"ANS. A"},
+  {"q":"33. What is the powerhouse of the cell?", "o":["A) Nucleus","B) Mitochondria","C) Ribosome","D) Golgi apparatus"], "a":"ANS. B"},
+  {"q":"34. Which instrument measures atmospheric pressure?", "o":["A) Thermometer","B) Barometer","C) Hygrometer","D) Anemometer"], "a":"ANS. B"},
+  {"q":"35. Who wrote 'A Brief History of Time'?", "o":["A) Carl Sagan","B) Stephen Hawking","C) Richard Feynman","D) Brian Greene"], "a":"ANS. B"},
+  {"q":"36. What is the largest planet in our solar system?", "o":["A) Earth","B) Saturn","C) Jupiter","D) Uranus"], "a":"ANS. C"},
+  {"q":"37. The Taj Mahal is located in which Indian city?", "o":["A) New Delhi","B) Agra","C) Jaipur","D) Lucknow"], "a":"ANS. B"},
+  {"q":"38. Which organ is primarily responsible for detoxification in the human body?", "o":["A) Kidney","B) Liver","C) Lung","D) Spleen"], "a":"ANS. B"},
+  {"q":"39. Who is known as the 'Father of Modern Chemistry'?", "o":["A) Antoine Lavoisier","B) Dmitri Mendeleev","C) John Dalton","D) Robert Boyle"], "a":"ANS. A"},
+  {"q":"40. Which war was fought between the North and South regions of the United States?", "o":["A) World War I","B) American Civil War","C) Revolutionary War","D) Vietnam War"], "a":"ANS. B"},
+  {"q":"41. Which chemical element is most abundant in the Earth's crust?", "o":["A) Silicon","B) Oxygen","C) Aluminum","D) Iron"], "a":"ANS. B"},
+  {"q":"42. Who painted 'Starry Night'?", "o":["A) Claude Monet","B) Vincent van Gogh","C) Paul Cézanne","D) Salvador Dalí"], "a":"ANS. B"},
+  {"q":"43. Which city hosted the first modern Olympic Games in 1896?", "o":["A) Paris","B) Athens","C) London","D) Rome"], "a":"ANS. B"},
+  {"q":"44. What is the SI unit of electric current?", "o":["A) Volt","B) Ampere","C) Ohm","D) Joule"], "a":"ANS. B"},
+  {"q":"45. Which scientist developed the classification system for living organisms (binomial nomenclature)?", "o":["A) Charles Darwin","B) Carl Linnaeus","C) Gregor Mendel","D) Louis Pasteur"], "a":"ANS. B"},
+  {"q":"46. What is the capital of Australia?", "o":["A) Sydney","B) Canberra","C) Melbourne","D) Brisbane"], "a":"ANS. B"},
+  {"q":"47. Which country is known as the Land of the Rising Sun?", "o":["A) China","B) Japan","C) South Korea","D) Thailand"], "a":"ANS. B"},
+  {"q":"48. Which disease did Edward Jenner help prevent with his vaccine?", "o":["A) Measles","B) Smallpox","C) Polio","D) Tuberculosis"], "a":"ANS. B"},
+  {"q":"49. Which of the following is a non-renewable resource?", "o":["A) Solar energy","B) Wind energy","C) Coal","D) Geothermal"], "a":"ANS. C"},
+  {"q":"50. Who was the first female Prime Minister in the world?", "o":["A) Sirimavo Bandaranaike","B) Indira Gandhi","C) Margaret Thatcher","D) Golda Meir"], "a":"ANS. A"},
+  {"q":"51. What is the smallest continent by land area?", "o":["A) Europe","B) Australia","C) South America","D) Antarctica"], "a":"ANS. B"},
+  {"q":"52. The Richter scale measures:", "o":["A) Wind speed","B) Earthquake magnitude","C) Temperature change","D) Atmospheric pressure"], "a":"ANS. B"},
+  {"q":"53. Which country invented paper?", "o":["A) Egypt","B) China","C) Greece","D) India"], "a":"ANS. B"},
+  {"q":"54. Who discovered the law of planetary motion?", "o":["A) Galileo Galilei","B) Johannes Kepler","C) Isaac Newton","D) Tycho Brahe"], "a":"ANS. B"},
+  {"q":"55. Which gas is essential for human respiration?", "o":["A) Nitrogen","B) Oxygen","C) Carbon dioxide","D) Methane"], "a":"ANS. B"},
+  {"q":"56. Which is the world's most populous country (approx.)?", "o":["A) India","B) USA","C) China","D) Indonesia"], "a":"ANS. C"},
+  {"q":"57. What is the main language spoken in Brazil?", "o":["A) Spanish","B) Portuguese","C) English","D) French"], "a":"ANS. B"},
+  {"q":"58. Who wrote 'The Republic'?", "o":["A) Aristotle","B) Plato","C) Socrates","D) Cicero"], "a":"ANS. B"},
+  {"q":"59. Which continent is known as the 'Dark Continent' historically?", "o":["A) Asia","B) Africa","C) South America","D) Australia"], "a":"ANS. B"},
+  {"q":"60. What is the currency of the United Kingdom?", "o":["A) Euro","B) Pound Sterling","C) Dollar","D) Franc"], "a":"ANS. B"},
+  {"q":"61. Who formulated the laws of motion?", "o":["A) Albert Einstein","B) Isaac Newton","C) Galileo Galilei","D) Johannes Kepler"], "a":"ANS. B"},
+  {"q":"62. Which is the smallest planet in our solar system?", "o":["A) Mercury","B) Mars","C) Pluto (dwarf)","D) Venus"], "a":"ANS. A"},
+  {"q":"63. Which civilization built Machu Picchu?", "o":["A) Maya","B) Inca","C) Aztec","D) Olmec"], "a":"ANS. B"},
+  {"q":"64. Who is the author of '1984'?", "o":["A) Aldous Huxley","B) George Orwell","C) Ray Bradbury","D) J.R.R. Tolkien"], "a":"ANS. B"},
+  {"q":"65. Which vitamin is produced when human skin is exposed to sunlight?", "o":["A) Vitamin A","B) Vitamin B12","C) Vitamin C","D) Vitamin D"], "a":"ANS. D"},
+  {"q":"66. Which country is the largest by land area?", "o":["A) Canada","B) Russia","C) China","D) USA"], "a":"ANS. B"},
+  {"q":"67. The 'Cold War' was mainly between which two superpowers?", "o":["A) USA and China","B) USA and Soviet Union","C) UK and Germany","D) France and Russia"], "a":"ANS. B"},
+  {"q":"68. Which element forms the basis of organic chemistry?", "o":["A) Nitrogen","B) Carbon","C) Oxygen","D) Hydrogen"], "a":"ANS. B"},
+  {"q":"69. What is the largest mammal on Earth?", "o":["A) Elephant","B) Blue whale","C) Giraffe","D) Whale shark"], "a":"ANS. B"},
+  {"q":"70. Which inventor is associated with the electric light bulb (commercial development)?", "o":["A) Nikola Tesla","B) Thomas Edison","C) Alexander Graham Bell","D) Michael Faraday"], "a":"ANS. B"},
+  {"q":"71. In computing, 'CPU' stands for:", "o":["A) Central Processing Unit","B) Computer Personal Unit","C) Central Performance Utility","D) Compute Power Unit"], "a":"ANS. A"},
+  {"q":"72. Which country is home to the Great Pyramid of Giza?", "o":["A) Mexico","B) Egypt","C) Iraq","D) Peru"], "a":"ANS. B"},
+  {"q":"73. Which scientist is known for the theory of evolution by natural selection?", "o":["A) Gregor Mendel","B) Charles Darwin","C) Jean-Baptiste Lamarck","D) Alfred Russel Wallace"], "a":"ANS. B"},
+  {"q":"74. The human skeleton adult count of bones is approximately:", "o":["A) 206","B) 180","C) 250","D) 300"], "a":"ANS. A"},
+  {"q":"75. Which city is famous as the financial capital of the USA?", "o":["A) Los Angeles","B) Chicago","C) New York City","D) San Francisco"], "a":"ANS. C"},
+  {"q":"76. What is the primary language of scientific nomenclature (used in species names)?", "o":["A) English","B) Latin","C) Greek","D) German"], "a":"ANS. B"},
+  {"q":"77. Who invented the World Wide Web (WWW)?", "o":["A) Tim Berners-Lee","B) Vint Cerf","C) Bill Gates","D) Steve Jobs"], "a":"ANS. A"},
+  {"q":"78. Which planet has prominent rings?", "o":["A) Mars","B) Venus","C) Saturn","D) Mercury"], "a":"ANS. C"},
+  {"q":"79. The currency of Japan is called:", "o":["A) Yuan","B) Dollar","C) Yen","D) Won"], "a":"ANS. C"},
+  {"q":"80. Which is the largest desert in the world (by area)?", "o":["A) Sahara","B) Gobi","C) Arabian","D) Antarctic Desert"], "a":"ANS. D"},
+  {"q":"81. Who was the first man to walk on the Moon?", "o":["A) Buzz Aldrin","B) Yuri Gagarin","C) Neil Armstrong","D) Michael Collins"], "a":"ANS. C"},
+  {"q":"82. Which organelle is involved in protein synthesis?", "o":["A) Ribosome","B) Lysosome","C) Mitochondrion","D) Chloroplast"], "a":"ANS. A"},
+  {"q":"83. Which country gifted the Statue of Liberty to the USA?", "o":["A) United Kingdom","B) France","C) Spain","D) Italy"], "a":"ANS. B"},
+  {"q":"84. In which country is the city of Istanbul located (transcontinental)?", "o":["A) Greece","B) Bulgaria","C) Turkey","D) Cyprus"], "a":"ANS. C"},
+  {"q":"85. Which metal is core of Earth's inner layer mainly composed of?", "o":["A) Aluminum","B) Iron","C) Copper","D) Lead"], "a":"ANS. B"},
+  {"q":"86. The term 'GDP' stands for:", "o":["A) Gross Domestic Product","B) General Domestic Profit","C) Gross Domestic Profit","D) General Development Product"], "a":"ANS. A"},
+  {"q":"87. Who wrote 'Hamlet'?", "o":["A) Christopher Marlowe","B) William Shakespeare","C) Ben Jonson","D) John Donne"], "a":"ANS. B"},
+  {"q":"88. Which is the fastest land animal?", "o":["A) Lion","B) Cheetah","C) Gazelle","D) Horse"], "a":"ANS. B"},
+  {"q":"89. Who proposed the law of segregation in genetics?", "o":["A) Charles Darwin","B) Gregor Mendel","C) Watson and Crick","D) Rosalind Franklin"], "a":"ANS. B"},
+  {"q":"90. Which instrument is used to measure temperature?", "o":["A) Barometer","B) Thermometer","C) Hygrometer","D) Odometer"], "a":"ANS. B"},
+  {"q":"91. Who founded the Mongol Empire?", "o":["A) Kublai Khan","B) Genghis Khan","C) Timur","D) Attila"], "a":"ANS. B"},
+  {"q":"92. Which city is known as the 'Eternal City'?", "o":["A) Athens","B) Rome","C) Jerusalem","D) Cairo"], "a":"ANS. B"},
+  {"q":"93. Which vitamin helps blood clotting (contains K)?", "o":["A) Vitamin A","B) Vitamin C","C) Vitamin K","D) Vitamin D"], "a":"ANS. C"},
+  {"q":"94. Who is the author of 'Pride and Prejudice'?", "o":["A) Charlotte Brontë","B) Mary Shelley","C) Jane Austen","D) Emily Brontë"], "a":"ANS. C"},
+  {"q":"95. Which particle has a negative charge?", "o":["A) Proton","B) Neutron","C) Electron","D) Photon"], "a":"ANS. C"},
+  {"q":"96. Which is the deepest ocean trench (name)?", "o":["A) Mariana Trench","B) Tonga Trench","C) Java Trench","D) Puerto Rico Trench"], "a":"ANS. A"},
+  {"q":"97. The 'Magna Carta' was signed in which country?", "o":["A) France","B) England","C) Spain","D) Germany"], "a":"ANS. B"},
+  {"q":"98. Which scientist discovered the circulation of blood?", "o":["A) William Harvey","B) Andreas Vesalius","C) Edward Jenner","D) René Laennec"], "a":"ANS. A"},
+  {"q":"99. Which ancient civilization built the pyramids at Giza?", "o":["A) Mesopotamian","B) Egyptian","C) Greek","D) Roman"], "a":"ANS. B"},
+  {"q":"100. Which instrument measures wind speed?", "o":["A) Anemometer","B) Hygrometer","C) Barometer","D) Thermometer"], "a":"ANS. A"},
+  {"q":"101. Which is the longest mountain range in the world?", "o":["A) Andes","B) Himalayas","C) Rockies","D) Alps"], "a":"ANS. A"},
+  {"q":"102. Who is known as the 'Father of Geometry'?", "o":["A) Euclid","B) Pythagoras","C) Archimedes","D) Thales"], "a":"ANS. A"},
+  {"q":"103. Which city is called the 'Venice of the North' (several cities claim it)?", "o":["A) Amsterdam","B) Prague","C) Bruges","D) Stockholm"], "a":"ANS. A"},
+  {"q":"104. Which country is famous for tulips and windmills?", "o":["A) Belgium","B) Netherlands","C) Denmark","D) Sweden"], "a":"ANS. B"},
+  {"q":"105. Who developed the periodic table of elements?", "o":["A) Antoine Lavoisier","B) Dmitri Mendeleev","C) John Dalton","D) Marie Curie"], "a":"ANS. B"},
+  {"q":"106. What is the main ingredient in traditional Japanese sushi?", "o":["A) Pasta","B) Rice","C) Bread","D) Potato"], "a":"ANS. B"},
+  {"q":"107. Which blood type is known as the universal donor?", "o":["A) AB+","B) O-","C) A+","D) B-"], "a":"ANS. B"},
+  {"q":"108. Which country uses the rupee as its currency besides Pakistan and India?", "o":["A) Nepal","B) Sri Lanka","C) Indonesia","D) Indonesia uses Rupiah, not rupee"], "a":"ANS. A"},
+  {"q":"109. The Suez Canal connects which two bodies of water?", "o":["A) Atlantic and Pacific","B) Red Sea and Mediterranean Sea","C) Mediterranean and Black Sea","D) Red Sea and Arabian Sea"], "a":"ANS. B"},
+  {"q":"110. Which painter is famous for 'The Persistence of Memory'?", "o":["A) Salvador Dalí","B) Pablo Picasso","C) Claude Monet","D) Andy Warhol"], "a":"ANS. A"},
+  {"q":"111. Which chemical is used to disinfect water pools commonly (symbol)?", "o":["A) Cl (Chlorine)","B) H (Hydrogen)","C) O (Oxygen)","D) N (Nitrogen)"], "a":"ANS. A"},
+  {"q":"112. What is the capital of South Africa (administrative)?", "o":["A) Cape Town","B) Pretoria","C) Johannesburg","D) Bloemfontein"], "a":"ANS. B"},
+  {"q":"113. Which is the primary language of Iran?", "o":["A) Arabic","B) Persian (Farsi)","C) Turkish","D) Kurdish"], "a":"ANS. B"},
+  {"q":"114. Who discovered radioactivity?", "o":["A) Marie Curie","B) Henri Becquerel","C) Ernest Rutherford","D) Antoine Lavoisier"], "a":"ANS. B"},
+  {"q":"115. Which invention is Johannes Gutenberg famous for?", "o":["A) Printing press","B) Telescope","C) Steam engine","D) Compass"], "a":"ANS. A"},
+  {"q":"116. Which moon is the largest in the solar system?", "o":["A) Earth's Moon","B) Ganymede (Jupiter)","C) Titan (Saturn)","D) Callisto"], "a":"ANS. B"},
+  {"q":"117. Which popular board game uses buying properties and money (classic)?", "o":["A) Scrabble","B) Monopoly","C) Chess","D) Risk"], "a":"ANS. B"},
+  {"q":"118. The Immigration to the USA via Ellis Island was mainly in which century?", "o":["A) 18th","B) 19th and early 20th","C) 21st","D) 17th"], "a":"ANS. B"},
+  {"q":"119. Which organ filters blood and produces urine?", "o":["A) Liver","B) Lung","C) Kidney","D) Spleen"], "a":"ANS. C"},
+  {"q":"120. Which tech company created the Android operating system?", "o":["A) Microsoft","B) Google (acquired Android)","C) Apple","D) IBM"], "a":"ANS. B"},
+  {"q":"121. Which African country has the largest population?", "o":["A) Egypt","B) Nigeria","C) South Africa","D) Ethiopia"], "a":"ANS. B"},
+  {"q":"122. Which language family does English belong to?", "o":["A) Romance","B) Slavic","C) Germanic","D) Sino-Tibetan"], "a":"ANS. C"},
+  {"q":"123. Which metal is used in electrical wiring due to its conductivity?", "o":["A) Steel","B) Copper","C) Aluminium (less so)","D) Lead"], "a":"ANS. B"},
+  {"q":"124. What is the study of human societies and cultures called?", "o":["A) Sociology","B) Anthropology","C) Psychology","D) Archaeology"], "a":"ANS. B"},
+  {"q":"125. Who wrote 'The Odyssey'?", "o":["A) Homer","B) Virgil","C) Ovid","D) Sophocles"], "a":"ANS. A"},
+  {"q":"126. Which structure is central to the city of Rome and ancient Roman politics?", "o":["A) Parthenon","B) Colosseum","C) Roman Forum","D) Acropolis"], "a":"ANS. C"},
+  {"q":"127. Which instrument is commonly used to view very small objects (cells)?", "o":["A) Telescope","B) Microscope","C) Magnifying glass","D) Periscope"], "a":"ANS. B"},
+  {"q":"128. Which country is famous for the Leaning Tower of Pisa?", "o":["A) Spain","B) Italy","C) France","D) Greece"], "a":"ANS. B"},
+  {"q":"129. What does 'HTTP' stand for in web addresses?", "o":["A) HyperText Transfer Protocol","B) High Transfer Text Protocol","C) Hyper Transfer Tool Protocol","D) None of these"], "a":"ANS. A"},
+  {"q":"130. Which astronomer first proposed a heliocentric model (Sun-centered)?", "o":["A) Ptolemy","B) Nicolaus Copernicus","C) Galileo Galilei","D) Johannes Kepler"], "a":"ANS. B"},
+  {"q":"131. What is the largest internal organ of the human body?", "o":["A) Heart","B) Liver","C) Lung","D) Kidney"], "a":"ANS. B"},
+  {"q":"132. Which country is home to the Amazon rainforest majority?", "o":["A) Colombia","B) Peru","C) Brazil","D) Venezuela"], "a":"ANS. C"},
+  {"q":"133. Who is the famous physicist known for the photoelectric effect and quantum theory contributions?", "o":["A) Max Planck","B) Albert Einstein","C) Niels Bohr","D) Erwin Schrödinger"], "a":"ANS. B"},
+  {"q":"134. Which structure rotates to show the time in many clock towers (hand)?", "o":["A) Pendulum","B) Dial and hands","C) Escapement","D) Cogs only"], "a":"ANS. B"},
+  {"q":"135. Which classic epic poem features the hero Gilgamesh?", "o":["A) Epic of Gilgamesh","B) Iliad","C) Beowulf","D) Mahabharata"], "a":"ANS. A"},
+  {"q":"136. Which is the capital of Turkey?", "o":["A) Istanbul","B) Ankara","C) Izmir","D) Bursa"], "a":"ANS. B"},
+  {"q":"137. The 'Greenhouse Effect' primarily involves which gas trapping heat?", "o":["A) Nitrogen","B) Oxygen","C) Carbon dioxide","D) Helium"], "a":"ANS. C"},
+  {"q":"138. Which composer wrote the Ninth Symphony (Ode to Joy)?", "o":["A) Mozart","B) Beethoven","C) Haydn","D) Brahms"], "a":"ANS. B"},
+  {"q":"139. Which organ of plant performs photosynthesis?", "o":["A) Root","B) Stem","C) Leaf","D) Flower"], "a":"ANS. C"},
+  {"q":"140. Who painted the ceiling of the Sistine Chapel?", "o":["A) Leonardo da Vinci","B) Michelangelo","C) Raphael","D) Donatello"], "a":"ANS. B"},
+  {"q":"141. Which is the capital of Russia?", "o":["A) St. Petersburg","B) Moscow","C) Novosibirsk","D) Kazan"], "a":"ANS. B"},
+  {"q":"142. Which civilization is famous for cuneiform script?", "o":["A) Egyptian","B) Mesopotamian (Sumerians)","C) Indus Valley","D) Chinese"], "a":"ANS. B"},
+  {"q":"143. What is the chemical formula of table salt?", "o":["A) NaCl","B) KCl","C) Na2CO3","D) CaCO3"], "a":"ANS. A"},
+  {"q":"144. Which scientist discovered the structure of DNA (double helix)?", "o":["A) Watson and Crick","B) Mendel","C) Darwin","D) Rosalind Franklin alone"], "a":"ANS. A"},
+  {"q":"145. Who led India to independence in 1947 with non-violent resistance?", "o":["A) Jawaharlal Nehru","B) Mahatma Gandhi","C) Subhas Chandra Bose","D) Sardar Patel"], "a":"ANS. B"},
+  {"q":"146. Which is the world's highest waterfall (approx)?", "o":["A) Niagara Falls","B) Angel Falls","C) Victoria Falls","D) Iguazu Falls"], "a":"ANS. B"},
+  {"q":"147. The study of fossils is called:", "o":["A) Paleontology","B) Archaeology","C) Geology","D) Anthropology"], "a":"ANS. A"},
+  {"q":"148. Which gas is produced by plants during photosynthesis?", "o":["A) Carbon dioxide","B) Oxygen","C) Nitrogen","D) Methane"], "a":"ANS. B"},
+  {"q":"149. Who wrote 'The Divine Comedy'?", "o":["A) Dante Alighieri","B) Geoffrey Chaucer","C) John Milton","D) Homer"], "a":"ANS. A"},
+  {"q":"150. Which is the fastest bird in the world (diving speed)?", "o":["A) Peregrine falcon","B) Eagle","C) Albatross","D) Ostrich"], "a":"ANS. A"},
+  {"q":"151. What is the unit of frequency?", "o":["A) Hertz","B) Watt","C) Ampere","D) Volt"], "a":"ANS. A"},
+  {"q":"152. Which economic system is based on private ownership and market forces?", "o":["A) Socialism","B) Capitalism","C) Communism","D) Feudalism"], "a":"ANS. B"},
+  {"q":"153. Who discovered America in 1492 (European arrival)?", "o":["A) Ferdinand Magellan","B) Christopher Columbus","C) Vasco da Gama","D) Leif Erikson"], "a":"ANS. B"},
+  {"q":"154. Which planet is known for its Great Red Spot?", "o":["A) Jupiter","B) Saturn","C) Uranus","D) Neptune"], "a":"ANS. A"},
+  {"q":"155. Which language is primarily spoken in Argentina?", "o":["A) Portuguese","B) Spanish","C) English","D) Italian"], "a":"ANS. B"},
+  {"q":"156. Who is the author of 'The Iliad'?", "o":["A) Homer","B) Virgil","C) Sophocles","D) Euripides"], "a":"ANS. A"},
+  {"q":"157. The chemical element 'Pb' is:", "o":["A) Platinum","B) Lead","C) Phosphorus","D) Palladium"], "a":"ANS. B"},
+  {"q":"158. Which is the primary greenhouse gas emitted by human activities?", "o":["A) Nitrous oxide","B) Methane","C) Carbon dioxide","D) Ozone"], "a":"ANS. C"},
+  {"q":"159. Who painted 'The Last Supper'?", "o":["A) Leonardo da Vinci","B) Raphael","C) Caravaggio","D) Titian"], "a":"ANS. A"},
+  {"q":"160. Which country is known as the 'Land of a Thousand Lakes'?", "o":["A) Sweden","B) Finland","C) Norway","D) Canada"], "a":"ANS. B"},
+  {"q":"161. Which metal is key component of coins historically and is denoted by 'Ag'?", "o":["A) Gold","B) Silver","C) Copper","D) Tin"], "a":"ANS. B"},
+  {"q":"162. Which measurement unit is used for angles in circles (360 parts)?", "o":["A) Radians","B) Degrees","C) Meters","D) Liters"], "a":"ANS. B"},
+  {"q":"163. Who wrote 'To Kill a Mockingbird'?", "o":["A) Harper Lee","B) Mark Twain","C) J.D. Salinger","D) F. Scott Fitzgerald"], "a":"ANS. A"},
+  {"q":"164. Which is the primary programming language used for Android app development historically?", "o":["A) Swift","B) Java","C) C#","D) JavaScript"], "a":"ANS. B"},
+  {"q":"165. Which organ helps regulate blood sugar via insulin?", "o":["A) Liver","B) Pancreas","C) Kidney","D) Thyroid"], "a":"ANS. B"},
+  {"q":"166. Who discovered oxygen (credited among several), named 'dephlogisticated air' initially?", "o":["A) Joseph Priestley","B) Antoine Lavoisier","C) Robert Boyle","D) Henry Cavendish"], "a":"ANS. A"},
+  {"q":"167. Which country is known for its fjords and Viking history?", "o":["A) Denmark","B) Norway","C) Sweden","D) Iceland"], "a":"ANS. B"},
+  {"q":"168. What is the capital city of Germany?", "o":["A) Munich","B) Frankfurt","C) Berlin","D) Hamburg"], "a":"ANS. C"},
+  {"q":"169. Which bird is symbol of peace commonly used in art?", "o":["A) Eagle","B) Dove","C) Swan","D) Sparrow"], "a":"ANS. B"},
+  {"q":"170. The First World War began in which year?", "o":["A) 1914","B) 1939","C) 1918","D) 1905"], "a":"ANS. A"},
+  {"q":"171. Which is the largest island in the world?", "o":["A) Great Britain","B) Australia","C) Greenland","D) Madagascar"], "a":"ANS. C"},
+  {"q":"172. Which ancient city is famous for its hanging gardens (one of the Seven Wonders)?", "o":["A) Babylon","B) Athens","C) Alexandria","D) Persepolis"], "a":"ANS. A"},
+  {"q":"173. Which scientist is famous for black holes theory contributions and authoring books for the public?", "o":["A) Carl Sagan","B) Stephen Hawking","C) Neil deGrasse Tyson","D) Richard Feynman"], "a":"ANS. B"},
+  {"q":"174. What is the main language of Egypt today?", "o":["A) Egyptian (ancient)","B) Arabic","C) Coptic","D) Berber"], "a":"ANS. B"},
+  {"q":"175. Which mountain is the tallest above sea level?", "o":["A) K2","B) Kangchenjunga","C) Mount Everest","D) Lhotse"], "a":"ANS. C"},
+  {"q":"176. Which fruit is a good source of vitamin C traditionally?", "o":["A) Banana","B) Orange","C) Apple","D) Grapes"], "a":"ANS. B"},
+  {"q":"177. Which treaty ended World War I formally (1919)?", "o":["A) Treaty of Versailles","B) Treaty of Paris","C) Treaty of Ghent","D) Treaty of Tordesillas"], "a":"ANS. A"},
+  {"q":"178. Who painted 'Guernica' as a protest against war?", "o":["A) Salvador Dalí","B) Pablo Picasso","C) Francisco Goya","D) Diego Rivera"], "a":"ANS. B"},
+  {"q":"179. Which vitamin is essential for wound healing and immune function (common)?", "o":["A) Vitamin C","B) Vitamin E","C) Vitamin K","D) Vitamin D"], "a":"ANS. A"},
+  {"q":"180. Which is the longest river in Asia?", "o":["A) Mekong","B) Yangtze","C) Ganges","D) Yellow River (Huang He)"], "a":"ANS. B"},
+  {"q":"181. What does 'UNESCO' stand for?", "o":["A) United Nations Educational, Scientific and Cultural Organization","B) United Nations Economic and Social Council Organization","C) Universal Education and Science Committee Organization","D) None of the above"], "a":"ANS. A"},
+  {"q":"182. Which scientist is known for the uncertainty principle in quantum mechanics?", "o":["A) Werner Heisenberg","B) Niels Bohr","C) Max Planck","D) Erwin Schrödinger"], "a":"ANS. A"},
+  {"q":"183. The 'Renaissance' began in which country in Europe?", "o":["A) France","B) Italy","C) England","D) Germany"], "a":"ANS. B"},
+  {"q":"184. Which architectural monument is found in Agra, India and is a UNESCO World Heritage site?", "o":["A) Qutub Minar","B) Red Fort","C) Taj Mahal","D) Gateway of India"], "a":"ANS. C"},
+  {"q":"185. What is the capital of China?", "o":["A) Shanghai","B) Beijing","C) Guangzhou","D) Shenzhen"], "a":"ANS. B"},
+  {"q":"186. Which device converts chemical energy into electrical energy (basic)?", "o":["A) Motor","B) Battery","C) Generator","D) Transformer"], "a":"ANS. B"},
+  {"q":"187. Who was the first female Chancellor of Germany (later Chancellor long-serving)?", "o":["A) Angela Merkel","B) Ursula von der Leyen","C) Margaret Thatcher","D) Theresa May"], "a":"ANS. A"},
+  {"q":"188. Which language uses the Cyrillic script widely?", "o":["A) Arabic","B) Russian","C) Hindi","D) Greek"], "a":"ANS. B"},
+  {"q":"189. Which particle in the nucleus has no electrical charge?", "o":["A) Proton","B) Neutron","C) Electron","D) Positron"], "a":"ANS. B"},
+  {"q":"190. Which is the most widely practiced religion in the world by adherents?", "o":["A) Islam","B) Christianity","C) Hinduism","D) Buddhism"], "a":"ANS. B"},
+  {"q":"191. Who is the author of the fantasy series 'The Lord of the Rings'?", "o":["A) C.S. Lewis","B) J.R.R. Tolkien","C) J.K. Rowling","D) George R.R. Martin"], "a":"ANS. B"},
+  {"q":"192. Which body of water separates Europe and Africa?", "o":["A) Red Sea","B) Mediterranean Sea","C) Black Sea","D) Baltic Sea"], "a":"ANS. B"},
+  {"q":"193. What is the main purpose of the International Red Cross organization?", "o":["A) Trade regulation","B) Humanitarian aid and relief","C) Military alliances","D) Environmental protection"], "a":"ANS. B"},
+  {"q":"194. Which ancient language carved on the Rosetta Stone helped decode Egyptian hieroglyphs?", "o":["A) Latin","B) Greek","C) Coptic","D) Demotic only"], "a":"ANS. B"},
+  {"q":"195. Which gas do animals exhale as a waste product of respiration?", "o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Hydrogen"], "a":"ANS. C"},
+  {"q":"196. Which island nation is southeast of India and capital Colombo?", "o":["A) Maldives","B) Sri Lanka","C) Mauritius","D) Seychelles"], "a":"ANS. B"},
+  {"q":"197. Which Nobel laureate physicist developed quantum theory foundations and has a namesake constant (Planck's constant)?", "o":["A) Max Planck","B) Albert Einstein","C) Paul Dirac","D) Richard Feynman"], "a":"ANS. A"},
+  {"q":"198. Which route historically connected Asia and Europe for trade (Silk, spices)?", "o":["A) Spice Route","B) Silk Road","C) Amber Road","D) Incense Route"], "a":"ANS. B"},
+  {"q":"199. Which organ is part of both digestive and endocrine systems (produces enzymes and hormones)?", "o":["A) Liver","B) Pancreas","C) Gallbladder","D) Stomach"], "a":"ANS. B"},
+  {"q":"200. Which modern invention did the Wright brothers achieve in 1903?", "o":["A) Automobile","B) Airplane (first powered flight)","C) Radio","D) Steam engine"], "a":"ANS. B"}
+];
+
+const pageSize = 10;
+let currentPage = 1;
+const totalPages = Math.ceil(mcqs.length / pageSize);
+
+function renderPage(page) {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  if (page < 1) page = 1;
+  if (page > totalPages) page = totalPages;
+  const start = (page - 1) * pageSize;
+  const end = Math.min(start + pageSize, mcqs.length);
+  for (let i = start; i < end; i++) {
+    const item = mcqs[i];
+    const div = document.createElement('div');
+    div.className = 'mcq';
+    div.innerHTML = `<div class="question">${item.q}</div>
+      <div class="options">
+        <div class="option">${item.o[0]}</div>
+        <div class="option">${item.o[1]}</div>
+        <div class="option">${item.o[2]}</div>
+        <div class="option">${item.o[3]}</div>
+      </div>
+      <div class="answer">${item.a}</div>`;
+    container.appendChild(div);
+  }
+  document.getElementById('pageInput').value = page;
+  currentPage = page;
+}
+
+function prevPage() {
+  if (currentPage > 1) renderPage(currentPage - 1);
+}
+function nextPage() {
+  if (currentPage < totalPages) renderPage(currentPage + 1);
+}
+function goToPage() {
+  const val = parseInt(document.getElementById('pageInput').value);
+  if (!isNaN(val)) renderPage(val);
+}
+
+renderPage(1);
+</script>
+</body>
+</html>
