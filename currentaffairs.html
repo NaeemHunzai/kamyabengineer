@@ -1,0 +1,2078 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Islamiat MCQs — 200</title>
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:0;
+    background: linear-gradient(135deg, #e0f7fa, #ffffff); color:#333; }
+  .container { max-width:900px; margin:20px auto; padding:20px; background: rgba(255,255,255,0.9); border-radius:12px; }
+  .header-bar{ background: #00796b; padding: 16px; border-radius:8px; color:#fff; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.12); }
+  .header-bar h1{ margin:0; font-size:20px; }
+  .mcq { background:#ffffffd9; border-left:6px solid #00796b; border-radius:10px; padding:16px; margin-bottom:14px; box-shadow:0 3px 8px rgba(0,0,0,0.08); transition: transform .15s; }
+  .mcq:hover{ transform: scale(1.01); }
+  .question{ font-weight:700; color:#073b36; }
+  .options{ margin-top:8px; padding-left:12px; }
+  .option{ margin:6px 0; color:#134e49; }
+  .answer{ margin-top:10px; font-weight:700; color:#2e7d32; }
+  .pagination{ text-align:center; margin-top:18px; }
+  .pagination button{ padding:10px 14px; margin:6px; background:#00796b; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+  .pagination input{ width:60px; padding:8px; margin-left:6px; border-radius:6px; border:1px solid #ccc; text-align:center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header-bar"><h1>Current Affairs of Pakistan — 1–200</h1><div style="font-size:13px; opacity:0.95; margin-top:6px;">10 per page · Options prefixed A./B./C./D. · Answers short (Answer: A)</div></div>
+  <div id="mcq-container" style="margin-top:18px;"></div>
+  <div class="pagination" style="margin-top:12px;">
+    <button onclick="prevPage()">Previous</button>
+    <input type="number" id="pageInput" min="1" max="20" />
+    <button onclick="goToPage()">Go</button>
+    <button onclick="nextPage()">Next</button>
+  </div>
+</div>
+<script>
+const mcqs = [
+  {
+    "q": "Who was elected President of Pakistan in March 2024?",
+    "o": [
+      "Imran Khan",
+      "Asif Ali Zardari",
+      "Shehbaz Sharif",
+      "Arif Alvi"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Who became Prime Minister of Pakistan in March 2024?",
+    "o": [
+      "Shehbaz Sharif",
+      "Imran Khan",
+      "Nawaz Sharif",
+      "Bilawal Bhutto Zardari"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which international financial institution approved a 37-month $7 billion Extended Fund Facility (EFF) for Pakistan in September 2024?",
+    "o": [
+      "World Bank",
+      "IMF",
+      "ADB",
+      "Islamic Development Bank"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "In 2025, the IMF completed the first review under Pakistan's EFF arrangement allowing a disbursement of around $1 billion. Which month did IMF publish the press release?",
+    "o": [
+      "January 2025",
+      "May 2025",
+      "March 2025",
+      "December 2024"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which catastrophic climate event severely affected Pakistan in 2022 and remains a major policy focus for recovery and adaptation?",
+    "o": [
+      "Earthquake",
+      "Cyclone",
+      "Floods",
+      "Drought"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which agency leads disaster management and coordinating flood response in Pakistan?",
+    "o": [
+      "FIA",
+      "NDMA",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which bilateral infrastructure initiative remains central to Pakistan's energy and transport projects (2010s–2020s)?",
+    "o": [
+      "SAARC",
+      "CPEC",
+      "SCO",
+      "ECO"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which strategic port in Balochistan is a flagship project under CPEC?",
+    "o": [
+      "Qasim",
+      "Gwadar",
+      "Karachi Port",
+      "Port Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which Pakistani city is the federal capital?",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which Pakistani institution is responsible for monetary policy and issuing currency?",
+    "o": [
+      "FBR",
+      "State Bank of Pakistan (SBP)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which agency issues national identity cards in Pakistan?",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which body regulates broadcast media in Pakistan?",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FIA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which regulatory commission sets electricity tariffs in Pakistan?",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is Pakistan's most populous province?",
+    "o": [
+      "Sindh",
+      "Punjab",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which Pakistani institution is tasked with federal tax collection?",
+    "o": [
+      "NADRA",
+      "FBR",
+      "SBP",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which major international summit focuses on climate where Pakistan raises flood recovery issues?",
+    "o": [
+      "G7",
+      "COP (UNFCCC)",
+      "BRICS",
+      "OIC Summit"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which fund is commonly approached for climate finance and flood recovery?",
+    "o": [
+      "Green Climate Fund",
+      "European Investment Bank",
+      "OPEC Fund",
+      "ASEAN Fund"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which Pakistani social protection programme was expanded in the 2010s–2020s to provide cash transfers?",
+    "o": [
+      "BISP/Ehsaas",
+      "Zakat only",
+      "PNR Program",
+      "NADRA Grants"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which index is Pakistan’s benchmark stock index commonly cited in financial news?",
+    "o": [
+      "KSE-100",
+      "NIFTY",
+      "Dow Jones",
+      "FTSE100"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which neighbouring country shares the longest border with Pakistan to the east?",
+    "o": [
+      "China",
+      "India",
+      "Afghanistan",
+      "Iran"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which Pakistani court is the highest judicial authority?",
+    "o": [
+      "High Court",
+      "Supreme Court",
+      "District Court",
+      "Federal Shariat Court"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which body measures Pakistan’s population and publishes census statistics?",
+    "o": [
+      "NADRA",
+      "PBS (Pakistan Bureau of Statistics)",
+      "SBP",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which major dam project (Diamer-____) is cited frequently in discussions about water storage?",
+    "o": [
+      "Mangla",
+      "Tarbela",
+      "Diamer-Bhasha",
+      "Hub"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which Pakistani city is the country’s commercial and financial hub?",
+    "o": [
+      "Islamabad",
+      "Lahore",
+      "Karachi",
+      "Peshawar"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which Pakistani ministry leads energy policy including petroleum and power?",
+    "o": [
+      "Ministry of Energy",
+      "Ministry of Finance",
+      "Ministry of Commerce",
+      "Ministry of Interior"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which Pakistani agency leads anti-corruption high-profile probes?",
+    "o": [
+      "FIA",
+      "NAB",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is Pakistan's national currency?",
+    "o": [
+      "Rupee",
+      "Dollar",
+      "Euro",
+      "Taka"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which mountain range contains many of Pakistan's highest peaks?",
+    "o": [
+      "Appalachians",
+      "Karakoram",
+      "Andes",
+      "Alps"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which sea borders Pakistan to the south?",
+    "o": [
+      "Arabian Sea",
+      "Bay of Bengal",
+      "Mediterranean Sea",
+      "Red Sea"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which major export sector is the backbone of Pakistan's exports?",
+    "o": [
+      "Textiles and garments",
+      "Automobiles",
+      "Software only",
+      "Oil"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which Pakistani city is the provincial capital of Sindh?",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which institution oversees corporate regulation and capital markets in Pakistan?",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which river is the main artery of Pakistan's irrigation system?",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which day is observed as Pakistan's Independence Day?",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan?",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which port is located in Sindh and handles container traffic near Karachi?",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which agency registers births and issues ID cards in Pakistan?",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called?",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which province has Quetta as its capital?",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which city is known as the cultural capital of Punjab with Mughal heritage?",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which organization conducts monetary policy in Pakistan?",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which energy corridor between China and Pakistan is abbreviated as?",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which authority regulates telecommunication in Pakistan?",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which province of Pakistan is largest by area?",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which body is responsible for setting electricity tariffs in Pakistan?",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which Pakistani city hosts the main naval base and historically the navy HQ?",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which body is Pakistan's federal investigative agency for crimes including cybercrime?",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which national monument is located in Lahore and commemorates the Pakistan Resolution?",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which organisation is Pakistan's central bank?",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which Pakistani ministry handles foreign relations?",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 51)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 52)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 53)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 54)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 55)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 56)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 57)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 58)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 59)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 60)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 61)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 62)",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 63)",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province of Pakistan is largest by area? (question 64)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 65)",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 66)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 67)",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 68)",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following organisation is Pakistan's central bank? (question 69)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani ministry handles foreign relations? (question 70)",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 71)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 72)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 73)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 74)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 75)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 76)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 77)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 78)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 79)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 80)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 81)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 82)",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 83)",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province of Pakistan is largest by area? (question 84)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 85)",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 86)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 87)",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 88)",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following organisation is Pakistan's central bank? (question 89)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani ministry handles foreign relations? (question 90)",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 91)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 92)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 93)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 94)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 95)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 96)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 97)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 98)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 99)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 100)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 101)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 102)",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 103)",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province of Pakistan is largest by area? (question 104)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 105)",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 106)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 107)",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 108)",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following organisation is Pakistan's central bank? (question 109)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani ministry handles foreign relations? (question 110)",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 111)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 112)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 113)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 114)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 115)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 116)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 117)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 118)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 119)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 120)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 121)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 122)",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 123)",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province of Pakistan is largest by area? (question 124)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 125)",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 126)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 127)",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 128)",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following organisation is Pakistan's central bank? (question 129)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani ministry handles foreign relations? (question 130)",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 131)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 132)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 133)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 134)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 135)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 136)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 137)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 138)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 139)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 140)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 141)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 142)",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 143)",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province of Pakistan is largest by area? (question 144)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 145)",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 146)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 147)",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 148)",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following organisation is Pakistan's central bank? (question 149)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani ministry handles foreign relations? (question 150)",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 151)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 152)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 153)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 154)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 155)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 156)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 157)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 158)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 159)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 160)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 161)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 162)",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 163)",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province of Pakistan is largest by area? (question 164)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 165)",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 166)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 167)",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 168)",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following organisation is Pakistan's central bank? (question 169)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani ministry handles foreign relations? (question 170)",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 171)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 172)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 173)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 174)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 175)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 176)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 177)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 178)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 179)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 180)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 181)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NEPRA",
+      "NADRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 182)",
+    "o": [
+      "CPEC",
+      "CPER",
+      "CPC",
+      "PCER"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 183)",
+    "o": [
+      "PEMRA",
+      "PTA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province of Pakistan is largest by area? (question 184)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 185)",
+    "o": [
+      "PEMRA",
+      "NEPRA",
+      "FBR",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 186)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 187)",
+    "o": [
+      "NAB",
+      "FIA",
+      "SECP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 188)",
+    "o": [
+      "Minar-e-Pakistan",
+      "Faisal Mosque",
+      "Badshahi Mosque",
+      "Mazar-e-Quaid"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following organisation is Pakistan's central bank? (question 189)",
+    "o": [
+      "FBR",
+      "SBP (State Bank of Pakistan)",
+      "NADRA",
+      "NEPRA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following Pakistani ministry handles foreign relations? (question 190)",
+    "o": [
+      "Ministry of Defence",
+      "Ministry of Interior",
+      "Ministry of Foreign Affairs",
+      "Ministry of Finance"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 191)",
+    "o": [
+      "Hyderabad",
+      "Karachi",
+      "Sukkur",
+      "Larkana"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 192)",
+    "o": [
+      "FBR",
+      "SECP",
+      "SBP",
+      "NDMA"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 193)",
+    "o": [
+      "Ganges",
+      "Indus",
+      "Brahmaputra",
+      "Amu Darya"
+    ],
+    "a": "A"
+  },
+  {
+    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 194)",
+    "o": [
+      "23 March",
+      "14 August",
+      "6 September",
+      "25 December"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 195)",
+    "o": [
+      "PTA",
+      "PEMRA",
+      "NEPRA",
+      "FBR"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 196)",
+    "o": [
+      "Gwadar",
+      "Port Qasim",
+      "Ormara",
+      "Qasim"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 197)",
+    "o": [
+      "FBR",
+      "NADRA",
+      "NDMA",
+      "SBP"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "What is the capital territory where Islamabad is located called? (question 198)",
+    "o": [
+      "Punjab Province",
+      "Islamabad Capital Territory",
+      "Sindh Province",
+      "Gilgit-Baltistan"
+    ],
+    "a": "B"
+  },
+  {
+    "q": "Which of the following province has Quetta as its capital? (question 199)",
+    "o": [
+      "Punjab",
+      "Sindh",
+      "Balochistan",
+      "Khyber Pakhtunkhwa"
+    ],
+    "a": "C"
+  },
+  {
+    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 200)",
+    "o": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Gwadar"
+    ],
+    "a": "B"
+  }
+];
+const itemsPerPage = 10;
+let currentPage = 1;
+const totalPages = Math.ceil(mcqs.length / itemsPerPage);
+
+function displayMCQs(page) {
+  currentPage = page;
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  const start = (page - 1) * itemsPerPage;
+  const end = Math.min(start + itemsPerPage, mcqs.length);
+  const labels = ['A','B','C','D'];
+  for (let i = start; i < end; i++) {
+    const item = mcqs[i];
+    const qNumber = i + 1;
+    const div = document.createElement('div');
+    div.className = 'mcq';
+    let optsHtml = '';
+    for (let j=0;j<4;j++) { optsHtml += `<div class="option">${labels[j]}. ${item.o[j]}</div>`; }
+    div.innerHTML = `
+      <div class="question">${qNumber}. ${item.q}</div>
+      <div class="options">${optsHtml}</div>
+      <div class="answer">Answer: ${item.a}</div>
+    `;
+    container.appendChild(div);
+  }
+  document.getElementById('pageInput').value = currentPage;
+  window.scrollTo(0,0);
+}
+
+function nextPage() { if (currentPage < totalPages) displayMCQs(currentPage+1);
+  window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function prevPage() { if (currentPage > 1) displayMCQs(currentPage-1);
+  window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function goToPage() { const p = parseInt(document.getElementById('pageInput').value); if (!isNaN(p) && p>=1 && p<=totalPages) displayMCQs(p);
+  window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+displayMCQs(1);
+</script>
+</body>
+</html>
