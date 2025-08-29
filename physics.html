@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Physics MCQs — 1–200</title>
+<style>
+:root{--teal:#064e52;}
+body{font-family:Segoe UI,Roboto,Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#e0f7fa,#ffffff);margin:0;color:#063}
+.container{max-width:920px;margin:20px auto;padding:18px;background:rgba(255,255,255,0.95);border-radius:12px}
+.header{background:var(--teal);color:#fff;padding:14px;border-radius:8px}
+.header h1{margin:0;font-size:20px}
+.mcq{background:#fff;border-left:6px solid var(--teal);border-radius:10px;padding:12px;margin:12px 0;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.question{font-weight:700;color:#073b36}
+.options{margin-top:8px;padding-left:12px}
+.option{margin:6px 0}
+.answer{margin-top:10px;font-weight:700;color:#1b9b37}
+.pagination{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:16px;flex-wrap:wrap}
+.pagination button{padding:6px 12px;border-radius:6px;border:1px solid var(--teal);background:var(--teal);color:#fff;cursor:pointer}
+.pagination input{width:60px;padding:8px;border-radius:6px;border:1px solid #ccc;text-align:center}
+.footer-note{font-size:13px;color:#055;text-align:center;margin-top:8px}
+@media (max-width:480px){.container{padding:12px;margin:8px} .header h1{font-size:16px}}
+</style>
+</head>
+<body>
+<div class='container'>
+  <div class='header'><h1>Physics MCQs — 1–200</h1></div>
+  <div id='mcq-container'></div>
+
+  <div class='pagination'>
+    <button onclick='prevPage()'>Previous</button>
+    <input id='pageInput' type='number' min='1' max='20' placeholder='Page'>
+    <button onclick='goToPage()'>Go</button>
+    <button onclick='nextPage()'>Next</button>
+  </div>
+  <div class='footer-note'>Showing 10 questions per page • Total 200 questions • Answers shown below each question</div>
+</div>
+
+<script>
+const mcqs = [
+{"q":"A body moves with constant velocity. Which of the following is zero?","o":["Displacement","Acceleration","Momentum","Kinetic energy"],"a":"B"},
+{"q":"If net work done on a particle is zero, which quantity is constant?","o":["Kinetic energy","Potential energy","Momentum magnitude","Mechanical energy"],"a":"A"},
+{"q":"Two identical masses collide elastically. One is at rest. After collision, they exchange velocities. This follows from conservation of:","o":["Momentum only","Kinetic energy only","Momentum and kinetic energy","Angular momentum"],"a":"C"},
+{"q":"The units of impulse are the same as:","o":["Joule-second","Newton-second","Newton/meter","Joule/meter"],"a":"B"},
+{"q":"For a projectile launched at angle θ with speed v, maximum range occurs when θ equals:","o":["30°","45°","60°","90°"],"a":"B"},
+{"q":"A car rounds a circular turn at constant speed. Which acts on it toward centre?","o":["Centrifugal force","Centripetal force","Coriolis force","Gravitational force"],"a":"B"},
+{"q":"Moment of inertia depends on:","o":["Mass distribution about axis","Total mass only","Shape only","Material density only"],"a":"A"},
+{"q":"For a rigid body rolling without slipping, relation between translational speed v and angular speed ω is:","o":["v = ωR","v = ω/R","v = R/ω","v = ωR^2"],"a":"A"},
+{"q":"Work done in a closed cyclic process is equal to:","o":["Change in internal energy","Heat absorbed","Net work done by system","Zero"],"a":"C"},
+{"q":"If two vectors are perpendicular, their dot product is:","o":["Product of magnitudes","Zero","Negative","Unit vector"],"a":"B"},
+{"q":"Hooke's law for a spring relates force to:","o":["Displacement squared","Displacement","Velocity","Acceleration"],"a":"B"},
+{"q":"Damped harmonic motion loses energy due to:","o":["Conservative force","Non-conservative force (damping)","Increased amplitude","Increased period"],"a":"B"},
+{"q":"The center of mass of a system moves as if all mass concentrated at that point under:","o":["Internal forces only","External forces only","No forces","Gravity only"],"a":"B"},
+{"q":"Two masses m and 2m connected by string over frictionless pulley—acceleration of lighter mass is:","o":["g/3","g/2","g/4","g/6"],"a":"A"},
+{"q":"A rotating flywheel's angular momentum is conserved if:","o":["No external torque acts","No internal friction","Angular speed constant","Moment of inertia constant"],"a":"A"},
+{"q":"Kinetic energy of rotating rigid body =","o":["(1/2)Iω","(1/2)Iω^2","Iω^2","(1/4)Iω^2"],"a":"B"},
+{"q":"Escape speed from Earth's surface is independent of:","o":["Mass of Earth","Radius of Earth","Mass of escaping object","Gravitational constant"],"a":"C"},
+{"q":"For uniform circular motion period T relates to angular speed ω by:","o":["ω = 2π/T","ω = T/2π","ω = π/T","ω = T/π"],"a":"A"},
+{"q":"Conservation of mechanical energy applies when:","o":["Only conservative forces act","Only non-conservative forces act","No forces act","Friction is present"],"a":"A"},
+{"q":"If acceleration is proportional to displacement (a ∝ x) and directed toward equilibrium, motion is:","o":["Damped","Simple harmonic","Uniform","Exponential"],"a":"B"},
+{"q":"Impulse equals change in:","o":["Kinetic energy","Momentum","Potential energy","Angular momentum"],"a":"B"},
+{"q":"A particle moves under central force; angular momentum is:","o":["Not conserved","Conserved","Always zero","Depends on potential"],"a":"B"},
+{"q":"Bernoulli's equation applies to fluids that are:","o":["Viscous and compressible","Incompressible and non-viscous","Static only","Rotating only"],"a":"B"},
+{"q":"For small oscillations, period of simple pendulum is independent of:","o":["Length","Amplitude (small)","Gravity","Mass of bob"],"a":"D"},
+{"q":"Elastic collision is characterized by:","o":["Loss of kinetic energy","Conservation of kinetic energy","Stickiness of bodies","Increase of internal energy"],"a":"B"},
+{"q":"Work-energy theorem relates net work to change in:","o":["Potential energy","Kinetic energy","Total energy","Momentum"],"a":"B"},
+{"q":"For a uniform rod pivoted at one end, moment of inertia about pivot is:","o":["(1/3)ML^2","(1/12)ML^2","(1/2)ML^2","ML^2"],"a":"A"},
+{"q":"A damped oscillator with light damping shows amplitude that:","o":["Increases exponentially","Decreases exponentially","Remains constant","Oscillates irregularly"],"a":"B"},
+{"q":"Magnus effect explains curved trajectory of:","o":["Projectiles under gravity","Spinning balls in air","Charged particles in magnetic field","Light in prism"],"a":"B"},
+{"q":"Stopping distance of car is proportional to square of:","o":["Speed","Mass","Braking force","Time"],"a":"A"},
+{"q":"Angular frequency of SHM is given by:","o":["√(k/m)","k/m","√(m/k)","m/k"],"a":"A"},
+{"q":"If two springs in series have constants k1 and k2, effective k is:","o":["k1 + k2","(k1k2)/(k1+k2)","k1 - k2","k1k2"],"a":"B"},
+{"q":"Linear momentum is a vector; its SI unit is:","o":["kg·m/s","N·s","Both A and B","J·s"],"a":"C"},
+{"q":"A satellite in circular orbit has kinetic energy half of its absolute potential energy magnitude. Total energy is:","o":["Positive","Negative","Zero","Infinite"],"a":"B"},
+{"q":"Gravitational potential inside a uniform sphere varies as:","o":["1/r","r^2","r","Constant"],"a":"C"},
+{"q":"Ratio of centripetal force to centrifugal force in an inertial frame is:","o":["1","0","Depends on mass","Infinite"],"a":"B"},
+{"q":"Work done by gravitational force in moving a mass around closed loop is:","o":["Positive","Negative","Zero","Depends on path"],"a":"C"},
+{"q":"A body in free fall near Earth's surface has acceleration:","o":["Variable with mass","g (constant)","2g","Zero"],"a":"B"},
+{"q":"Terminal velocity of a falling object occurs when:","o":["Net force upward","Gravitational force equals drag","Acceleration equals g","Velocity is zero"],"a":"B"},
+{"q":"For small angles, approximation sin θ ≈ θ is valid when θ is in:","o":["Degrees","Radians","Any unit","Gradians"],"a":"B"},
+{"q":"The couple produces pure:","o":["Translation","Rotation","Torque without translation","Zero effect"],"a":"C"},
+{"q":"The impulse-momentum theorem is derived from:","o":["Newton's first law","Newton's second law","Conservation of energy","Hooke's law"],"a":"B"},
+{"q":"When two bodies stick together after collision it is called:","o":["Elastic collision","Inelastic collision","Superelastic collision","Perfect reflection"],"a":"B"},
+{"q":"Power is the rate of doing work. Its SI unit is:","o":["Watt","Joule","Newton","Joule/second"],"a":"A"},
+{"q":"For conservative forces, potential energy is defined such that force =","o":["+dU/dx","-dU/dx","dU/dt","-dU/dt"],"a":"B"},
+{"q":"A ballistic pendulum measures:","o":["Energy","Momentum","Mass","Velocity directly"],"a":"B"},
+{"q":"Escape velocity is √(2GM/R). Which increases if R decreases?","o":["Escape velocity","Orbital speed at surface","Both","Neither"],"a":"A"},
+{"q":"Poiseuille’s law describes laminar flow in a pipe and relates flow rate to:","o":["Viscosity inversely","Viscosity directly","Temperature only","Pressure only"],"a":"A"},
+{"q":"Work done by normal force on a particle moving on frictionless surface is:","o":["Positive","Negative","Zero","Depends on path"],"a":"C"},
+{"q":"A system with potential energy having a local minimum is:","o":["Unstable equilibrium","Stable equilibrium","Neutral equilibrium","Metastable"],"a":"B"},
+{"q":"Speed of a wave on a stretched string depends on:","o":["Tension and linear density","Amplitude only","Frequency only","Length only"],"a":"A"},
+{"q":"Doppler effect for sound occurs due to:","o":["Relative motion between source and observer","Change in wavelength only","Change in medium only","Speed of source only"],"a":"A"},
+{"q":"In phase difference of π means waves are:","o":["In phase","Out of phase (opposite)","Quadrature","Random"],"a":"B"},
+{"q":"Superposition principle applies to:","o":["Linear waves","Nonlinear waves","Dissipative waves only","Standing waves only"],"a":"A"},
+{"q":"Fundamental frequency of an open-open pipe of length L is:","o":["v/2L","v/4L","v/L","v/8L"],"a":"A"},
+{"q":"Beat frequency equals:","o":["Sum of frequencies","Difference of frequencies","Product of frequencies","Ratio of frequencies"],"a":"B"},
+{"q":"Phase velocity can exceed c but group velocity carries:","o":["Energy and information","No energy","Imaginary quantity","Pressure only"],"a":"A"},
+{"q":"In standing wave nodes are points of:","o":["Maximum amplitude","Zero amplitude","Maximum intensity only","Variable amplitude"],"a":"B"},
+{"q":"Quality factor Q of an oscillator measures:","o":["Damping strength","Sharpness of resonance","Mass only","Frequency only"],"a":"B"},
+{"q":"Huygens principle helps in explaining:","o":["Particle motion","Wavefront propagation","Thermodynamics","Electrostatics"],"a":"B"},
+{"q":"For small damping, resonance frequency is slightly less than natural frequency due to:","o":["Increased amplitude","Damping term","External forcing","Nonlinearity"],"a":"B"},
+{"q":"Wave number k equals:","o":["2π/λ","λ/2π","ω/2π","v/λ"],"a":"A"},
+{"q":"Transverse waves have particle displacement:","o":["Parallel to propagation","Perpendicular to propagation","Circular only","Zero"],"a":"B"},
+{"q":"Sound cannot propagate in vacuum because:","o":["No medium to support longitudinal waves","Vacuum absorbs sound","Speed is infinite","Frequency is zero"],"a":"A"},
+{"q":"The principle of superposition leads to interference patterns when:","o":["Coherent sources present","Incoherent sources present","Sources static only","Sources moving only"],"a":"A"},
+{"q":"Group velocity = dω/dk. It represents:","o":["Phase of wave","Energy propagation speed","Frequency only","Wavelength only"],"a":"B"},
+{"q":"The effective spring constant for a simple pendulum near small angle is:","o":["mg/L","g/L","m*g*L","k independent"],"a":"A"},
+{"q":"For a wave on string, intensity is proportional to:","o":["Amplitude^2","Amplitude","Frequency^2","Wavelength^2"],"a":"A"},
+{"q":"Phase difference between successive nodes of standing wave is:","o":["π/2","π","2π","π/4"],"a":"B"},
+{"q":"Normal modes are characteristic of:","o":["Single particle only","Coupled oscillators","Isolated systems only","Damped systems only"],"a":"B"},
+{"q":"Dispersion occurs when wave speed depends on:","o":["Frequency","Amplitude","Medium only","Source only"],"a":"A"},
+{"q":"When two waves of equal amplitude and opposite direction interfere, result is:","o":["Traveling wave","Standing wave","Damped wave","No wave"],"a":"B"},
+{"q":"For small amplitude water waves in deep water, phase velocity depends on:","o":["Gravity and wavelength","Viscosity only","Surface tension only","Depth only"],"a":"A"},
+{"q":"First harmonic of a string fixed at both ends has nodes at:","o":["Both ends and one middle","Only middle","Only ends","Ends and quarter points"],"a":"C"},
+{"q":"In a driven damped oscillator, at resonance amplitude is limited by:","o":["Driving force only","Damping","Mass only","Frequency only"],"a":"B"},
+{"q":"The phenomenon of beats is most useful to measure:","o":["Large frequency differences","Small frequency differences","Wavelength only","Speed only"],"a":"B"},
+{"q":"For sound waves, intensity level in decibels uses log base:","o":["10","e","2","100"],"a":"A"},
+{"q":"A string with both ends fixed: number of antinodes for nth harmonic is:","o":["n","n-1","2n","n+1"],"a":"A"},
+{"q":"Phase of a simple harmonic oscillator is the argument of:","o":["Sine or cosine function","Amplitude","Frequency only","Damping constant"],"a":"A"},
+{"q":"If wavelength doubles while speed constant, frequency:","o":["Doubles","Halves","Remains same","Quadruples"],"a":"B"},
+{"q":"For a wave packet, dispersion causes:","o":["Packet to maintain shape","Packet to spread over time","Packet to disappear","Packet to increase amplitude"],"a":"B"},
+{"q":"Acoustic resonance in a closed pipe shows fundamental frequency =","o":["v/4L","v/2L","v/L","2v/L"],"a":"A"},
+{"q":"In SHM velocity is maximum at:","o":["Equilibrium position","Amplitude","Quarter period","None"],"a":"A"},
+{"q":"Q-factor is high when damping is:","o":["Large","Small","Moderate","Infinite"],"a":"B"},
+{"q":"A transverse wave with circular polarization has particle motion:","o":["Linear","Circular","Elliptical only","Random"],"a":"B"},
+{"q":"Wave superposition leading to constructive interference requires phase difference:","o":["π/2","2πn","π(2n+1)","Any value"],"a":"B"},
+{"q":"Wavelength of sound in air at 340 m/s and frequency 170 Hz is:","o":["2 m","0.5 m","170 m","340 m"],"a":"A"},
+{"q":"Law of reflection states angle of incidence equals:","o":["Angle of reflection measured from normal","Angle of refraction","Angle with surface","Twice angle of incidence"],"a":"A"},
+{"q":"For a driven oscillator below resonance, phase of response relative to driver is:","o":["0 (in phase)","π/2","π (out of phase)","Variable"],"a":"A"},
+{"q":"Wave intensity decreases with distance for a point source as:","o":["1/r","1/r^2","r^2","Constant"],"a":"B"},
+{"q":"Zeroth law of thermodynamics establishes:","o":["Conservation of energy","Thermal equilibrium and temperature concept","Entropy increase","Work-heat equivalence"],"a":"B"},
+{"q":"First law of thermodynamics is statement of:","o":["Conservation of energy","Entropy increase","Absolute zero unattainable","Heat engines efficiency limit"],"a":"A"},
+{"q":"Entropy change for reversible process is:","o":["ΔQ_rev/T","ΔQ/T for irreversible","Zero always","ΔW/T"],"a":"A"},
+{"q":"In an isothermal expansion of ideal gas, internal energy change is:","o":["Zero","Positive","Negative","Equal to work done"],"a":"A"},
+{"q":"Carnot engine efficiency depends only on:","o":["Working substance","Temperatures of reservoirs","Heat input magnitude","Cycle duration"],"a":"B"},
+{"q":"For an ideal gas PV=nRT, internal energy depends only on:","o":["Pressure","Temperature","Volume","All of above"],"a":"B"},
+{"q":"Adiabatic process for ideal gas follows PV^γ = constant; γ equals:","o":["Cp/Cv","Cv/Cp","R/Cp","Cp-R"],"a":"A"},
+{"q":"RMS speed of gas molecules is √(3kT/m). It increases with:","o":["Mass","Temperature","Pressure only","Volume only"],"a":"B"},
+{"q":"Heat capacity at constant volume Cv for monoatomic ideal gas per mole equals:","o":["(3/2)R","(5/2)R","R","(7/2)R"],"a":"A"},
+{"q":"Maxwell-Boltzmann distribution applies to:","o":["Classical ideal gases","Fermions at low T","Photons","Bosons at condensation"],"a":"A"},
+{"q":"Entropy of an isolated system tends to:","o":["Decrease","Increase or remain constant","Remain zero","Oscillate"],"a":"B"},
+{"q":"Work done in reversible isothermal expansion equals:","o":["nRT ln(Vf/Vi)","nCvΔT","0","ΔU"],"a":"A"},
+{"q":"Joule-Thomson effect shows temperature change when gas expands at constant enthalpy; cooling occurs for:","o":["All gases at all temperatures","Certain ranges depending on inversion temperature","Ideal gas always","Vacuum only"],"a":"B"},
+{"q":"Helmholtz free energy A = U − TS is minimized at constant:","o":["Temperature and volume","Pressure and temperature","Entropy and volume","Energy and volume"],"a":"A"},
+{"q":"Gibbs free energy G = H − TS determines spontaneity at constant:","o":["Pressure and temperature","Volume and temperature","Energy only","Entropy only"],"a":"A"},
+{"q":"Heat engine converts heat into work; efficiency maximum is Carnot efficiency which is <:","o":["1","0.5","Depends on fuel","Infinite"],"a":"A"},
+{"q":"Degrees of freedom for linear diatomic molecule at room T ≈","o":["3 (translational only)","5 (translational + rotational)","6 (with vibrational active)","2 only"],"a":"B"},
+{"q":"Equipartition theorem assigns energy (1/2)kT per:","o":["Degree of freedom quadratic in energy","Any degree of freedom","Only translational","Only vibrational"],"a":"A"},
+{"q":"Boyle’s law states that at constant temperature PV =:","o":["Constant","Proportional to T","Proportional to V","Inversely proportional to temperature"],"a":"A"},
+{"q":"Absolute zero corresponds to:","o":["0 K and no thermal motion","0°C","-273°F","Lowest attainable entropy"],"a":"A"},
+{"q":"In a refrigerator, work is done to transfer heat from cold to hot reservoir. COP is defined as:","o":["Q_L/W","W/Q_H","Q_H/W","W/Q_L"],"a":"A"},
+{"q":"Specific heat capacity is the amount of heat required to raise temperature of unit mass by:","o":["1 K","1 atm","1 J","1 mol"],"a":"A"},
+{"q":"Thermal conduction in solids is mainly due to:","o":["Free electrons and lattice vibrations","Photons only","Convection only","Conduction not possible"],"a":"A"},
+{"q":"Blackbody radiation spectrum depends only on:","o":["Temperature of body","Material composition","Shape only","Size only"],"a":"A"},
+{"q":"Stefan-Boltzmann law: power radiated per unit area ∝:","o":["T^4","T^3","T^2","ln T"],"a":"A"},
+{"q":"Planck’s law resolved ultraviolet catastrophe by introducing:","o":["Continuous energy","Quantized energy of oscillators","New atom model","Negative energy"],"a":"B"},
+{"q":"For a thermodynamic ideal gas, enthalpy H depends only on:","o":["Temperature","Pressure","Volume","Number of moles only"],"a":"A"},
+{"q":"In an isobaric process, heat capacity relevant is:","o":["Cp","Cv","R only","Zero"],"a":"A"},
+{"q":"Clausius statement of second law: Heat cannot spontaneously flow from:","o":["Cold to hot without work","Hot to cold","High pressure to low pressure","Solid to liquid"],"a":"A"},
+{"q":"Reversible process maximizes work extraction because it is:","o":["Quasi-static and entropy constant for system+reservoir","Fast","Irreversible","Adiabatic only"],"a":"A"},
+{"q":"When two systems in thermal contact reach equilibrium, total entropy:","o":["Decreases","Increases or stays same","Is negative","Undefined"],"a":"B"},
+{"q":"Thermal expansion coefficient relates fractional change in length per degree of:","o":["Temperature","Pressure","Time","Volume"],"a":"A"},
+{"q":"Equipartition failed for specific heats at low T because:","o":["Quantum effects freeze degrees of freedom","Classical mechanics invalid","Measurement errors","Gas leaks"],"a":"A"},
+{"q":"Heat capacity of solids at low temperature ~","o":["T^3 (Debye law)","T","Constant","e^T"],"a":"A"},
+{"q":"Microstates in statistical mechanics count:","o":["Distinct configurations with same macrostate","Macroscopic measurements","Energy only","Entropy directly"],"a":"A"},
+{"q":"Partition function is central because it encodes:","o":["Thermodynamic properties","Only entropy","Only pressure","Only volume"],"a":"A"},
+{"q":"In adiabatic free expansion of an ideal gas, temperature change is:","o":["Zero","Positive","Negative","Depends on gas"],"a":"A"},
+{"q":"The kinetic theory models pressure as due to:","o":["Molecular collisions with container walls","Gravity","Chemical reactions","External forces"],"a":"A"},
+{"q":"Entropy has SI unit:","o":["J/K","J","K/J","kg·m^2/s^2"],"a":"A"},
+{"q":"For reversible adiabatic process, entropy change is:","o":["Positive","Zero","Negative","Undefined"],"a":"B"},
+{"q":"Coulomb's law force between two charges ∝","o":["1/r","1/r^2","r^2","r"],"a":"B"},
+{"q":"Electric field inside a conductor in electrostatic equilibrium is:","o":["Zero","Maximum","Uniform","Varying"],"a":"A"},
+{"q":"Gauss's law is most useful to find field when charge distribution has:","o":["High symmetry","No symmetry","Random distribution","Time dependence"],"a":"A"},
+{"q":"Potential difference between two points is negative integral of E·dl. Unit is:","o":["Volt","Coulomb","Tesla","Ohm"],"a":"A"},
+{"q":"Capacitance of parallel plate capacitor ∝","o":["Area/distance","Distance/area","Volume","Permittivity only"],"a":"A"},
+{"q":"Dielectric between capacitor plates increases capacitance by factor:","o":["κ (dielectric constant)","1/κ","κ^2","√κ"],"a":"A"},
+{"q":"Current density J relates to electric field E by Ohm’s law in materials: J =","o":["σE","E/σ","σ/E","1/σE"],"a":"A"},
+{"q":"Kirchhoff’s junction rule is statement of:","o":["Energy conservation","Charge conservation","Momentum conservation","Ohm's law"],"a":"B"},
+{"q":"Magnetic field lines around long straight current are:","o":["Radial","Circular concentric about wire","Parallel to wire","Random"],"a":"B"},
+{"q":"Lorentz force on charge q moving with velocity v in B field: F =","o":["q(E + v × B)","q(E − v × B)","qvB only","qE only"],"a":"A"},
+{"q":"Magnetic flux through closed surface is:","o":["Zero (Gauss's law for magnetism)","Equal to charge enclosed","Proportional to current","Undefined"],"a":"A"},
+{"q":"Faraday’s law relates induced emf to:","o":["Rate of change of magnetic flux","Electric flux only","Charge only","Capacitance"],"a":"A"},
+{"q":"Self-inductance L has unit:","o":["Henry","Tesla","Weber","Ohm"],"a":"A"},
+{"q":"In an LR circuit, time constant τ equals:","o":["L/R","R/L","LC","1/RC"],"a":"A"},
+{"q":"RMS value of AC current I_peak is:","o":["I_peak/√2","I_peak","√2 I_peak","I_peak/2"],"a":"A"},
+{"q":"In a series RLC circuit at resonance, impedance is:","o":["Minimum and equal to R","Maximum","Infinite","Zero"],"a":"A"},
+{"q":"Magnetic dipole moment of current loop equals:","o":["I·Area","I/Area","Area/I","I^2·Area"],"a":"A"},
+{"q":"For parallel plate capacitor, energy stored =","o":["(1/2)CV^2","CV^2","(1/2)Q^2/C","Both A and C"],"a":"D"},
+{"q":"Skin effect in AC conductors causes current to flow:","o":["Uniformly","Near surface","Only at center","Randomly"],"a":"B"},
+{"q":"Magnetic field at center of circular loop carrying current I of radius R is:","o":["μ0 I/(2R)","μ0 I/(4πR)","μ0 I/R","Zero"],"a":"A"},
+{"q":"For a capacitor with dielectric removed while isolated, charge on plates:","o":["Remains same","Decreases","Increases","Goes to zero"],"a":"A"},
+{"q":"Kirchhoff’s loop rule is statement of:","o":["Conservation of energy","Conservation of charge","Conservation of momentum","Ohm’s law"],"a":"A"},
+{"q":"Units of electric potential gradient (E) are:","o":["V/m","V·m","V/s","A/m"],"a":"A"},
+{"q":"Drift velocity of electrons in conductor is proportional to:","o":["Electric field","Temperature only","Current squared","Magnetic field"],"a":"A"},
+{"q":"Millikan oil drop experiment measured:","o":["Electron charge","Electron mass","Planck's constant","Avogadro's number"],"a":"A"},
+{"q":"When a magnetic field through a loop changes, induced emf opposes change—this is:","o":["Lenz's law","Faraday's law","Ampere's law","Gauss's law"],"a":"A"},
+{"q":"A Hall effect measurement gives information about:","o":["Carrier concentration and sign","Resistivity only","Dielectric constant","Magnetic permeability"],"a":"A"},
+{"q":"Displacement current term was introduced by Maxwell to make Ampere's law consistent with:","o":["Conservation of charge","Faraday's law","Gauss's law","Coulomb's law"],"a":"A"},
+{"q":"Electromagnetic wave in vacuum has E and B fields:","o":["Parallel and in phase","Perpendicular to each other and to propagation direction","Randomly oriented","Only electric field"],"a":"B"},
+{"q":"Poynting vector represents:","o":["Energy flux (power per unit area)","Momentum only","Charge density","Electric potential"],"a":"A"},
+{"q":"In a conductor with steady current, electric field inside is:","o":["Non-zero driving current","Zero","Infinite","Oscillatory"],"a":"A"},
+{"q":"Electric potential due to dipole at large distance varies as:","o":["1/r","1/r^2","1/r^3","Constant"],"a":"B"},
+{"q":"Work done to move a test charge in electrostatic field depends on:","o":["Potential difference only","Path only","Both path and potential","Charge of test particle only"],"a":"A"},
+{"q":"Magnetic field inside a long solenoid (ideal) is:","o":["μ0 n I","μ0 I/(2R)","Zero","μ0 I n/2"],"a":"A"},
+{"q":"Relation between resistance R, resistivity ρ, length L and area A is:","o":["R = ρ L/A","R = ρ A/L","R = L/(ρ A)","R = ρ/(L A)"],"a":"A"},
+{"q":"Capacitors in series have equivalent capacitance given by:","o":["1/C_eq = Σ 1/C_i","C_eq = Σ C_i","C_eq = Π C_i","C_eq = Σ C_i^2"],"a":"A"},
+{"q":"In Maxwell's equations, ∇·E = ρ/ε0 is Gauss's law for:","o":["Electric field","Magnetic field","Faraday's induction","Ampere’s circuital law"],"a":"A"},
+{"q":"A charged particle moves perpendicular to uniform magnetic field describing:","o":["Straight line","Circular path","Parabola","Spiral outward"],"a":"B"},
+{"q":"Induced emf in a coil depends on number of turns N and dΦ/dt as:","o":["ε = −N dΦ/dt","ε = N dΦ/dt","ε = −dΦ/dt","ε = NΦ"],"a":"A"},
+{"q":"Resonant frequency of LC circuit is:","o":["1/√(LC)","1/(2π√(LC))","√(LC)","2π√(LC)"],"a":"B"},
+{"q":"Snell's law relates sin i / sin r =","o":["n2/n1","n1/n2","μ1/μ2","Equal to 1"],"a":"A"},
+{"q":"Total internal reflection occurs when light passes from:","o":["Denser to rarer medium at angle greater than critical","Rarer to denser","Any direction","Vacuum only"],"a":"A"},
+{"q":"Angular magnification of simple microscope (magnifying glass) depends on:","o":["Focal length of lens","Thickness only","Wavelength only","Aperture only"],"a":"A"},
+{"q":"Diffraction is most pronounced when obstacle size is comparable to:","o":["Wavelength","Amplitude","Frequency","Intensity"],"a":"A"},
+{"q":"Polarization of light means:","o":["Electric field has preferred orientation","Magnetic field only","Frequency changed","Intensity reduced"],"a":"A"},
+{"q":"Photoelectric effect showed that light has:","o":["Particle-like properties (photons)","Only wave properties","No energy","Continuous energy distribution"],"a":"A"},
+{"q":"de Broglie wavelength λ =","o":["h/p","hp","hλ","p/h"],"a":"A"},
+{"q":"Heisenberg uncertainty principle relates ΔxΔp ≥","o":["ħ/2","h","0","1"],"a":"A"},
+{"q":"Atomic emission spectra are due to:","o":["Electron transitions between energy levels","Nuclear transitions","Molecular vibrations only","Thermal radiation only"],"a":"A"},
+{"q":"Compton scattering demonstrates photon momentum given by:","o":["h/λ","hλ","λ/h","p independent"],"a":"A"},
+{"q":"Lasers produce coherent light by:","o":["Stimulated emission","Spontaneous emission only","Thermal radiation","Reflection"],"a":"A"},
+{"q":"In double-slit experiment fringe spacing is given by:","o":["β = λD/d","β = d/λD","β = λd/D","β = Dλd"],"a":"A"},
+{"q":"Work function is minimum energy to remove electron from:","o":["Metal surface","Atom nucleus","Vacuum only","Semiconductor only"],"a":"A"},
+{"q":"Rutherford scattering established that atom has:","o":["Small dense positive nucleus","Uniform positive charge","Electrons near center","No nucleus"],"a":"A"},
+{"q":"Half-life of radioactive isotope is time for half of sample to:","o":["Decay","Double","Change mass","Emit photons only"],"a":"A"},
+{"q":"Pair production requires photon energy greater than:","o":["2mc^2 (electron-positron)","mc^2","0.5mc^2","Any energy"],"a":"A"},
+{"q":"Work function φ and photon energy hν: maximum kinetic energy of photoelectron =","o":["hν − φ","φ − hν","hν + φ","hνφ"],"a":"A"},
+{"q":"Quantum numbers (n, l, m, s) describe:","o":["Electron state in atom","Nuclear spin only","Crystal lattice only","Photon polarization only"],"a":"A"},
+{"q":"Refractive index dispersion causes different colors to have different:","o":["Speed and bending","Mass","Charge","Temperature"],"a":"A"},
+{"q":"Blackbody peak wavelength λ_max varies with temperature by Wien's law: λ_max ∝","o":["1/T","T","T^4","ln T"],"a":"A"},
+{"q":"Photoelectric current vs. intensity at constant frequency shows that current is proportional to:","o":["Intensity (number of photons)","Frequency","Kinetic energy per electron","Work function"],"a":"A"},
+{"q":"In a Fabry-Pérot interferometer, sharp resonances occur due to:","o":["Multiple beam interference","Single reflection only","Absorption","Scattering"],"a":"A"},
+{"q":"Binding energy per nucleon is a measure of:","o":["Nuclear stability","Atomic radius","Electron affinity","Ionization energy"],"a":"A"},
+{"q":"Cyclotron frequency for charged particle in magnetic field is independent of:","o":["Velocity (non-relativistic)","Magnetic field","Charge","Mass"],"a":"A"},
+{"q":"In Compton effect, wavelength shift Δλ = (h/mc)(1 − cos θ). This shows dependence on:","o":["Scattering angle θ","Frequency only","Intensity","Target material only"],"a":"A"},
+{"q":"Stern-Gerlach experiment proved quantization of:","o":["Angular momentum (spin)","Charge","Mass","Energy levels only"],"a":"A"},
+{"q":"Semiconductor band gap determines:","o":["Wavelength of absorbed/emitted photons","Atomic mass","Electron charge","Magnetic properties"],"a":"A"},
+{"q":"Relativistic mass increases with velocity according to:","o":["m = m0/√(1 − v^2/c^2)","m = m0√(1 − v^2/c^2)","m = m0(1 − v^2/c^2)","m = constant"],"a":"A"},
+{"q":"Cherenkov radiation occurs when a charged particle travels through medium faster than:","o":["Phase velocity of light in that medium","Speed of sound","Escape velocity","Group velocity only"],"a":"A"},
+{"q":"The uncertainty principle implies that precise simultaneous knowledge of position and momentum is:","o":["Impossible beyond ħ/2 limit","Always possible","Dependent on measurement device only","Classical result"],"a":"A"}
+];
+
+const itemsPerPage = 10;
+let currentPage = 1;
+const totalPages = Math.ceil(mcqs.length / itemsPerPage);
+
+function renderOptions(opts){
+  let html = '';
+  const labels = ['A','B','C','D'];
+  for(let i=0;i<4;i++){
+    const text = opts[i] || '';
+    html += `<div class='option'>${labels[i]}. ${text}</div>`;
+  }
+  return html;
+}
+
+function display(page){
+  if(page < 1) page = 1;
+  if(page > totalPages) page = totalPages;
+  currentPage = page;
+  const cont = document.getElementById('mcq-container');
+  cont.innerHTML = '';
+  const start = (page-1) * itemsPerPage;
+  const end = Math.min(start + itemsPerPage, mcqs.length);
+  for(let i=start;i<end;i++){
+    const item = mcqs[i];
+    const qnum = i+1;
+    const div = document.createElement('div');
+    div.className = 'mcq';
+    div.innerHTML = `<div class='question'>${qnum}. ${item.q}</div>
+                     <div class='options'>${renderOptions(item.o)}</div>
+                     <div class='answer'>Answer: ${item.a}</div>`;
+    cont.appendChild(div);
+  }
+  const pageInput = document.getElementById('pageInput');
+  pageInput.value = currentPage;
+  window.scrollTo(0,0);
+}
+
+function prevPage(){ if(currentPage>1) display(currentPage-1); }
+function nextPage(){ if(currentPage<totalPages) display(currentPage+1); }
+function goToPage(){
+  const p = parseInt(document.getElementById('pageInput').value);
+  if(!isNaN(p) && p>=1 && p<=totalPages) display(p);
+}
+
+display(1);
+</script>
+</body>
+</html>
