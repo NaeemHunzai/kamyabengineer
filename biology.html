@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Biology MCQs — 1–200</title>
+  <style>
+    :root { --teal: #064e52; }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg,#e0f7fa,#ffffff);
+      margin: 0;
+      color: #063;
+    }
+    .container {
+      max-width: 920px;
+      margin: 20px auto;
+      padding: 18px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+    }
+    .header {
+      background: var(--teal);
+      color: #fff;
+      padding: 14px;
+      border-radius: 8px;
+    }
+    .header h1 { margin: 0; font-size: 20px; }
+    .mcq {
+      background: #fff;
+      border-left: 6px solid var(--teal);
+      border-radius: 10px;
+      padding: 12px;
+      margin: 12px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .question { font-weight: 700; color: #073b36; }
+    .options { margin-top: 8px; padding-left: 12px; }
+    .option { margin: 6px 0; }
+    .answer { margin-top: 10px; font-weight: 700; color: #1b9b37; }
+    .pagination {
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      align-items:center;
+      margin-top:16px;
+      flex-wrap:wrap;
+    }
+    .pagination button {
+      padding:6px 12px;
+      border-radius:6px;
+      border:1px solid var(--teal);
+      background:var(--teal);
+      color:#fff;
+      cursor:pointer;
+    }
+    .pagination input {
+      width:60px;
+      padding:8px;
+      border-radius:6px;
+      border:1px solid #ccc;
+      text-align:center;
+    }
+    .footer-note { font-size:13px; color:#055; text-align:center; margin-top:8px; }
+    @media (max-width:480px) {
+      .container { padding:12px; margin:8px; }
+      .header h1 { font-size:16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h1>Biology MCQs — 1–200</h1></div>
+
+    <div id="mcq-container"></div>
+
+    <div class="pagination">
+      <button onclick="prevPage()">Previous</button>
+      <input id="pageInput" type="number" min="1" max="20" placeholder="Page">
+      <button onclick="goToPage()">Go</button>
+      <button onclick="nextPage()">Next</button>
+    </div>
+
+    <div class="footer-note">Showing 10 questions per page • Total 200 questions • Answers shown below each question</div>
+  </div>
+
+  <script>
+  // 200 Biology MCQs — important, exam-style, unique.
+  const mcqs = [
+{"q":"The basic structural and functional unit of all living organisms is:","o":["Tissue","Organelle","Cell","Organ"],"a":"C"},
+{"q":"Which organelle is primarily responsible for ATP production?","o":["Nucleus","Chloroplast","Ribosome","Mitochondrion"],"a":"D"},
+{"q":"During transcription, which enzyme synthesizes RNA from a DNA template?","o":["DNA polymerase","RNA polymerase","Ligase","Helicase"],"a":"B"},
+{"q":"The ribosome is the site of:","o":["DNA replication","Protein synthesis","Lipid synthesis","ATP production"],"a":"B"},
+{"q":"Which nitrogenous base is found only in RNA and not in DNA?","o":["Thymine","Uracil","Cytosine","Adenine"],"a":"B"},
+{"q":"DNA replication is described as semiconservative because:","o":["Each new DNA has two new strands","Each new DNA has one old and one new strand","Original DNA is conserved intact","Strands are identical to parent"],"a":"B"},
+{"q":"Which bond stabilizes the two strands of the DNA double helix?","o":["Peptide bond","Phosphodiester bond","Hydrogen bond","Ionic bond"],"a":"C"},
+{"q":"Translation terminates when the ribosome encounters a:","o":["Start codon","Stop codon","Promoter","Operator"],"a":"B"},
+{"q":"Which RNA carries amino acids to the ribosome?","o":["mRNA","rRNA","tRNA","snRNA"],"a":"C"},
+{"q":"The organelle responsible for packaging and modifying proteins for secretion is:","o":["Lysosome","Golgi apparatus","Mitochondrion","Ribosome"],"a":"B"},
+{"q":"In eukaryotes, mRNA is processed by addition of a 5' cap, poly-A tail, and:","o":["Splicing to remove introns","Methylation of cytosine only","Degradation","Frameshift"],"a":"A"},
+{"q":"The fluid mosaic model describes the structure of the:","o":["Nucleus","Plasma membrane","Mitochondrial matrix","Cell wall"],"a":"B"},
+{"q":"Which organelle contains hydrolytic enzymes for intracellular digestion?","o":["Peroxisome","Lysosome","Vacuole","Nucleolus"],"a":"B"},
+{"q":"Signal peptides typically direct newly-made proteins to the:","o":["Golgi apparatus","Endoplasmic reticulum","Mitochondrion","Nucleus"],"a":"B"},
+{"q":"Which process produces two genetically identical daughter cells?","o":["Meiosis I","Meiosis II","Mitosis","Binary fission only in prokaryotes"],"a":"C"},
+{"q":"The endosymbiotic theory explains the origin of:","o":["Ribosomes","Mitochondria and chloroplasts","Nucleus","Golgi apparatus"],"a":"B"},
+{"q":"Which molecule is the primary genetic material in most organisms?","o":["Protein","DNA","RNA","Carbohydrate"],"a":"B"},
+{"q":"Which sequence in DNA signals the start of transcription?","o":["Terminator","Origin","Promoter","Operator"],"a":"C"},
+{"q":"Operons are genetic units commonly found in:","o":["Eukaryotes","Prokaryotes","Viruses","Fungi"],"a":"B"},
+{"q":"Which of the following is NOT a component of a nucleotide?","o":["Phosphate group","Pentose sugar","Amino acid","Nitrogenous base"],"a":"C"},
+{"q":"Telomeres are located at the ends of:","o":["Proteins","Chromosomes","Ribosomes","Mitochondria"],"a":"B"},
+{"q":"Which enzyme removes RNA primers during DNA replication and replaces them with DNA?","o":["Primase","DNA ligase","DNA polymerase I (in prokaryotes)","Helicase"],"a":"C"},
+{"q":"Exons are:","o":["Noncoding regions removed from mRNA","Coding sequences retained in mature mRNA","Promoter elements","DNA replication origins"],"a":"B"},
+{"q":"Which cellular structure organizes the mitotic spindle?","o":["Centrosome","Golgi","Nucleolus","Ribosome"],"a":"A"},
+{"q":"Which process exports proteins from the cell?","o":["Endocytosis","Exocytosis","Phagocytosis","Autophagy"],"a":"B"},
+{"q":"Microtubules are polymers of:","o":["Actin","Tubulin","Myosin","Keratins"],"a":"B"},
+{"q":"Which of the following increases the fluidity of cell membranes?","o":["High cholesterol at low temperature","Saturated fatty acids","High proportion of unsaturated fatty acids","Long-chain saturated lipids"],"a":"C"},
+{"q":"Gap junctions in animal cells allow:","o":["Anchoring between cells","Direct cytoplasmic communication","Waterproofing","DNA exchange"],"a":"B"},
+{"q":"Which process describes programmed cell death?","o":["Necrosis","Apoptosis","Autolysis","Mitosis"],"a":"B"},
+{"q":"Which molecule is the immediate energy currency of the cell?","o":["NADH","Glucose","ATP","ADP"],"a":"C"},
+{"q":"Which cellular process includes glycolysis, Krebs cycle, and oxidative phosphorylation?","o":["Photosynthesis","Cellular respiration","Fermentation only","Gluconeogenesis"],"a":"B"},
+{"q":"The inner membrane of mitochondria folds into structures called:","o":["Stroma","Cristae","Thylakoids","Mesosomes"],"a":"B"},
+{"q":"Which of the following carries genetic information from the nucleus to the cytoplasm?","o":["mRNA","tRNA","rRNA","snRNA"],"a":"A"},
+{"q":"DNA gyrase is an enzyme important in:","o":["RNA splicing","Supercoiling and relieving torsional strain in prokaryotic DNA replication","Protein folding","Mitochondrial function"],"a":"B"},
+{"q":"The wobble hypothesis helps explain:","o":["Redundancy in genetic code at third base of codon","Mutation rate","DNA repair","Protein folding"],"a":"A"},
+{"q":"In eukaryotic cells, translation occurs primarily in the:","o":["Nucleus","Cytoplasm (on ribosomes)","Golgi apparatus","Lysosome"],"a":"B"},
+{"q":"Which of the following is a post-translational modification?","o":["Transcription","Phosphorylation of proteins","Replication","Splicing"],"a":"B"},
+{"q":"Which organelle synthesizes lipids and detoxifies drugs?","o":["Rough endoplasmic reticulum","Smooth endoplasmic reticulum","Ribosome","Peroxisome"],"a":"B"},
+{"q":"Endocytosis and exocytosis are processes that involve:","o":["Transport through nuclear pores","Vesicle-mediated bulk transport across membranes","Simple diffusion","Osmosis"],"a":"B"},
+{"q":"Which protein complex degrades ubiquitin-tagged proteins?","o":["Ribosome","Proteasome","Lysosome","Peroxisome"],"a":"B"},
+{"q":"Mendel's law of independent assortment applies to genes located on:","o":["Same chromosome tightly linked","Different chromosomes or far apart on same chromosome","Mitochondrial DNA","Sex chromosomes only"],"a":"B"},
+{"q":"A point mutation that does not change the amino acid sequence is called:","o":["Nonsense mutation","Missense mutation","Silent mutation","Frameshift mutation"],"a":"C"},
+{"q":"Genetic drift has the largest effect in:","o":["Large populations","Small populations","Infinite populations","Only in plants"],"a":"B"},
+{"q":"Hardy-Weinberg equilibrium assumes:","o":["Nonrandom mating","Natural selection acting","No mutation, no migration, large population, random mating, no selection","High mutation rate"],"a":"C"},
+{"q":"Horizontal gene transfer is most common in:","o":["Bacteria","Plants","Animals","Fungi"],"a":"A"},
+{"q":"Which technique is used to amplify specific DNA sequences?","o":["Gel electrophoresis","PCR (Polymerase Chain Reaction)","Southern blotting","DNA sequencing"],"a":"B"},
+{"q":"A karyotype is used to detect:","o":["Single base mutations","Chromosomal abnormalities like aneuploidy","Protein folding defects","Metabolic changes"],"a":"B"},
+{"q":"The process by which new species form is called:","o":["Genetic drift","Speciation","Migration","Adaptation"],"a":"B"},
+{"q":"Directional selection favors:","o":["Intermediate phenotypes","Extreme phenotypes","Both extremes over intermediate","No change"],"a":"B"},
+{"q":"Inbreeding increases the frequency of:","o":["Heterozygotes","Homozygotes","Mutations","Migration"],"a":"B"},
+{"q":"A frameshift mutation is typically caused by:","o":["A single base substitution","Insertion or deletion of bases not in multiples of three","Crossing over","Methylation"],"a":"B"},
+{"q":"Transcription factors are proteins that:","o":["Catalyze peptide bond formation","Bind DNA and regulate gene expression","Degrade mRNA","Replicate DNA"],"a":"B"},
+{"q":"Autosomal dominant inheritance means:","o":["Trait appears only in males","One copy of the mutant allele is sufficient for phenotype","Trait skips generations always","Requires two mutant alleles"],"a":"B"},
+{"q":"A bottleneck effect reduces genetic variation due to:","o":["Selective mating","Population size reduction","Increased mutation rate","Gene flow"],"a":"B"},
+{"q":"Which structure carries genetic information between homologous chromosomes during meiosis?","o":["Centromere","Chiasma formed during crossover","Telomere","Spindle fiber"],"a":"B"},
+{"q":"Mitochondrial DNA is typically inherited from:","o":["Father","Mother","Both parents equally","Randomly"],"a":"B"},
+{"q":"Gene flow between populations tends to:","o":["Increase genetic differentiation","Decrease genetic differentiation","Create reproductive isolation","Cause speciation immediately"],"a":"B"},
+{"q":"Which scientist proposed natural selection as mechanism of evolution?","o":["Gregor Mendel","Charles Darwin","Jean-Baptiste Lamarck","Louis Pasteur"],"a":"B"},
+{"q":"Convergent evolution results in:","o":["Closely related species with different traits","Unrelated species evolving similar traits","Speciation by hybridization","Genetic drift-induced changes"],"a":"B"},
+{"q":"Which is an example of a molecular marker used in population genetics?","o":["mRNA only","Microsatellites (simple sequence repeats)","Lipids","Carbohydrates"],"a":"B"},
+{"q":"The Hardy-Weinberg equation p^2 + 2pq + q^2 = 1 describes:","o":["Allele frequencies only","Genotype frequencies in an ideal population","Phenotypic variance","Mutation rates"],"a":"B"},
+{"q":"A heterozygote advantage can maintain a deleterious allele in a population, example:","o":["Sickle-cell trait providing malaria resistance","Cystic fibrosis heterozygotes immune to flu","Hemophilia advantage","None"],"a":"A"},
+{"q":"Which of the following increases mutation rate?","o":["Exposure to mutagens like UV and chemicals","Antioxidants","Low temperature","Absence of radiation"],"a":"A"},
+{"q":"Polyploidy is especially common and important in the evolution of:","o":["Animals","Fungi only","Plants","Bacteria"],"a":"C"},
+{"q":"Genetic mapping uses recombination frequency to estimate:","o":["Physical distance between genes on a chromosome","Protein size","RNA stability","Metabolic rate"],"a":"A"},
+{"q":"Which enzyme is responsible for synthesizing DNA from an RNA template in retroviruses?","o":["DNA polymerase","Reverse transcriptase","RNA polymerase","Integrase"],"a":"B"},
+{"q":"Which technique separates DNA fragments by size?","o":["PCR","Gel electrophoresis","ELISA","Flow cytometry"],"a":"B"},
+{"q":"A haploid human cell contains how many chromosomes?","o":["23","46","92","12"],"a":"A"},
+{"q":"Which term describes the complete set of genes in an organism?","o":["Proteome","Genome","Transcriptome","Metabolome"],"a":"B"},
+{"q":"Founder effect is a type of:","o":["Natural selection","Genetic drift","Gene flow","Mutation"],"a":"B"},
+{"q":"Which process increases genetic variation during meiosis?","o":["Independent assortment and crossing over","Binary fission","Mitosis","Translation"],"a":"A"},
+{"q":"Epigenetic modifications affect gene expression by altering:","o":["DNA sequence","Chromatin structure without changing sequence","tRNA sequences","Ribosome structure"],"a":"B"},
+{"q":"Which mutation introduces a premature stop codon?","o":["Missense mutation","Nonsense mutation","Silent mutation","Frameshift mutation always"],"a":"B"},
+{"q":"SNP stands for:","o":["Single Nucleotide Polymorphism","Single New Protein","Short Nucleotide Pair","Single Nuclear Particle"],"a":"A"},
+{"q":"Which method is used to determine amino acid sequence of a protein?","o":["Sanger sequencing","Mass spectrometry","PCR","Northern blot"],"a":"B"},
+{"q":"Artificial selection is selection imposed by:","o":["Nature","Humans","Predators","Climate"],"a":"B"},
+{"q":"Which organelle contains restriction enzymes in bacteria?","o":["Nucleus","None — restriction enzymes are bacterial proteins acting in cytoplasm","Mitochondria","Chloroplasts"],"a":"B"},
+{"q":"Which is the primary mechanism by which viruses acquire host DNA?","o":["Bacterial conjugation","Transduction via bacteriophages","Meiosis","Mitosis"],"a":"B"},
+{"q":"Conservation of synteny refers to:","o":["Preservation of gene order on chromosomes between species","Identical DNA sequences","Same karyotype","Identical phenotypes"],"a":"A"},
+{"q":"The neutral theory of molecular evolution proposes that:","o":["Most evolutionary changes are due to natural selection","Most changes at molecular level are selectively neutral and due to genetic drift","Mutations are always beneficial","No mutations occur"],"a":"B"},
+{"q":"The cardiac pacemaker that normally initiates the heartbeat is the:","o":["AV node","SA node (sinoatrial)","Bundle of His","Purkinje fibers"],"a":"B"},
+{"q":"Which blood vessel carries oxygenated blood from the lungs to the heart?","o":["Pulmonary artery","Pulmonary vein","Aorta","Vena cava"],"a":"B"},
+{"q":"Hemoglobin's oxygen-binding capacity is primarily due to the presence of:","o":["Magnesium","Iron in heme groups","Calcium","Copper"],"a":"B"},
+{"q":"The primary site of nutrient absorption in the digestive tract is the:","o":["Stomach","Small intestine (jejunum)","Large intestine","Esophagus"],"a":"B"},
+{"q":"Glomerular filtration occurs in which part of the nephron?","o":["Loop of Henle","Bowman's capsule (glomerulus)","Collecting duct","Proximal tubule"],"a":"B"},
+{"q":"Which hormone lowers blood glucose by facilitating cellular uptake of glucose?","o":["Glucagon","Insulin","Cortisol","Epinephrine"],"a":"B"},
+{"q":"The functional unit of the nervous system that transmits impulses is the:","o":["Neuron","Glial cell","Muscle fiber","Synapse"],"a":"A"},
+{"q":"The myelin sheath in the peripheral nervous system is produced by:","o":["Oligodendrocytes","Schwann cells","Astrocytes","Microglia"],"a":"B"},
+{"q":"In the eye, photoreceptor cells responsible for color vision are:","o":["Rods","Cones","Ganglion cells","Bipolar cells"],"a":"B"},
+{"q":"Which part of the brain controls breathing and heart rate?","o":["Cerebellum","Medulla oblongata","Hypothalamus","Occipital lobe"],"a":"B"},
+{"q":"Which immune cells are primarily responsible for producing antibodies?","o":["T helper cells","B cells / plasma cells","Macrophages","NK cells"],"a":"B"},
+{"q":"Which vitamin deficiency causes scurvy?","o":["Vitamin A","Vitamin B12","Vitamin C (ascorbic acid)","Vitamin D"],"a":"C"},
+{"q":"The oxygen dissociation curve of hemoglobin shifts to the right when:","o":["pH increases","Temperature decreases","CO2 and H+ increase (Bohr effect)","2,3-BPG decreases"],"a":"C"},
+{"q":"Which hormone stimulates milk production in mammals?","o":["Oxytocin","Prolactin","Estrogen","Progesterone"],"a":"B"},
+{"q":"The major extracellular ion responsible for generating action potentials is:","o":["Potassium (K+)","Sodium (Na+)","Calcium (Ca2+)","Chloride (Cl-)"],"a":"B"},
+{"q":"Which organ secretes bile that aids in fat digestion?","o":["Pancreas","Liver","Stomach","Gallbladder"],"a":"B"},
+{"q":"Which structure stores genetic information in most human cells?","o":["Mitochondria","Nucleus","Ribosome","Endoplasmic reticulum"],"a":"B"},
+{"q":"Which gas is primarily produced by anaerobic bacteria in the human gut?","o":["Oxygen","Methane","Helium","Nitrogen"],"a":"B"},
+{"q":"The major leukocyte type involved in allergic responses is:","o":["Neutrophils","Eosinophils","Basophils","Monocytes"],"a":"B"},
+{"q":"Which organ regulates water balance and concentrates urine?","o":["Liver","Kidney","Lung","Skin"],"a":"B"},
+{"q":"The synapse is the junction between:","o":["Two muscles","Neuron and neuron or neuron and effector","Bone and muscle","Artery and vein"],"a":"B"},
+{"q":"Which hormone is produced by the adrenal cortex and regulates salt balance?","o":["Epinephrine","Aldosterone","Insulin","Thyroxine"],"a":"B"},
+{"q":"Which blood type is the universal recipient?","o":["O-","AB+","A+","B-"],"a":"B"},
+{"q":"Which structure in the respiratory system provides the largest surface area for gas exchange?","o":["Bronchioles","Alveoli","Trachea","Larynx"],"a":"B"},
+{"q":"The Bursa of Fabricius is an organ involved in immune development in:","o":["Mammals","Birds","Reptiles","Fish"],"a":"B"},
+{"q":"Which condition results from deficiency of thyroid hormone in adults?","o":["Goiter only","Myxedema (hypothyroidism)","Hyperthyroidism","Cretinism only in adults"],"a":"B"},
+{"q":"Which vitamin is produced in the skin upon exposure to sunlight?","o":["Vitamin A","Vitamin D (cholecalciferol)","Vitamin C","Vitamin K"],"a":"B"},
+{"q":"Which blood vessel has the thickest muscular wall to withstand high pressure?","o":["Vein","Artery","Capillary","Venule"],"a":"B"},
+{"q":"Which cell organelle contains catalase and is involved in detoxification?","o":["Lysosome","Peroxisome","Mitochondrion","Golgi apparatus"],"a":"B"},
+{"q":"Which hormone is secreted from posterior pituitary and causes uterine contraction?","o":["Prolactin","Oxytocin","Adrenocorticotropic hormone","TSH"],"a":"B"},
+{"q":"Which ion influx triggers neurotransmitter release at synaptic terminals?","o":["Sodium (Na+)","Potassium (K+)","Calcium (Ca2+)","Chloride (Cl-)"],"a":"C"},
+{"q":"Which white blood cells are the first responders in acute bacterial infection?","o":["Lymphocytes","Neutrophils","Erythrocytes","Basophils"],"a":"B"},
+{"q":"Which structure forms the blood–brain barrier?","o":["Astrocyte endfeet and tight junctions between endothelial cells","Microglia only","Neuronal cell bodies","Meninges only"],"a":"A"},
+{"q":"The hepatic portal vein carries blood from the gastrointestinal tract to the:","o":["Kidney","Liver","Heart","Lungs"],"a":"B"},
+{"q":"Which pathway produces the most ATP per glucose molecule?","o":["Glycolysis","Anaerobic fermentation","Oxidative phosphorylation (aerobic respiration)","Pentose phosphate pathway"],"a":"C"},
+{"q":"Which structure of an antibody binds to antigen?","o":["Fc region","Fab region (variable region)","Constant region","Heavy chain only"],"a":"B"},
+{"q":"Which hormone increases blood calcium by stimulating osteoclasts?","o":["Calcitonin","Parathyroid hormone (PTH)","Insulin","Estrogen"],"a":"B"},
+{"q":"Which of the following is NOT produced by the anterior pituitary?","o":["Growth hormone (GH)","Prolactin","Thyroid-stimulating hormone (TSH)","Oxytocin"],"a":"D"},
+{"q":"Which blood component contains clotting factors and transports nutrients?","o":["Red blood cells","Plasma","White blood cells","Platelets"],"a":"B"},
+{"q":"Which gastric cells secrete hydrochloric acid (HCl)?","o":["Chief cells","Parietal cells","Mucous cells","G cells"],"a":"B"},
+{"q":"In plants, the primary site of photosynthesis is the:","o":["Root","Leaf (mesophyll)","Stem","Flower"],"a":"B"},
+{"q":"Stomata are primarily involved in:","o":["Water absorption","Gas exchange and transpiration","Sugar transport","Seed dispersal"],"a":"B"},
+{"q":"Xylem mainly transports:","o":["Sugars","Water and minerals from roots to shoots","Hormones","Amino acids"],"a":"B"},
+{"q":"Phloem mainly transports:","o":["Water","Sugars and organic solutes","Proteins only","Ions"],"a":"B"},
+{"q":"Double fertilization in angiosperms results in formation of:","o":["Two embryos","Embryo and endosperm","Two endosperms","Seed coat only"],"a":"B"},
+{"q":"The waxy cuticle on leaves primarily reduces:","o":["Light absorption","Water loss","Gas exchange","Cell division"],"a":"B"},
+{"q":"Phototropism in plants is mainly mediated by:","o":["Auxins","Gibberellins","Cytokinins","Abscisic acid"],"a":"A"},
+{"q":"Which pigment gives fruits and flowers red/orange colors?","o":["Chlorophyll","Carotenoids","Anthocyanins only blue","Lignin"],"a":"B"},
+{"q":"Which plant tissue is responsible for secondary growth (increasing girth)?","o":["Apical meristem","Lateral meristem (cambium)","Ground tissue","Epidermis"],"a":"B"},
+{"q":"C3, C4, and CAM describe differences in:","o":["Seed structure","Photosynthetic pathways and carbon fixation strategies","Root anatomy","Leaf color"],"a":"B"},
+{"q":"Which hormone promotes fruit ripening and is a simple gaseous molecule?","o":["Auxin","Ethylene","Gibberellin","Cytokinin"],"a":"B"},
+{"q":"The water potential in plants is measured in units of:","o":["Pascals (Pa) or megapascals (MPa)","Liters","Moles","Degrees Celsius"],"a":"A"},
+{"q":"Which structure forms the primary cell wall in plants?","o":["Cellulose microfibrils","Chitin","Peptidoglycan","Keratin"],"a":"A"},
+{"q":"Nitrogen fixation in root nodules is carried out by:","o":["Rhizobium bacteria","Mycorrhizal fungi","Nematodes","Protozoa"],"a":"A"},
+{"q":"Which process helps plants conserve water by opening stomata at night?","o":["C3 pathway","C4 pathway","CAM metabolism","Photorespiration"],"a":"C"},
+{"q":"The main mineral nutrient required in largest quantity by plants is:","o":["Iron (Fe)","Nitrogen (N)","Manganese (Mn)","Copper (Cu)"],"a":"B"},
+{"q":"Which tissue provides mechanical support in young herbaceous plants?","o":["Sclerenchyma","Collenchyma","Parenchyma","Xylem only"],"a":"B"},
+{"q":"Which gas is released as a byproduct of photosynthesis?","o":["Carbon dioxide","Oxygen","Methane","Nitrogen"],"a":"B"},
+{"q":"Leaf abscission in autumn is primarily regulated by:","o":["Auxin decrease and ethylene increase","Auxin increase and gibberellin decrease","Cytokinin exclusively","Abscisic acid only"],"a":"A"},
+{"q":"Which process moves sugars from source to sink in plants?","o":["Transpiration stream","Phloem translocation by pressure-flow mechanism","Active transport in xylem","Diffusion only"],"a":"B"},
+{"q":"Bacteria that require oxygen for growth are termed:","o":["Anaerobes","Facultative anaerobes","Obligate aerobes","Microaerophiles"],"a":"C"},
+{"q":"Gram-positive bacteria have:","o":["Thin peptidoglycan layer and outer membrane","Thick peptidoglycan layer without outer membrane","No cell wall","Chitin cell wall"],"a":"B"},
+{"q":"Which of the following is NOT killed by antibiotics?","o":["Bacteria","Fungi","Prokaryotic pathogens generally are targeted","Antibiotics have limited effect on viruses"],"a":"D"},
+{"q":"Which structure allows bacteria to exchange genetic material via conjugation?","o":["Flagellum","Pilus (sex pilus)","Capsule","Cell wall"],"a":"B"},
+{"q":"Innate immunity includes:","o":["Antibody production by B cells","Skin barrier and phagocytic cells","T-cell mediated cytotoxicity only","Memory cells"],"a":"B"},
+{"q":"Vaccination works primarily by inducing:","o":["Immediate innate response only","Long-term adaptive immunity and memory cells","Killing all pathogens directly","Non-specific inflammation only"],"a":"B"},
+{"q":"Which immune cells kill virus-infected cells without prior sensitization?","o":["B cells","Helper T cells","Natural killer (NK) cells","Dendritic cells"],"a":"C"},
+{"q":"An endotoxin is a component of:","o":["Gram-positive bacterial cell wall","Gram-negative bacterial outer membrane (lipopolysaccharide)","Viral envelope","Fungal cell membrane"],"a":"B"},
+{"q":"Antibiotic resistance can spread via:","o":["Mutation, conjugation, transduction, and transformation","Only spontaneous cell death","Only host immunity","Only vaccines"],"a":"A"},
+{"q":"Which test is commonly used to identify bacteria based on cell wall properties?","o":["Catalase test","Gram stain","ELISA","PCR only"],"a":"B"},
+{"q":"Complement proteins typically function to:","o":["Directly produce antibodies","Opsonize pathogens and form membrane attack complexes","Repair DNA","Produce cytokines"],"a":"B"},
+{"q":"Which molecule presents antigen fragments to cytotoxic T cells?","o":["MHC class II","MHC class I","Antibodies","Complement"],"a":"B"},
+{"q":"A bacteriophage is:","o":["A protozoan parasite","A virus that infects bacteria","A bacterial toxin","A fungal spore"],"a":"B"},
+{"q":"Which vaccine type uses weakened live organisms to induce immunity?","o":["Inactivated vaccine","Live attenuated vaccine","Toxoid vaccine","Subunit vaccine"],"a":"B"},
+{"q":"Which immune cells act as professional antigen-presenting cells to activate T cells?","o":["Erythrocytes","Dendritic cells, macrophages, B cells","Neurons","Muscle cells"],"a":"B"},
+{"q":"Which technique detects the presence of a specific DNA sequence by hybridization?","o":["Western blot","Southern blot","ELISA","Northern blot"],"a":"B"},
+{"q":"Biofilms are communities of microorganisms attached to surfaces and embedded in:","o":["Lipid bilayers","Extracellular polymeric substance (EPS)","Pure water","Silica"],"a":"B"},
+{"q":"Which class of antibiotics inhibits bacterial cell wall synthesis?","o":["Tetracyclines","Penicillins (β-lactams)","Aminoglycosides only","Macrolides"],"a":"B"},
+{"q":"Which test measures bacterial susceptibility to antibiotics on agar plates?","o":["ELISA","Kirby-Bauer disk diffusion","PCR","Flow cytometry"],"a":"B"},
+{"q":"Quorum sensing in bacteria is used to:","o":["Sense nutrient levels only","Coordinate gene expression based on population density","Move towards chemicals","Form spores"],"a":"B"},
+{"q":"Primary succession begins on surfaces that are:","o":["Already vegetated","Bare rock with no soil","Fertile soil","Wetlands"],"a":"B"},
+{"q":"An ecosystem's carrying capacity refers to:","o":["Number of species present","Maximum population size that environment can sustain","Minimum viable population","Number of producers only"],"a":"B"},
+{"q":"Biomagnification leads to:","o":["Decrease in pollutant concentration at higher trophic levels","Increase in pollutant concentration at higher trophic levels","No change","Pollutants converted to harmless substances"],"a":"B"},
+{"q":"The primary cause of biodiversity loss worldwide is:","o":["Natural selection","Habitat destruction and human activities","Speciation","Mutation"],"a":"B"},
+{"q":"Ex situ conservation refers to:","o":["Protecting species in their natural habitat","Conservation outside natural habitat (e.g., zoos, seed banks)","No conservation","Only legal protection"],"a":"B"},
+{"q":"Which gas is a major greenhouse gas contributing to climate change?","o":["Nitrogen","Carbon dioxide (CO2)","Oxygen","Argon"],"a":"B"},
+{"q":"Integrated pest management (IPM) aims to:","o":["Use only chemical pesticides","Combine biological, cultural, mechanical, and chemical controls to minimize harm","Eliminate all pests completely","Increase pesticide application"],"a":"B"},
+{"q":"Biological control uses:","o":["Chemical pesticides exclusively","Natural enemies (predators, parasites) to control pests","Only traps","Only genetic engineering"],"a":"B"},
+{"q":"Which agricultural practice can improve soil nitrogen content naturally?","o":["Monoculture without legumes","Intercropping with leguminous plants","Continuous tillage","Excessive pesticide use"],"a":"B"},
+{"q":"Eutrophication of aquatic ecosystems is often caused by:","o":["Nutrient runoff (nitrogen and phosphorus) leading to algal blooms","Overfishing only","Reduced sunlight","Increased oxygen"],"a":"A"},
+{"q":"PCR (Polymerase Chain Reaction) is widely used in:","o":["Field plowing","DNA amplification for diagnostics, forensics, and research","Fertilizer production","Photosynthesis enhancement"],"a":"B"},
+{"q":"GM crops are developed primarily to:","o":["Increase susceptibility to pests","Improve traits such as pest resistance, herbicide tolerance, or nutritional value","Reduce yield","Eliminate pollinators"],"a":"B"},
+{"q":"Which international agreement aims to conserve biodiversity?","o":["Kyoto Protocol","Convention on Biological Diversity (CBD)","Paris Agreement only","Montreal Protocol only"],"a":"B"},
+{"q":"Wildlife corridors are used to:","o":["Prevent animal movement","Facilitate migration and gene flow between fragmented habitats","Increase urban development","Eliminate predators"],"a":"B"},
+{"q":"Overharvesting can lead to:","o":["Population decline and possible extinction","Increased biodiversity","Habitat restoration","Invasive species removal"],"a":"A"},
+{"q":"The LD50 value measures:","o":["Least dose causing no effect","Dose lethal to 50% of test population","Dose beneficial to 50%","Level of pesticides in soil"],"a":"B"},
+{"q":"Sustainable agriculture aims to:","o":["Deplete soil resources quickly","Balance productivity with environmental stewardship and social responsibility","Maximize short-term profits only","Use only GM crops"],"a":"B"},
+{"q":"Which practice reduces soil erosion?","o":["Deforestation","Contour plowing and terracing","Overgrazing","Monocropping without cover crops"],"a":"B"},
+{"q":"Bioremediation uses:","o":["Chemical neutralization only","Microorganisms or plants to remove or neutralize pollutants","Physical removal only","Irradiation"],"a":"B"},
+{"q":"Which conservation status denotes a species at greatest risk?","o":["Least Concern","Vulnerable","Endangered","Critically Endangered"],"a":"D"},
+{"q":"Antigen presenting cells (APCs) display peptides on which molecules to T cells?","o":["Antibodies","MHC molecules","Complement proteins","Cytokines"],"a":"B"},
+{"q":"Which macromolecule forms the majority of the plant cell wall?","o":["Chitin","Cellulose","Peptidoglycan","Keratin"],"a":"B"},
+{"q":"Which vitamin deficiency causes rickets in children?","o":["Vitamin C","Vitamin D","Vitamin B12","Vitamin A"],"a":"B"},
+{"q":"Telophase is the stage of mitosis when:","o":["Chromosomes condense","Nuclear envelopes reform around daughter chromosomes","Sister chromatids separate","Chromosomes align at metaphase plate"],"a":"B"},
+{"q":"X-linked recessive disorders are more commonly expressed in:","o":["Females","Males","Both equally","Unborn embryos only"],"a":"B"},
+{"q":"Which process produces glucose in plants?","o":["Glycolysis","Photosynthesis","Fermentation","Respiration"],"a":"B"},
+{"q":"The major component of plasma osmotic pressure is:","o":["Glucose","Albumin (plasma proteins)","NaCl only","Urea"],"a":"B"},
+{"q":"Which structure transports sugars throughout a plant?","o":["Xylem","Phloem","Stomata","Cambium"],"a":"B"},
+{"q":"Which hormone regulates the fight-or-flight response?","o":["Insulin","Epinephrine (adrenaline)","Thyroxine","Serotonin"],"a":"B"},
+{"q":"Which process is responsible for the formation of the blastocyst in early embryonic development?","o":["Cleavage and differentiation following fertilization","Gastrulation only","Organogenesis only","Implantation without fertilization"],"a":"A"},
+{"q":"Which organelle is the site of photosynthetic light reactions?","o":["Mitochondrion","Thylakoid membranes within chloroplasts","Ribosome","Endoplasmic reticulum"],"a":"B"},
+{"q":"Antigen-antibody binding specificity is primarily due to:","o":["Ionic bonds only","Complementarity of 3D structures and noncovalent interactions","Covalent bonding exclusively","Random interactions"],"a":"B"},
+{"q":"The pH of gastric juice (stomach acid) is approximately:","o":["Neutral (~7)","Acidic (~1-3)","Alkaline (~9-11)","Slightly acidic (~5.5)"],"a":"B"},
+{"q":"Which ecological interaction benefits one species and harms the other (parasitism)?","o":["Mutualism","Commensalism","Parasitism","Neutralism"],"a":"C"},
+{"q":"Which gas is a necessary substrate for photosynthesis?","o":["Oxygen","Carbon dioxide (CO2)","Nitrogen","Hydrogen"],"a":"B"},
+{"q":"Which cell organelle contains circular DNA in prokaryotes?","o":["Nucleus","Nucleoid region","Plasmodesmata","Chloroplast"],"a":"B"},
+{"q":"Which biological molecule accelerates chemical reactions by lowering activation energy?","o":["Lipids","Enzymes (proteins)","DNA","Cellulose"],"a":"B"},
+{"q":"Which organ system regulates long-term processes and homeostasis via hormones?","o":["Nervous system","Endocrine system","Circulatory system","Musculoskeletal system"],"a":"B"},
+{"q":"Which trophic level typically has the lowest biomass in an ecological pyramid?","o":["Producers","Primary consumers","Secondary consumers","Tertiary/top predators"],"a":"D"},
+{"q":"Which process describes the movement of water across a selectively permeable membrane from low solute concentration to high solute concentration?","o":["Diffusion","Osmosis","Active transport","Facilitated diffusion"],"a":"B"}
+  ];
+
+  const itemsPerPage = 10;
+  let currentPage = 1;
+  const totalPages = Math.ceil(mcqs.length / itemsPerPage);
+
+  function renderOptions(opts) {
+    let html = '';
+    const labels = ['A','B','C','D'];
+    for (let i = 0; i < 4; i++) {
+      const text = opts[i] || '';
+      html += `<div class='option'>${labels[i]}. ${text}</div>`;
+    }
+    return html;
+  }
+
+  function display(page) {
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
+    currentPage = page;
+    const cont = document.getElementById('mcq-container');
+    cont.innerHTML = '';
+    const start = (page - 1) * itemsPerPage;
+    const end = Math.min(start + itemsPerPage, mcqs.length);
+    for (let i = start; i < end; i++) {
+      const item = mcqs[i];
+      const qnum = i + 1;
+      const div = document.createElement('div');
+      div.className = 'mcq';
+      div.innerHTML = `<div class='question'>${qnum}. ${item.q.replace(/^\d+\.\s*/,'')}</div>
+                       <div class='options'>${renderOptions(item.o)}</div>
+                       <div class='answer'>Answer: ${item.a}</div>`;
+      cont.appendChild(div);
+    }
+    const pageInput = document.getElementById('pageInput');
+    pageInput.value = currentPage;
+    window.scrollTo(0,0);
+  }
+
+  function prevPage() { if (currentPage > 1) display(currentPage - 1); }
+  function nextPage() { if (currentPage < totalPages) display(currentPage + 1); }
+  function goToPage() {
+    const p = parseInt(document.getElementById('pageInput').value);
+    if (!isNaN(p) && p >= 1 && p <= totalPages) display(p);
+  }
+
+  // initial render
+  display(1);
+  </script>
+</body>
+</html>
