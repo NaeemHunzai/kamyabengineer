@@ -3,79 +3,160 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Smart Series MCQs — General Knowledge (1–200)</title>
+<title>General Knowledge MCQs (1–200)</title>
 <style>
+    /* Page base */
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        padding: 0; /* will be adjusted dynamically to avoid overlaps */
+        background-color: #ffffff; /* solid white background */
         color: #333;
     }
+
+    /* Main container (content area will flow between fixed header & footer) */
     .container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 30px 20px;
-    }
-    h1 {
-        text-align: center;
-        background-color: #00796b;
-        color: white;
         padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        box-sizing: border-box;
     }
+
+    /* Card-style fixed header (full-width) */
+    .sticky-header { 
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1100;
+        background-color: #ffffff;   /* white card */
+        color: #00796b;              /* accent color for text */
+        padding: 12px;
+        font-size: 18px;             /* normal text size */
+        font-weight: 600;
+        text-align: center;
+        border-radius: 0 0 12px 12px; /* rounded bottom corners */
+        margin: 0;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* subtle card shadow */
+        line-height: 1.2;
+        border-bottom: 2px solid #00796b; /* underline effect */
+    }
+
+    /* MCQ card styling (kept intact / similar to original) */
     .mcq {
         background: #ffffffd9;
         border-left: 6px solid #00796b;
         border-radius: 10px;
         padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+        transition: transform 0.18s;
     }
     .mcq:hover { transform: scale(1.01); }
-    .question { font-size: 18px; font-weight: bold; }
-    .options { margin-top: 15px; }
-    .option { margin: 6px 0; padding-left: 10px; }
-    .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
-    .pagination { text-align: center; margin-top: 30px; }
+    .question { font-size: 18px; font-weight: bold; color:#222; }
+    .options { margin-top: 12px; }
+    .option { margin: 6px 0; padding-left: 10px; color:#333; }
+    .answer { margin-top: 12px; font-weight: bold; color: #1b5e20; }
+
+    /* Sticky pagination bar at bottom (full-width card look) */
+    .pagination {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        gap: 14px;
+        box-shadow: 0 -2px 6px rgba(0,0,0,0.06);
+        z-index: 1000;
+    }
+
+    /* round buttons with centered arrows / text */
     .pagination button {
-        padding: 10px 20px;
-        margin: 5px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
         background-color: #00796b;
         color: white;
         border: none;
-        border-radius: 5px;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background 0.18s;
+        padding: 0;
+        line-height: 1;
     }
-    .pagination button:hover { background-color: #004d40; }
+
+    /* slightly smaller font for "Go" button so "Go" text fits well */
+    .pagination button.go {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: .4px;
+    }
+
+    .pagination button:hover {
+        background-color: #004d40;
+    }
+
+    /* page input (compact pill) */
     .pagination input {
-        width: 50px;
-        padding: 8px;
-        font-size: 16px;
+        width: 55px;
+        padding: 6px;
+        font-size: 14px;
         text-align: center;
         border: 1px solid #ccc;
-        border-radius: 5px;
-        margin: 0 5px;
+        border-radius: 15px;
+        outline: none;
+    }
+
+    /* small responsive tweaks */
+    @media (max-width: 480px) {
+        .pagination {
+            gap: 10px;
+            padding: 8px;
+        }
+        .pagination button {
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+        }
+        .pagination input {
+            width: 50px;
+            padding: 5px;
+            font-size: 13px;
+        }
+        .sticky-header { padding: 10px; font-size: 16px; border-bottom-width: 2px; }
+        .mcq { padding: 16px; }
     }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>Smart Series MCQs — General Knowledge (1–200)</h1>
-<div id="mcq-container"></div>
-<div class="pagination">
-    <button onclick="prevPage()">Previous</button>
-    <input type="number" id="pageInput" min="1" />
-    <button onclick="goToPage()">Go</button>
-    <button onclick="nextPage()">Next</button>
-</div>
-</div>
+    <!-- Fixed top header (card) -->
+    <h1 class="sticky-header">General Knowledge MCQs</h1>
+
+    <!-- Main content container -->
+    <div class="container">
+        <div id="mcq-container"></div>
+
+        <!-- Pagination (fixed at bottom) -->
+        <div class="pagination" role="navigation" aria-label="Pagination controls">
+            <button onclick="prevPage()" aria-label="Previous page">&#9664;</button>   <!-- ◀ Back -->
+            <input type="number" id="pageInput" min="1" placeholder="Pg" aria-label="Page number" />
+            <button class="go" onclick="goToPage()" aria-label="Go to page">Go</button> <!-- Go (text) -->
+            <button onclick="nextPage()" aria-label="Next page">&#9654;</button>  <!-- ▶ Forward -->
+        </div>
+    </div>
 
 <script>
+/* ----------------------------------------------------------------
+   MCQs array (unchanged content preserved)
+   ---------------------------------------------------------------- */
 const mcqs = [
   {"q":"1. Which gas makes up most of the Earth's atmosphere?", "o":["A) Oxygen","B) Nitrogen","C) Carbon dioxide","D) Argon"], "a":"ANS. B"},
   {"q":"2. Who wrote 'Romeo and Juliet'?", "o":["A) Charles Dickens","B) William Shakespeare","C) Jane Austen","D) Mark Twain"], "a":"ANS. B"},
@@ -279,6 +360,9 @@ const mcqs = [
   {"q":"200. Which modern invention did the Wright brothers achieve in 1903?", "o":["A) Automobile","B) Airplane (first powered flight)","C) Radio","D) Steam engine"], "a":"ANS. B"}
 ];
 
+/* ----------------------------------------------------------------
+   Pagination variables + rendering (kept same functionality)
+   ---------------------------------------------------------------- */
 const pageSize = 10;
 let currentPage = 1;
 const totalPages = Math.ceil(mcqs.length / pageSize);
@@ -306,6 +390,10 @@ function renderPage(page) {
   }
   document.getElementById('pageInput').value = page;
   currentPage = page;
+
+  // Smoothly bring content into view (under fixed header)
+  // Scroll to top of page (header fixed) so first MCQ is visible
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function prevPage() {
@@ -316,10 +404,39 @@ function nextPage() {
 }
 function goToPage() {
   const val = parseInt(document.getElementById('pageInput').value);
-  if (!isNaN(val)) renderPage(val);
+  if (!isNaN(val)) {
+    if (val < 1) renderPage(1);
+    else if (val > totalPages) renderPage(totalPages);
+    else renderPage(val);
+  }
 }
 
-renderPage(1);
+/* ----------------------------------------------------------------
+   Dynamic spacing: adjust body padding to header/footer heights
+   so content never overlaps either (automatic & responsive)
+   ---------------------------------------------------------------- */
+function adjustBodyPadding() {
+  const header = document.querySelector('.sticky-header');
+  const footer = document.querySelector('.pagination');
+  const topExtra = 8;    // small gap above content
+  const bottomExtra = 10; // small gap above pagination
+  const top = header ? (header.offsetHeight + topExtra) : 0;
+  const bottom = footer ? (footer.offsetHeight + bottomExtra) : 0;
+  document.body.style.paddingTop = top + 'px';
+  document.body.style.paddingBottom = bottom + 'px';
+}
+
+/* initialize on DOM ready and keep responsive on resize/orientation changes */
+document.addEventListener('DOMContentLoaded', () => {
+  adjustBodyPadding();
+  renderPage(1);
+  // when window size changes, re-calc header/footer heights
+  window.addEventListener('resize', adjustBodyPadding);
+  window.addEventListener('orientationchange', () => {
+    // small timeout to allow layout change to settle on mobile rotate
+    setTimeout(adjustBodyPadding, 120);
+  });
+});
 </script>
 </body>
 </html>
