@@ -59,81 +59,69 @@
     .answer { margin-top: 12px; font-weight: bold; color: #1b5e20; }
 
     /* Sticky pagination bar at bottom (full-width card look) */
-    .pagination {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #ffffff;
-        border-top: 1px solid #eee;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-        gap: 14px;
-        box-shadow: 0 -2px 6px rgba(0,0,0,0.06);
-        z-index: 1000;
-    }
+  .pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 14px; /* spacing so buttons don’t feel cramped */
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
 
-    /* round buttons with centered arrows / text */
-    .pagination button {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: #00796b;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 18px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: background 0.18s;
-        padding: 0;
-        line-height: 1;
-    }
+.pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 14px; /* spacing so buttons don’t feel cramped */
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
 
-    /* slightly smaller font for "Go" button so "Go" text fits well */
-    .pagination button.go {
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: .4px;
-    }
+.pagination button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;   /* round shape */
+    background-color: #00796b;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;  /* suitable size for both arrows & text */
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* ensures perfect centering */
+    transition: background 0.2s;
+    line-height: 40px;    /* match button height for vertical centering */
+    padding: 0;
+}
 
-    .pagination button:hover {
-        background-color: #004d40;
-    }
+.pagination button:hover {
+    background-color: #004d40;
+}
 
-    /* page input (compact pill) */
-    .pagination input {
-        width: 55px;
-        padding: 6px;
-        font-size: 14px;
-        text-align: center;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        outline: none;
-    }
+.pagination input {
+    width: 55px;
+    padding: 6px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* slightly rounded */
+}
 
-    /* small responsive tweaks */
-    @media (max-width: 480px) {
-        .pagination {
-            gap: 10px;
-            padding: 8px;
-        }
-        .pagination button {
-            width: 36px;
-            height: 36px;
-            font-size: 16px;
-        }
-        .pagination input {
-            width: 50px;
-            padding: 5px;
-            font-size: 13px;
-        }
-        .sticky-header { padding: 10px; font-size: 16px; border-bottom-width: 2px; }
-        .mcq { padding: 16px; }
-    }
+
 </style>
 </head>
 <body>
@@ -357,7 +345,12 @@ const mcqs = [
   {"q":"197. Which Nobel laureate physicist developed quantum theory foundations and has a namesake constant (Planck's constant)?", "o":["A) Max Planck","B) Albert Einstein","C) Paul Dirac","D) Richard Feynman"], "a":"ANS. A"},
   {"q":"198. Which route historically connected Asia and Europe for trade (Silk, spices)?", "o":["A) Spice Route","B) Silk Road","C) Amber Road","D) Incense Route"], "a":"ANS. B"},
   {"q":"199. Which organ is part of both digestive and endocrine systems (produces enzymes and hormones)?", "o":["A) Liver","B) Pancreas","C) Gallbladder","D) Stomach"], "a":"ANS. B"},
-  {"q":"200. Which modern invention did the Wright brothers achieve in 1903?", "o":["A) Automobile","B) Airplane (first powered flight)","C) Radio","D) Steam engine"], "a":"ANS. B"}
+  {"q":"200. Which modern invention did the Wright brothers achieve in 1903?", "o":["A) Automobile","B) Airplane (first powered flight)","C) Radio","D) Steam engine"], "a":"ANS. B"},
+  
+   {"q":"201. Which jhis part of both digestive and endocrine systems (produces enzymes and hormones)?", "o":["A) Liver","B) Pancreas","C) Gallbladder","D) Stomach"], "a":"ANS. B"},
+  
+  
+  
 ];
 
 /* ----------------------------------------------------------------
