@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Pakistan Studies </title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #e0f7fa, #ffffff);
-            color: #333;
-        }
+       body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* solid white background */
+    color: #333;
+}
+
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -52,89 +53,26 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
-    gap: 8px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
-}
-
-.pagination {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border-top: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px;
-    gap: 12px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
-}
-
-.pagination {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border-top: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px;
-    gap: 12px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
-}
-
-.pagination {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border-top: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px;
-    gap: 12px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
-}
-
-.pagination {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border-top: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px;
-    gap: 12px;
+    gap: 14px; /* spacing so buttons don’t feel cramped */
     box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     z-index: 1000;
 }
 
 .pagination button {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;   /* round shape */
     background-color: #00796b;
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 24px; /* bigger, clean arrows */
+    font-size: 16px;  /* suitable size for both arrows & text */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;  /* ensures perfect centering */
     transition: background 0.2s;
-    line-height: 1;  /* ensures arrows are centered */
+    line-height: 40px;    /* match button height for vertical centering */
+    padding: 0;
 }
 
 .pagination button:hover {
@@ -142,28 +80,49 @@
 }
 
 .pagination input {
-    width: 70px;
-    padding: 8px;
-    font-size: 16px;
+    width: 55px;
+    padding: 6px;
+    font-size: 14px;
     text-align: center;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 15px; /* slightly rounded */
 }
 
+      
+   .sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    background-color: #00796b;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 0 0 12px 12px; /* rounded at bottom only */
+    margin: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* card shadow */
+}
 
+      
+      
+      
         }
     </style>
     </head>
     <body>
     <div class="container">
-    <h1>Smart Series MCQs — Pakistan Studies (1–200)</h1>
+<h1 class="sticky-header">Pakistan Studies MCQs</h1>
     <div id="mcq-container"></div>
-  <div class="pagination">
-    <button onclick="prevPage()">&#9664;</button>  <!-- ◀ Back -->
-    <input type="number" id="pageInput" min="1" />
-    <button onclick="goToPage()">&#8635;</button> <!-- ↻ Go -->
+ <div class="pagination">
+    <button onclick="prevPage()">&#9664;</button>   <!-- ◀ Back -->
+    <input type="number" id="pageInput" min="1" placeholder="Pg" />
+    <button onclick="goToPage()">Go</button>       <!-- Go button with text -->
     <button onclick="nextPage()">&#9654;</button>  <!-- ▶ Forward -->
 </div>
+
+
 
     </div>
 
