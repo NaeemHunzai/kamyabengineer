@@ -1,40 +1,104 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Islamiat MCQs — 200</title>
+<title>Current Affairs of Pakistan</title>
 <style>
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:0;
-    background: linear-gradient(135deg, #e0f7fa, #ffffff); color:#333; }
-  .container { max-width:900px; margin:20px auto; padding:20px; background: rgba(255,255,255,0.9); border-radius:12px; }
-  .header-bar{ background: #00796b; padding: 16px; border-radius:8px; color:#fff; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.12); }
-  .header-bar h1{ margin:0; font-size:20px; }
-  .mcq { background:#ffffffd9; border-left:6px solid #00796b; border-radius:10px; padding:16px; margin-bottom:14px; box-shadow:0 3px 8px rgba(0,0,0,0.08); transition: transform .15s; }
+      body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 70px 20px 70px 20px;  /* top = header height, bottom = pagination height */
+    background-color: #ffffff;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;   /* centered horizontally */
+}
+
+      
+.sticky-header { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    background-color: #ffffff;   /* white background */
+    color: #00796b;              /* teal text */
+    padding: 12px;
+    font-size: 18px;             /* normal text size */
+    font-weight: 600;            /* semi-bold for clarity */
+    text-align: center;
+    border-radius: 0 0 12px 12px;
+    margin: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* subtle shadow */
+    height: auto;
+    line-height: 1.4;
+    border-bottom: 2px solid #00796b; /* underline */
+}
+  /* MCQ Card */
+  .mcq {
+    background:#fff;
+    border-left:6px solid #00796b;
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:14px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+    transition: transform .15s;
+  }
   .mcq:hover{ transform: scale(1.01); }
   .question{ font-weight:700; color:#073b36; }
   .options{ margin-top:8px; padding-left:12px; }
   .option{ margin:6px 0; color:#134e49; }
   .answer{ margin-top:10px; font-weight:700; color:#2e7d32; }
-  .pagination{ text-align:center; margin-top:18px; }
-  .pagination button{ padding:10px 14px; margin:6px; background:#00796b; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-  .pagination input{ width:60px; padding:8px; margin-left:6px; border-radius:6px; border:1px solid #ccc; text-align:center; }
+
+  /* Sticky pagination */
+  .pagination{
+    position:fixed; bottom:0; left:0; right:0;
+    background:#fffffffa;
+    padding:12px; text-align:center;
+    box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+    z-index:1000;
+  }
+  .pagination button{
+    padding:10px 14px;
+    margin:6px;
+    background:#00796b;
+    color:#fff;
+    border:none; border-radius:30px;
+    cursor:pointer;
+    font-size:14px;
+    min-width:60px;
+  }
+  .pagination button:hover{ background:#005a4e; }
+  .pagination input{
+    width:60px; padding:8px;
+    margin-left:6px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    text-align:center;
+  }
 </style>
 </head>
 <body>
+<div class="sticky-header">Current Affairs of Pakistan</div>
+
 <div class="container">
-  <div class="header-bar"><h1>Current Affairs of Pakistan — 1–200</h1><div style="font-size:13px; opacity:0.95; margin-top:6px;">10 per page · Options prefixed A./B./C./D. · Answers short (Answer: A)</div></div>
-  <div id="mcq-container" style="margin-top:18px;"></div>
-  <div class="pagination" style="margin-top:12px;">
-    <button onclick="prevPage()">Previous</button>
-    <input type="number" id="pageInput" min="1" max="20" />
-    <button onclick="goToPage()">Go</button>
-    <button onclick="nextPage()">Next</button>
-  </div>
+  <div id="mcq-container" style="margin-top:20px;"></div>
 </div>
+
+<div class="pagination">
+  <button onclick="prevPage()">◀</button>
+  <input type="number" id="pageInput" min="1" max="20" />
+  <button onclick="goToPage()">Go</button>
+  <button onclick="nextPage()">▶</button>
+</div>
+
 <script>
 const mcqs = [
+
   {
     "q": "Who was elected President of Pakistan in March 2024?",
     "o": [
@@ -2035,6 +2099,7 @@ const mcqs = [
     ],
     "a": "B"
   }
+
 ];
 const itemsPerPage = 10;
 let currentPage = 1;
@@ -2047,13 +2112,16 @@ function displayMCQs(page) {
   const start = (page - 1) * itemsPerPage;
   const end = Math.min(start + itemsPerPage, mcqs.length);
   const labels = ['A','B','C','D'];
+
   for (let i = start; i < end; i++) {
     const item = mcqs[i];
     const qNumber = i + 1;
     const div = document.createElement('div');
     div.className = 'mcq';
     let optsHtml = '';
-    for (let j=0;j<4;j++) { optsHtml += `<div class="option">${labels[j]}. ${item.o[j]}</div>`; }
+    for (let j=0;j<4;j++) {
+      optsHtml += `<div class="option">${labels[j]}. ${item.o[j]}</div>`;
+    }
     div.innerHTML = `
       <div class="question">${qNumber}. ${item.q}</div>
       <div class="options">${optsHtml}</div>
@@ -2062,15 +2130,19 @@ function displayMCQs(page) {
     container.appendChild(div);
   }
   document.getElementById('pageInput').value = currentPage;
-  window.scrollTo(0,0);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function nextPage() { if (currentPage < totalPages) displayMCQs(currentPage+1);
-  window.scrollTo({ top: 0, behavior: 'smooth' }); }
-function prevPage() { if (currentPage > 1) displayMCQs(currentPage-1);
-  window.scrollTo({ top: 0, behavior: 'smooth' }); }
-function goToPage() { const p = parseInt(document.getElementById('pageInput').value); if (!isNaN(p) && p>=1 && p<=totalPages) displayMCQs(p);
-  window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function nextPage() {
+  if (currentPage < totalPages) displayMCQs(currentPage+1);
+}
+function prevPage() {
+  if (currentPage > 1) displayMCQs(currentPage-1);
+}
+function goToPage() {
+  const p = parseInt(document.getElementById('pageInput').value);
+  if (!isNaN(p) && p>=1 && p<=totalPages) displayMCQs(p);
+}
 
 displayMCQs(1);
 </script>
