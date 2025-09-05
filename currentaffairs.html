@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Current Affairs of Pakistan</title>
-<style>
-      body {
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pakistan Studies </title>
+    <style>
+     body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 70px 20px 70px 20px;  /* top = header height, bottom = pagination height */
@@ -16,6 +17,79 @@
 .container {
     max-width: 900px;
     margin: 0 auto;   /* centered horizontally */
+}
+
+
+
+
+
+        h1 {
+            text-align: center;
+            background-color: #00796b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .mcq {
+            background: #ffffffd9;
+            border-left: 6px solid #00796b;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .mcq:hover { transform: scale(1.01); }
+        .question { font-size: 18px; font-weight: bold; }
+        .options { margin-top: 15px; }
+        .option { margin: 6px 0; padding-left: 10px; }
+        .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
+.pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 14px; /* spacing so buttons don’t feel cramped */
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.pagination button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;   /* round shape */
+    background-color: #00796b;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;  /* suitable size for both arrows & text */
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* ensures perfect centering */
+    transition: background 0.2s;
+    line-height: 40px;    /* match button height for vertical centering */
+    padding: 0;
+}
+
+.pagination button:hover {
+    background-color: #004d40;
+}
+
+.pagination input {
+    width: 55px;
+    padding: 6px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* slightly rounded */
 }
 
       
@@ -38,2113 +112,2201 @@
     line-height: 1.4;
     border-bottom: 2px solid #00796b; /* underline */
 }
-  /* MCQ Card */
-  .mcq {
-    background:#fff;
-    border-left:6px solid #00796b;
-    border-radius:10px;
-    padding:16px;
-    margin-bottom:14px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.08);
-    transition: transform .15s;
-  }
-  .mcq:hover{ transform: scale(1.01); }
-  .question{ font-weight:700; color:#073b36; }
-  .options{ margin-top:8px; padding-left:12px; }
-  .option{ margin:6px 0; color:#134e49; }
-  .answer{ margin-top:10px; font-weight:700; color:#2e7d32; }
 
-  /* Sticky pagination */
-  .pagination{
-    position:fixed; bottom:0; left:0; right:0;
-    background:#fffffffa;
-    padding:12px; text-align:center;
-    box-shadow:0 -2px 6px rgba(0,0,0,0.1);
-    z-index:1000;
-  }
-  .pagination button{
-    padding:10px 14px;
-    margin:6px;
-    background:#00796b;
-    color:#fff;
-    border:none; border-radius:30px;
-    cursor:pointer;
-    font-size:14px;
-    min-width:60px;
-  }
-  .pagination button:hover{ background:#005a4e; }
-  .pagination input{
-    width:60px; padding:8px;
-    margin-left:6px;
-    border-radius:6px;
-    border:1px solid #ccc;
-    text-align:center;
-  }
-</style>
-</head>
-<body>
-<div class="sticky-header">Current Affairs of Pakistan</div>
 
-<div class="container">
-  <div id="mcq-container" style="margin-top:20px;"></div>
+      
+      
+      
+        }
+    </style>
+    </head>
+    <body>
+    <div class="container">
+<h1 class="sticky-header">Pakistan Studies MCQs</h1>
+    <div id="mcq-container"></div>
+ <div class="pagination">
+    <button onclick="prevPage()">&#9664;</button>   <!-- ◀ Back -->
+    <input type="number" id="pageInput" min="1" placeholder="Pg" />
+    <button onclick="goToPage()">Go</button>       <!-- Go button with text -->
+    <button onclick="nextPage()">&#9654;</button>  <!-- ▶ Forward -->
 </div>
 
-<div class="pagination">
-  <button onclick="prevPage()">◀</button>
-  <input type="number" id="pageInput" min="1" max="20" />
-  <button onclick="goToPage()">Go</button>
-  <button onclick="nextPage()">▶</button>
-</div>
 
-<script>
-const mcqs = [
 
-  {
-    "q": "Who was elected President of Pakistan in March 2024?",
-    "o": [
-      "Imran Khan",
-      "Asif Ali Zardari",
-      "Shehbaz Sharif",
-      "Arif Alvi"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Who became Prime Minister of Pakistan in March 2024?",
-    "o": [
-      "Shehbaz Sharif",
-      "Imran Khan",
-      "Nawaz Sharif",
-      "Bilawal Bhutto Zardari"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which international financial institution approved a 37-month $7 billion Extended Fund Facility (EFF) for Pakistan in September 2024?",
-    "o": [
-      "World Bank",
-      "IMF",
-      "ADB",
-      "Islamic Development Bank"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "In 2025, the IMF completed the first review under Pakistan's EFF arrangement allowing a disbursement of around $1 billion. Which month did IMF publish the press release?",
-    "o": [
-      "January 2025",
-      "May 2025",
-      "March 2025",
-      "December 2024"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which catastrophic climate event severely affected Pakistan in 2022 and remains a major policy focus for recovery and adaptation?",
-    "o": [
-      "Earthquake",
-      "Cyclone",
-      "Floods",
-      "Drought"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which agency leads disaster management and coordinating flood response in Pakistan?",
-    "o": [
-      "FIA",
-      "NDMA",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which bilateral infrastructure initiative remains central to Pakistan's energy and transport projects (2010s–2020s)?",
-    "o": [
-      "SAARC",
-      "CPEC",
-      "SCO",
-      "ECO"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which strategic port in Balochistan is a flagship project under CPEC?",
-    "o": [
-      "Qasim",
-      "Gwadar",
-      "Karachi Port",
-      "Port Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which Pakistani city is the federal capital?",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Rawalpindi"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which Pakistani institution is responsible for monetary policy and issuing currency?",
-    "o": [
-      "FBR",
-      "State Bank of Pakistan (SBP)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which agency issues national identity cards in Pakistan?",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which body regulates broadcast media in Pakistan?",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FIA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which regulatory commission sets electricity tariffs in Pakistan?",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is Pakistan's most populous province?",
-    "o": [
-      "Sindh",
-      "Punjab",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which Pakistani institution is tasked with federal tax collection?",
-    "o": [
-      "NADRA",
-      "FBR",
-      "SBP",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which major international summit focuses on climate where Pakistan raises flood recovery issues?",
-    "o": [
-      "G7",
-      "COP (UNFCCC)",
-      "BRICS",
-      "OIC Summit"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which fund is commonly approached for climate finance and flood recovery?",
-    "o": [
-      "Green Climate Fund",
-      "European Investment Bank",
-      "OPEC Fund",
-      "ASEAN Fund"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which Pakistani social protection programme was expanded in the 2010s–2020s to provide cash transfers?",
-    "o": [
-      "BISP/Ehsaas",
-      "Zakat only",
-      "PNR Program",
-      "NADRA Grants"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which index is Pakistan’s benchmark stock index commonly cited in financial news?",
-    "o": [
-      "KSE-100",
-      "NIFTY",
-      "Dow Jones",
-      "FTSE100"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which neighbouring country shares the longest border with Pakistan to the east?",
-    "o": [
-      "China",
-      "India",
-      "Afghanistan",
-      "Iran"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which Pakistani court is the highest judicial authority?",
-    "o": [
-      "High Court",
-      "Supreme Court",
-      "District Court",
-      "Federal Shariat Court"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which body measures Pakistan’s population and publishes census statistics?",
-    "o": [
-      "NADRA",
-      "PBS (Pakistan Bureau of Statistics)",
-      "SBP",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which major dam project (Diamer-____) is cited frequently in discussions about water storage?",
-    "o": [
-      "Mangla",
-      "Tarbela",
-      "Diamer-Bhasha",
-      "Hub"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which Pakistani city is the country’s commercial and financial hub?",
-    "o": [
-      "Islamabad",
-      "Lahore",
-      "Karachi",
-      "Peshawar"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which Pakistani ministry leads energy policy including petroleum and power?",
-    "o": [
-      "Ministry of Energy",
-      "Ministry of Finance",
-      "Ministry of Commerce",
-      "Ministry of Interior"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which Pakistani agency leads anti-corruption high-profile probes?",
-    "o": [
-      "FIA",
-      "NAB",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is Pakistan's national currency?",
-    "o": [
-      "Rupee",
-      "Dollar",
-      "Euro",
-      "Taka"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which mountain range contains many of Pakistan's highest peaks?",
-    "o": [
-      "Appalachians",
-      "Karakoram",
-      "Andes",
-      "Alps"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which sea borders Pakistan to the south?",
-    "o": [
-      "Arabian Sea",
-      "Bay of Bengal",
-      "Mediterranean Sea",
-      "Red Sea"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which major export sector is the backbone of Pakistan's exports?",
-    "o": [
-      "Textiles and garments",
-      "Automobiles",
-      "Software only",
-      "Oil"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which Pakistani city is the provincial capital of Sindh?",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which institution oversees corporate regulation and capital markets in Pakistan?",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which river is the main artery of Pakistan's irrigation system?",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which day is observed as Pakistan's Independence Day?",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan?",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which port is located in Sindh and handles container traffic near Karachi?",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which agency registers births and issues ID cards in Pakistan?",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called?",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which province has Quetta as its capital?",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which city is known as the cultural capital of Punjab with Mughal heritage?",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which organization conducts monetary policy in Pakistan?",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which energy corridor between China and Pakistan is abbreviated as?",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which authority regulates telecommunication in Pakistan?",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which province of Pakistan is largest by area?",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which body is responsible for setting electricity tariffs in Pakistan?",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which Pakistani city hosts the main naval base and historically the navy HQ?",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which body is Pakistan's federal investigative agency for crimes including cybercrime?",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which national monument is located in Lahore and commemorates the Pakistan Resolution?",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which organisation is Pakistan's central bank?",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which Pakistani ministry handles foreign relations?",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 51)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 52)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 53)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 54)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 55)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 56)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 57)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 58)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 59)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 60)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 61)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 62)",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 63)",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province of Pakistan is largest by area? (question 64)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 65)",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 66)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 67)",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 68)",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following organisation is Pakistan's central bank? (question 69)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani ministry handles foreign relations? (question 70)",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 71)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 72)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 73)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 74)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 75)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 76)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 77)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 78)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 79)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 80)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 81)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 82)",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 83)",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province of Pakistan is largest by area? (question 84)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 85)",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 86)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 87)",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 88)",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following organisation is Pakistan's central bank? (question 89)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani ministry handles foreign relations? (question 90)",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 91)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 92)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 93)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 94)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 95)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 96)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 97)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 98)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 99)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 100)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 101)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 102)",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 103)",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province of Pakistan is largest by area? (question 104)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 105)",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 106)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 107)",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 108)",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following organisation is Pakistan's central bank? (question 109)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani ministry handles foreign relations? (question 110)",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 111)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 112)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 113)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 114)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 115)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 116)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 117)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 118)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 119)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 120)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 121)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 122)",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 123)",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province of Pakistan is largest by area? (question 124)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 125)",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 126)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 127)",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 128)",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following organisation is Pakistan's central bank? (question 129)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani ministry handles foreign relations? (question 130)",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 131)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 132)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 133)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 134)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 135)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 136)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 137)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 138)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 139)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 140)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 141)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 142)",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 143)",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province of Pakistan is largest by area? (question 144)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 145)",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 146)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 147)",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 148)",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following organisation is Pakistan's central bank? (question 149)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani ministry handles foreign relations? (question 150)",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 151)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 152)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 153)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 154)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 155)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 156)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 157)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 158)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 159)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 160)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 161)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 162)",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 163)",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province of Pakistan is largest by area? (question 164)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 165)",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 166)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 167)",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 168)",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following organisation is Pakistan's central bank? (question 169)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani ministry handles foreign relations? (question 170)",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 171)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 172)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 173)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 174)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 175)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 176)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 177)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 178)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 179)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 180)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following organization conducts monetary policy in Pakistan? (question 181)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NEPRA",
-      "NADRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following energy corridor between China and Pakistan is abbreviated as? (question 182)",
-    "o": [
-      "CPEC",
-      "CPER",
-      "CPC",
-      "PCER"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following authority regulates telecommunication in Pakistan? (question 183)",
-    "o": [
-      "PEMRA",
-      "PTA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province of Pakistan is largest by area? (question 184)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following body is responsible for setting electricity tariffs in Pakistan? (question 185)",
-    "o": [
-      "PEMRA",
-      "NEPRA",
-      "FBR",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani city hosts the main naval base and historically the navy HQ? (question 186)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following body is Pakistan's federal investigative agency for crimes including cybercrime? (question 187)",
-    "o": [
-      "NAB",
-      "FIA",
-      "SECP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following national monument is located in Lahore and commemorates the Pakistan Resolution? (question 188)",
-    "o": [
-      "Minar-e-Pakistan",
-      "Faisal Mosque",
-      "Badshahi Mosque",
-      "Mazar-e-Quaid"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following organisation is Pakistan's central bank? (question 189)",
-    "o": [
-      "FBR",
-      "SBP (State Bank of Pakistan)",
-      "NADRA",
-      "NEPRA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following Pakistani ministry handles foreign relations? (question 190)",
-    "o": [
-      "Ministry of Defence",
-      "Ministry of Interior",
-      "Ministry of Foreign Affairs",
-      "Ministry of Finance"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following Pakistani city is the provincial capital of Sindh? (question 191)",
-    "o": [
-      "Hyderabad",
-      "Karachi",
-      "Sukkur",
-      "Larkana"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following institution oversees corporate regulation and capital markets in Pakistan? (question 192)",
-    "o": [
-      "FBR",
-      "SECP",
-      "SBP",
-      "NDMA"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following river is the main artery of Pakistan's irrigation system? (question 193)",
-    "o": [
-      "Ganges",
-      "Indus",
-      "Brahmaputra",
-      "Amu Darya"
-    ],
-    "a": "A"
-  },
-  {
-    "q": "Which of the following day is observed as Pakistan's Independence Day? (question 194)",
-    "o": [
-      "23 March",
-      "14 August",
-      "6 September",
-      "25 December"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the official radio and television regulator abbreviation in Pakistan? (question 195)",
-    "o": [
-      "PTA",
-      "PEMRA",
-      "NEPRA",
-      "FBR"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following port is located in Sindh and handles container traffic near Karachi? (question 196)",
-    "o": [
-      "Gwadar",
-      "Port Qasim",
-      "Ormara",
-      "Qasim"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following agency registers births and issues ID cards in Pakistan? (question 197)",
-    "o": [
-      "FBR",
-      "NADRA",
-      "NDMA",
-      "SBP"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "What is the capital territory where Islamabad is located called? (question 198)",
-    "o": [
-      "Punjab Province",
-      "Islamabad Capital Territory",
-      "Sindh Province",
-      "Gilgit-Baltistan"
-    ],
-    "a": "B"
-  },
-  {
-    "q": "Which of the following province has Quetta as its capital? (question 199)",
-    "o": [
-      "Punjab",
-      "Sindh",
-      "Balochistan",
-      "Khyber Pakhtunkhwa"
-    ],
-    "a": "C"
-  },
-  {
-    "q": "Which of the following city is known as the cultural capital of Punjab with Mughal heritage? (question 200)",
-    "o": [
-      "Karachi",
-      "Lahore",
-      "Islamabad",
-      "Gwadar"
-    ],
-    "a": "B"
-  }
+    </div>
 
+    <script>
+    const mcqs = [
+  {
+    "q": "Who authored the pamphlet 'Now or Never' coining the name 'Pakistan'?",
+    "o": [
+      "A) Chaudhry Rahmat Ali",
+      "B) Allama Iqbal",
+      "C) Quaid-e-Azam",
+      "D) Liaquat Ali Khan"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The Lucknow Pact was signed in:",
+    "o": [
+      "A) 1914",
+      "B) 1916",
+      "C) 1919",
+      "D) 1920"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The Nehru Report was published in:",
+    "o": [
+      "A) 1926",
+      "B) 1927",
+      "C) 1928",
+      "D) 1929"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "All-India Muslim League was founded in:",
+    "o": [
+      "A) 1901",
+      "B) 1906",
+      "C) 1909",
+      "D) 1911"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The Simla Deputation met Lord Minto in:",
+    "o": [
+      "A) 1902",
+      "B) 1903",
+      "C) 1905",
+      "D) 1906"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "The Khilafat Movement began around:",
+    "o": [
+      "A) 1918",
+      "B) 1919",
+      "C) 1920",
+      "D) 1922"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Jallianwala Bagh tragedy occurred in:",
+    "o": [
+      "A) 1917",
+      "B) 1918",
+      "C) 1919",
+      "D) 1920"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The Delhi Proposals were presented in:",
+    "o": [
+      "A) 1920",
+      "B) 1927",
+      "C) 1928",
+      "D) 1930"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Round Table Conferences were held in London during:",
+    "o": [
+      "A) 1929–30",
+      "B) 1930–32",
+      "C) 1932–34",
+      "D) 1934–36"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Which Act introduced provincial autonomy?",
+    "o": [
+      "A) 1909",
+      "B) 1919",
+      "C) 1935",
+      "D) 1947"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Who presented the Lahore (Pakistan) Resolution?",
+    "o": [
+      "A) Liaquat Ali Khan",
+      "B) Maulvi Fazl-ul-Haq",
+      "C) Allama Iqbal",
+      "D) Chaudhry Rahmat Ali"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The Lahore Resolution session was held at:",
+    "o": [
+      "A) Karachi",
+      "B) Lahore",
+      "C) Dhaka",
+      "D) Delhi"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Cripps Mission came to India in:",
+    "o": [
+      "A) 1940",
+      "B) 1941",
+      "C) 1942",
+      "D) 1944"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Quit India Movement was launched in:",
+    "o": [
+      "A) 1940",
+      "B) 1942",
+      "C) 1944",
+      "D) 1946"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Cabinet Mission Plan came in:",
+    "o": [
+      "A) 1945",
+      "B) 1946",
+      "C) 1947",
+      "D) 1948"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Mountbatten became Viceroy in:",
+    "o": [
+      "A) 1945",
+      "B) 1946",
+      "C) 1947",
+      "D) 1948"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Independence of Pakistan was declared on:",
+    "o": [
+      "A) 14 August 1947",
+      "B) 15 August 1947",
+      "C) 16 August 1947",
+      "D) 13 August 1947"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "First Governor-General of Pakistan was sworn in by:",
+    "o": [
+      "A) Justice Muhammad Munir",
+      "B) Justice Sir Abdul Rashid",
+      "C) Justice Cornelius",
+      "D) Justice S.A. Rahman"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The last British Commander-in-Chief in India was:",
+    "o": [
+      "A) Claude Auchinleck",
+      "B) William Slim",
+      "C) Montgomery",
+      "D) Alan Brooke"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The Objective Resolution was moved by:",
+    "o": [
+      "A) Liaquat Ali Khan",
+      "B) Khawaja Nazimuddin",
+      "C) Muhammad Ali Bogra",
+      "D) Sardar Nishtar"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The first Constitution of Pakistan came into force on:",
+    "o": [
+      "A) 23 March 1956",
+      "B) 14 August 1955",
+      "C) 23 March 1954",
+      "D) 7 October 1958"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The 1962 Constitution was introduced by:",
+    "o": [
+      "A) Iskander Mirza",
+      "B) Ayub Khan",
+      "C) Yahya Khan",
+      "D) Z.A. Bhutto"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The 1973 Constitution was adopted on:",
+    "o": [
+      "A) 14 August 1972",
+      "B) 12 April 1973",
+      "C) 10 April 1973",
+      "D) 1 May 1973"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Under the 1973 Constitution, Pakistan is a:",
+    "o": [
+      "A) Unitary State",
+      "B) Confederation",
+      "C) Federal Republic",
+      "D) Dominion"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Article 2 declares:",
+    "o": [
+      "A) Urdu as national language",
+      "B) Islam as State religion",
+      "C) Fundamental rights",
+      "D) Principles of Policy"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Term of National Assembly:",
+    "o": [
+      "A) 3 years",
+      "B) 4 years",
+      "C) 5 years",
+      "D) 6 years"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Majlis-e-Shoora refers to:",
+    "o": [
+      "A) Parliament",
+      "B) CII",
+      "C) Senate",
+      "D) Cabinet"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Number of Senate seats (post-2012):",
+    "o": [
+      "A) 96",
+      "B) 104",
+      "C) 110",
+      "D) 120"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Head of State is the:",
+    "o": [
+      "A) Prime Minister",
+      "B) President",
+      "C) Chief Justice",
+      "D) Speaker NA"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Council of Islamic Ideology under:",
+    "o": [
+      "A) 1956 Constitution",
+      "B) 1962 Constitution",
+      "C) 1973 Constitution",
+      "D) LFO 1970"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "18th Amendment passed in:",
+    "o": [
+      "A) 2008",
+      "B) 2009",
+      "C) 2010",
+      "D) 2011"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "18th Amendment primarily:",
+    "o": [
+      "A) Centralized powers",
+      "B) Abolished Senate",
+      "C) Enhanced provincial autonomy",
+      "D) Ended bicameralism"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "First woman Speaker NA:",
+    "o": [
+      "A) Sherry Rehman",
+      "B) Fehmida Mirza",
+      "C) Hina Rabbani Khar",
+      "D) Tehmina Daultana"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "NFC Award distributes:",
+    "o": [
+      "A) Water",
+      "B) Seats",
+      "C) Divisible pool taxes",
+      "D) Mineral royalties"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Who conducts general elections?",
+    "o": [
+      "A) Supreme Court",
+      "B) ECP",
+      "C) Cabinet",
+      "D) Interior Ministry"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Islamabad High Court established in:",
+    "o": [
+      "A) 2007",
+      "B) 2008",
+      "C) 2010",
+      "D) 2012"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Number of provinces:",
+    "o": [
+      "A) 3",
+      "B) 4",
+      "C) 5",
+      "D) 6"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Gilgit-Baltistan named in:",
+    "o": [
+      "A) 2007",
+      "B) 2009",
+      "C) 2012",
+      "D) 2015"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Upper house of Parliament:",
+    "o": [
+      "A) NA",
+      "B) Senate",
+      "C) PA",
+      "D) Majlis Council"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Chief Election Commissioner is appointed by:",
+    "o": [
+      "A) President on PM advice",
+      "B) President after Parliamentary Committee",
+      "C) Chief Justice",
+      "D) Senate"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The longest river of Pakistan is:",
+    "o": [
+      "A) Jhelum",
+      "B) Indus",
+      "C) Chenab",
+      "D) Ravi"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Indus originates near:",
+    "o": [
+      "A) Lake Manasarovar",
+      "B) Pamir Knot",
+      "C) Hindu Kush",
+      "D) K2 Glacier"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Largest dam by volume:",
+    "o": [
+      "A) Mangla",
+      "B) Tarbela",
+      "C) Warsak",
+      "D) Diamer-Bhasha (under construction)"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "K2 is in the:",
+    "o": [
+      "A) Himalayas",
+      "B) Hindu Kush",
+      "C) Karakoram",
+      "D) Safed Koh"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Nanga Parbat lies in the:",
+    "o": [
+      "A) Karakoram",
+      "B) Himalayas",
+      "C) Hindu Kush",
+      "D) Salt Range"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Highest peak of Balochistan plateau:",
+    "o": [
+      "A) Koh-e-Sulaiman",
+      "B) Koh-e-Safed",
+      "C) Ziarat Koh-e-Chiltan",
+      "D) Takht-e-Sulaiman"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Sulaiman Range spans:",
+    "o": [
+      "A) Sindh",
+      "B) Punjab",
+      "C) Balochistan & KPK",
+      "D) GB only"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Thar Desert mainly in:",
+    "o": [
+      "A) Sindh & Punjab",
+      "B) Punjab & KPK",
+      "C) Balochistan",
+      "D) GB"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Karachi climate is:",
+    "o": [
+      "A) Desert",
+      "B) Humid subtropical",
+      "C) Moderate maritime",
+      "D) Alpine"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "CPEC’s deep-sea port:",
+    "o": [
+      "A) Gwadar",
+      "B) Ormara",
+      "C) Pasni",
+      "D) Keti Bandar"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Bolan Pass links Quetta to:",
+    "o": [
+      "A) Kandahar",
+      "B) Zhob",
+      "C) Sibi plain",
+      "D) Khyber"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Khyber Pass connects to:",
+    "o": [
+      "A) Iran",
+      "B) China",
+      "C) Afghanistan",
+      "D) India"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Largest national park by area:",
+    "o": [
+      "A) Hingol",
+      "B) Deosai",
+      "C) Khunjerab",
+      "D) Margalla Hills"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Largest natural lake:",
+    "o": [
+      "A) Keenjhar",
+      "B) Saiful Malook",
+      "C) Manchar",
+      "D) Haleji"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "River joining Indus near Mithankot:",
+    "o": [
+      "A) Chenab",
+      "B) Jhelum",
+      "C) Ravi",
+      "D) Kabul"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Delta in Pakistan:",
+    "o": [
+      "A) Sunderbans",
+      "B) Indus Delta",
+      "C) Mekong Delta",
+      "D) Nile Delta"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Salt Range resource:",
+    "o": [
+      "A) Gold",
+      "B) Coal",
+      "C) Rock salt",
+      "D) Copper"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Pakistan–China boundary passes through:",
+    "o": [
+      "A) Radcliffe Line",
+      "B) Durand Line",
+      "C) McMahon Line",
+      "D) Karakoram/Khunjerab region"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "Karachi latitude approx.:",
+    "o": [
+      "A) 24.9°N",
+      "B) 31.5°N",
+      "C) 33.7°N",
+      "D) 36.5°N"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Rohtas Fort is near:",
+    "o": [
+      "A) Jhelum",
+      "B) Multan",
+      "C) Bahawalpur",
+      "D) Hyderabad"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "SBP inaugurated on:",
+    "o": [
+      "A) 1 July 1948",
+      "B) 14 August 1948",
+      "C) 1 July 1949",
+      "D) 14 August 1949"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Largest GDP sector traditionally:",
+    "o": [
+      "A) Agriculture",
+      "B) Industry",
+      "C) Services",
+      "D) Mining"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Currency decimalized in:",
+    "o": [
+      "A) 1956",
+      "B) 1961",
+      "C) 1964",
+      "D) 1971"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "SBP HQ is in:",
+    "o": [
+      "A) Islamabad",
+      "B) Karachi",
+      "C) Lahore",
+      "D) Quetta"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "First Five-Year Plan began:",
+    "o": [
+      "A) 1950",
+      "B) 1955",
+      "C) 1956",
+      "D) 1960"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "RCD evolved into:",
+    "o": [
+      "A) SAARC",
+      "B) ECO",
+      "C) D-8",
+      "D) OIC"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistan is a founding member of:",
+    "o": [
+      "A) NAM",
+      "B) OIC",
+      "C) SCO",
+      "D) ASEAN"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "PAEC HQ is in:",
+    "o": [
+      "A) Islamabad",
+      "B) Rawalpindi",
+      "C) Karachi",
+      "D) Lahore"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Major export:",
+    "o": [
+      "A) Automobiles",
+      "B) Textiles",
+      "C) Crude oil",
+      "D) Gold"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Surgical goods hub:",
+    "o": [
+      "A) Sialkot",
+      "B) Gujranwala",
+      "C) Peshawar",
+      "D) Hyderabad"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Largest refinery complex:",
+    "o": [
+      "A) Faisalabad",
+      "B) Attock",
+      "C) Karachi",
+      "D) Hub"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "BISP launched in:",
+    "o": [
+      "A) 2006",
+      "B) 2008",
+      "C) 2010",
+      "D) 2012"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "First motorway (M-2) connects:",
+    "o": [
+      "A) Islamabad–Lahore",
+      "B) Lahore–Multan",
+      "C) Pindi Bhattian–Faisalabad",
+      "D) Karachi–Hyderabad"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "KKH links to China at:",
+    "o": [
+      "A) Torkham",
+      "B) Khunjerab Pass",
+      "C) Taftan",
+      "D) Wagah"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Largest coal reserves:",
+    "o": [
+      "A) Quetta",
+      "B) Thar",
+      "C) Kala Bagh",
+      "D) Mianwali"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Sui gas fields are in:",
+    "o": [
+      "A) Sindh",
+      "B) Balochistan",
+      "C) Punjab",
+      "D) KPK"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Major hydropower on Indus:",
+    "o": [
+      "A) Guddu",
+      "B) Tarbela",
+      "C) Jamshoro",
+      "D) Bin Qasim"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistan Stock Exchange HQ:",
+    "o": [
+      "A) Islamabad",
+      "B) Karachi",
+      "C) Lahore",
+      "D) Peshawar"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Major remittance source:",
+    "o": [
+      "A) South Asia",
+      "B) Middle East & Gulf",
+      "C) Europe",
+      "D) Africa"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "CDNS reports to:",
+    "o": [
+      "A) SECP",
+      "B) SBP",
+      "C) Ministry of Finance",
+      "D) BISP"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "National language:",
+    "o": [
+      "A) Urdu",
+      "B) Punjabi",
+      "C) Sindhi",
+      "D) Pashto"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Urdu script:",
+    "o": [
+      "A) Devanagari",
+      "B) Perso-Arabic Nastaliq",
+      "C) Roman",
+      "D) Cyrillic"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Allama Iqbal’s mausoleum city:",
+    "o": [
+      "A) Sialkot",
+      "B) Lahore",
+      "C) Karachi",
+      "D) Quetta"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Faiz Ahmed Faiz was a:",
+    "o": [
+      "A) Historian",
+      "B) Poet",
+      "C) Painter",
+      "D) Politician"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "National sport:",
+    "o": [
+      "A) Cricket",
+      "B) Hockey",
+      "C) Squash",
+      "D) Polo"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "National dress:",
+    "o": [
+      "A) Kurta Pajama",
+      "B) Shalwar Kameez",
+      "C) Sherwani",
+      "D) Achkan"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Badshahi Mosque city:",
+    "o": [
+      "A) Lahore",
+      "B) Multan",
+      "C) Karachi",
+      "D) Peshawar"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Shalimar Gardens by:",
+    "o": [
+      "A) Akbar",
+      "B) Jahangir",
+      "C) Shah Jahan",
+      "D) Aurangzeb"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Lok Virsa Museum city:",
+    "o": [
+      "A) Karachi",
+      "B) Lahore",
+      "C) Islamabad",
+      "D) Quetta"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "NAPA is in:",
+    "o": [
+      "A) Islamabad",
+      "B) Karachi",
+      "C) Lahore",
+      "D) Peshawar"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "First TV broadcast:",
+    "o": [
+      "A) 1958",
+      "B) 1960",
+      "C) 1962",
+      "D) 1964"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "Daily 'Dawn' founded by:",
+    "o": [
+      "A) Quaid-e-Azam",
+      "B) Liaquat Ali Khan",
+      "C) Suhrawardy",
+      "D) Sir Syed"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Iqbal Day (historically):",
+    "o": [
+      "A) 9 November",
+      "B) 14 August",
+      "C) 23 March",
+      "D) 25 December"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Mazar-e-Quaid city:",
+    "o": [
+      "A) Lahore",
+      "B) Karachi",
+      "C) Islamabad",
+      "D) Quetta"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pak film industry nickname:",
+    "o": [
+      "A) Bollywood",
+      "B) Lollywood",
+      "C) Kollywood",
+      "D) Tollywood"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Hazara community language:",
+    "o": [
+      "A) Brahui",
+      "B) Balochi",
+      "C) Hazaragi (Dari)",
+      "D) Sindhi"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Pashto is spoken largely in:",
+    "o": [
+      "A) Punjab",
+      "B) Sindh",
+      "C) KPK & N. Balochistan",
+      "D) GB"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Festival ending Ramadan:",
+    "o": [
+      "A) Eid ul-Adha",
+      "B) Eid Milad",
+      "C) Eid ul-Fitr",
+      "D) Shab-e-Barat"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Truck art is a craft of:",
+    "o": [
+      "A) Pakistan",
+      "B) India",
+      "C) Iran",
+      "D) Nepal"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "First female provincial Governor:",
+    "o": [
+      "A) Dr. Arif Alvi",
+      "B) Rahimuddin Khan",
+      "C) Begum Ra'ana Liaquat Ali Khan",
+      "D) Shamim Akhtar"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "SEATO membership ended in:",
+    "o": [
+      "A) 1970",
+      "B) 1972",
+      "C) 1977",
+      "D) 1979"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "CENTO dissolved in:",
+    "o": [
+      "A) 1976",
+      "B) 1979",
+      "C) 1981",
+      "D) 1985"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistan’s nuclear tests were in:",
+    "o": [
+      "A) 1996",
+      "B) 1997",
+      "C) 1998",
+      "D) 1999"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The 1965 war was primarily over:",
+    "o": [
+      "A) Rann of Kutch",
+      "B) Sir Creek",
+      "C) Kashmir",
+      "D) Punjab waters"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Tashkent Declaration year:",
+    "o": [
+      "A) 1965",
+      "B) 1966",
+      "C) 1967",
+      "D) 1968"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Simla Agreement year:",
+    "o": [
+      "A) 1971",
+      "B) 1972",
+      "C) 1973",
+      "D) 1974"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "First OIC summit Pakistan attended:",
+    "o": [
+      "A) Rabat 1969",
+      "B) Lahore 1974",
+      "C) Jeddah 1972",
+      "D) Islamabad 1997"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Kargil conflict year:",
+    "o": [
+      "A) 1998",
+      "B) 1999",
+      "C) 2000",
+      "D) 2001"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistan in UN peacekeeping is among:",
+    "o": [
+      "A) Top contributors",
+      "B) Non-contributors",
+      "C) P-5 members",
+      "D) NATO founders"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "CPEC is a flagship of:",
+    "o": [
+      "A) BRI",
+      "B) NAFTA",
+      "C) EFTA",
+      "D) APEC"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Gwadar Port operator:",
+    "o": [
+      "A) China Overseas Ports",
+      "B) Dubai Ports World",
+      "C) PSA Singapore",
+      "D) APM Terminals"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "SCO full membership in:",
+    "o": [
+      "A) 2015",
+      "B) 2016",
+      "C) 2017",
+      "D) 2018"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "SAARC founded in:",
+    "o": [
+      "A) 1983",
+      "B) 1985",
+      "C) 1987",
+      "D) 1990"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Strategic depth often discussed re:",
+    "o": [
+      "A) Iran",
+      "B) Afghanistan",
+      "C) India",
+      "D) China"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistani UNGA President (first):",
+    "o": [
+      "A) Sir Zafrulla Khan",
+      "B) Patras Bokhari",
+      "C) Maleeha Lodhi",
+      "D) Agha Shahi"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "UNSC President (Pakistani, first):",
+    "o": [
+      "A) Zafrulla Khan",
+      "B) Agha Shahi",
+      "C) Patras Bokhari",
+      "D) Moeen Qureshi"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "SAARC Secretariat is in:",
+    "o": [
+      "A) Islamabad",
+      "B) Kathmandu",
+      "C) Dhaka",
+      "D) Colombo"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Largest recent trading partner (single country):",
+    "o": [
+      "A) USA",
+      "B) China",
+      "C) UAE",
+      "D) Saudi Arabia"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Boundary with Iran is called:",
+    "o": [
+      "A) Radcliffe Line",
+      "B) Goldsmid Line",
+      "C) Durand Line",
+      "D) McMahon Line"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "ICJ judge from Pakistan (historic figure):",
+    "o": [
+      "A) Sir Zafrulla Khan",
+      "B) A.R. Cornelius",
+      "C) Abdul Qadeer Khan",
+      "D) Ishrat Husain"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Punjab’s capital:",
+    "o": [
+      "A) Faisalabad",
+      "B) Lahore",
+      "C) Rawalpindi",
+      "D) Multan"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Sindh’s capital:",
+    "o": [
+      "A) Hyderabad",
+      "B) Sukkur",
+      "C) Karachi",
+      "D) Thatta"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Khyber Pakhtunkhwa’s capital:",
+    "o": [
+      "A) Abbottabad",
+      "B) Peshawar",
+      "C) Swat",
+      "D) Mardan"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Balochistan’s capital:",
+    "o": [
+      "A) Khuzdar",
+      "B) Gwadar",
+      "C) Quetta",
+      "D) Turbat"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "GB’s administrative capital:",
+    "o": [
+      "A) Gilgit",
+      "B) Skardu",
+      "C) Hunza",
+      "D) Gahkuch"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "AJK’s capital:",
+    "o": [
+      "A) Mirpur",
+      "B) Muzaffarabad",
+      "C) Kotli",
+      "D) Rawalakot"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "National flower:",
+    "o": [
+      "A) Rose",
+      "B) Jasmine",
+      "C) Tulip",
+      "D) Lily"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "National bird:",
+    "o": [
+      "A) Chukar partridge",
+      "B) Peregrine falcon (Shaheen)",
+      "C) Markhor",
+      "D) Houbara"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "National tree:",
+    "o": [
+      "A) Deodar cedar",
+      "B) Kikar",
+      "C) Neem",
+      "D) Peepal"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Islamabad national monument shape:",
+    "o": [
+      "A) Four petals",
+      "B) Five pillars",
+      "C) Minar",
+      "D) Star"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Minar-e-Pakistan commemorates:",
+    "o": [
+      "A) Independence",
+      "B) Lahore Resolution",
+      "C) First constitution",
+      "D) 1973 constitution"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Shandur is famous for:",
+    "o": [
+      "A) Desert safari",
+      "B) Polo festival",
+      "C) Ski resort",
+      "D) Salt mining"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Largest cotton-producing province:",
+    "o": [
+      "A) Sindh",
+      "B) Punjab",
+      "C) KPK",
+      "D) Balochistan"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Major rice variety exported:",
+    "o": [
+      "A) Basmati",
+      "B) Japonica",
+      "C) Arborio",
+      "D) Glutinous"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "City famous for fans/electrical goods:",
+    "o": [
+      "A) Gujranwala",
+      "B) Gujrat",
+      "C) Sialkot",
+      "D) Faisalabad"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "City famous for cutlery:",
+    "o": [
+      "A) Wazirabad",
+      "B) Lahore",
+      "C) Peshawar",
+      "D) Hyderabad"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Hub Dam supplies water to:",
+    "o": [
+      "A) Lahore",
+      "B) Karachi",
+      "C) Multan",
+      "D) Peshawar"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Keenjhar Lake is near:",
+    "o": [
+      "A) Thatta",
+      "B) Hyderabad",
+      "C) Jamshoro",
+      "D) Sanghar"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Makran Coastal Highway connects Karachi to:",
+    "o": [
+      "A) Gwadar",
+      "B) Ormara",
+      "C) Pasni",
+      "D) All of these"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "Largest distance-learning university:",
+    "o": [
+      "A) Punjab University",
+      "B) AIOU",
+      "C) Virtual University",
+      "D) Karachi University"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Which city is known as City of Saints?",
+    "o": [
+      "A) Multan",
+      "B) Sukkur",
+      "C) Hyderabad",
+      "D) Sahiwal"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Which pass connects Quetta with Sibi plains?",
+    "o": [
+      "A) Khyber",
+      "B) Bolan",
+      "C) Tochi",
+      "D) Gomal"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Uch Sharif is famous for:",
+    "o": [
+      "A) Salt mines",
+      "B) Shrines and tombs",
+      "C) Forts",
+      "D) Beaches"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Ranikot Fort is in:",
+    "o": [
+      "A) Sindh",
+      "B) Punjab",
+      "C) KPK",
+      "D) Balochistan"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Shah Jahan Mosque (Thatta) is known for:",
+    "o": [
+      "A) Woodwork",
+      "B) Blue tile work",
+      "C) Marble screens",
+      "D) Minarets"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Katas Raj Temples are located in:",
+    "o": [
+      "A) Chakwal",
+      "B) Rawalpindi",
+      "C) Attock",
+      "D) Gujrat"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The Soan Valley is in:",
+    "o": [
+      "A) Bannu",
+      "B) Mianwali",
+      "C) Chakwal",
+      "D) Bhakkar"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Haleji Lake is in:",
+    "o": [
+      "A) Sindh",
+      "B) Punjab",
+      "C) KPK",
+      "D) Balochistan"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The Indus meets the Arabian Sea near:",
+    "o": [
+      "A) Karachi",
+      "B) Thatta",
+      "C) Gwadar",
+      "D) Ormara"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Gawadar was purchased by Pakistan from:",
+    "o": [
+      "A) Iran",
+      "B) Oman",
+      "C) UAE",
+      "D) Bahrain"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Who was the first President of Pakistan?",
+    "o": [
+      "A) Iskander Mirza",
+      "B) Ayub Khan",
+      "C) Liaquat Ali Khan",
+      "D) Khawaja Nazimuddin"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Which river is called the \"River of Punjab\"?",
+    "o": [
+      "A) Ravi",
+      "B) Sutlej",
+      "C) Indus",
+      "D) Chenab"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "The Objective Resolution was passed in which year?",
+    "o": [
+      "A) 1947",
+      "B) 1948",
+      "C) 1949",
+      "D) 1950"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The national animal of Pakistan is:",
+    "o": [
+      "A) Markhor",
+      "B) Snow Leopard",
+      "C) Chinkara",
+      "D) Ibex"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Pakistan became a member of the United Nations in:",
+    "o": [
+      "A) 1947",
+      "B) 1948",
+      "C) 1949",
+      "D) 1950"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Which language was declared the national language of Pakistan in 1948?",
+    "o": [
+      "A) Bengali",
+      "B) Urdu",
+      "C) English",
+      "D) Punjabi"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The first census of Pakistan was held in:",
+    "o": [
+      "A) 1950",
+      "B) 1951",
+      "C) 1952",
+      "D) 1955"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The highest peak in Pakistan is:",
+    "o": [
+      "A) Nanga Parbat",
+      "B) Broad Peak",
+      "C) K2",
+      "D) Tirich Mir"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The Simla Agreement between Pakistan and India was signed in:",
+    "o": [
+      "A) 1965",
+      "B) 1971",
+      "C) 1972",
+      "D) 1974"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Pakistan conducted its first nuclear tests in:",
+    "o": [
+      "A) 1996",
+      "B) 1997",
+      "C) 1998",
+      "D) 1999"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Quaid-e-Azam gave his famous Fourteen Points in:",
+    "o": [
+      "A) 1916",
+      "B) 1928",
+      "C) 1929",
+      "D) 1930"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Allama Iqbal delivered his Allahabad Address in:",
+    "o": [
+      "A) 1928",
+      "B) 1929",
+      "C) 1930",
+      "D) 1931"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The Pakistan Resolution was presented by:",
+    "o": [
+      "A) Quaid-e-Azam",
+      "B) Liaquat Ali Khan",
+      "C) Fazlul Haq",
+      "D) Allama Iqbal"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The capital of Pakistan was shifted from Karachi to Islamabad in:",
+    "o": [
+      "A) 1958",
+      "B) 1960",
+      "C) 1967",
+      "D) 1970"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Which city is known as the \"Manchester of Pakistan\"?",
+    "o": [
+      "A) Karachi",
+      "B) Lahore",
+      "C) Faisalabad",
+      "D) Multan"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The National Anthem of Pakistan was composed by:",
+    "o": [
+      "A) Hafeez Jalandhari",
+      "B) Ahmad G. Chagla",
+      "C) Jamiluddin Aali",
+      "D) Faiz Ahmed Faiz"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The famous Indus Valley Civilization site Mohenjo-Daro is located in:",
+    "o": [
+      "A) Punjab",
+      "B) Sindh",
+      "C) Balochistan",
+      "D) KPK"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistan shares its shortest border with:",
+    "o": [
+      "A) India",
+      "B) Afghanistan",
+      "C) Iran",
+      "D) China"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "The first Prime Minister of Pakistan was:",
+    "o": [
+      "A) Khawaja Nazimuddin",
+      "B) Liaquat Ali Khan",
+      "C) Ghulam Muhammad",
+      "D) Iskander Mirza"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The total area of Pakistan is approximately:",
+    "o": [
+      "A) 796,096 sq. km",
+      "B) 786,000 sq. km",
+      "C) 750,000 sq. km",
+      "D) 805,000 sq. km"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The Durand Line separates Pakistan from:",
+    "o": [
+      "A) India",
+      "B) Afghanistan",
+      "C) China",
+      "D) Iran"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "RCD (Regional Cooperation for Development) was formed by Pakistan, Turkey, and Iran in:",
+    "o": [
+      "A) 1962",
+      "B) 1964",
+      "C) 1965",
+      "D) 1966"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Who was the first Chief Martial Law Administrator of Pakistan?",
+    "o": [
+      "A) Yahya Khan",
+      "B) Ayub Khan",
+      "C) Zia-ul-Haq",
+      "D) Iskander Mirza"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistan became a nuclear power during the government of:",
+    "o": [
+      "A) Zulfikar Ali Bhutto",
+      "B) Benazir Bhutto",
+      "C) Nawaz Sharif",
+      "D) Pervez Musharraf"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The Indus Waters Treaty was signed between Pakistan and India in:",
+    "o": [
+      "A) 1959",
+      "B) 1960",
+      "C) 1961",
+      "D) 1962"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The largest province of Pakistan by area is:",
+    "o": [
+      "A) Punjab",
+      "B) Sindh",
+      "C) KPK",
+      "D) Balochistan"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "The first constitution of Pakistan was enforced in:",
+    "o": [
+      "A) 1950",
+      "B) 1954",
+      "C) 1956",
+      "D) 1958"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The famous “Ziarat Residency” is associated with:",
+    "o": [
+      "A) Liaquat Ali Khan",
+      "B) Allama Iqbal",
+      "C) Quaid-e-Azam",
+      "D) Ayub Khan"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The Pakistan People’s Party (PPP) was founded in:",
+    "o": [
+      "A) 1965",
+      "B) 1966",
+      "C) 1967",
+      "D) 1968"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The first woman Governor of State Bank of Pakistan was:",
+    "o": [
+      "A) Shamshad Akhtar",
+      "B) Dr. Maleeha Lodhi",
+      "C) Roshane Zafar",
+      "D) Shaukat Aziz"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Which was the first airline of Pakistan?",
+    "o": [
+      "A) Orient Airways",
+      "B) PIA",
+      "C) Aero Asia",
+      "D) Bhoja Air"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Who was the first Caretaker Prime Minister of Pakistan?",
+    "o": [
+      "A) Ghulam Mustafa Jatoi",
+      "B) Moeen Qureshi",
+      "C) Malik Meraj Khalid",
+      "D) Mir Hazar Khan Khoso"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The first Pakistani to win a Nobel Prize was:",
+    "o": [
+      "A) Abdus Salam",
+      "B) Malala Yousafzai",
+      "C) Dr. Abdul Qadeer Khan",
+      "D) Faiz Ahmed Faiz"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Which pass connects Pakistan with China?",
+    "o": [
+      "A) Khyber Pass",
+      "B) Khunjerab Pass",
+      "C) Gomal Pass",
+      "D) Bolan Pass"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The capital of Pakistan was shifted from Karachi to Islamabad in:",
+    "o": [
+      "A) 1958",
+      "B) 1960",
+      "C) 1967",
+      "D) 1970"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Which is the largest natural lake in Pakistan?",
+    "o": [
+      "A) Hanna Lake",
+      "B) Keenjhar Lake",
+      "C) Manchar Lake",
+      "D) Saiful Malook"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Pakistan shares its shortest border with:",
+    "o": [
+      "A) India",
+      "B) Afghanistan",
+      "C) China",
+      "D) Iran"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "The first women’s university in Pakistan was established in:",
+    "o": [
+      "A) Lahore",
+      "B) Karachi",
+      "C) Rawalpindi",
+      "D) Islamabad"
+    ],
+    "a": "ANS. D"
+  },
+  {
+    "q": "Which is the national fruit of Pakistan?",
+    "o": [
+      "A) Mango",
+      "B) Apple",
+      "C) Banana",
+      "D) Guava"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Who was the first Governor of State Bank of Pakistan?",
+    "o": [
+      "A) Zahid Hussain",
+      "B) Shaukat Aziz",
+      "C) Ghulam Ishaq Khan",
+      "D) Mahbub-ul-Haq"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Which Pakistani leader was given the title “Quaid-e-Millat”?",
+    "o": [
+      "A) Liaquat Ali Khan",
+      "B) Allama Iqbal",
+      "C) Fatima Jinnah",
+      "D) Khawaja Nazimuddin"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "Who was the first woman Governor of the State Bank of Pakistan?",
+    "o": [
+      "A) Shamshad Akhtar",
+      "B) Rukhsana Zuberi",
+      "C) Hina Rabbani Khar",
+      "D) Maleeha Lodhi"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "When was the first constitution of Pakistan enforced?",
+    "o": [
+      "A) 1952",
+      "B) 1954",
+      "C) 1956",
+      "D) 1958"
+    ],
+    "a": "ANS. C"
+  },
+  {
+    "q": "Which is the smallest province of Pakistan by area?",
+    "o": [
+      "A) Sindh",
+      "B) Punjab",
+      "C) Khyber Pakhtunkhwa",
+      "D) Balochistan"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The second largest dam of Pakistan is:",
+    "o": [
+      "A) Tarbela Dam",
+      "B) Mangla Dam",
+      "C) Hub Dam",
+      "D) Mirani Dam"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Pakistan’s official map was approved in:",
+    "o": [
+      "A) 1947",
+      "B) 1948",
+      "C) 1949",
+      "D) 1950"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "Who was the Prime Minister of Pakistan during the 1965 war?",
+    "o": [
+      "A) Ayub Khan",
+      "B) Zulfikar Ali Bhutto",
+      "C) Feroz Khan Noon",
+      "D) Liaquat Ali Khan"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The largest desert of Pakistan is:",
+    "o": [
+      "A) Thal",
+      "B) Thar",
+      "C) Cholistan",
+      "D) Kharan"
+    ],
+    "a": "ANS. B"
+  },
+  {
+    "q": "The national dress of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+  {
+    "q": "The first General Elections in Pakistan were held in:",
+    "o": [
+      "A) 1954",
+      "B) 1956",
+      "C) 1970",
+      "D) 1973"
+    ],
+    "a": "ANS. C"
+  },
+      
+        {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+      
+     {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+      
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+           {
+    "q": "The national sdsdsdadadad of Pakistan is:",
+    "o": [
+      "A) Shalwar Kameez",
+      "B) Kurta Pajama",
+      "C) Sherwani",
+      "D) Lungi"
+    ],
+    "a": "ANS. A"
+  },
+      
+      
+      
 ];
-const itemsPerPage = 10;
-let currentPage = 1;
-const totalPages = Math.ceil(mcqs.length / itemsPerPage);
 
-function displayMCQs(page) {
-  currentPage = page;
-  const container = document.getElementById('mcq-container');
-  container.innerHTML = '';
-  const start = (page - 1) * itemsPerPage;
-  const end = Math.min(start + itemsPerPage, mcqs.length);
-  const labels = ['A','B','C','D'];
+    const itemsPerPage = 10;
+    let currentPage = 1;
+    const totalPages = Math.ceil(mcqs.length / itemsPerPage);
 
-  for (let i = start; i < end; i++) {
-    const item = mcqs[i];
-    const qNumber = i + 1;
-    const div = document.createElement('div');
-    div.className = 'mcq';
-    let optsHtml = '';
-    for (let j=0;j<4;j++) {
-      optsHtml += `<div class="option">${labels[j]}. ${item.o[j]}</div>`;
+    function displayMCQs(page) {
+        const container = document.getElementById("mcq-container");
+        container.innerHTML = "";
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageItems = mcqs.slice(start, end);
+
+        pageItems.forEach((item, index) => {
+            const mcqDiv = document.createElement("div");
+            mcqDiv.classList.add("mcq");
+            const qNumber = start + index + 1;
+            mcqDiv.innerHTML = `
+                <div class="question">${qNumber}. ${item.q}</div>
+                <div class="options">
+                    ${item.o.map(opt => `<div class="option">${opt}</div>`).join("")}
+                </div>
+                <div class="answer">${item.a}</div>
+            `;
+            container.appendChild(mcqDiv);
+        });
+
+        document.getElementById("pageInput").value = currentPage;
+        window.scrollTo(0,0);
     }
-    div.innerHTML = `
-      <div class="question">${qNumber}. ${item.q}</div>
-      <div class="options">${optsHtml}</div>
-      <div class="answer">Answer: ${item.a}</div>
-    `;
-    container.appendChild(div);
-  }
-  document.getElementById('pageInput').value = currentPage;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
-function nextPage() {
-  if (currentPage < totalPages) displayMCQs(currentPage+1);
-}
-function prevPage() {
-  if (currentPage > 1) displayMCQs(currentPage-1);
-}
-function goToPage() {
-  const p = parseInt(document.getElementById('pageInput').value);
-  if (!isNaN(p) && p>=1 && p<=totalPages) displayMCQs(p);
-}
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayMCQs(currentPage);
+        }
+    }
 
-displayMCQs(1);
-</script>
-</body>
-</html>
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            displayMCQs(currentPage);
+        }
+    }
+
+    function goToPage() {
+        const page = parseInt(document.getElementById("pageInput").value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            displayMCQs(currentPage);
+        }
+    }
+
+    displayMCQs(currentPage);
+    </script>
+    </body>
+    </html>
