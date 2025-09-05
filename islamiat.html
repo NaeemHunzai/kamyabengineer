@@ -4,34 +4,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Islamiat MCQs — 200</title>
+<title>Islamiat MCQs</title>
 <style>
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:0;
-    background: linear-gradient(135deg, #e0f7fa, #ffffff); color:#333; }
-  .container { max-width:900px; margin:20px auto; padding:20px; background: rgba(255,255,255,0.9); border-radius:12px; }
-  .header-bar{ background: #00796b; padding: 16px; border-radius:8px; color:#fff; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.12); }
-  .header-bar h1{ margin:0; font-size:20px; }
-  .mcq { background:#ffffffd9; border-left:6px solid #00796b; border-radius:10px; padding:16px; margin-bottom:14px; box-shadow:0 3px 8px rgba(0,0,0,0.08); transition: transform .15s; }
-  .mcq:hover{ transform: scale(1.01); }
-  .question{ font-weight:700; color:#073b36; }
-  .options{ margin-top:8px; padding-left:12px; }
-  .option{ margin:6px 0; color:#134e49; }
-  .answer{ margin-top:10px; font-weight:700; color:#2e7d32; }
-  .pagination{ text-align:center; margin-top:18px; }
-  .pagination button{ padding:10px 14px; margin:6px; background:#00796b; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-  .pagination input{ width:60px; padding:8px; margin-left:6px; border-radius:6px; border:1px solid #ccc; text-align:center; }
+   body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 70px 20px 70px 20px;  /* top = header height, bottom = pagination height */
+    background-color: #ffffff;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;   /* centered horizontally */
+}
+
+
+
+
+
+        h1 {
+            text-align: center;
+            background-color: #00796b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .mcq {
+            background: #ffffffd9;
+            border-left: 6px solid #00796b;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .mcq:hover { transform: scale(1.01); }
+        .question { font-size: 18px; font-weight: bold; }
+        .options { margin-top: 15px; }
+        .option { margin: 6px 0; padding-left: 10px; }
+        .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
+.pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 14px; /* spacing so buttons don’t feel cramped */
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.pagination button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;   /* round shape */
+    background-color: #00796b;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;  /* suitable size for both arrows & text */
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* ensures perfect centering */
+    transition: background 0.2s;
+    line-height: 40px;    /* match button height for vertical centering */
+    padding: 0;
+}
+
+.pagination button:hover {
+    background-color: #004d40;
+}
+
+.pagination input {
+    width: 55px;
+    padding: 6px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* slightly rounded */
+}
+
+      
+.sticky-header { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    background-color: #ffffff;   /* white background */
+    color: #00796b;              /* teal text */
+    padding: 12px;
+    font-size: 18px;             /* normal text size */
+    font-weight: 600;            /* semi-bold for clarity */
+    text-align: center;
+    border-radius: 0 0 12px 12px;
+    margin: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* subtle shadow */
+    height: auto;
+    line-height: 1.4;
+    border-bottom: 2px solid #00796b; /* underline */
+}
+
+
+      
+      
+      
+        }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header-bar"><h1>Islamiat MCQs — 1–200</h1><div style="font-size:13px; opacity:0.95; margin-top:6px;">10 per page · Options prefixed A./B./C./D. · Answers short (Answer: A)</div></div>
-  <div id="mcq-container" style="margin-top:18px;"></div>
-  <div class="pagination" style="margin-top:12px;">
-    <button onclick="prevPage()">Previous</button>
-    <input type="number" id="pageInput" min="1" max="20" />
-    <button onclick="goToPage()">Go</button>
-    <button onclick="nextPage()">Next</button>
-  </div>
+ <div class="container">
+<h1 class="sticky-header">Islamiat MCQs</h1>
+    <div id="mcq-container"></div>
+ <div class="pagination">
+    <button onclick="prevPage()">&#9664;</button>   <!-- ◀ Back -->
+    <input type="number" id="pageInput" min="1" placeholder="Pg" />
+    <button onclick="goToPage()">Go</button>       <!-- Go button with text -->
+    <button onclick="nextPage()">&#9654;</button>  <!-- ▶ Forward -->
+</div>
 </div>
 <script>
 const mcqs = [{"q": "How many Surahs are there in the Quran?", "o": ["112", "114", "116", "118"], "a": "B"}, {"q": "Which Surah is the longest in the Quran?", "o": ["Al-Imran", "Al-Baqarah", "An-Nisa", "Al-Ma'idah"], "a": "B"}, {"q": "Which Surah is the shortest in the Quran?", "o": ["Al-Kawthar", "Al-Ikhlas", "Al-Asr", "An-Nas"], "a": "A"}, {"q": "Which Surah is called the 'Heart of the Quran'?", "o": ["Yaseen", "Al-Fatiha", "Al-Ikhlas", "Ar-Rahman"], "a": "A"}, {"q": "Which Surah contains Ayat al-Kursi?", "o": ["Al-Fatiha", "Al-Baqarah", "Al-Ikhlas", "An-Nas"], "a": "B"}, {"q": "Which Surah must be recited in every rak'ah of Salah?", "o": ["Al-Fatiha", "Al-Ikhlas", "Al-Falaq", "An-Nas"], "a": "A"}, {"q": "How many Juz' (parts) are in the Quran?", "o": ["20", "30", "40", "60"], "a": "B"}, {"q": "What is the first Surah of the Quran?", "o": ["Al-Fatiha", "Al-Baqarah", "Al-'Alaq", "An-Nas"], "a": "A"}, {"q": "Which Surah was revealed first according to most scholars?", "o": ["Al-Fatiha", "Al-'Alaq (1-5)", "Al-Muddaththir", "Al-Qalam"], "a": "B"}, {"q": "Which Surah was revealed last according to many reports?", "o": ["An-Nasr", "Al-Ma'idah", "At-Tawbah", "Al-Baqarah"], "a": "A"}, {"q": "How many verses (ayahs) approximately are in the Quran?", "o": ["6,236", "6,666", "5,555", "7,001"], "a": "A"}, {"q": "How many Surahs are named after Prophets?", "o": ["4", "5", "6", "7"], "a": "C"}, {"q": "Which Surah is called 'Umm al-Kitab' (Mother of the Book)?", "o": ["Al-Ikhlas", "Al-Fatiha", "Al-Qadr", "Al-Kahf"], "a": "B"}, {"q": "Which Surah is known as 'Surat an-Nur' (The Light)?", "o": ["Al-Furqan", "Al-Mulk", "An-Nur", "Al-Hadid"], "a": "C"}, {"q": "Which Surah narrates the story of the People of the Cave?", "o": ["Al-Kahf", "Al-Mulk", "Al-Qasas", "Yunus"], "a": "A"}, {"q": "Which Surah tells the story of Prophet Yusuf in detail?", "o": ["Yusuf", "Maryam", "Luqman", "Nuh"], "a": "A"}, {"q": "Which Surah is often called 'Qul Huwa Allahu Ahad'?", "o": ["Al-Falaq", "Al-Ikhlas", "An-Nas", "Al-Masad"], "a": "B"}, {"q": "How many Surahs begin with disjointed letters (Muqatta'at)?", "o": ["14", "19", "20", "29"], "a": "D"}, {"q": "Which Surah mentions the change of Qiblah?", "o": ["Al-Baqarah", "Al-'Imran", "An-Nisa", "Al-Ma'idah"], "a": "A"}, {"q": "In which Surah is the Verse of Purification (Ayat at-Tathir) according to many exegeses?", "o": ["Al-Ahzab", "Al-Hujurat", "An-Nur", "Yasin"], "a": "A"}, {"q": "Which Surah emphasizes Friday prayer and is named after Friday?", "o": ["Al-Jumu'ah", "Al-Hajj", "Al-Fath", "Al-Hujurat"], "a": "A"}, {"q": "Which Surah is titled after mercy and repeats a rhetorical verse?", "o": ["Ar-Rahman", "Yasin", "Al-Mulk", "Adh-Dhariyat"], "a": "A"}, {"q": "Which Surah is largely about the story of Musa and Khidr?", "o": ["Al-Isra", "Al-Kahf", "Ta-Ha", "Al-Qasas"], "a": "B"}, {"q": "Which Surah includes the Throne Verse?", "o": ["Al-Baqarah", "Al-Imran", "An-Nisa", "Al-An'am"], "a": "A"}, {"q": "How many Sajdah (prostration) verses are commonly recognized for Tilawah?", "o": ["7", "10", "14", "20"], "a": "C"}, {"q": "Which Surah is also called 'Bani Isra'il'?", "o": ["Al-Isra", "Al-Anfal", "Al-Tawbah", "Al-Ankabut"], "a": "A"}, {"q": "Which Surah begins with 'Tabarak alladhi bi yadihi al-mulk'?", "o": ["Al-Mulk", "Al-Qalam", "Al-Haqqah", "Al-Ma'arij"], "a": "A"}, {"q": "Which Surah recounts the story of Dhu'l-Qarnayn?", "o": ["Al-Qasas", "Al-Kahf", "Maryam", "Al-Anbiya"], "a": "B"}, {"q": "In which Surah is the story of the elephant event (Aam al-Fil)?", "o": ["Al-Quraish", "Al-Fil", "Al-Humazah", "At-Takathur"], "a": "B"}, {"q": "Which Surah condemns backbiting and slander explicitly?", "o": ["Al-Humazah", "Quraish", "At-Tin", "Al-'Asr"], "a": "A"}, {"q": "Which Surah is named after 'The Heights'?", "o": ["Al-A'raf", "Al-Anfal", "Al-An'am", "Al-Ahqaf"], "a": "A"}, {"q": "Which Surah opens with 'Alif Lam Mim. Dhalikal Kitab'?", "o": ["Al-Baqarah", "Ali 'Imran", "An-Nisa", "Al-An'am"], "a": "A"}, {"q": "Which Surah mentions Maryam by name and carries her name?", "o": ["Al-Imran", "Maryam", "Al-Anbiya", "An-Nisa"], "a": "B"}, {"q": "Which Surah is called 'The Criterion'?", "o": ["Al-Furqan", "Al-Hajj", "Al-Hadid", "Al-Jathiyah"], "a": "A"}, {"q": "In which year did the Hijrah occur (CE)?", "o": ["610", "615", "622", "632"], "a": "C"}, {"q": "From which city to which city did the Hijrah take place?", "o": ["Ta'if to Makkah", "Makkah to Madinah", "Madinah to Makkah", "Madinah to Ta'if"], "a": "B"}, {"q": "What was the name of the cave where the first revelation came?", "o": ["Hira", "Thawr", "Uhud", "Safa"], "a": "A"}, {"q": "Which angel brought revelation to the Prophet ﷺ?", "o": ["Mika'il", "Jibril", "Israfil", "Azrael"], "a": "B"}, {"q": "Who was the first person to accept Islam among men?", "o": ["Abu Bakr", "Ali ibn Abi Talib", "Uthman ibn Affan", "Zaid ibn Harithah"], "a": "B"}, {"q": "Who was the first person to accept Islam among women?", "o": ["Aisha", "Khadijah", "Fatimah", "Hafsa"], "a": "B"}, {"q": "Who was the first muezzin in Islam?", "o": ["Abu Hurairah", "Bilal ibn Rabah", "Ibn Mas'ud", "Anas ibn Malik"], "a": "B"}, {"q": "Which battle was the first major battle in Islam?", "o": ["Uhud", "Badr", "Khaybar", "Hunayn"], "a": "B"}, {"q": "Which battle did the Muslims dig a trench around Madinah?", "o": ["Tabuk", "Hunayn", "Khandaq (Ahzab)", "Khaybar"], "a": "C"}, {"q": "Which treaty took place in 6 AH?", "o": ["Treaty of Hudaybiyyah", "Treaty of Ta'if", "Treaty of Najran", "Treaty of Fadak"], "a": "A"}, {"q": "What year did the Conquest of Makkah occur?", "o": ["6 AH", "8 AH", "9 AH", "10 AH"], "a": "B"}, {"q": "Which battle involved the Jewish fortress and took place in 7 AH?", "o": ["Hunayn", "Khaybar", "Tabuk", "Mu'tah"], "a": "B"}, {"q": "Which expedition was against the Byzantines in 9 AH?", "o": ["Hunayn", "Tabuk", "Mu'tah", "Badr"], "a": "B"}, {"q": "Which battle occurred in 3 AH?", "o": ["Uhud", "Badr", "Khandaq", "Tabuk"], "a": "A"}, {"q": "What was the Prophet’s age at first revelation?", "o": ["25", "35", "40", "45"], "a": "C"}, {"q": "Who was the wet nurse of the Prophet ﷺ?", "o": ["Haleema Sa'diyah", "Amina", "Safiyyah", "Asma'"], "a": "A"}, {"q": "What was the Prophet’s father's name?", "o": ["Abu Talib", "Abdullah", "Abdul Muttalib", "Harith"], "a": "B"}, {"q": "What was the Prophet’s mother's name?", "o": ["Aminah bint Wahb", "Khadijah bint Khuwaylid", "Fatimah bint Asad", "Halimah bint Abi Dhuayb"], "a": "A"}, {"q": "What is the Year of the Elephant called in Arabic?", "o": ["Aam al-Fath", "Aam al-Huzn", "Aam al-Fil", "Aam al-Sad"], "a": "C"}, {"q": "Who rebuilt the Ka'bah with the Prophet ﷺ before prophethood?", "o": ["Banu Thaqif", "Quraysh", "Ansar", "Banu Qurayzah"], "a": "B"}, {"q": "Which companion is titled as 'As-Siddiq'?", "o": ["Umar", "Abu Bakr", "Uthman", "Ali"], "a": "B"}, {"q": "Who wrote down revelation as a primary scribe?", "o": ["Zayd ibn Thabit", "Anas ibn Malik", "Abu Hurairah", "Ibn Umar"], "a": "A"}, {"q": "What was the name of the Prophet’s migration companion?", "o": ["Ali", "Hamza", "Abu Bakr", "Umar"], "a": "C"}, {"q": "Which city is called Taybah/Taibah in Hadith?", "o": ["Makkah", "Madinah", "Ta'if", "Yemen"], "a": "B"}, {"q": "What title means 'the unlettered Prophet'?", "o": ["An-Nabi al-Karim", "Ar-Rasul al-Amin", "An-Nabi al-Ummi", "As-Sadiq"], "a": "C"}, {"q": "What is the Charter concluded with the people of Madinah called?", "o": ["Madinah Constitution", "Treaty of Ta'if", "Hudaybiyyah Pact", "Najran Accord"], "a": "A"}, {"q": "Which battle saw the martyrdom of Hamza (RA)?", "o": ["Badr", "Uhud", "Khaybar", "Hunayn"], "a": "B"}, {"q": "Where did the Night Journey (Isra) begin and Miraj ascend from?", "o": ["Masjid al-Haram & Bayt al-Maqdis", "Uhud & Quba", "Ta'if & Mina", "Arafah & Muzdalifah"], "a": "A"}, {"q": "Who among these was NOT a wife of the Prophet ﷺ?", "o": ["Sawda", "Aisha", "Zaynab bint Jahsh", "Asiya bint Muzahim"], "a": "D"}, {"q": "Who was known as the youngest wife of the Prophet ﷺ?", "o": ["Hafsa", "Aisha", "Umm Salama", "Zaynab bint Jahsh"], "a": "B"}, {"q": "What is the name of the Prophet’s daughter married to Ali (RA)?", "o": ["Zaynab", "Ruqayyah", "Umm Kulthum", "Fatimah"], "a": "D"}, {"q": "Which son of the Prophet passed away in infancy in Madinah?", "o": ["Qasim", "Tahir", "Ibrahim", "Abdullah"], "a": "C"}, {"q": "Who was the milk-brother/sister of the Prophet ﷺ?", "o": ["Abu Sufyan", "Shayma’ (Halima’s daughter)", "Jafar", "Miqdad"], "a": "B"}, {"q": "Who protected the Prophet in Makkah after Abdul Muttalib?", "o": ["Abu Lahab", "Abu Talib", "Abu Sufyan", "Walid"], "a": "B"}, {"q": "At Hudaybiyyah, which scribe wrote the treaty text?", "o": ["Zayd ibn Thabit", "Ali ibn Abi Talib", "Muawiyah", "Ibn Abbas"], "a": "B"}, {"q": "Which battle was fought near the valley of Hunayn?", "o": ["Tabuk", "Khaybar", "Hunayn", "Mu'tah"], "a": "C"}, {"q": "Which tribe did the Prophet visit at Ta'if?", "o": ["Thaqif", "Aus", "Khazraj", "Ghatafan"], "a": "A"}, {"q": "What is 'Aam al-Huzn'?", "o": ["Year of conquest", "Year of sorrow", "Year of migration", "Year of delegation"], "a": "B"}, {"q": "Which uncle of the Prophet remained a staunch enemy until late?", "o": ["Abu Lahab", "Hamza", "Abbas", "Harith"], "a": "A"}, {"q": "What is another name of Madinah used in the Quran?", "o": ["Bakkah", "Yathrib", "Basrah", "Yamama"], "a": "B"}, {"q": "Who led the Muslims at Mu'tah after Zayd (RA) and Ja'far (RA) fell?", "o": ["Ali", "Khalid ibn al-Walid", "Abu Ubaidah", "Talhah"], "a": "B"}, {"q": "Which battle is associated with the trench strategy suggested by Salman al-Farisi?", "o": ["Badr", "Uhud", "Khandaq", "Khaybar"], "a": "C"}, {"q": "Who hosted the Prophet ﷺ upon arriving in Madinah initially?", "o": ["Abu Ayyub al-Ansari", "Sa'd ibn Mu'adh", "Ubayy ibn Ka'b", "Anas ibn Malik"], "a": "A"}, {"q": "Which Masjid is the first built in Islam?", "o": ["Masjid al-Haram", "Masjid Quba", "Masjid al-Aqsa", "Masjid an-Nabawi"], "a": "B"}, {"q": "Which Companion is known as 'Sayfullah' (the Sword of Allah)?", "o": ["Umar", "Ali", "Khalid ibn al-Walid", "Hamza"], "a": "C"}, {"q": "Who carried the Prophet’s banner at Khaybar according to many reports?", "o": ["Abu Bakr", "Umar", "Ali", "Zubayr"], "a": "C"}, {"q": "Which year did the Farewell Pilgrimage occur?", "o": ["8 AH", "9 AH", "10 AH", "11 AH"], "a": "C"}, {"q": "On which day of Hajj is standing at Arafat performed?", "o": ["8th Dhul-Hijjah", "9th Dhul-Hijjah", "10th Dhul-Hijjah", "11th Dhul-Hijjah"], "a": "B"}, {"q": "Which sermon is famous during the Farewell Hajj?", "o": ["Khutbat al-Jumu'ah", "Khutbat al-Wada'", "Khutbat al-Iftitah", "Khutbat al-Eid"], "a": "B"}, {"q": "Which Surah was revealed about the victory near the end of the Prophet's life?", "o": ["Al-Fath", "An-Nasr", "At-Tahrim", "Al-Hashr"], "a": "B"}, {"q": "Which companion is famous for narrating the most Hadith?", "o": ["Ibn Umar", "Anas ibn Malik", "Aisha", "Abu Hurairah"], "a": "D"}, {"q": "Who was the Prophet’s foster-mother besides Halimah?", "o": ["Umm Ayman", "Thuwaybah", "Asma'", "Barakah"], "a": "B"}, {"q": "Which treaty allowed Muslims to perform Umrah the following year?", "o": ["Hudaybiyyah", "Najran", "Ta'if", "Fadak"], "a": "A"}, {"q": "What was the Prophet’s age at passing (approx.)?", "o": ["60", "61", "62", "63"], "a": "D"}, {"q": "Where is Jabal al-Nour located?", "o": ["Madinah", "Makkah", "Ta'if", "Najd"], "a": "B"}, {"q": "Which Surah instructs sending salutations upon the Prophet ﷺ?", "o": ["Al-Ahzab", "Al-Hujurat", "Al-Jumu'ah", "An-Nisa"], "a": "A"}, {"q": "Which Madinan tribe accepted Islam first among these?", "o": ["Banu Thaqif", "Aus & Khazraj envoys", "Banu Tamim", "Banu Sulaym"], "a": "B"}, {"q": "What is the name of the night the Quran began to be revealed?", "o": ["Laylat al-Qadr", "Laylat al-Bara'ah", "Laylat al-Mi'raj", "Laylat an-Nisf"], "a": "A"}, {"q": "Who was the first Caliph after the Prophet ﷺ?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "A"}, {"q": "Which Caliph compiled the Quran into one mushaf first?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "A"}, {"q": "Which Caliph standardized and distributed the Uthmanic codex?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "C"}, {"q": "During whose Caliphate was Jerusalem opened to Muslims?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "B"}, {"q": "Which Caliph was martyred while leading Fajr prayer?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "B"}, {"q": "Which Caliph was known for modesty and generosity, married two daughters of the Prophet?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "C"}, {"q": "Which Caliph moved the capital to Kufa?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "D"}, {"q": "Who is known as 'al-Faruq'?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "B"}, {"q": "Who is known as 'Asadullah' (Lion of Allah)?", "o": ["Abu Bakr", "Umar", "Uthman", "Ali"], "a": "D"}, {"q": "Who was titled 'Amin al-Ummah' (Trustee of the Ummah)?", "o": ["Abu Ubaidah ibn al-Jarrah", "Talhah", "Zubayr", "Sa'd"], "a": "A"}, {"q": "Which Companion is called 'Habr al-Ummah' for knowledge?", "o": ["Ibn Abbas", "Ibn Umar", "Ibn Mas'ud", "Abu Hurairah"], "a": "A"}, {"q": "Which Companion was renowned for qira'ah and teaching Quran in Kufa?", "o": ["Ibn Mas'ud", "Ibn Abbas", "Anas", "Zayd"], "a": "A"}, {"q": "Who was called 'Sayyid ash-Shuhada' in Uhud?", "o": ["Hamza", "Mus'ab ibn 'Umayr", "Talhah", "Zubayr"], "a": "A"}, {"q": "Which Companion carried the banner at Uhud?", "o": ["Mus'ab ibn 'Umayr", "Talhah", "Zubayr", "Sa'd"], "a": "A"}, {"q": "Who was the first child born to the Muslims in Madinah?", "o": ["Abdullah ibn Zubayr", "Qasim ibn Muhammad", "Ibrahim ibn Muhammad", "Hasan ibn Ali"], "a": "A"}, {"q": "Who was the first boy to accept Islam?", "o": ["Ali", "Zayd", "Usama", "Hasan"], "a": "A"}, {"q": "Who served as the Prophet’s personal attendant for about 10 years?", "o": ["Anas ibn Malik", "Abu Hurairah", "Ibn Umar", "Jabir"], "a": "A"}, {"q": "Which Companion is famous for bravery at Yarmouk?", "o": ["Khalid ibn al-Walid", "Abu Darda", "Hudhayfah", "Mi'dad"], "a": "A"}, {"q": "Which Companion is known for judging (Qadi) and knowledge of fara'id?", "o": ["Zayd ibn Thabit", "Ibn Umar", "Abu Musa", "Ubayy ibn Ka'b"], "a": "A"}, {"q": "Who is considered the leader of the martyrs at Karbala?", "o": ["Hasan ibn Ali", "Husayn ibn Ali", "Abbas ibn Ali", "Muslim ibn Aqil"], "a": "B"}, {"q": "Which Companion was known as 'Dhu'n-Nurayn'?", "o": ["Umar", "Uthman", "Ali", "Talhah"], "a": "B"}, {"q": "Who is famed for knowledge of halal and haram among the companions?", "o": ["Mu'adh ibn Jabal", "Abu Hurairah", "Ibn Mas'ud", "Ibn Abbas"], "a": "A"}, {"q": "Which woman Companion narrated many hadith and was a jurist?", "o": ["Hafsa", "Aisha", "Fatimah", "Zaynab"], "a": "B"}, {"q": "Who led the prayer in the Prophet’s final illness at his instruction?", "o": ["Umar", "Abu Bakr", "Uthman", "Ali"], "a": "B"}, {"q": "Which Companion wrote letters to rulers during the Prophet’s time?", "o": ["Muawiyah ibn Abi Sufyan", "Ali", "Zayd", "Ibn Abbas"], "a": "A"}, {"q": "How many daily obligatory prayers are there?", "o": ["3", "4", "5", "6"], "a": "C"}, {"q": "Zakat is primarily intended for whom?", "o": ["State projects", "The poor and needy", "Festivals", "War booty"], "a": "B"}, {"q": "Which pillar is fasting in Ramadan?", "o": ["First", "Second", "Third", "Fourth"], "a": "D"}, {"q": "Which month is fasting obligatory in?", "o": ["Sha'ban", "Ramadan", "Shawwal", "Muharram"], "a": "B"}, {"q": "Hajj becomes obligatory on a Muslim who is?", "o": ["Wealthy only", "Physically and financially able", "Resident of Makkah only", "Male only"], "a": "B"}, {"q": "What is the declaration of faith called?", "o": ["Salah", "Zakat", "Shahada", "Sawm"], "a": "C"}, {"q": "What does 'Niyyah' mean in worship?", "o": ["Obligation", "Intention", "Purification", "Completion"], "a": "B"}, {"q": "Tayammum is allowed when?", "o": ["No water or harmful to use", "Traveling only", "During rain", "After Wudu"], "a": "A"}, {"q": "Which action invalidates fasting?", "o": ["Rinsing mouth unintentionally", "Eating intentionally", "Forgetting and eating", "Bathing"], "a": "B"}, {"q": "How many takbirs in Eid Salah (first rak'ah in many schools)?", "o": ["Three", "Five", "Seven", "Nine"], "a": "C"}, {"q": "What is Sadaqat al-Fitr?", "o": ["Annual Zakat", "Charity at end of Ramadan", "Expiation for oaths", "Voluntary donation"], "a": "B"}, {"q": "Which direction do Muslims face in Salah?", "o": ["Jerusalem", "Madina", "Makkah (Ka'bah)", "Arafah"], "a": "C"}, {"q": "Ghusl (full bath) becomes obligatory after?", "o": ["Sleeping", "Janabah", "Traveling", "Eating"], "a": "B"}, {"q": "How many Friday khutbahs are there?", "o": ["One long", "Two", "Three", "None"], "a": "B"}, {"q": "What is Witr prayer?", "o": ["Obligatory Fard", "Sunnah Mu'akkadah", "Nafl only", "Makruh"], "a": "B"}, {"q": "Minimum number of people for Jumu'ah (varies by madhhab)?", "o": ["2", "3", "4", "12"], "a": "C"}, {"q": "What breaks Wudu?", "o": ["Bleeding (differences)", "Deep sleep", "Laughing silently", "Touching light cloth"], "a": "B"}, {"q": "Zakat on gold/silver applies when?", "o": ["Any amount", "Below nisab", "At or above nisab for a year", "Only on jewelry"], "a": "C"}, {"q": "What is the Qiblah direction from Madinah?", "o": ["North", "South", "East", "South-East"], "a": "D"}, {"q": "Sujood as-Sahw is for?", "o": ["Forgetfulness in prayer", "Late prayer", "Extra Sunnah", "Funeral prayer"], "a": "A"}, {"q": "Which invalidates Salah?", "o": ["Moving finger in tashahhud", "Talking intentionally", "Soft weeping", "Slight movement"], "a": "B"}, {"q": "When is Wudu nullified?", "o": ["Intention lapses", "Passing wind", "Changing clothes", "Sneezing"], "a": "B"}, {"q": "Eid al-Adha sacrifice time begins after?", "o": ["Sunrise 10th", "Fajr 10th", "Eid prayer", "Any time 10th"], "a": "C"}, {"q": "Fasting on which day is highly recommended in Muharram?", "o": ["10th (Ashura)", "7th", "12th", "20th"], "a": "A"}, {"q": "What is Kaffarah?", "o": ["Expiation", "Charity", "Loan", "Vow"], "a": "A"}, {"q": "Itikaf is performed in?", "o": ["Home", "Masjid", "Market", "Graveyard"], "a": "B"}, {"q": "Which prayer has no Adhan?", "o": ["Jumu'ah", "Eid", "Fajr", "Asr"], "a": "B"}, {"q": "Which of these is Makruh in Salah?", "o": ["Facing Qiblah", "Covering shoulders", "Looking around unnecessarily", "Keeping calm"], "a": "C"}, {"q": "Tahajjud is prayed when?", "o": ["Before Isha", "After Fajr", "After Isha before Fajr", "Anytime"], "a": "C"}, {"q": "Which fasts are prohibited?", "o": ["Monday", "Arafah", "Eid days", "Ashura"], "a": "C"}, {"q": "Zamzam water is from which place?", "o": ["Arafah", "Mina", "Makkah", "Muzdalifah"], "a": "C"}, {"q": "What is the Sa'i between Safa and Marwah?", "o": ["Part of Hajj/Umrah", "Optional walk", "A city tour", "Collecting stones"], "a": "A"}, {"q": "Where is Jamarat ritual performed?", "o": ["Arafah", "Mina", "Muzdalifah", "Hudaibiyyah"], "a": "B"}, {"q": "Which animal is NOT valid for Udhiyah?", "o": ["Goat", "Sheep", "Horse", "Camel"], "a": "C"}, {"q": "How many pillars of Islam are there?", "o": ["Three", "Four", "Five", "Six"], "a": "C"}, {"q": "Which Prophet was swallowed by a great fish?", "o": ["Nuh", "Yunus", "Ibrahim", "Musa"], "a": "B"}, {"q": "Which Prophet built the Ka'bah with his son?", "o": ["Ibrahim with Isma'il", "Ibrahim with Ishaq", "Dawud with Sulaiman", "Musa with Harun"], "a": "A"}, {"q": "Which Prophet parted the sea by Allah’s permission?", "o": ["Ibrahim", "Musa", "Isa", "Dawud"], "a": "B"}, {"q": "Which Prophet spoke from the cradle?", "o": ["Yahya", "Isa", "Idris", "Yusuf"], "a": "B"}, {"q": "Which Prophet interpreted the king’s dream in Egypt?", "o": ["Yusuf", "Musa", "Ishaq", "Ya'qub"], "a": "A"}, {"q": "Which Prophet is known for patience (Ayyub)?", "o": ["Ayyub", "Isa", "Idris", "Dhul-Kifl"], "a": "A"}, {"q": "Which Prophet had a kingdom and judged wisely with the Psalms?", "o": ["Musa", "Dawud", "Sulaiman", "Ibrahim"], "a": "B"}, {"q": "Which Prophet controlled the wind and jinn by Allah’s will?", "o": ["Dawud", "Sulaiman", "Idris", "Ilyas"], "a": "B"}, {"q": "Which Prophet is called Khalilullah (Friend of Allah)?", "o": ["Musa", "Ibrahim", "Nuh", "Isa"], "a": "B"}, {"q": "Which Prophet built a ship on Allah’s command?", "o": ["Yunus", "Nuh", "Hud", "Salih"], "a": "B"}, {"q": "Which people were destroyed for carving homes in rocks and denying their Prophet?", "o": ["'Ad", "Thamud", "Madyan", "Qawm Lut"], "a": "B"}, {"q": "Which Prophet was sent to the people of Madyan?", "o": ["Shu'ayb", "Hud", "Salih", "Ilyas"], "a": "A"}, {"q": "Which Prophet confronted Pharaoh?", "o": ["Yunus", "Musa", "Ibrahim", "Idris"], "a": "B"}, {"q": "Which Prophet’s wife is mentioned as righteous in the Quran narratives?", "o": ["Wife of Nuh", "Wife of Lut", "Asiya (wife of Pharaoh)", "Wife of Abu Lahab"], "a": "C"}, {"q": "Which Prophet’s father was a sculptor of idols?", "o": ["Ibrahim", "Isma'il", "Ishaq", "Yusuf"], "a": "A"}, {"q": "Which Prophet received the Zabur?", "o": ["Musa", "Isa", "Dawud", "Ibrahim"], "a": "C"}, {"q": "Which Prophet revived the dead by Allah's leave?", "o": ["Isa", "Yahya", "Idris", "Zakariyya"], "a": "A"}, {"q": "Which Prophet is associated with the she-camel miracle?", "o": ["Hud", "Salih", "Shu'ayb", "Ilyas"], "a": "B"}, {"q": "Which Prophet is called 'Dhul-Kifl' in the Quran?", "o": ["A Prophet", "An Angel", "A Companion", "A King"], "a": "A"}, {"q": "Which two Prophets were cousins according to many narrations?", "o": ["Isa and Yahya", "Musa and Harun", "Yusuf and Benjamin", "Ibrahim and Lut"], "a": "A"}, {"q": "Which mosque is in Makkah and surrounds the Ka'bah?", "o": ["Al-Aqsa", "An-Nabawi", "Al-Haram", "Quba"], "a": "C"}, {"q": "Which mosque is in Madinah and was built by the Prophet ﷺ?", "o": ["Al-Aqsa", "An-Nabawi", "Quba", "Qiblatain"], "a": "B"}, {"q": "Which mosque is associated with the first Qiblah?", "o": ["Quba", "Qiblatain", "Al-Aqsa", "Al-Haram"], "a": "C"}, {"q": "Which mosque is the first built in Islam?", "o": ["Quba", "An-Nabawi", "Al-Haram", "Al-Aqsa"], "a": "A"}, {"q": "In which city is Al-Aqsa located?", "o": ["Makkah", "Madinah", "Jerusalem (Al-Quds)", "Najaf"], "a": "C"}, {"q": "Where did the Battle of Badr take place relative to Madinah?", "o": ["North", "South-West", "South", "East"], "a": "C"}, {"q": "Mount Uhud is located near which city?", "o": ["Makkah", "Madinah", "Ta'if", "Jerusalem"], "a": "B"}, {"q": "Hudaybiyyah is located near which city?", "o": ["Madinah", "Makkah", "Ta'if", "Khaybar"], "a": "B"}, {"q": "Where did the change of Qiblah occur?", "o": ["Masjid al-Haram", "Masjid Quba", "Masjid al-Qiblatain (Madinah)", "Masjid al-Aqsa"], "a": "C"}, {"q": "Where is Zamzam well located?", "o": ["Madinah", "Arafah", "Makkah", "Muzdalifah"], "a": "C"}, {"q": "Where is Mina located?", "o": ["Near Makkah", "Near Madinah", "Near Ta'if", "In Yemen"], "a": "A"}, {"q": "Where do pilgrims spend the night after Arafah?", "o": ["Mina", "Muzdalifah", "Quba", "Qiblatain"], "a": "B"}, {"q": "Which valley is the Jamarat located in?", "o": ["Hunayn", "Aqiq", "Mina", "Hijr"], "a": "C"}, {"q": "What is the plain of Arafah known for?", "o": ["Stoning", "Standing (Wuquf)", "Sacrifice", "Tawaf"], "a": "B"}, {"q": "Which House was the first for mankind established for worship?", "o": ["Bayt al-Maqdis", "Baytullah (Ka'bah)", "Bayt al-Ridwan", "Bayt al-Hikmah"], "a": "B"}, {"q": "Which companion's house hosted the Dar al-Arqam?", "o": ["Arqam ibn Abi Arqam", "Abu Bakr", "Umar", "Uthman"], "a": "A"}, {"q": "Where did the Prophet hide during Hijrah briefly with Abu Bakr?", "o": ["Cave Hira", "Cave Thawr", "Cave Uhud", "Cave Nur"], "a": "B"}, {"q": "The Sa'i commemorates whose effort for water?", "o": ["Ibrahim", "Hajar (Hagar)", "Isma'il", "Abu Talib"], "a": "B"}, {"q": "Where is the plain of Karbala located (country)?", "o": ["Saudi Arabia", "Iraq", "Syria", "Jordan"], "a": "B"}, {"q": "Which city became the Umayyad capital?", "o": ["Kufa", "Damascus", "Basra", "Cairo"], "a": "B"}, {"q": "Which city became the Abbasid capital?", "o": ["Damascus", "Baghdad", "Cairo", "Kufa"], "a": "B"}, {"q": "Where was the House of Wisdom established?", "o": ["Baghdad", "Cairo", "Cordoba", "Damascus"], "a": "A"}, {"q": "Which Muslim ruler in al-Andalus promoted learning?", "o": ["Harun al-Rashid", "Abd al-Rahman III", "Al-Mu'tasim", "Al-Mansur"], "a": "B"}, {"q": "Which dynasty built the Dome of the Rock?", "o": ["Abbasids", "Umayyads", "Fatimids", "Ayyubids"], "a": "B"}, {"q": "Who liberated Jerusalem from Crusaders in 1187 CE?", "o": ["Saladin (Salahuddin)", "Nur al-Din", "Baybars", "Tariq ibn Ziyad"], "a": "A"}, {"q": "Which collection is regarded as the most authentic Hadith book?", "o": ["Sunan Ibn Majah", "Sahih al-Bukhari", "Sahih Muslim", "Muwatta Malik"], "a": "B"}, {"q": "Who compiled Sahih Muslim?", "o": ["Imam Abu Dawud", "Imam Muslim", "Imam Tirmidhi", "Imam Nasa'i"], "a": "B"}, {"q": "Who compiled Sunan Abu Dawud?", "o": ["Imam Muslim", "Imam Abu Dawud", "Imam Ahmad", "Ibn Majah"], "a": "B"}];
