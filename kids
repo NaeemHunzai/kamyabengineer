@@ -3,29 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loading Page</title>
+  <title>Pak MCQs Portal - Loading</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       background-color: #ffffff; /* White background */
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh; /* Full screen height */
+      height: 100vh; /* Full screen */
       text-align: center;
+      color: #333;
     }
-    .loading-text {
-      font-size: 1.5rem; /* Mobile friendly size */
-      color: #00796b;   /* Teal color */
+
+    .loading {
+      position: absolute;
+      top: 20px;
+      font-size: 1rem;
+      color: #00796b;
+      font-weight: 600;
+    }
+
+    .card {
+      background: #f9f9f9;
+      padding: 30px 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 320px;
+      width: 90%;
+    }
+
+    .app-name {
+      font-size: 1.8rem;
       font-weight: bold;
+      color: #00796b;
+      margin-bottom: 12px;
+    }
+
+    .description {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 480px) {
+      .app-name {
+        font-size: 1.5rem;
+      }
+      .description {
+        font-size: 0.95rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="loading-text">
-    Loading... Please wait
+
+  <div class="loading">Loading... Please wait</div>
+
+  <div class="card">
+    <div class="app-name">Pak MCQs Portal</div>
+    <div class="description">
+      Your ultimate hub for subject-wise multiple choice questions.  
+      Prepare, practice, and test your knowledge — anywhere, anytime.
+    </div>
   </div>
+
 </body>
 </html>
+
