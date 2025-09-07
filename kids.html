@@ -8,13 +8,13 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #ffffff; /* White background */
+      background-color: #ffffff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh; /* Full screen */
+      height: 100vh;
       text-align: center;
       color: #333;
     }
@@ -32,18 +32,20 @@
       position: relative;
     }
 
-    /* Progress bar fill with gradient reflection */
+    /* Progress bar with shiny reflection */
     .progress-bar {
       height: 100%;
-      width: 100%; /* Always full, but animated background */
+      width: 100%;
       background: linear-gradient(
         120deg,
-        #00796b 25%,
-        #26a69a 50%,
-        #00796b 75%
+        #00796b 20%,
+        #26a69a 40%,
+        #ffffff 50%,   /* bright reflection streak */
+        #26a69a 60%,
+        #00796b 80%
       );
       background-size: 200% 100%;
-      animation: shine 2s linear infinite;
+      animation: shine 1.5s linear infinite;
     }
 
     @keyframes shine {
@@ -61,14 +63,14 @@
     }
 
     .app-name {
-      font-size: 1.3rem; /* smaller normal size */
+      font-size: 1.3rem;
       font-weight: 600;
       color: #00796b;
       margin-bottom: 8px;
     }
 
     .description {
-      font-size: 0.9rem; /* smaller and cleaner */
+      font-size: 0.9rem;
       color: #555;
       line-height: 1.4;
     }
