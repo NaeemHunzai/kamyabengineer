@@ -3,17 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Empty Page</title>
+  <title>Loading Page</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       background-color: #ffffff; /* White background */
       font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh; /* Full screen height */
+      text-align: center;
+    }
+    .loading-text {
+      font-size: 1.5rem; /* Mobile friendly size */
+      color: #00796b;   /* Teal color */
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-
+  <div class="loading-text">
+    Loading... Please wait
+  </div>
 </body>
 </html>
