@@ -3,31 +3,37 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Smart Series MCQs</title>
+<title>Smart Series</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        background: #ffffff; /* plain white background */
         color: #333;
+    }
+    .header {
+        position: fixed; /* stays always at top */
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 14px;
+        text-align: center;
+        font-size: 22px; /* smaller font like Pakistan Studies */
+        font-weight: bold;
+        color: #00796b;
+        border-bottom: 3px solid #00796b; /* straight teal underline */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* light shadow */
+        z-index: 1000;
     }
     .container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 30px 20px;
-    }
-    h1 {
-        text-align: center;
-        background-color: #00796b;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        padding: 80px 20px 30px; /* adjust for fixed header */
     }
     .mcq {
-        background: #ffffffd9;
+        background: #ffffff;
         border-left: 6px solid #00796b;
         border-radius: 10px;
         padding: 20px;
@@ -43,15 +49,17 @@
 </style>
 </head>
 <body>
+
+<!-- sticky header styled like Pakistan Studies -->
+<div class="header">Smart Series</div>
+
 <div class="container">
-<h1>Smart Series MCQs</h1>
 
-<!-- Q1 to Q22: Original -->
-<!-- (Keep all your existing MCQs from your original HTML here exactly as before) -->
+    <!-- Continue with your other MCQs -->
 
-<!-- Q23 to Q60: Newly added -->
+ 
   
-  <div class="mcq"><div class="question">Q201. Waves which do not require material medium for their propagation are called</div><div class="options"><div class="option">A. Electromagnetic</div><div class="option">B. Electrostatic</div><div class="option">C. Electrical</div><div class="option">D. Mechanical</div></div><div class="answer">Answer: A</div></div>
+ <div class="mcq"><div class="question">Q201. Waves which do not require material medium for their propagation are called</div><div class="options"><div class="option">A. Electromagnetic</div><div class="option">B. Electrostatic</div><div class="option">C. Electrical</div><div class="option">D. Mechanical</div></div><div class="answer">Answer: A</div></div>
 
 <div class="mcq"><div class="question">Q202. SCR is a device having &nbsp; layers and &nbsp; Junctions.</div><div class="options"><div class="option">A. Four, three</div><div class="option">B. Three, four</div><div class="option">C. Three, two</div><div class="option">D. Four, two</div></div><div class="answer">Answer: A</div></div>
 
@@ -90,3 +98,7 @@
 <div class="mcq"><div class="question">Q219. Depletion region carries</div><div class="options"><div class="option">A. Positive charge</div><div class="option">B. Negative charge</div><div class="option">C. No charge</div><div class="option">D. None of above</div></div><div class="answer">Answer: C</div></div>
 
 <div class="mcq"><div class="question">Q220. Which is not an integrating instrument</div><div class="options"><div class="option">A. Ampere hour meter</div><div class="option">B. Watt hour meter</div><div class="option">C. Voltmeter</div><div class="option">D. Odometer</div></div><div class="answer">Answer: C</div></div>
+</div>
+
+</body>
+</html>
