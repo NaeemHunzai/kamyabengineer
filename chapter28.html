@@ -1,34 +1,39 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Smart Series MCQs</title>
+<title>Smart Series</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        background: #ffffff; /* plain white background */
         color: #333;
+    }
+    .header {
+        position: fixed; /* stays always at top */
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 14px;
+        text-align: center;
+        font-size: 22px; /* smaller font like Pakistan Studies */
+        font-weight: bold;
+        color: #00796b;
+        border-bottom: 3px solid #00796b; /* straight teal underline */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* light shadow */
+        z-index: 1000;
     }
     .container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 30px 20px;
-    }
-    h1 {
-        text-align: center;
-        background-color: #00796b;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        padding: 80px 20px 30px; /* adjust for fixed header */
     }
     .mcq {
-        background: #ffffffd9;
+        background: #ffffff;
         border-left: 6px solid #00796b;
         border-radius: 10px;
         padding: 20px;
@@ -44,28 +49,13 @@
 </style>
 </head>
 <body>
+
+<!-- sticky header styled like Pakistan Studies -->
+<div class="header">Smart Series</div>
+
 <div class="container">
-<h1>Smart Series MCQs</h1>
 
-<!-- Q1 to Q22: Original -->
-<!-- (Keep all your existing MCQs from your original HTML here exactly as before) -->
-
-<!-- Q23 to Q60: Newly added -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <!-- Continue with your other MCQs -->
 <div class="mcq"><div class="question">Q661. Which of the following is the source of non-linearity?</div><div class="options"><div class="option">A. Backlash in gear</div><div class="option">B. Saturation in effective is amplified</div><div class="option">C. Threshold season</div><div class="option">D. All of above</div></div><div class="answer">Answer: D</div></div>
 
 <div class="mcq"><div class="question">Q662. The program for early PLC was in</div><div class="options"><div class="option">A. Boolean algebra</div><div class="option">B. Ladder logic</div><div class="option">C. Arithmetic logic</div><div class="option">D. All of above</div></div><div class="answer">Answer: B</div></div>
@@ -125,3 +115,9 @@
 <div class="mcq"><div class="question">Q689. Transfer function is</div><div class="options"><div class="option">A. Mathematical model</div><div class="option">B. System with no physical structure</div><div class="option">C. System with no defined inputs</div><div class="option">D. Can be calculated through differential equations</div><div class="option">E. All</div></div><div class="answer">Answer: E</div></div>
 
 <div class="mcq"><div class="question">Q690. Which system needs more stability?</div><div class="options"><div class="option">A. Automatic washing machine</div><div class="option">B. Traffic signal system</div><div class="option">C. Home heating system</div><div class="option">D. Motor with position control</div><div class="option">E. Remote control</div></div><div class="answer">Answer: D</div></div>
+
+  
+</div>
+
+</body>
+</html>
