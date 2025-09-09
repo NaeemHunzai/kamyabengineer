@@ -433,7 +433,7 @@ document.querySelectorAll('.infoBtn').forEach(b=>{
    - On input: if value is numeric and odd, we round up to next even and show toast.
    - We do this gently: on 'input' we examine numeric value and adjust.
 */
-document.querySelectorAll('[data-even="true"]').forEach(el=>{
+document.querySelectorAll('[data-even=\"true\"]').forEach(el=>{
   el.addEventListener('input', (ev)=>{
     const vRaw = el.value;
     if(vRaw === '') return; // allow blank until calc
@@ -467,7 +467,36 @@ peakEl.addEventListener('input', ()=>{
   }
 });
 
-/* ------------------ navigation ------------------ */
+/* ------------------ scroll helpers & flag ------------------ */
+/* suppress scroll for the initial goTo(1) on page load */
+let _suppressInitialScroll = true;
+
+function findScrollableAncestor(el){
+  let node = el.parentElement;
+  while(node && node !== document.body && node !== document.documentElement){
+    const cs = getComputedStyle(node);
+    const overflowY = cs.overflowY;
+    if (node.scrollHeight > node.clientHeight && (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay')){
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return window;
+}
+
+function detectTopFixedHeaderHeight(){
+  // check some common selectors for a fixed header
+  const candidates = Array.from(document.querySelectorAll('header, .header, .topbar, .navbar, [role=\"banner\"]'));
+  for(const e of candidates){
+    const cs = getComputedStyle(e);
+    if ((cs.position === 'fixed' || cs.position === 'sticky') && parseFloat(cs.top) <= 0 && e.offsetHeight > 0){
+      return e.offsetHeight;
+    }
+  }
+  return 0;
+}
+
+/* ------------------ navigation (replaced - includes robust scroll) ------------------ */
 function goTo(step){
   // step validation
   if(step === 2){
@@ -499,6 +528,39 @@ function goTo(step){
   // battery block visibility based on mode
   const mode = document.getElementById('systemMode').value;
   document.getElementById('batteryBlock').style.display = (mode === 'hybrid' || mode === 'offgrid') ? 'block' : 'none';
+
+  // ----- scroll to the top of the newly shown card (robust) -----
+  // skip scroll only for the initial call done on load
+  if(_suppressInitialScroll){
+    _suppressInitialScroll = false;
+    return;
+  }
+
+  const targetId = (step === 4) ? 'resultsWrap' : ('step' + step);
+  const target = document.getElementById(targetId);
+  if(!target){
+    console.warn('goTo: scroll target not found ->', targetId);
+    return;
+  }
+
+  // wait two frames to allow layout changes (display:block) to take effect, then measure and scroll
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      const headerH = detectTopFixedHeaderHeight();
+      const scrollAncestor = findScrollableAncestor(target);
+
+      if(scrollAncestor === window){
+        const rect = target.getBoundingClientRect();
+        const topY = window.scrollY + rect.top - headerH - 8; // small offset
+        window.scrollTo({ top: Math.max(0, topY), behavior: 'smooth' });
+      } else {
+        const ancRect = scrollAncestor.getBoundingClientRect();
+        const tgtRect = target.getBoundingClientRect();
+        const topOffset = tgtRect.top - ancRect.top + scrollAncestor.scrollTop - headerH - 8;
+        scrollAncestor.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+      }
+    });
+  });
 }
 
 /* ------------------ calculation core ------------------ */
