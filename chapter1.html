@@ -3,67 +3,37 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Smart Series MCQs</title>
+<title>Smart Series</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        background: #ffffff; /* plain white background */
         color: #333;
+    }
+    .header {
+        position: fixed; /* stays always at top */
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 16px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        color: #00796b;
+        border-bottom: 3px solid #00796b; /* teal underline */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* light shadow under header */
+        z-index: 1000;
     }
     .container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 30px 20px;
+        padding: 100px 20px 30px; /* top padding so content clears fixed header */
     }
-    h1 {
-        text-align: center;
-        background-color: #00796b;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    /* form card */
-    .form-card {
-        background: #ffffffd9;
-        border-left: 6px solid #00796b;
-        border-radius: 10px;
-        padding: 18px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    label {
-        display:block;
-        margin:6px 0 4px 0;
-        font-weight:600;
-    }
-    textarea, input[type="text"], input[type="password"] {
-        width:100%;
-        padding:8px;
-        border-radius:6px;
-        border:1px solid #cfcfcf;
-        box-sizing:border-box;
-        font-size:14px;
-        font-family: inherit;
-    }
-    .button-row { margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
-    .btn {
-        background:#00796b;
-        color:#fff;
-        padding:10px 14px;
-        border:none;
-        border-radius:6px;
-        cursor:pointer;
-        font-weight:700;
-    }
-    .btn.secondary { background:#4db6ac; }
-    .btn.warn { background:#ff7043; }
-    .note { font-size:13px; color:#444; margin-top:8px; }
     .mcq {
-        background: #ffffffd9;
+        background: #ffffff;
         border-left: 6px solid #00796b;
         border-radius: 10px;
         padding: 20px;
@@ -76,27 +46,22 @@
     .options { margin-top: 15px; }
     .option { margin: 6px 0; padding-left: 10px; }
     .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
-    /* login screen */
-    #loginPanel {
-        max-width: 400px;
-        margin: 100px auto;
-        padding: 20px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-    #loginError {
-        color: red;
-        font-size: 14px;
-        margin-top: 8px;
-        display: none;
-    }
 </style>
 </head>
 <body>
+
+<!-- sticky header styled like Pakistan Studies -->
+<div class="header">Smart Series</div>
+
 <div class="container">
-<h1>Smart Series MCQs</h1>
-<div class="mcq"><div class="question">Q1. The pole shoes of DC machines are fastened to the pole core by</div><div class="options"><div class="option">A. Welding</div><div class="option">B. Soldering</div><div class="option">C. Steel clumps</div><div class="option">D. Countersunk screws</div></div><div class="answer">Answer: D</div></div>
+    <div class="mcq"><div class="question">Q1. The pole shoes of DC machines are fastened to the pole core by</div><div class="options"><div class="option">A. Welding</div><div class="option">B. Soldering</div><div class="option">C. Steel clumps</div><div class="option">D. Countersunk screws</div></div><div class="answer">Answer: D</div></div>
+
+    <div class="mcq"><div class="question">Q2. Which of the following are considered as disadvantage(s) of Gauss-Seidel method over Newton's method in load flow programs?</div><div class="options"><div class="option">A. More iteration</div><div class="option">B. More memory requirement and less accuracy</div><div class="option">C. Less interactions but more memory</div><div class="option">D. More accuracy and more memory</div></div><div class="answer">Answer: A</div></div>
+
+    <!-- Continue with your other MCQs -->
+  
+  
+  <div class="mcq"><div class="question">Q1. The pole shoes of DC machines are fastened to the pole core by</div><div class="options"><div class="option">A. Welding</div><div class="option">B. Soldering</div><div class="option">C. Steel clumps</div><div class="option">D. Countersunk screws</div></div><div class="answer">Answer: D</div></div>
 <div class="mcq"><div class="question">Q2. Which of the following are considered as disadvantage(s) of Gauss-Seidel method over Newton's method in load flow programs?</div><div class="options"><div class="option">A. More iteration</div><div class="option">B. More memory requirement and less accuracy</div><div class="option">C. less interactions but more memory</div><div class="option">D. More accuracy and more memory</div></div><div class="answer">Answer: A</div></div>
 <div class="mcq"><div class="question">Q3. The quantity "Rm" which relates dependent voltage to controlling current is called</div><div class="options"><div class="option">A. Trans Conductance</div><div class="option">B. Maximum Resistance</div><div class="option">C. Trans Resistance</div><div class="option">D. Limiting Resistance</div></div><div class="answer">Answer: C</div></div>
 <div class="mcq"><div class="question">Q4. For which purpose bundled conductors are employed to a power system</div><div class="options"><div class="option">A. Appearance of the transmission line</div><div class="option">B. Mechanical stability of line</div><div class="option">C. Decrease system stability</div><div class="option">D. Increase the short circuit current</div></div><div class="answer">Answer: D</div></div>
@@ -180,8 +145,9 @@
         <div class="answer">Answer: D</div>
     </div>
   
-
+  
   
 </div>
+
 </body>
 </html>
