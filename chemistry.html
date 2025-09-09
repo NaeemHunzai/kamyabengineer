@@ -3,190 +3,255 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solar Calculator Wizard</title>
-
+<title>Advanced Solar Calculator</title>
 <style>
   body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f8f9fa;
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(145deg, #0a0a0a, #1c1c1c);
-    color: #eee;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    padding: 0;
+    color: #333;
   }
   .container {
-    width: 100%;
-    max-width: 420px;
-    background: rgba(25,25,25,0.9);
-    border-radius: 16px;
+    max-width: 480px;
+    margin: 0 auto;
     padding: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
   }
-  .step { display: none; animation: fade 0.4s ease; }
-  .step.active { display: block; }
-  @keyframes fade { from {opacity:0;} to {opacity:1;} }
-
-  h2 { text-align: center; margin-bottom: 10px; color: #00ffc6; }
-  label { display: block; margin: 15px 0 5px; font-size: 14px; }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-top: 20px;
+    animation: fadeIn 0.4s;
+  }
+  .step {
+    display: none;
+  }
+  .step.active {
+    display: block;
+  }
+  h2 {
+    margin-top: 0;
+    color: #006d77;
+    font-size: 1.2rem;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+  }
   input {
-    width: 100%; padding: 10px;
-    border-radius: 8px; border: none;
-    background: #111; color: #fff;
-    outline: none;
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
   }
   button {
-    width: 100%; padding: 12px;
-    margin-top: 15px;
-    border: none; border-radius: 8px;
-    background: linear-gradient(90deg, #00ffc6, #0096ff);
-    color: #000; font-weight: bold;
-    cursor: pointer; transition: 0.3s;
-  }
-  button:hover { opacity: 0.9; }
-
-  .results-card {
-    background: rgba(255,255,255,0.05);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    margin-top: 20px;
-    box-shadow: inset 0 0 15px rgba(0,255,200,0.3);
-  }
-  .results-card h3 { color: #00ffc6; margin-bottom: 15px; }
-  .reset-btn { background: #ff4d4d; margin-top: 10px; }
-  .pdf-btn { background: #ffaa00; margin-top: 10px; }
-
-  /* Custom Toast Notification */
-  .toast {
-    visibility: hidden;
-    min-width: 250px;
-    background: #fff;
-    color: #000;
-    text-align: center;
+    background: #006d77;
+    color: #fff;
+    padding: 12px 18px;
+    border: none;
     border-radius: 8px;
-    padding: 12px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    font-size: 1rem;
+  }
+  button:hover {
+    background: #004f55;
+  }
+  .info {
+    display: inline-block;
+    background: #e0f7fa;
+    color: #00707a;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+    font-size: 0.8rem;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  .modal {
+    display: none;
     position: fixed;
-    left: 50%;
-    bottom: 30px;
-    transform: translateX(-50%);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 999;
+    z-index: 10;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
   }
-  .toast.show {
-    visibility: visible;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  .modal-content {
+    background: #fff;
+    margin: 20% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
   }
-  @keyframes fadein { from{bottom:0;opacity:0;} to{bottom:30px;opacity:1;} }
-  @keyframes fadeout { from{bottom:30px;opacity:1;} to{bottom:0;opacity:0;} }
+  .close {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .notifier {
+    display: none;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 12px;
+    margin-top: 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
 </style>
 </head>
 <body>
-
 <div class="container">
-  <!-- Step 1 -->
-  <div class="step active" id="step1">
-    <h2>Step 1: Load</h2>
-    <label>Daily Energy (kWh)</label>
-    <input type="number" id="daily" min="1">
+
+  <div id="step1" class="card step active">
+    <h2>Step 1: Energy Details</h2>
+    <label>Daily Consumption (kWh) <span class="info" onclick="openInfo('consumption')">i</span></label>
+    <input type="number" id="consumption" placeholder="e.g. 20">
+
+    <label>Peak Sun Hours <span class="info" onclick="openInfo('psh')">i</span></label>
+    <input type="number" id="psh" placeholder="e.g. 5">
+
+    <button onclick="nextStep(1)">Next</button>
+    <div id="warn1" class="notifier"></div>
+  </div>
+
+  <div id="step2" class="card step">
+    <h2>Step 2: Panel Details</h2>
+    <label>Panel Wattage (W) <span class="info" onclick="openInfo('watt')">i</span></label>
+    <input type="number" id="watt" placeholder="e.g. 400">
+
+    <label>Panel Efficiency (%) <span class="info" onclick="openInfo('eff')">i</span></label>
+    <input type="number" id="eff" placeholder="e.g. 18">
+
+    <label>System Losses (%) <span class="info" onclick="openInfo('loss')">i</span></label>
+    <input type="number" id="loss" placeholder="e.g. 15">
+
     <button onclick="nextStep(2)">Next</button>
+    <div id="warn2" class="notifier"></div>
   </div>
 
-  <!-- Step 2 -->
-  <div class="step" id="step2">
-    <h2>Step 2: Sun Hours</h2>
-    <label>Peak Sun Hours</label>
-    <input type="number" id="sun" min="1" step="0.1">
-    <button onclick="nextStep(3)">Next</button>
-  </div>
+  <div id="step3" class="card step">
+    <h2>Step 3: Long Term</h2>
+    <label>Panel Degradation (%/year) <span class="info" onclick="openInfo('degrade')">i</span></label>
+    <input type="number" id="degrade" placeholder="e.g. 0.5">
 
-  <!-- Step 3 -->
-  <div class="step" id="step3">
-    <h2>Step 3: Panel Size</h2>
-    <label>Panel Wattage (W)</label>
-    <input type="number" id="watt" min="10">
     <button onclick="calculate()">Calculate</button>
+    <div id="warn3" class="notifier"></div>
   </div>
 
-  <!-- Results Page -->
-  <div class="step" id="results">
+  <div id="results" class="card step">
     <h2>Results</h2>
-    <div class="results-card" id="resultsContent">
-      <!-- JS fills results here -->
-    </div>
-    <button class="pdf-btn" onclick="exportPDF()">Export as PDF</button>
-    <button class="reset-btn" onclick="resetWizard()">Reset</button>
+    <p id="output"></p>
+    <button onclick="resetCalc()">Reset</button>
   </div>
 </div>
 
-<!-- Toast -->
-<div id="toast" class="toast"></div>
+<!-- Info Modal -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeInfo()">&times;</span>
+    <p id="infoText"></p>
+  </div>
+</div>
 
-<!-- JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
-  function showToast(msg){
-    let t=document.getElementById("toast");
-    t.innerText=msg;
-    t.className="toast show";
-    setTimeout(()=>{t.className=t.className.replace("show","");},3000);
-  }
+  function nextStep(n) {
+    let warn = document.getElementById("warn"+n);
+    warn.style.display = "none";
 
-  function nextStep(step){
-    if(step===2 && !document.getElementById('daily').value){
-      showToast("Please enter your daily energy need.");
-      return;
+    if(n===1){
+      let c = document.getElementById("consumption").value;
+      let p = document.getElementById("psh").value;
+      if(!c || !p){
+        warn.innerText="Please enter valid values.";
+        warn.style.display="block";
+        return;
+      }
+      document.getElementById("step1").classList.remove("active");
+      document.getElementById("step2").classList.add("active");
     }
-    if(step===3 && !document.getElementById('sun').value){
-      showToast("Please enter peak sun hours.");
-      return;
+    if(n===2){
+      let w = document.getElementById("watt").value;
+      let e = document.getElementById("eff").value;
+      let l = document.getElementById("loss").value;
+      if(!w || !e || !l){
+        warn.innerText="Please enter valid values.";
+        warn.style.display="block";
+        return;
+      }
+      document.getElementById("step2").classList.remove("active");
+      document.getElementById("step3").classList.add("active");
     }
-    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-    document.getElementById('step'+step).classList.add('active');
   }
 
   function calculate(){
-    let daily = parseFloat(document.getElementById('daily').value)||0;
-    let sun   = parseFloat(document.getElementById('sun').value)||1;
-    let watt  = parseFloat(document.getElementById('watt').value)||1;
+    let warn = document.getElementById("warn3");
+    warn.style.display="none";
 
-    if(!document.getElementById('watt').value){
-      showToast("Please enter panel wattage.");
+    let c = parseFloat(document.getElementById("consumption").value)||0;
+    let p = parseFloat(document.getElementById("psh").value)||0;
+    let w = parseFloat(document.getElementById("watt").value)||0;
+    let e = parseFloat(document.getElementById("eff").value)||0;
+    let l = parseFloat(document.getElementById("loss").value)||0;
+    let d = parseFloat(document.getElementById("degrade").value)||0;
+
+    if(!c || !p || !w || !e){
+      warn.innerText="Please fill all required fields.";
+      warn.style.display="block";
       return;
     }
 
-    let totalWatt = (daily*1000)/sun;
-    let panels = Math.ceil(totalWatt/watt);
+    let dailyGen = (w * (e/100) * p * (1 - l/100)) / 1000;
+    let panelsNeeded = Math.ceil(c / dailyGen);
+    let year1 = dailyGen * panelsNeeded;
+    let year10 = year1 * Math.pow((1 - d/100), 9);
 
-    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-    document.getElementById('results').classList.add('active');
-    document.getElementById('resultsContent').innerHTML = `
-      <h3>Your Solar Setup</h3>
-      <p><b>Daily Need:</b> ${daily} kWh</p>
-      <p><b>Total Power Required:</b> ${totalWatt.toFixed(0)} W</p>
-      <p><b>Panels Needed:</b> ${panels} (of ${watt}W each)</p>
+    let output = `
+      <b>Panels Required:</b> ${panelsNeeded}<br>
+      <b>Daily Generation (Year 1):</b> ${year1.toFixed(2)} kWh<br>
+      <b>Daily Generation (Year 10):</b> ${year10.toFixed(2)} kWh
     `;
+    document.getElementById("output").innerHTML=output;
+
+    document.getElementById("step3").classList.remove("active");
+    document.getElementById("results").classList.add("active");
   }
 
-  function resetWizard(){
-    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-    document.getElementById('step1').classList.add('active');
-    document.getElementById('daily').value='';
-    document.getElementById('sun').value='';
-    document.getElementById('watt').value='';
+  function resetCalc(){
+    document.querySelectorAll("input").forEach(i=>i.value="");
+    document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+    document.getElementById("step1").classList.add("active");
   }
 
-  function exportPDF(){
-    const element = document.getElementById('resultsContent');
-    html2pdf().from(element).set({
-      margin: 10,
-      filename: 'solar_calculator_results.pdf',
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).save();
+  function openInfo(type){
+    let text="";
+    switch(type){
+      case 'consumption': text="Daily consumption in kWh (kilowatt hours) your household uses."; break;
+      case 'psh': text="Average Peak Sun Hours available in your region."; break;
+      case 'watt': text="Wattage of a single solar panel."; break;
+      case 'eff': text="Efficiency percentage of solar panel (usually 15-22%)."; break;
+      case 'loss': text="System losses due to wiring, inverter, dust, etc."; break;
+      case 'degrade': text="Annual degradation rate of panels (0.5% typical)."; break;
+    }
+    document.getElementById("infoText").innerText=text;
+    document.getElementById("infoModal").style.display="block";
+  }
+  function closeInfo(){
+    document.getElementById("infoModal").style.display="none";
   }
 </script>
-
 </body>
 </html>
