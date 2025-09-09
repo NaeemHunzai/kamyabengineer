@@ -23,7 +23,7 @@ body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(-
 .wrap{max-width:520px;margin:0 auto;padding:16px}
 .stepper{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:relative;padding:0 6px}
 .stepper::before{content:'';position:absolute;left:30px;right:30px;height:4px;background:#e6eef6;top:50%;transform:translateY(-50%);z-index:0;border-radius:999px}
-.step-dot{z-index:2;width:36px;height:36px;border-radius:50%;background:#e6eef6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#374151;cursor:pointer;transition:0.3s}
+.step-dot{z-index:2;width:36px;height:36px;border-radius:50%;background:#e6eef6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#374151}
 .step-dot.active{background:linear-gradient(90deg,var(--primary),var(--accent)); color:white; box-shadow:0 6px 18px rgba(3,105,79,0.12)}
 .card{background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(16,24,40,0.06);padding:18px;margin-bottom:14px}
 h1{font-size:18px;margin:0 0 8px}
@@ -34,7 +34,7 @@ input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e
 .row{display:flex;gap:10px;flex-wrap:wrap}
 .col{flex:1;min-width:120px;display:flex;flex-direction:column}
 .actions{display:flex;gap:10px;margin-top:16px;justify-content:center}
-button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer;transition:0.3s}
+button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
 .btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;flex:1;min-width:120px}
 .btn-ghost{background:#fff;border:1px solid #e6eef6;color:var(--muted);flex:1;min-width:120px}
 .btn-secondary{background:#f3f4f6;color:#111;flex:1}
@@ -45,7 +45,7 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 .small{font-size:12px;color:var(--muted)}
 .full-card{padding:14px;border-radius:12px;background:linear-gradient(90deg,#fff,#f7fcfb);border:1px solid #e6eef6;margin-top:12px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#fffbeb;color:#92400e;padding:12px 16px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.12);display:none;z-index:9999}
-.info-btn{font-size:12px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--info-bg);color:#0369a1;cursor:pointer;border:none;margin-left:6px}
+.info-btn{font-size:12px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--info-bg);color:#0369a1;cursor:pointer;border:none;margin-left:6px}
 @media (max-width:480px){ .stepper::before{left:20px;right:20px} .step-dot{width:30px;height:30px;font-size:13px} }
 </style>
 </head>
@@ -61,55 +61,16 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 </div>
 
 <div class="stepper" aria-hidden>
-  <div id="dot1" class="step-dot active" onclick="goToStep(1)">1</div>
-  <div id="dot2" class="step-dot" onclick="goToStep(2)">2</div>
-  <div id="dot3" class="step-dot" onclick="goToStep(3)">3</div>
-  <div id="dot4" class="step-dot" onclick="goToStep(4)">4</div>
+  <div id="dot1" class="step-dot active">1</div>
+  <div id="dot2" class="step-dot">2</div>
+  <div id="dot3" class="step-dot">3</div>
+  <div id="dot4" class="step-dot">4</div>
 </div>
 
 <!-- STEP 1 -->
 <div id="step1" class="card">
   <h2>1 • System & Load</h2>
-
-  <label>System Mode
-    <button class="info-btn" onclick="showInfo('mode')">i</button>
-  </label>
-  <select id="mode">
-    <option value="grid">Grid-tied</option>
-    <option value="hybrid">Hybrid</option>
-    <option value="off">Off-grid</option>
-  </select>
-
-  <div class="row" style="margin-top:10px">
-    <div class="col">
-      <label>Daily consumption (kWh)
-        <button class="info-btn" onclick="showInfo('consumption')">i</button>
-      </label>
-      <input id="daily" type="number" min="0" max="1000" placeholder="e.g., 20" oninput="validateInput(this,0,1000)" />
-    </div>
-    <div class="col">
-      <label>Peak sun hours (hrs)
-        <button class="info-btn" onclick="showInfo('sun')">i</button>
-      </label>
-      <input id="sunHours" type="number" step="0.1" min="0" max="12" placeholder="e.g., 5.5" oninput="validateInput(this,0,12)" />
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col">
-      <label>Inverter efficiency (fraction)
-        <button class="info-btn" onclick="showInfo('inverter')">i</button>
-      </label>
-      <input id="invEff" type="number" step="0.01" min="0.5" max="1" placeholder="0.95" oninput="validateInput(this,0.5,1)" />
-    </div>
-    <div class="col">
-      <label>System derate (fraction)
-        <button class="info-btn" onclick="showInfo('derate')">i</button>
-      </label>
-      <input id="derate" type="number" step="0.01" min="0.5" max="1" placeholder="0.77" oninput="validateInput(this,0.5,1)" />
-    </div>
-  </div>
-
+  ...
   <div class="actions">
     <button class="btn-ghost" onclick="resetAll()">Reset</button>
     <button class="btn-primary" onclick="goToStep(2)">Next →</button>
@@ -119,37 +80,7 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 <!-- STEP 2 -->
 <div id="step2" class="card" style="display:none">
   <h2>2 • Panels, Roof & Battery</h2>
-
-  <div class="row">
-    <div class="col">
-      <label>Panel watt (W)
-        <button class="info-btn" onclick="showInfo('panelW')">i</button>
-      </label>
-      <input id="panelW" type="number" min="50" max="600" placeholder="e.g., 400" oninput="validateInput(this,50,600)" />
-    </div>
-    <div class="col">
-      <label>Number of panels
-        <button class="info-btn" onclick="showInfo('numPanels')">i</button>
-      </label>
-      <input id="numPanels" type="number" min="1" max="100" placeholder="e.g., 12" oninput="validateInput(this,1,100)" />
-    </div>
-  </div>
-
-  <div class="row" style="margin-top:10px">
-    <div class="col">
-      <label>Battery voltage (V)
-        <button class="info-btn" onclick="showInfo('batV')">i</button>
-      </label>
-      <input id="batV" type="number" min="12" max="600" placeholder="48" oninput="validateInput(this,12,600)" />
-    </div>
-    <div class="col">
-      <label>Battery days autonomy
-        <button class="info-btn" onclick="showInfo('batDays')">i</button>
-      </label>
-      <input id="batDays" type="number" min="1" max="7" placeholder="2" oninput="validateInput(this,1,7)" />
-    </div>
-  </div>
-
+  ...
   <div class="actions">
     <button class="btn-ghost" onclick="goToStep(1)">← Back</button>
     <button class="btn-primary" onclick="goToStep(3)">Next →</button>
@@ -159,22 +90,7 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 <!-- STEP 3 -->
 <div id="step3" class="card" style="display:none">
   <h2>3 • Inverter & Misc</h2>
-
-  <div class="row">
-    <div class="col">
-      <label>Power Factor (PF)
-        <button class="info-btn" onclick="showInfo('pf')">i</button>
-      </label>
-      <input id="pf" type="number" step="0.01" min="0.7" max="1" placeholder="0.9" oninput="validateInput(this,0.7,1)" />
-    </div>
-    <div class="col">
-      <label>Inverter efficiency (optional)
-        <button class="info-btn" onclick="showInfo('invEff2')">i</button>
-      </label>
-      <input id="invEff2" type="number" step="0.01" min="0.5" max="1" placeholder="0.95" oninput="validateInput(this,0.5,1)" />
-    </div>
-  </div>
-
+  ...
   <div class="actions">
     <button class="btn-ghost" onclick="goToStep(2)">← Back</button>
     <button class="btn-primary" onclick="goToStep(4)">Calculate ✅</button>
@@ -237,8 +153,12 @@ function goToStep(step){
     document.getElementById('dot'+i).classList.toggle('active',i<=step);
   }
   if(step===4) calculateResults();
-  // scroll to top when switching steps
-  window.scrollTo({top:0,behavior:'smooth'});
+
+  // scroll to the top of the current step card
+  const card = document.getElementById('step'+step);
+  if(card){
+    card.scrollIntoView({behavior:'smooth', block:'start'});
+  }
 }
 
 // Reset all fields
