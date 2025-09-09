@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solar Design Wizard</title>
+
+<!-- Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
   :root {
     --primary:#00796b;
@@ -15,6 +19,8 @@
     background:var(--bg); color:var(--text);
   }
   .container { max-width:500px; margin:0 auto; padding:20px; }
+  
+  /* Stepper */
   .stepper { display:flex; justify-content:space-between; margin:20px 0; position:relative; }
   .stepper::before { content:""; position:absolute; top:50%; left:15px; right:15px; height:3px; background:#ddd; z-index:0; }
   .step-circle {
@@ -23,6 +29,8 @@
     font-size:14px; font-weight:600; z-index:1; position:relative;
   }
   .step-circle.active { background:var(--primary); color:#fff; }
+  
+  /* Cards */
   .card {
     background:#fff; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.1);
     padding:24px; margin-bottom:20px; animation:fade .3s ease;
@@ -35,6 +43,8 @@
     background:#fafafa;
   }
   input:focus,select:focus { border-color:var(--primary); outline:none; background:#fff; }
+  
+  /* Buttons */
   .actions { display:flex; justify-content:space-between; gap:10px; margin-top:20px; }
   button {
     flex:1; padding:14px; font-size:1rem; font-weight:600; cursor:pointer;
@@ -43,10 +53,18 @@
   .btn-primary { background:var(--primary); color:#fff; }
   .btn-primary:hover { background:var(--secondary); }
   .btn-secondary { background:#e0e0e0; color:#333; }
+  
+  /* Results */
   .result-card {
+    display:flex; align-items:center; gap:12px;
     background:#e8f5e9; border-left:5px solid var(--primary);
     padding:14px; border-radius:10px; margin-bottom:12px;
+    font-size:0.95rem;
   }
+  .result-icon {
+    font-size:1.4rem; color:var(--primary); flex-shrink:0;
+  }
+  
   @keyframes fade { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
 </style>
 </head>
@@ -109,14 +127,14 @@
   <!-- Results -->
   <div id="results" class="card" style="display:none;">
     <h2>Results</h2>
-    <div class="result-card"><b>Panels Required:</b> --</div>
-    <div class="result-card"><b>System Capacity:</b> --</div>
-    <div class="result-card"><b>Battery Bank:</b> --</div>
-    <div class="result-card"><b>Roof Area Used:</b> --</div>
-    <div class="result-card"><b>Cost Estimate:</b> --</div>
-    <div class="result-card"><b>Yearly Savings:</b> --</div>
-    <div class="result-card"><b>Payback Period:</b> --</div>
-    <div class="result-card"><b>Carbon Offset:</b> --</div>
+    <div class="result-card"><i class="fas fa-solar-panel result-icon"></i><b>Panels Required:</b> --</div>
+    <div class="result-card"><i class="fas fa-bolt result-icon"></i><b>System Capacity:</b> --</div>
+    <div class="result-card"><i class="fas fa-battery-full result-icon"></i><b>Battery Bank:</b> --</div>
+    <div class="result-card"><i class="fas fa-home result-icon"></i><b>Roof Area Used:</b> --</div>
+    <div class="result-card"><i class="fas fa-dollar-sign result-icon"></i><b>Cost Estimate:</b> --</div>
+    <div class="result-card"><i class="fas fa-coins result-icon"></i><b>Yearly Savings:</b> --</div>
+    <div class="result-card"><i class="fas fa-chart-line result-icon"></i><b>Payback Period:</b> --</div>
+    <div class="result-card"><i class="fas fa-leaf result-icon"></i><b>Carbon Offset:</b> --</div>
     <div class="actions">
       <button class="btn-secondary" onclick="resetAll()">Reset</button>
       <button class="btn-primary">Export PDF</button>
