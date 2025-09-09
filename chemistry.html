@@ -3,51 +3,45 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Advanced Solar Calculator — Improved UI & Inverter kVA/kW</title>
+<title>Advanced Solar Calculator — Polished UI</title>
 
-<!-- Font Awesome (icons) -->
+<!-- Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 :root{
-  --primary:#00796b;
-  --accent:#06b6d4;
-  --bg:#f5f7fa;
-  --muted:#6b7280;
-  --card:#fff;
-  --radius:12px;
+  --primary:#00796b; --accent:#06b6d4; --bg:#f5f7fa; --muted:#6b7280; --card:#fff; --radius:12px;
 }
-/* BASE */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;width:100%;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:#111; -webkit-text-size-adjust:100%}
 body{display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
 
-/* WRAP */
-.wrap{width:100%;max-width:520px;margin:0 auto;padding:12px;}
+/* wrapper */
+.wrap{max-width:520px;margin:0 auto;padding:12px;}
 
-/* TOP header */
+/* header */
 .header{display:flex;gap:12px;align-items:center;margin-bottom:8px}
 .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
 .title{font-size:16px;font-weight:700}
 .subtitle{font-size:12px;color:var(--muted)}
 
-/* steppers */
+/* stepper */
 .stepper{display:flex;justify-content:space-between;align-items:center;margin:12px 0;position:relative;padding:0 6px}
 .stepper::before{content:'';position:absolute;left:24px;right:24px;height:4px;background:#e6eef6;top:50%;transform:translateY(-50%);z-index:0;border-radius:999px}
 .step-dot{z-index:2;width:32px;height:32px;border-radius:50%;background:#e6eef6;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#374151}
 .step-dot.active{background:linear-gradient(90deg,var(--primary),var(--accent)); color:white; box-shadow:0 6px 18px rgba(3,105,79,0.12)}
 
-/* cards */
+/* card layout */
 .card{background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(16,24,40,0.06);padding:14px;margin-bottom:12px}
 h2{color:var(--primary);margin:0 0 6px;font-size:15px}
-label{display:flex;align-items:center;gap:8px;margin-top:8px;color:#374151;font-weight:600;font-size:13px}
-.hint{font-size:12px;color:var(--muted);margin-top:4px}
-input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fbfdff;font-size:14px;margin-top:6px}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.col{flex:1;min-width:120px}
+label.rowLabel{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;font-size:13px;color:#374151}
+.inputRow{display:grid;grid-template-columns:1fr 42px;gap:8px;align-items:center;margin-top:8px}
+.inputRow.full{grid-template-columns:1fr}
+.inputField{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fbfdff;font-size:14px}
+.selectField{padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fbfdff}
 
-/* info button */
-.info-btn{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:none;background:#e6f7ff;color:#0369a1;font-weight:700;font-size:12px;cursor:pointer;padding:0}
+/* small uniform info button */
+.infoBtn{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:none;background:#e6f7ff;color:#0369a1;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.04)}
 
 /* actions */
 .actions{display:flex;gap:8px;margin-top:12px}
@@ -56,8 +50,8 @@ button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer
 .btn-ghost{background:#fff;border:1px solid #e6eef6;color:var(--muted);flex:1}
 .btn-secondary{background:#f3f4f6;color:#111;flex:1}
 
-/* Results layout - full width and centered behaviors */
-#resultsWrap{display:none;flex-direction:column}
+/* results */
+#resultsWrap{display:none}
 .result-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .result-card{flex:1 1 calc(50% - 8px);min-width:150px;background:linear-gradient(180deg,#ffffff,#fbffff);border-radius:8px;padding:10px;border:1px solid #e6eef6;display:flex;gap:10px;align-items:center}
 .result-icon{font-size:18px;color:var(--primary);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(0,121,107,0.06)}
@@ -65,15 +59,16 @@ button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer
 .small{font-size:12px;color:var(--muted)}
 .full-card{padding:10px;border-radius:10px;background:linear-gradient(90deg,#fff,#f7fcfb);border:1px solid #e6eef6;margin-top:10px;font-size:14px}
 
-/* toasts & info notifier */
+/* toast & info notifier bottom center */
 .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#fffbeb;color:#92400e;padding:8px 12px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.12);display:none;z-index:9999;font-size:13px}
 .infoToast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#ffffff;color:#111;padding:10px 14px;border-radius:10px;border:1px solid #e6eef6;box-shadow:0 8px 30px rgba(2,6,23,0.12);display:none;z-index:9999;max-width:92%;font-size:13px;text-align:left}
 
-/* mobile responsive: results become 1 column */
+/* responsive: results become 1 column under 480px */
 @media (max-width:480px){
   .stepper::before{left:18px;right:18px}
   .result-card{flex:1 1 100%}
-  .wrap{padding:8px}
+  .inputRow{grid-template-columns:1fr}
+  .infoBtn{width:32px;height:32px;font-size:12px}
 }
 </style>
 </head>
@@ -84,11 +79,10 @@ button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer
       <div class="logo">SV</div>
       <div>
         <div class="title">Advanced Solar Calculator</div>
-        <div class="subtitle">Accurate sizing • inverter kW & kVA • battery sizing</div>
+        <div class="subtitle">Polished UI • PF fixed at 0.85 • Smart validation</div>
       </div>
     </div>
 
-    <!-- stepper -->
     <div class="stepper" aria-hidden>
       <div id="dot1" class="step-dot active">1</div>
       <div id="dot2" class="step-dot">2</div>
@@ -96,72 +90,60 @@ button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer
       <div id="dot4" class="step-dot">4</div>
     </div>
 
-    <!-- STEP 1: System & Load -->
+    <!-- STEP 1 -->
     <div id="step1" class="card">
       <h2>1 • System & Load</h2>
 
-      <label>
-        System Mode
-        <button class="info-btn" data-info="mode">i</button>
-      </label>
-      <select id="systemMode">
-        <option value="grid">Grid-tied</option>
-        <option value="hybrid">Hybrid (grid + battery)</option>
-        <option value="offgrid">Off-grid</option>
-      </select>
-
-      <div class="row">
-        <div class="col">
-          <label>
-            Daily consumption (kWh)
-            <button class="info-btn" data-info="consumption">i</button>
-          </label>
-          <input id="dailyKwh" type="number" min="0" step="0.1" placeholder="e.g. 20">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">System Mode</label>
+          <select id="systemMode" class="selectField">
+            <option value="grid">Grid-tied</option>
+            <option value="hybrid">Hybrid (grid + battery)</option>
+            <option value="offgrid">Off-Grid</option>
+          </select>
         </div>
-
-        <div class="col">
-          <label>
-            Peak sun hours (hrs)
-            <button class="info-btn" data-info="sun">i</button>
-          </label>
-          <input id="peakSun" type="number" min="0" step="0.1" placeholder="e.g. 5.5">
-        </div>
+        <button class="infoBtn" data-info="mode">i</button>
       </div>
 
-      <div class="row">
-        <div class="col">
-          <label>
-            Peak instantaneous load (kW) (optional)
-            <button class="info-btn" data-info="peakload">i</button>
-          </label>
-          <input id="peakLoad" type="number" min="0" step="0.1" placeholder="optional — used to size inverter">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Daily consumption (kWh)</label>
+          <input id="dailyKwh" class="inputField" type="number" min="0" step="0.1" placeholder="e.g. 20">
         </div>
-
-        <div class="col">
-          <label>
-            DC/AC ratio (PV size ÷ inverter rating)
-            <button class="info-btn" data-info="dcac">i</button>
-          </label>
-          <input id="dcacRatio" type="number" min="0.5" step="0.05" value="1.2">
-        </div>
+        <button class="infoBtn" data-info="consumption">i</button>
       </div>
 
-      <div class="row">
-        <div class="col">
-          <label>
-            Assumed power factor for inverter
-            <button class="info-btn" data-info="pf">i</button>
-          </label>
-          <input id="powerFactor" type="number" min="0.5" max="1" step="0.01" value="0.95">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Peak sun hours (hrs)</label>
+          <input id="peakSun" class="inputField" type="number" min="0" max="12" step="0.1" placeholder="e.g. 5.5">
         </div>
+        <button class="infoBtn" data-info="sun">i</button>
+      </div>
 
-        <div class="col">
-          <label>
-            Inverter efficiency (%)
-            <button class="info-btn" data-info="inverterEff">i</button>
-          </label>
-          <input id="inverterEff" type="number" min="70" max="100" step="0.1" value="95">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Peak instantaneous load (kW) — optional</label>
+          <input id="peakLoad" class="inputField" type="number" min="0" step="0.1" placeholder="optional">
         </div>
+        <button class="infoBtn" data-info="peakload">i</button>
+      </div>
+
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">DC/AC ratio (array ÷ inverter)</label>
+          <input id="dcacRatio" class="inputField" type="number" min="0.5" step="0.05" value="1.2">
+        </div>
+        <button class="infoBtn" data-info="dcac">i</button>
+      </div>
+
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Inverter efficiency (%)</label>
+          <input id="inverterEff" class="inputField" type="number" min="70" max="100" step="0.1" value="95">
+        </div>
+        <button class="infoBtn" data-info="inverterEff">i</button>
       </div>
 
       <div class="actions">
@@ -170,208 +152,197 @@ button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer
       </div>
     </div>
 
-    <!-- STEP 2: Panels / Roof / Battery -->
+    <!-- STEP 2 -->
     <div id="step2" class="card" style="display:none">
       <h2>2 • Panels, Roof & Battery</h2>
 
-      <div class="row">
-        <div class="col">
-          <label>
-            Panel watt (W)
-            <button class="info-btn" data-info="panelW">i</button>
-          </label>
-          <input id="panelW" type="number" min="50" step="10" value="430">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Panel watt (W)</label>
+          <input id="panelW" class="inputField" data-even="true" type="number" min="50" step="1" value="430">
         </div>
-
-        <div class="col">
-          <label>
-            Panel efficiency (%)
-            <button class="info-btn" data-info="panelEff">i</button>
-          </label>
-          <input id="panelEff" type="number" min="8" max="25" step="0.1" value="19.5">
-        </div>
+        <button class="infoBtn" data-info="panelW">i</button>
       </div>
 
-      <div class="row" style="margin-top:6px">
-        <div class="col">
-          <label>
-            Panel degradation (%/yr)
-            <button class="info-btn" data-info="degradation">i</button>
-          </label>
-          <input id="degradation" type="number" min="0" step="0.1" value="0.5">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Panel efficiency (%)</label>
+          <input id="panelEff" class="inputField" type="number" min="8" max="25" step="0.1" value="19.5">
         </div>
-
-        <div class="col">
-          <label>
-            System derate (%) (soiling/wiring etc.)
-            <button class="info-btn" data-info="derate">i</button>
-          </label>
-          <input id="deratePct" type="number" min="50" max="100" step="0.1" value="77">
-        </div>
+        <button class="infoBtn" data-info="panelEff">i</button>
       </div>
 
-      <div style="margin-top:8px">
-        <label>
-          Available roof area
-          <button class="info-btn" data-info="roof">i</button>
-        </label>
-        <div class="row">
-          <input id="roofArea" type="number" min="0" step="0.1" placeholder="e.g. 40">
-          <select id="roofUnit" style="width:120px;margin-left:6px">
-            <option value="m2">m²</option>
-            <option value="ft2">ft²</option>
-          </select>
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Panel degradation (%/yr)</label>
+          <input id="degradation" class="inputField" type="number" min="0" step="0.1" value="0.5">
         </div>
+        <button class="infoBtn" data-info="degradation">i</button>
       </div>
 
-      <div style="margin-top:8px" class="row">
-        <div class="col">
-          <label>
-            Tilt angle (°)
-            <button class="info-btn" data-info="tilt">i</button>
-          </label>
-          <input id="tilt" type="number" min="0" max="90" step="0.1" value="20">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">System derate (%)</label>
+          <input id="deratePct" class="inputField" type="number" min="50" max="100" step="0.1" value="77">
         </div>
-        <div class="col">
-          <label>
-            Orientation
-            <button class="info-btn" data-info="orientation">i</button>
-          </label>
-          <select id="orientation">
+        <button class="infoBtn" data-info="derate">i</button>
+      </div>
+
+      <div class="inputRow full">
+        <div>
+          <label class="rowLabel">Available roof area</label>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <input id="roofArea" class="inputField" data-even="true" type="number" min="0" step="1" placeholder="e.g. 40">
+            <select id="roofUnit" class="selectField" style="width:110px">
+              <option value="m2">m²</option>
+              <option value="ft2">ft²</option>
+            </select>
+          </div>
+        </div>
+        <button class="infoBtn" data-info="roof">i</button>
+      </div>
+
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Tilt angle (°)</label>
+          <input id="tilt" class="inputField" type="number" min="0" max="90" step="0.1" value="20">
+        </div>
+        <button class="infoBtn" data-info="tilt">i</button>
+      </div>
+
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Orientation</label>
+          <select id="orientation" class="selectField">
             <option>South</option><option>East</option><option>West</option><option>Flat</option>
           </select>
         </div>
+        <button class="infoBtn" data-info="orientation">i</button>
       </div>
 
-      <!-- Battery block shows only for hybrid/offgrid -->
-      <div id="batteryBlock" style="margin-top:12px;display:none;border-radius:8px;padding:10px;background:#fbffff;border:1px solid #e6eef6">
-        <strong style="display:block;margin-bottom:6px">Battery & Autonomy</strong>
-        <div class="muted" style="margin-bottom:8px">Shown when system mode is Hybrid or Off-grid</div>
-        <div class="row">
-          <div class="col">
-            <label>
-              Autonomy (days)
-              <button class="info-btn" data-info="autonomy">i</button>
-            </label>
-            <input id="autonomyDays" type="number" min="0" step="0.25" value="2">
-          </div>
-          <div class="col">
-            <label>
-              Depth of Discharge (%) (DoD)
-              <button class="info-btn" data-info="dod">i</button>
-            </label>
-            <input id="dodPct" type="number" min="10" max="95" step="1" value="80">
-          </div>
+      <!-- battery block -->
+      <div id="batteryBlock" style="display:none;margin-top:10px;padding:10px;border-radius:8px;background:#fbffff;border:1px solid #e6eef6">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>Battery & autonomy</strong>
+          <div class="small">Shown for Hybrid/Off-grid</div>
         </div>
 
-        <div class="row" style="margin-top:8px">
-          <div class="col">
-            <label>
-              System voltage (V)
-              <button class="info-btn" data-info="sysV">i</button>
-            </label>
-            <select id="sysVoltage">
-              <option value="12">12V</option>
-              <option value="24">24V</option>
-              <option value="48" selected>48V</option>
+        <div class="inputRow" style="margin-top:8px">
+          <div>
+            <label class="rowLabel">Autonomy (days)</label>
+            <input id="autonomy" data-even="true" class="inputField" type="number" min="0" step="0.25" value="2">
+          </div>
+          <button class="infoBtn" data-info="autonomy">i</button>
+        </div>
+
+        <div class="inputRow">
+          <div>
+            <label class="rowLabel">Depth of Discharge (%)</label>
+            <input id="dod" class="inputField" type="number" min="10" max="95" step="1" value="80">
+          </div>
+          <button class="infoBtn" data-info="dod">i</button>
+        </div>
+
+        <div class="inputRow">
+          <div>
+            <label class="rowLabel">System voltage (V)</label>
+            <select id="sysVoltage" class="selectField">
+              <option value="12">12V</option><option value="24">24V</option><option value="48" selected>48V</option>
             </select>
           </div>
-          <div class="col">
-            <label>
-              Battery type
-              <button class="info-btn" data-info="battType">i</button>
-            </label>
-            <select id="batteryType">
+          <button class="infoBtn" data-info="sysV">i</button>
+        </div>
+
+        <div class="inputRow">
+          <div>
+            <label class="rowLabel">Battery type</label>
+            <select id="batteryType" class="selectField">
               <option value="li">Lithium</option><option value="la">Lead Acid</option>
             </select>
           </div>
+          <button class="infoBtn" data-info="battType">i</button>
         </div>
       </div>
 
-      <div class="actions" style="margin-top:12px">
+      <div class="actions">
         <button class="btn-ghost" onclick="goTo(1)">← Back</button>
         <button class="btn-primary" onclick="goTo(3)">Next →</button>
       </div>
     </div>
 
-    <!-- STEP 3: Financial & Advanced -->
+    <!-- STEP 3 -->
     <div id="step3" class="card" style="display:none">
       <h2>3 • Financial & Advanced</h2>
 
-      <div class="row">
-        <div class="col">
-          <label>
-            Installed cost ($/kW)
-            <button class="info-btn" data-info="cost">i</button>
-          </label>
-          <input id="costPerkW" type="number" min="0" step="1" value="800">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Installed cost ($/kW)</label>
+          <input id="costPerkW" class="inputField" type="number" min="0" step="1" value="800">
         </div>
-        <div class="col">
-          <label>
-            Electricity tariff ($/kWh)
-            <button class="info-btn" data-info="tariff">i</button>
-          </label>
-          <input id="tariff" type="number" min="0" step="0.001" value="0.13">
-        </div>
+        <button class="infoBtn" data-info="cost">i</button>
       </div>
 
-      <div class="row" style="margin-top:8px">
-        <div class="col">
-          <label>
-            System lifetime (yrs)
-            <button class="info-btn" data-info="lifetime">i</button>
-          </label>
-          <input id="lifetime" type="number" min="1" step="1" value="25">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Electricity tariff ($/kWh)</label>
+          <input id="tariff" class="inputField" type="number" min="0" step="0.001" value="0.13">
         </div>
-        <div class="col">
-          <label>
-            Incentives (%)
-            <button class="info-btn" data-info="incentives">i</button>
-          </label>
-          <input id="incentives" type="number" min="0" step="0.1" value="0">
-        </div>
+        <button class="infoBtn" data-info="tariff">i</button>
       </div>
 
-      <div class="row" style="margin-top:8px">
-        <div class="col">
-          <label>
-            Grid emission factor (kg CO₂/kWh)
-            <button class="info-btn" data-info="co2">i</button>
-          </label>
-          <input id="co2Factor" type="number" min="0" step="0.01" value="0.5">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">System lifetime (yrs)</label>
+          <input id="lifetime" class="inputField" type="number" min="1" step="1" value="25">
         </div>
-        <div class="col">
-          <label>
-            Panel area safety factor (%)
-            <button class="info-btn" data-info="areafactor">i</button>
-          </label>
-          <input id="areaFactor" type="number" min="0" step="1" value="10">
-        </div>
+        <button class="infoBtn" data-info="lifetime">i</button>
       </div>
 
-      <div style="margin-top:12px" class="actions">
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Incentives (%)</label>
+          <input id="incentives" class="inputField" type="number" min="0" step="0.1" value="0">
+        </div>
+        <button class="infoBtn" data-info="incentives">i</button>
+      </div>
+
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Grid emission factor (kg CO₂/kWh)</label>
+          <input id="co2Factor" class="inputField" type="number" min="0" step="0.01" value="0.5">
+        </div>
+        <button class="infoBtn" data-info="co2">i</button>
+      </div>
+
+      <div class="inputRow">
+        <div>
+          <label class="rowLabel">Panel area safety factor (%)</label>
+          <input id="areaFactor" class="inputField" type="number" min="0" step="1" value="10">
+        </div>
+        <button class="infoBtn" data-info="areafactor">i</button>
+      </div>
+
+      <div style="margin-top:10px" class="actions">
         <button class="btn-ghost" onclick="goTo(2)">← Back</button>
         <button class="btn-primary" onclick="calculateAll()">Calculate</button>
       </div>
     </div>
 
-    <!-- RESULTS (full mobile width, no horiz scroll) -->
+    <!-- RESULTS -->
     <div id="resultsWrap" style="display:none">
       <div class="card">
         <h2>Results</h2>
 
-        <div id="resultGrid" class="result-grid">
-          <!-- cards inserted here -->
-        </div>
+        <div id="resultGrid" class="result-grid"></div>
 
         <div class="full-card" style="margin-top:10px">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
-              <div class="small">System net cost (after incentives)</div>
+              <div class="small">Net system cost</div>
               <div class="value" id="outNetCost">$—</div>
             </div>
             <div style="text-align:right">
-              <div class="small">Estimated payback</div>
+              <div class="small">Payback</div>
               <div class="value" id="outPayback">— yrs</div>
             </div>
           </div>
@@ -397,7 +368,7 @@ button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer
 
   </div>
 
-  <!-- small toasts / info notifier -->
+  <!-- Toasts -->
   <div id="toast" class="toast" role="status" aria-hidden="true"></div>
   <div id="infoToast" class="infoToast" role="dialog" aria-hidden="true"></div>
 
@@ -405,324 +376,323 @@ button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
-/* ---------- helper UI ---------- */
-function showToast(msg, ms=2600){
+/* ------------------ UI helpers ------------------ */
+const PF = 0.85; // fixed power factor as requested
+
+function showToast(msg, ms=2400){
   const t = document.getElementById('toast');
-  t.innerText = msg; t.style.display='block';
+  t.innerText = msg;
+  t.style.display = 'block';
   t.setAttribute('aria-hidden','false');
-  setTimeout(()=>{ t.style.display='none'; t.setAttribute('aria-hidden','true'); }, ms);
+  clearTimeout(t._hide);
+  t._hide = setTimeout(()=>{ t.style.display='none'; t.setAttribute('aria-hidden','true'); }, ms);
 }
 function showInfoToast(title, body, ms=4200){
   const t = document.getElementById('infoToast');
-  t.innerHTML = '<strong>'+title+'</strong><div style="margin-top:6px;color:#374151">'+body+'</div>';
-  t.style.display='block'; t.setAttribute('aria-hidden','false');
-  setTimeout(()=>{ t.style.display='none'; t.setAttribute('aria-hidden','true'); }, ms);
+  t.innerHTML = '<strong style="display:block;margin-bottom:6px">'+title+'</strong><div style="color:#374151">'+body+'</div>';
+  t.style.display = 'block';
+  t.setAttribute('aria-hidden','false');
+  clearTimeout(t._hideI);
+  t._hideI = setTimeout(()=>{ t.style.display='none'; t.setAttribute('aria-hidden','true'); }, ms);
 }
 
-/* wire small info buttons */
-document.querySelectorAll('.info-btn').forEach(btn=>{
-  btn.addEventListener('click', (e)=>{
-    const key = btn.getAttribute('data-info');
+/* info button wiring */
+document.querySelectorAll('.infoBtn').forEach(b=>{
+  b.addEventListener('click', (e)=>{
+    const key = b.getAttribute('data-info');
     const info = {
-      mode: 'Select Grid-tied, Hybrid (grid + battery) or Off-grid. Hybrid & Off-grid will show battery inputs.',
-      consumption: 'Average daily consumption in kWh (take monthly kWh ÷ 30).',
-      sun: 'Peak Sun Hours: average equivalent full-sun hours per day for your location.',
-      peakload: 'Enter the highest instantaneous AC load (kW) seen in the system — optional, used to size the inverter.',
-      dcac: 'DC/AC ratio is PV array_kW divided by inverter_kW. Typical 1.1–1.3. A higher ratio lets inverter limit clipping but increases array size.',
-      pf: 'Power factor (unitless). Inverter apparent power (kVA) = real power (kW) ÷ PF. Typical PF ≈ 0.9–0.98.',
-      inverterEff: 'Inverter efficiency (%) used in energy throughput calculations — typically 90–98%.',
-      panelW: 'Rated panel output in Watts at STC (e.g. 430 W).',
-      panelEff: 'Panel efficiency (%) used to estimate area (STC 1000 W/m²).',
-      degradation: 'Annual panel degradation % (e.g. 0.5%/yr).',
-      derate: 'System derate (%) accounts for soiling, wiring, mismatch; typical 75–85%. Enter as percent (e.g. 77).',
-      roof: 'Enter usable roof area for panels in chosen unit. The calculator estimates panel footprint and checks fit.',
-      tilt: 'Tilt angle in degrees. Affects effective production (not modeled in depth here).',
-      orientation: 'Panel facing orientation (South/East/West).',
-      autonomy: 'Number of days the battery must supply the load without sun (used for battery sizing).',
-      dod: 'Depth of Discharge % — usable fraction of battery capacity (e.g. 80% → 0.8).',
-      sysV: 'System battery voltage (12/24/48). Used to convert Wh → Ah.',
-      battType: 'Battery chemistry influences usable capacity, lifetime and DoD recommendations.',
-      cost: 'Installed cost per kW (includes panels, BOS, inverter, installation).',
-      tariff: 'Local electricity price $/kWh — used to compute savings and payback.',
-      lifetime: 'System expected economic/lifetime in years (used for lifetime generation & LCOE).',
-      incentives: 'Percent of system cost covered by incentives/rebate.',
-      co2: 'Grid emission factor (kg CO₂ per kWh) for estimating CO₂ avoided.',
-      areafactor: 'Extra area factor (%) to allow spacing and tilt. Multiply estimated panel area by this percent.'
-    }[key] || 'More info';
+      mode: 'Choose Grid-tied, Hybrid (grid + battery), or Off-grid. Hybrid and Off-grid will show battery inputs.',
+      consumption: 'Daily energy consumption in kWh. Use monthly consumption ÷ 30 if needed.',
+      sun: 'Peak Sun Hours (equivalent full-sun hours). Must be ≤ 12. Defaults applied if blank.',
+      peakload: 'Peak instantaneous AC load in kW. Optional — used to size inverter if provided.',
+      dcac: 'DC/AC ratio (array_kW ÷ inverter_kW). Typical 1.1–1.3. Higher ratio increases array size.',
+      inverterEff: 'Inverter efficiency in percent (used for energy throughput).',
+      panelW: 'Panel rated power (Watts at STC). Auto-corrected to even numbers for consistency.',
+      panelEff: 'Panel efficiency percent (used to estimate area).',
+      degradation: 'Annual panel degradation percent (e.g., 0.5).',
+      derate: 'System derate percent accounts for wiring, soiling, mismatch (e.g., 77).',
+      roof: 'Usable roof area (enter in chosen units). Used to check if panels fit.',
+      tilt: 'Tilt angle of panels in degrees. Affects production slightly.',
+      autonomy: 'Battery autonomy days. How many days battery must supply the load without sun.',
+      dod: 'Depth of Discharge percent (usable capacity fraction).',
+      sysV: 'Battery system voltage (12/24/48 V). Affects Ah calculation.',
+      battType: 'Battery chemistry: Lithium typically supports deeper DoD than lead acid.',
+      cost: 'Installed system cost per kW (including panels, BOS, inverter, installation).',
+      tariff: 'Electricity tariff $/kWh, used to compute savings & payback.',
+      lifetime: 'System lifetime in years (used to calculate lifetime generation).',
+      incentives: 'Percent of system cost covered by incentives.',
+      co2: 'Grid emission factor (kg CO₂ per kWh) for CO₂ avoided estimate.',
+      areafactor: 'Extra area factor percent to allow spacing (tilt, gaps).'
+    }[key] || 'Info';
     showInfoToast(key.toUpperCase(), info);
   });
 });
 
-/* ---------- navigation ---------- */
+/* ------------------ uniform odd-value enforcement ------------------
+   Fields that have attribute data-even="true" are enforced to even integers:
+   - On input: if value is numeric and odd, we round up to next even and show toast.
+   - We do this gently: on 'input' we examine numeric value and adjust.
+*/
+document.querySelectorAll('[data-even="true"]').forEach(el=>{
+  el.addEventListener('input', (ev)=>{
+    const vRaw = el.value;
+    if(vRaw === '') return; // allow blank until calc
+    let v = Number(vRaw);
+    if(isNaN(v)) return;
+    // if not integer, keep decimals for fields where step allows decimals — but data-even intended for integer fields
+    v = Math.round(v); // enforce integer
+    if(v % 2 !== 0){
+      // round up to nearest even
+      const corrected = v + 1;
+      el.value = corrected;
+      showToast('Value adjusted to nearest even: ' + corrected, 1400);
+    } else {
+      el.value = v; // keep normalized integer
+    }
+  });
+});
+
+/* Peak Sun Hours clamp to <= 12 enforcement */
+const peakEl = document.getElementById('peakSun');
+peakEl.addEventListener('input', ()=>{
+  let vRaw = peakEl.value;
+  if(vRaw === '') return;
+  let v = Number(vRaw);
+  if(isNaN(v)) return;
+  if(v > 12){
+    peakEl.value = 12;
+    showToast('Peak Sun Hours cannot exceed 12. Adjusted to 12.');
+  } else if(v < 0) {
+    peakEl.value = 0;
+  }
+});
+
+/* ------------------ navigation ------------------ */
 function goTo(step){
-  // simple validation before advancing
-  if(step===2){
+  // step validation
+  if(step === 2){
     const daily = parseFloat(document.getElementById('dailyKwh').value);
     const sun = parseFloat(document.getElementById('peakSun').value);
     if(isNaN(daily) || daily <= 0){ showToast('Enter a valid daily consumption'); return; }
     if(isNaN(sun) || sun <= 0){ showToast('Enter valid peak sun hours'); return; }
   }
-  if(step===3){
-    // validate essential panel inputs
-    const p = parseFloat(document.getElementById('panelW').value);
-    const pe = parseFloat(document.getElementById('panelEff').value);
-    if(isNaN(p) || p <= 0){ showToast('Enter panel wattage'); return; }
-    if(isNaN(pe) || pe <= 0){ showToast('Enter panel efficiency'); return; }
+  if(step === 3){
+    const panelW = parseFloat(document.getElementById('panelW').value);
+    const panelEff = parseFloat(document.getElementById('panelEff').value);
+    if(isNaN(panelW) || panelW <= 0){ showToast('Enter panel wattage'); return; }
+    if(isNaN(panelEff) || panelEff <= 0){ showToast('Enter panel efficiency'); return; }
   }
-  // update dots
+
+  // dots
   [1,2,3,4].forEach(i=>{
     const el = document.getElementById('dot'+i);
     if(!el) return;
     el.classList.toggle('active', i<=step);
   });
-  // show / hide step cards
-  document.getElementById('step1').style.display = (step===1 ? 'block' : 'none');
-  document.getElementById('step2').style.display = (step===2 ? 'block' : 'none');
-  document.getElementById('step3').style.display = (step===3 ? 'block' : 'none');
-  // results (step 4)
-  document.getElementById('resultsWrap').style.display = (step===4 ? 'flex' : 'none');
+
+  // show/hide steps/results
+  document.getElementById('step1').style.display = (step === 1 ? 'block' : 'none');
+  document.getElementById('step2').style.display = (step === 2 ? 'block' : 'none');
+  document.getElementById('step3').style.display = (step === 3 ? 'block' : 'none');
+  document.getElementById('resultsWrap').style.display = (step === 4 ? 'block' : 'none');
+
+  // battery block visibility based on mode
+  const mode = document.getElementById('systemMode').value;
+  document.getElementById('batteryBlock').style.display = (mode === 'hybrid' || mode === 'offgrid') ? 'block' : 'none';
 }
 
-/* show/hide batteryBlock when mode changes */
-document.getElementById('systemMode').addEventListener('change', function(){
-  const v = this.value;
-  document.getElementById('batteryBlock').style.display = (v==='hybrid' || v==='offgrid') ? 'block' : 'none';
-});
-
-/* ---------- CALCULATIONS ---------- */
+/* ------------------ calculation core ------------------ */
 function calculateAll(){
-  // gather inputs
-  const mode = document.getElementById('systemMode').value;
-  const daily = parseFloat(document.getElementById('dailyKwh').value); // kWh/day
-  const sun = parseFloat(document.getElementById('peakSun').value); // hrs
-  const peakLoad = parseFloat(document.getElementById('peakLoad').value) || 0; // kW, optional
-  const dcac = parseFloat(document.getElementById('dcacRatio').value) || 1.2;
-  const pf = parseFloat(document.getElementById('powerFactor').value) || 0.95;
-  const invEffPct = parseFloat(document.getElementById('inverterEff').value) || 95;
-  const invEff = invEffPct/100;
+  // collect inputs; if empty, mark default and apply later
+  const defaultsApplied = [];
 
-  // panels & physical
-  const panelW = parseFloat(document.getElementById('panelW').value) || 430; // W
-  const panelEffPct = parseFloat(document.getElementById('panelEff').value) || 19.5;
+  function getNumber(id, def){
+    const el = document.getElementById(id);
+    const raw = el.value;
+    if(raw === '' || raw === undefined || raw === null){
+      defaultsApplied.push({id,def});
+      el.value = def;
+      return Number(def);
+    }
+    const n = Number(raw);
+    if(isNaN(n)){
+      defaultsApplied.push({id,def});
+      el.value = def;
+      return Number(def);
+    }
+    return n;
+  }
+
+  const mode = document.getElementById('systemMode').value;
+
+  // required numeric inputs (with defaults if empty)
+  const daily = getNumber('dailyKwh', 10);        // kWh/day default 10
+  let sun = getNumber('peakSun', 5);             // hours default 5
+  if(sun > 12){ sun = 12; document.getElementById('peakSun').value = 12; showToast('Peak Sun Hours capped to 12'); }
+
+  const peakLoad = getNumber('peakLoad', 0);     // optional; default 0
+  const dcac = getNumber('dcacRatio', 1.2);
+  const inverterEffPct = getNumber('inverterEff', 95);
+  const inverterEff = inverterEffPct / 100;
+
+  const panelW = getNumber('panelW', 430);
+  const panelEffPct = getNumber('panelEff', 19.5);
   const panelEff = panelEffPct / 100;
-  const degradationPct = parseFloat(document.getElementById('degradation').value) || 0.5;
-  const deratePct = parseFloat(document.getElementById('deratePct').value) || 77;
+  const degradation = getNumber('degradation', 0.5);
+  const deratePct = getNumber('deratePct', 77);
   const derate = deratePct / 100;
 
-  const roofArea = parseFloat(document.getElementById('roofArea').value) || 0;
-  const roofUnit = document.getElementById('roofUnit').value || 'm2';
-  const areaFactorPct = parseFloat(document.getElementById('areaFactor').value) || 10;
+  // roof
+  const roofAreaRaw = document.getElementById('roofArea').value;
+  let roofArea = roofAreaRaw === '' ? 0 : Number(roofAreaRaw);
+  const roofUnit = document.getElementById('roofUnit').value;
 
-  // battery inputs (if applicable)
-  const autonomy = parseFloat(document.getElementById('autonomyDays').value) || 0;
-  const dodPct = parseFloat(document.getElementById('dodPct').value) || 80;
+  const tilt = getNumber('tilt', 20);
+  const orientation = document.getElementById('orientation').value;
+
+  // battery
+  let autonomy = getNumber('autonomy', 1);
+  const dodPct = getNumber('dod', 80);
   const dod = dodPct/100;
-  const sysVolt = parseFloat(document.getElementById('sysVoltage').value) || 48;
+  const sysVoltage = Number(document.getElementById('sysVoltage').value) || 48;
   const battType = document.getElementById('batteryType').value;
 
-  // financials
-  const costPerkW = parseFloat(document.getElementById('costPerkW').value) || 800;
-  const tariff = parseFloat(document.getElementById('tariff').value) || 0.13;
-  const lifetime = parseFloat(document.getElementById('lifetime').value) || 25;
-  const incentivesPct = parseFloat(document.getElementById('incentives').value) || 0;
-  const co2Factor = parseFloat(document.getElementById('co2Factor').value) || 0.5;
+  // financial
+  const costPerkW = getNumber('costPerkW', 800);
+  const tariff = getNumber('tariff', 0.13);
+  const lifetime = getNumber('lifetime', 25);
+  const incentives = getNumber('incentives', 0);
+  const co2Factor = getNumber('co2Factor', 0.5);
+  const areaFactor = getNumber('areaFactor', 10);
 
-  // validate core fields
-  if(isNaN(daily) || daily<=0){ showToast('Daily consumption must be a positive number'); return; }
-  if(isNaN(sun) || sun<=0){ showToast('Peak sun hours must be positive'); return; }
+  // show defaults toast if any
+  if(defaultsApplied.length){
+    const ids = defaultsApplied.map(d => d.id).slice(0,6).join(', ');
+    showToast('Defaults applied for empty fields');
+  }
 
-  /* ---------- PV sizing formula ----------
-     We want AC energy delivered = daily_kWh.
-     Array (kW DC) * sun_hours * derate * inverter_eff = daily_kWh
-     => array_kW = daily_kWh / (sun_hours * derate * inverter_eff)
-  */
-  const array_kW = daily / (sun * derate * invEff);
+  // core PV sizing (same as before)
+  const array_kW = daily / (sun * derate * inverterEff);
   const array_W = array_kW * 1000;
-
-  // number of panels
   const panels = Math.max(0, Math.ceil(array_W / panelW));
 
-  // panel area estimate (m²)
-  const panelArea_m2 = panelW / (1000 * panelEff); // m² per panel
-  let totalPanelArea_m2 = panelArea_m2 * panels;
-  // apply area factor
-  totalPanelArea_m2 *= (1 + areaFactorPct/100);
+  // panel area (m2)
+  const panelArea_m2 = panelW / (1000 * panelEff);
+  let totalPanelArea_m2 = panelArea_m2 * panels * (1 + areaFactor/100);
 
-  // convert roof area to m2 if needed
-  let roofArea_m2 = roofArea;
-  if(roofUnit === 'ft2') roofArea_m2 = roofArea * 0.092903;
+  // convert roof unit
+  let roofM2 = roofArea;
+  if(roofUnit === 'ft2') roofM2 = roofArea * 0.092903;
 
-  // Roof fit check (if roofArea given)
-  const roofFits = roofArea_m2 === 0 ? null : (totalPanelArea_m2 <= roofArea_m2);
+  const roofFits = roofM2 === 0 ? null : (totalPanelArea_m2 <= roofM2);
 
-  /* ---------- Inverter sizing ----------
-     Strategy:
-     - Compute inverter_kW_by_array = array_kW / DC_AC_ratio
-       (DC/AC ratio = array_kW / inverter_kW ; typical DC/AC 1.1–1.3 => inverter_kW = array_kW / DCAC)
-     - Optionally use user-provided peakLoad (kW) if supplied
-     - Required inverter_kW = max( inverter_kW_by_array, peakLoad_kW )
-     - Compute inverter_kVA = inverter_kW / powerFactor
-  */
+  // inverter size (see earlier reasoning)
   const inverter_kW_by_array = array_kW / dcac;
   const inverter_kW_required = Math.max(inverter_kW_by_array, peakLoad || 0);
-  const inverter_kVA_required = inverter_kW_required / (pf || 1);
+  const inverter_kVA_required = inverter_kW_required / PF;
 
-  // round to sensible values for display
-  const inverter_kW_display = Math.max(0.1, inverter_kW_required); // kW
-  const inverter_kVA_display = Math.max(0.1, inverter_kVA_required); // kVA
-
-  /* ---------- Battery sizing ----------
-     battery_nominal_Wh = daily_kWh * 1000 * autonomy_days / (DoD * inverter_eff)
-     battery_kWh = battery_nominal_Wh / 1000
-     battery_Ah = battery_nominal_Wh / system_voltage
-  */
+  // battery sizing
   let battery_kWh = 0, battery_Ah = 0;
   if(mode === 'hybrid' || mode === 'offgrid'){
-    if(autonomy <= 0){ /* if battery expected but autonomy zero, default to 1 day */ }
-    const autonomyDays = Math.max(autonomy, 1); // fallback 1 day
-    const battery_nominal_Wh = daily * 1000 * autonomyDays / (dod * invEff);
+    autonomy = Math.max(autonomy, 1); // ensure at least 1 day
+    const battery_nominal_Wh = daily * 1000 * autonomy / (dod * inverterEff);
     battery_kWh = battery_nominal_Wh / 1000;
-    battery_Ah = battery_nominal_Wh / sysVolt;
+    battery_Ah = battery_nominal_Wh / sysVoltage;
   }
 
-  /* ---------- Financials & lifetime ----------
-     systemCostGross = array_kW * costPerkW
-     netCost = systemCostGross * (1 - incentivesPct/100)
-     yearlyGen1 = daily * 365
-     lifetimeGen = sum_{y=1..lifetime} yearlyGen1*(1-deg)^(y-1)
-     yearlySavings = yearlyGen1 * tariff
-     paybackYears = netCost / yearlySavings
-     lcoe = netCost / lifetimeGen
-  */
+  // financials lifetime
   const systemCostGross = array_kW * costPerkW;
-  const netCost = systemCostGross * (1 - incentivesPct/100);
+  const netCost = systemCostGross * (1 - incentives/100);
   const yearlyGen1 = daily * 365;
-  // lifetime generation accounting for degradation
-  const degFraction = (degradationPct / 100);
+  const degFraction = degradation/100;
   let lifetimeGen = 0;
-  for(let y=0;y<lifetime;y++){
-    lifetimeGen += yearlyGen1 * Math.pow(1 - degFraction, y);
-  }
+  for(let y=0;y<lifetime;y++) lifetimeGen += yearlyGen1 * Math.pow(1 - degFraction, y);
   const yearlySavings = yearlyGen1 * tariff;
   const payback = yearlySavings > 0 ? netCost / yearlySavings : Infinity;
   const lcoe = lifetimeGen > 0 ? netCost / lifetimeGen : Infinity;
   const lifetimeSavings = lifetimeGen * tariff;
-
-  // CO2 avoided
   const co2Avoid_kg = yearlyGen1 * co2Factor;
   const co2Avoid_t = co2Avoid_kg / 1000;
 
-  /* ---------- Prepare result cards ---------- */
+  // prepare results UI
   const grid = document.getElementById('resultGrid');
   grid.innerHTML = '';
-
-  function makeCard(icon, title, main, sub){
-    const wrapper = document.createElement('div');
-    wrapper.className = 'result-card';
-    wrapper.innerHTML = `<div class="result-icon"><i class="${icon}"></i></div>
-      <div>
-        <div class="small">${title}</div>
-        <div class="value">${main}</div>
-        ${sub?('<div class="small" style="margin-top:6px;color:var(--muted)">'+sub+'</div>') : ''}
-      </div>`;
-    return wrapper;
+  function card(icon, title, main, sub){
+    const d = document.createElement('div'); d.className='result-card';
+    d.innerHTML = `<div class="result-icon"><i class="${icon}"></i></div>
+      <div><div class="small">${title}</div><div class="value">${main}</div>${sub?'<div class="small" style="margin-top:6px;color:var(--muted)">'+sub+'</div>':''}</div>`;
+    return d;
   }
 
-  // PV size & panels
-  grid.appendChild(makeCard('fas fa-solar-panel','PV Array (kW)', array_kW.toFixed(2) + ' kW', `${array_W.toFixed(0)} W DC`));
-  grid.appendChild(makeCard('fas fa-th-large','Panels', panels + ' pcs', `${panelW} W each`));
-
-  // inverter - show both kW and kVA & PF & DC/AC
-  grid.appendChild(makeCard('fas fa-plug','Inverter', inverter_kW_display.toFixed(2)+' kW', inverter_kVA_display.toFixed(2)+' kVA @ PF '+(pf.toFixed(2)) + ' • DC/AC '+dcac));
-
-  // battery - if present
-  if(mode === 'hybrid' || mode === 'offgrid'){
-    grid.appendChild(makeCard('fas fa-battery-full','Battery (usable)', battery_kWh>0 ? battery_kWh.toFixed(2)+' kWh' : '—', `≈ ${Math.round(battery_Ah)} Ah @ ${sysVolt}V`));
+  grid.appendChild(card('fas fa-solar-panel','PV array', array_kW.toFixed(2)+' kW', array_W.toFixed(0)+' W DC'));
+  grid.appendChild(card('fas fa-th-large','Panels', panels+' pcs', panelW+' W each'));
+  grid.appendChild(card('fas fa-plug','Inverter', inverter_kW_required.toFixed(2)+' kW', inverter_kVA_required.toFixed(2)+' kVA @ PF '+PF.toFixed(2)));
+  if(mode==='hybrid' || mode==='offgrid'){
+    grid.appendChild(card('fas fa-battery-full','Battery usable', battery_kWh>0 ? battery_kWh.toFixed(2)+' kWh' : '—', battery_Ah>0 ? Math.round(battery_Ah)+' Ah @ '+sysVoltage+'V' : '—'));
   } else {
-    grid.appendChild(makeCard('fas fa-chart-line','Mode','Grid-tied','No battery sizing'));
+    grid.appendChild(card('fas fa-chart-line','Mode','Grid-tied','No battery sizing'));
   }
+  grid.appendChild(card('fas fa-ruler-combined','Panel area', totalPanelArea_m2.toFixed(1)+' m²', 'per panel ≈ '+panelArea_m2.toFixed(2)+' m²'));
+  grid.appendChild(card('fas fa-home','Roof fit', roofArea? (roofFits ? 'Fits ✅' : 'Too small ❌') : 'No roof area', roofArea? ('Available '+roofArea+' '+roofUnit) : 'Enter roof area'));
+  grid.appendChild(card('fas fa-dollar-sign','System cost (gross)','$'+systemCostGross.toFixed(0), 'Cost/kW $'+costPerkW));
+  grid.appendChild(card('fas fa-money-bill-wave','Net cost','$'+netCost.toFixed(0), 'Incentives '+incentives+'%'));
+  grid.appendChild(card('fas fa-coins','Yearly savings','$'+yearlySavings.toFixed(0), 'Tariff $'+tariff+'/kWh'));
+  grid.appendChild(card('fas fa-hourglass-half','Payback', isFinite(payback)?payback.toFixed(1)+' yrs':'—',''));
+  grid.appendChild(card('fas fa-seedling','CO₂ avoided/yr', co2Avoid_t.toFixed(2)+' t', co2Avoid_kg.toFixed(0)+' kg'));
+  grid.appendChild(card('fas fa-percent','LCOE', isFinite(lcoe)?'$'+lcoe.toFixed(3)+'/kWh':'—',''));
 
-  // panel area & roof fit
-  grid.appendChild(makeCard('fas fa-ruler-combined','Panel area', totalPanelArea_m2.toFixed(1) + ' m²', `per panel ≈ ${panelArea_m2.toFixed(2)} m²`));
-  grid.appendChild(makeCard('fas fa-home','Roof check', roofArea ? (roofFits ? 'Fits ✅' : 'Too small ❌') : 'No roof area', roofArea ? `Available ${roofArea} ${roofUnit}` : 'Enter roof area to check'));
-
-  // financials
-  grid.appendChild(makeCard('fas fa-dollar-sign','System cost (gross)','$'+systemCostGross.toFixed(0), `Cost/kW $${costPerkW}`));
-  grid.appendChild(makeCard('fas fa-money-bill-wave','Net cost','$'+netCost.toFixed(0), `Incentives ${incentivesPct}%`));
-  grid.appendChild(makeCard('fas fa-coins','Yearly savings','$'+yearlySavings.toFixed(0), `Tariff $${tariff}/kWh`));
-  grid.appendChild(makeCard('fas fa-hourglass-half','Payback', isFinite(payback) ? payback.toFixed(1)+' yrs' : '—', ''));
-
-  // CO2 & LCOE
-  grid.appendChild(makeCard('fas fa-seedling','CO₂ avoided / yr', co2Avoid_t.toFixed(2)+' t', co2Avoid_kg.toFixed(0)+' kg/year'));
-  grid.appendChild(makeCard('fas fa-percent','LCOE', isFinite(lcoe) ? '$'+lcoe.toFixed(3)+'/kWh' : '—', ''));
-
-  /* --- fill summary fields --- */
+  // summary
   document.getElementById('outNetCost').innerText = '$' + netCost.toFixed(0);
   document.getElementById('outPayback').innerText = isFinite(payback) ? payback.toFixed(1)+' yrs' : '—';
   document.getElementById('outLifetimeGen').innerText = lifetimeGen.toFixed(0) + ' kWh';
   document.getElementById('outLifetimeSave').innerText = '$' + lifetimeSavings.toFixed(0);
 
-  // show results
+  // show results (full width)
   goTo(4);
+
+  if(defaultsApplied && defaultsApplied.length){
+    showToast('Missing inputs used defaults.');
+  }
 }
 
-/* ---------- reset ---------- */
-function resetAll(){
-  // clear all inputs
-  document.querySelectorAll('input').forEach(i=>i.value='');
-  document.querySelectorAll('select').forEach(s=> s.selectedIndex = 0);
-  // restore some defaults
-  document.getElementById('panelW').value = '430';
-  document.getElementById('panelEff').value = '19.5';
-  document.getElementById('degradation').value = '0.5';
-  document.getElementById('deratePct').value = '77';
-  document.getElementById('dcacRatio').value = '1.2';
-  document.getElementById('powerFactor').value = '0.95';
-  document.getElementById('inverterEff').value = '95';
-  document.getElementById('costPerkW').value = '800';
-  document.getElementById('tariff').value = '0.13';
-  document.getElementById('lifetime').value = '25';
-  document.getElementById('co2Factor').value = '0.5';
-  document.getElementById('areaFactor').value = '10';
-
-  // hide battery block
-  document.getElementById('batteryBlock').style.display = 'none';
-  // hide results & go to step1
-  goTo(1);
-  // clear results grid
-  document.getElementById('resultGrid').innerHTML = '';
-  document.getElementById('outNetCost').innerText = '$—';
-  document.getElementById('outPayback').innerText = '— yrs';
-  document.getElementById('outLifetimeGen').innerText = '—';
-  document.getElementById('outLifetimeSave').innerText = '$—';
-}
-
-/* ---------- export PDF ---------- */
+/* ------------------ export / reset ------------------ */
 function exportPDF(){
-  // capture the results card only (the card that contains results)
   const card = document.querySelector('#resultsWrap .card');
   if(!card){ showToast('Nothing to export'); return; }
-  // use html2pdf
-  html2pdf().from(card).set({
-    margin:12, filename:'solar_results.pdf', html2canvas:{scale:2}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-  }).save();
+  html2pdf().from(card).set({margin:12, filename:'solar_results.pdf', html2canvas:{scale:2}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).save();
 }
 
-/* ---------- initial UI state ---------- */
+function resetAll(){
+  // clear all inputs (but keep some sensible defaults)
+  document.querySelectorAll('input').forEach(i=>i.value='');
+  document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+  document.getElementById('panelW').value = '430';
+  document.getElementById('panelEff').value = '19.5';
+  document.getElementById('degradation').value='0.5';
+  document.getElementById('deratePct').value='77';
+  document.getElementById('dcacRatio').value='1.2';
+  document.getElementById('inverterEff').value='95';
+  document.getElementById('costPerkW').value='800';
+  document.getElementById('tariff').value='0.13';
+  document.getElementById('lifetime').value='25';
+  document.getElementById('co2Factor').value='0.5';
+  document.getElementById('areaFactor').value='10';
+  document.getElementById('batteryBlock').style.display='none';
+  document.getElementById('resultGrid').innerHTML='';
+  document.getElementById('outNetCost').innerText='$—';
+  document.getElementById('outPayback').innerText='— yrs';
+  document.getElementById('outLifetimeGen').innerText='—';
+  document.getElementById('outLifetimeSave').innerText='$—';
+  goTo(1);
+}
+
+/* initial state */
 goTo(1);
+
+/* battery block display logic on mode change */
 document.getElementById('systemMode').addEventListener('change', function(){
   const v = this.value;
   document.getElementById('batteryBlock').style.display = (v==='hybrid' || v==='offgrid') ? 'block' : 'none';
-});
-
-/* ---------- keyboard handy: Enter moves forward in small forms ---------- */
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter'){
-    // find visible step and move to next where appropriate
-    if(document.getElementById('step1').style.display !== 'none') goTo(2);
-    else if(document.getElementById('step2').style.display !== 'none') goTo(3);
-    else if(document.getElementById('step3').style.display !== 'none') calculateAll();
-  }
 });
 </script>
 </body>
