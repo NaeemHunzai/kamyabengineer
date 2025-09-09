@@ -4,119 +4,165 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Advanced Solar Wizard</title>
 <style>
-  /* Light theme styling */
-  body{margin:0;font-family:sans-serif;background:#f5f5f5;color:#333;}
-  .container{max-width:480px;margin:20px auto;padding:20px;}
-  .card{background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);padding:16px;margin-top:12px;}
+  body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f9fafc;color:#333;}
+  .container{max-width:480px;margin:20px auto;padding:10px;}
+  .card{background:#fff;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);padding:20px;margin-top:20px;animation:fadeIn .4s;}
   .step{display:none;}
   .step.active{display:block;}
-  label{display:block; margin:12px 0 4px;font-weight:600;}
-  input, select{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;}
-  button{margin-top:16px;padding:10px;background:#0077cc;color:#fff;border:none;border-radius:6px;width:100%;}
-  .toggles{display:flex;gap:8px;}
+  h2{margin-top:0;color:#006d77;}
+  label{display:block;margin-top:12px;font-weight:600;}
+  input,select{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #ccc;font-size:1rem;}
+  button{background:#006d77;color:#fff;padding:12px;border:none;border-radius:8px;cursor:pointer;margin-top:20px;width:100%;font-size:1rem;}
+  button:hover{background:#004f55;}
+  .progress{display:flex;justify-content:space-between;margin-bottom:10px;}
+  .progress div{flex:1;height:6px;margin:0 3px;background:#ddd;border-radius:3px;}
+  .progress .active{background:#006d77;}
+  .result-card{background:#e6f5f7;border-left:5px solid #006d77;margin-bottom:12px;padding:12px;border-radius:8px;}
+  .actions{display:flex;gap:10px;}
+  .actions button{flex:1;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 </style>
 </head>
 <body>
 <div class="container">
+
+  <!-- Progress Bar -->
+  <div class="progress">
+    <div id="bar1" class="active"></div>
+    <div id="bar2"></div>
+    <div id="bar3"></div>
+  </div>
+
   <!-- Step 1 -->
   <div id="step1" class="card step active">
-    <h2>Step 1: Tech Details</h2>
-    <label>Daily Energy (kWh)</label><input id="consumption" type="number">
-    <label>Peak Sun Hours</label><input id="psh" type="number">
-    <label>Panel Wattage (W)</label><input id="watt" type="number">
-    <label>Panel Efficiency (%)</label><input id="eff" type="number">
-    <label>System Losses (%)</label><input id="loss" type="number">
-    <div class="toggles">
-      <label><input id="modeGrid" type="radio" name="mode" checked> Grid-Tied</label>
-      <label><input id="modeOff" type="radio" name="mode"> Off-Grid</label>
-    </div>
-    <div id="offgridInputs" style="display:none;">
-      <label>Autonomy (days)</label><input id="autonomy" type="number">
-      <label>DoD (%)</label><input id="dod" type="number">
-      <label>System Voltage (V)</label><input id="voltage" type="number">
-    </div>
-    <button onclick="goto(2)">Next</button>
+    <h2>Step 1: System Type & Consumption</h2>
+    <label>System Type</label>
+    <select id="systemType" onchange="toggleSystemType()">
+      <option value="grid">Grid-Tied</option>
+      <option value="hybrid">Hybrid</option>
+      <option value="off">Off-Grid</option>
+    </select>
+
+    <label>Daily Energy Consumption (kWh)</label>
+    <input id="consumption" type="number" placeholder="e.g. 20">
+
+    <label>Peak Sun Hours</label>
+    <input id="psh" type="number" placeholder="e.g. 5">
+
+    <button onclick="nextStep(1)">Next</button>
   </div>
 
   <!-- Step 2 -->
   <div id="step2" class="card step">
-    <h2>Step 2: Constraints & Financials</h2>
-    <label>Roof Area <span id="unitRoof">m²</span></label>
-    <div class="toggles">
-      <input id="roofVal" type="number"><button type="button" onclick="toggleRoofUnit()">Toggle m²/ft²</button>
-    </div>
-    <label>Install Cost ($/kW)</label><input id="costkw" type="number">
-    <label>Tariff ($/kWh)</label><input id="tariff" type="number">
-    <button onclick="goto(3)">Next</button>
+    <h2>Step 2: Panel & Roof</h2>
+    <label>Panel Wattage (W)</label>
+    <input id="watt" type="number">
+
+    <label>Panel Efficiency (%)</label>
+    <input id="eff" type="number">
+
+    <label>System Losses (%)</label>
+    <input id="loss" type="number">
+
+    <label>Roof Area</label>
+    <input id="roof" type="number" placeholder="Available area">
+    <select id="roofUnit">
+      <option value="m2">m²</option>
+      <option value="ft2">ft²</option>
+    </select>
+
+    <label>Tilt Angle (°)</label>
+    <input id="tilt" type="number">
+
+    <label>Orientation</label>
+    <select id="orientation">
+      <option>South</option><option>East</option><option>West</option><option>Flat</option>
+    </select>
+
+    <button onclick="nextStep(2)">Next</button>
+  </div>
+
+  <!-- Step 2B: Battery (only if Hybrid/Off-Grid) -->
+  <div id="step2b" class="card step">
+    <h2>Step 2B: Battery Details</h2>
+    <label>Autonomy Days</label><input id="autonomy" type="number">
+    <label>Depth of Discharge (%)</label><input id="dod" type="number">
+    <label>System Voltage (V)</label><input id="voltage" type="number">
+    <label>Battery Type</label>
+    <select id="batteryType"><option>Lead Acid</option><option>Lithium</option></select>
+    <button onclick="nextStep(2.5)">Next</button>
   </div>
 
   <!-- Step 3 -->
   <div id="step3" class="card step">
-    <h2>Step 3: Results</h2>
-    <div id="output"></div>
-    <button onclick="resetAll()">Reset</button>
+    <h2>Step 3: Financials</h2>
+    <label>Installed Cost ($/kW)</label><input id="costkw" type="number">
+    <label>Tariff ($/kWh)</label><input id="tariff" type="number">
+    <label>Incentives (%)</label><input id="incentive" type="number">
+    <label>Financing Option</label>
+    <select id="finance"><option>No</option><option>Yes</option></select>
+
+    <button onclick="showResults()">Calculate</button>
   </div>
+
+  <!-- Results -->
+  <div id="results" class="card step">
+    <h2>Results</h2>
+    <div id="output">
+      <div class="result-card"><b>Panels Required:</b> --</div>
+      <div class="result-card"><b>System Capacity:</b> --</div>
+      <div class="result-card"><b>Battery Bank:</b> --</div>
+      <div class="result-card"><b>Roof Area Required:</b> --</div>
+      <div class="result-card"><b>Cost Estimate:</b> --</div>
+      <div class="result-card"><b>Yearly Savings:</b> --</div>
+      <div class="result-card"><b>Payback Period:</b> --</div>
+      <div class="result-card"><b>Carbon Reduction:</b> --</div>
+    </div>
+    <div class="actions">
+      <button onclick="resetAll()">Reset</button>
+      <button>Export PDF</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  // Toggle off-grid inputs
-  document.getElementById('modeOff').onchange = function(){
-    document.getElementById('offgridInputs').style.display = 'block';
-  };
-  document.getElementById('modeGrid').onchange = function(){
-    document.getElementById('offgridInputs').style.display = 'none';
-  };
-
-  // Toggle roof unit
-  let roofUnit = 'm²';
-  function toggleRoofUnit(){
-    roofUnit = roofUnit==='m²'?'ft²':'m²';
-    document.getElementById('unitRoof').innerText = roofUnit;
-  }
-
-  function goto(step){
-    document.querySelectorAll('.step').forEach(el=>el.classList.remove('active'));
-    document.getElementById('step'+step).classList.add('active');
-    if(step===3) computeResults();
-  }
-
-  function computeResults(){
-    const c = +document.getElementById('consumption').value;
-    const p = +document.getElementById('psh').value;
-    const w = +document.getElementById('watt').value;
-    const e = +document.getElementById('eff').value;
-    const l = +document.getElementById('loss').value;
-    const botG = document.getElementById('modeOff').checked;
-    const roof = +document.getElementById('roofVal').value;
-    const costkw = +document.getElementById('costkw').value;
-    const tariff = +document.getElementById('tariff').value;
-
-    const dailyGen = w*(e/100)*p*(1 - l/100)/1000;
-    const panels = Math.ceil(c / dailyGen);
-    const systemKW = (panels*w)/1000;
-    const cost = systemKW * costkw;
-    const savingsYear = c * 365 * tariff;
-    const payback = cost/savingsYear;
-
-    let html = `
-      <p><b>Panels:</b> ${panels}</p>
-      <p><b>Generation/day:</b> ${dailyGen.toFixed(2)} kWh</p>
-      <p><b>System Size:</b> ${systemKW.toFixed(2)} kW</p>
-      <p><b>Cost:</b> $${cost.toFixed(0)}</p>
-      <p><b>Yearly Savings:</b> $${savingsYear.toFixed(0)}</p>
-      <p><b>Payback:</b> ${payback.toFixed(1)} yrs</p>
-    `;
-    if(botG){
-      const a = +document.getElementById('autonomy').value;
-      const dod = +document.getElementById('dod').value/100;
-      const volt = +document.getElementById('voltage').value;
-      html += `<p><i>Off-grid battery sizing can be added later</i></p>`;
+  function nextStep(n){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    if(n===1){ 
+      document.getElementById('step2').classList.add('active'); 
+      document.getElementById('bar2').classList.add('active');
+      if(['hybrid','off'].includes(document.getElementById('systemType').value)){
+        document.getElementById('step2b').classList.add('active');
+      }
     }
-    document.getElementById('output').innerHTML = html;
+    else if(n===2){ 
+      if(['hybrid','off'].includes(document.getElementById('systemType').value)){
+        document.getElementById('step2b').classList.add('active');
+      } else {
+        document.getElementById('step3').classList.add('active'); 
+        document.getElementById('bar3').classList.add('active');
+      }
+    }
+    else if(n===2.5){
+      document.getElementById('step3').classList.add('active');
+      document.getElementById('bar3').classList.add('active');
+    }
   }
-
+  function showResults(){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('results').classList.add('active');
+  }
   function resetAll(){
-    document.querySelectorAll('input').forEach(i=>i.value='');
-    goto(1);
+    document.querySelectorAll('input').forEach(i=>i.value="");
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('bar2').classList.remove('active');
+    document.getElementById('bar3').classList.remove('active');
+  }
+  function toggleSystemType(){
+    // Could dynamically show/hide battery step
   }
 </script>
+</body>
+</html>
