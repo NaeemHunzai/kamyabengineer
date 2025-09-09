@@ -26,7 +26,8 @@ body{display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
 .subtitle{font-size:12px;color:var(--muted)}
 
 /* stepper */
-.stepper{display:flex;justify-content:space-between;align-items:center;margin:12px 0;position:relative;padding:0 6px}
+/* MADE STICKY: position changed from relative to sticky and will stay at top */
+.stepper{display:flex;justify-content:space-between;align-items:center;margin:12px 0;position:sticky;top:0;background:var(--bg);padding:0 6px;z-index:1000}
 .stepper::before{content:'';position:absolute;left:24px;right:24px;height:4px;background:#e6eef6;top:50%;transform:translateY(-50%);z-index:0;border-radius:999px}
 .step-dot{z-index:2;width:32px;height:32px;border-radius:50%;background:#e6eef6;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#374151}
 .step-dot.active{background:linear-gradient(90deg,var(--primary),var(--accent)); color:white; box-shadow:0 6px 18px rgba(3,105,79,0.12)}
@@ -429,28 +430,29 @@ document.querySelectorAll('.infoBtn').forEach(b=>{
 });
 
 /* ------------------ uniform odd-value enforcement ------------------
-   Fields that have attribute data-even="true" are enforced to even integers:
-   - On input: if value is numeric and odd, we round up to next even and show toast.
-   - We do this gently: on 'input' we examine numeric value and adjust.
+   Changed: enforcement only applied to specific integer fields and runs on blur (not on input)
 */
-document.querySelectorAll('[data-even=\"true\"]').forEach(el=>{
-  el.addEventListener('input', (ev)=>{
-    const vRaw = el.value;
-    if(vRaw === '') return; // allow blank until calc
-    let v = Number(vRaw);
-    if(isNaN(v)) return;
-    // if not integer, keep decimals for fields where step allows decimals — but data-even intended for integer fields
-    v = Math.round(v); // enforce integer
-    if(v % 2 !== 0){
-      // round up to nearest even
-      const corrected = v + 1;
-      el.value = corrected;
-      showToast('Value adjusted to nearest even: ' + corrected, 1400);
-    } else {
-      el.value = v; // keep normalized integer
-    }
+(function(){
+  const evenIds = ['panelW','roofArea']; // only enforce for these integer fields to avoid interfering with e.g. autonomy (step=0.25)
+  evenIds.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('blur',(ev)=>{
+      const vRaw = el.value;
+      if(vRaw === '') return; // allow blank until calc
+      let v = Number(vRaw);
+      if(isNaN(v)) return;
+      v = Math.round(v); // enforce integer
+      if(v % 2 !== 0){
+        const corrected = v + 1;
+        el.value = corrected;
+        showToast('Value adjusted to nearest even: ' + corrected, 1400);
+      } else {
+        el.value = v; // keep normalized integer
+      }
+    });
   });
-});
+})();
 
 /* Peak Sun Hours clamp to <= 12 enforcement */
 const peakEl = document.getElementById('peakSun');
@@ -485,8 +487,8 @@ function findScrollableAncestor(el){
 }
 
 function detectTopFixedHeaderHeight(){
-  // check some common selectors for a fixed header
-  const candidates = Array.from(document.querySelectorAll('header, .header, .topbar, .navbar, [role=\"banner\"]'));
+  // check some common selectors for a fixed header (ADDED .stepper so sticky stepper is accounted for)
+  const candidates = Array.from(document.querySelectorAll('header, .header, .topbar, .navbar, .stepper, [role=\"banner\"]'));
   for(const e of candidates){
     const cs = getComputedStyle(e);
     if ((cs.position === 'fixed' || cs.position === 'sticky') && parseFloat(cs.top) <= 0 && e.offsetHeight > 0){
