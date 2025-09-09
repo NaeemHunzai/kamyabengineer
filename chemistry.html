@@ -1,564 +1,192 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-<title>Advanced Solar Calculator — Dark Modern</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar Calculator Wizard</title>
+
 <style>
-  :root{
-    --bg-1: #0b0f1a;
-    --bg-2: #0f1724;
-    --card: #0c1220;
-    --muted: #9aa4b2;
-    --accent: #7c3aed; /* purple */
-    --accent-2: #06b6d4; /* teal */
-    --glass: rgba(255,255,255,0.03);
-    --danger: #f97316;
-    --maxw: 920px;
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(145deg, #0a0a0a, #1c1c1c);
+    color: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
   }
-  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent}
-  html,body{height:100%; margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial; background: linear-gradient(180deg,var(--bg-1),var(--bg-2)); color:#e6eef6; -webkit-font-smoothing:antialiased}
-  .wrap{max-width:var(--maxw); margin:18px auto; padding:14px;}
-  .header{
-    display:flex; align-items:center; gap:12px; padding:14px; border-radius:14px; background:linear-gradient(90deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08)); box-shadow:0 6px 24px rgba(2,6,23,0.6);
+  .container {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(25,25,25,0.9);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
   }
-  .logo{
-    width:52px;height:52px;border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex;align-items:center;justify-content:center; font-weight:700; color:white; font-size:20px; box-shadow:0 6px 18px rgba(124,58,237,0.18);
+  .step { display: none; animation: fade 0.4s ease; }
+  .step.active { display: block; }
+  @keyframes fade { from {opacity:0;} to {opacity:1;} }
+
+  h2 { text-align: center; margin-bottom: 10px; color: #00ffc6; }
+  label { display: block; margin: 15px 0 5px; font-size: 14px; }
+  input {
+    width: 100%; padding: 10px;
+    border-radius: 8px; border: none;
+    background: #111; color: #fff;
+    outline: none;
   }
-  .title{font-size:18px; font-weight:700}
-  .subtitle{font-size:12px; color:var(--muted)}
-  .grid{display:grid; grid-template-columns:1fr 420px; gap:14px; margin-top:14px}
-  .card{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.012)); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.02); box-shadow: 0 6px 18px rgba(2,6,23,0.6);}
-  h2{margin:0 0 8px 0; font-size:16px; color:#dbeafe}
-  label.row{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; color:var(--muted); margin-bottom:6px}
-  .input-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-  input[type=number], select{
-    -webkit-appearance:none; appearance:none;
-    background:var(--glass); color: #e6eef6; border: 1px solid rgba(255,255,255,0.03);
-    padding:10px 12px; border-radius:10px; min-width:0; font-size:14px;
+  button {
+    width: 100%; padding: 12px;
+    margin-top: 15px;
+    border: none; border-radius: 8px;
+    background: linear-gradient(90deg, #00ffc6, #0096ff);
+    color: #000; font-weight: bold;
+    cursor: pointer; transition: 0.3s;
   }
-  .field{flex:1; min-width:110px}
-  .small{width:44px; text-align:center}
-  .control-actions{display:flex; gap:10px; margin-top:12px}
-  button.btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 14px; border-radius:10px; font-weight:600; cursor:pointer; border:none;
-    box-shadow:0 6px 14px rgba(2,6,23,0.5);
+  button:hover { opacity: 0.9; }
+
+  .results-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+    box-shadow: inset 0 0 15px rgba(0,255,200,0.3);
   }
-  button.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white;}
-  button.ghost{background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted);}
-  .results {padding:10px; display:flex; flex-direction:column; gap:10px}
-  .kpi{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
-  .kpi-card{background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.01)); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.02); text-align:center}
-  .kpi-card strong{display:block; font-size:18px; color:#fff}
-  .kpi-card small{color:var(--muted)}
-  .result-section{display:flex; flex-direction:column; gap:8px}
-  .result-card{padding:10px; border-radius:10px; background:linear-gradient(180deg, rgba(12,18,32,0.4), rgba(8,12,20,0.25)); border:1px solid rgba(255,255,255,0.02)}
-  .result-card h4{margin:0; color:var(--accent); font-size:14px}
-  .muted{color:var(--muted); font-size:13px}
-  .info-icon{margin-left:8px; cursor:pointer; color:var(--accent-2); font-weight:700; border-radius:6px; padding:2px 6px; background:rgba(6,182,212,0.06)}
-  /* modals */
-  .modal{position:fixed; left:0; top:0; width:100%; height:100%; display:none; align-items:center; justify-content:center; z-index:9999}
-  .modal.backdrop{background:linear-gradient(0deg, rgba(2,6,23,0.6), rgba(2,6,23,0.6)) ; }
-  .modal-card{width:92%; max-width:420px; border-radius:12px; padding:16px; transform:translateY(20px); opacity:0; transition: all 260ms cubic-bezier(.2,.9,.3,1) }
-  .modal.show .modal-card{transform:translateY(0); opacity:1}
-  .info-style{background: linear-gradient(180deg, rgba(6,182,212,0.08), rgba(6,182,212,0.04)); border:1px solid rgba(6,182,212,0.12); color:#eaffff}
-  .warn-style{background: linear-gradient(180deg, rgba(249,115,22,0.08), rgba(249,115,22,0.03)); border:1px solid rgba(249,115,22,0.12); color:#fff7ed}
-  .modal h3{margin:0 0 6px 0; font-size:16px}
-  .modal p{margin:0; color:var(--muted); font-size:14px}
-  .modal .close{margin-top:12px; display:inline-block; padding:8px 12px; border-radius:8px; border:none; cursor:pointer}
-  .info-close{background:rgba(6,182,212,0.12); color:#bff6fb}
-  .warn-close{background:rgba(249,115,22,0.12); color:#ffd6b5}
-  /* warning shake */
-  .shake{animation: shake 560ms cubic-bezier(.36,.07,.19,.97); transform-origin:50% 50%}
-  @keyframes shake {
-    10%, 90% { transform: translateX(-2px); }
-    20%, 80% { transform: translateX(4px); }
-    30%, 50%, 70% { transform: translateX(-8px); }
-    40%, 60% { transform: translateX(8px); }
+  .results-card h3 { color: #00ffc6; margin-bottom: 15px; }
+  .reset-btn { background: #ff4d4d; margin-top: 10px; }
+  .pdf-btn { background: #ffaa00; margin-top: 10px; }
+
+  /* Custom Toast Notification */
+  .toast {
+    visibility: hidden;
+    min-width: 250px;
+    background: #fff;
+    color: #000;
+    text-align: center;
+    border-radius: 8px;
+    padding: 12px;
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 999;
   }
-  /* responsive */
-  @media (max-width:980px){ .grid{grid-template-columns:1fr} .kpi{grid-template-columns:repeat(2,1fr)} }
-  @media (max-width:480px){ .kpi{grid-template-columns:1fr} .control-actions{flex-direction:column} .logo{width:44px;height:44px} .title{font-size:16px} }
+  .toast.show {
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  @keyframes fadein { from{bottom:0;opacity:0;} to{bottom:30px;opacity:1;} }
+  @keyframes fadeout { from{bottom:30px;opacity:1;} to{bottom:0;opacity:0;} }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="header" role="banner">
-      <div class="logo">SV</div>
-      <div>
-        <div class="title">Advanced Solar Calculator</div>
-        <div class="subtitle">Accurate sizing • battery • finance • live validation</div>
-      </div>
-    </div>
 
-    <div class="grid" role="main">
-
-      <!-- LEFT: INPUTS -->
-      <section class="card" aria-labelledby="inputs-title">
-        <h2 id="inputs-title">Inputs</h2>
-
-        <!-- row helper -->
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-
-          <div style="flex:1 1 220px; min-width:180px">
-            <label class="row">Daily consumption (kWh)
-              <span class="info-icon" data-key="consumption">ℹ️</span>
-            </label>
-            <div class="input-row">
-              <input class="field" id="daily" type="number" inputmode="decimal" placeholder="e.g., 20" />
-              <input class="small" id="unitDaily" readonly value="kWh" style="background:transparent;border:none;color:var(--muted)"/>
-            </div>
-          </div>
-
-          <div style="flex:1 1 160px; min-width:130px">
-            <label class="row">Peak sun (hrs)
-              <span class="info-icon" data-key="sun">ℹ️</span>
-            </label>
-            <input class="field" id="sun" type="number" inputmode="decimal" placeholder="e.g., 5.5" />
-          </div>
-
-        </div>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px">
-          <div style="flex:1 1 160px; min-width:130px">
-            <label class="row">Panel watt (W)
-              <span class="info-icon" data-key="panelW">ℹ️</span>
-            </label>
-            <input class="field" id="panelW" type="number" inputmode="numeric" placeholder="e.g., 400" />
-          </div>
-
-          <div style="flex:1 1 160px; min-width:130px">
-            <label class="row">System derate (0.5–1.0)
-              <span class="info-icon" data-key="derate">ℹ️</span>
-            </label>
-            <input class="field" id="derate" type="number" step="0.01" inputmode="decimal" placeholder="e.g., 0.77" />
-          </div>
-        </div>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px">
-          <div style="flex:1 1 160px; min-width:130px">
-            <label class="row">Inverter eff (0.7–0.99)
-              <span class="info-icon" data-key="inv">ℹ️</span>
-            </label>
-            <input class="field" id="invEff" type="number" step="0.01" inputmode="decimal" placeholder="e.g., 0.95" />
-          </div>
-
-          <div style="flex:1 1 160px; min-width:130px">
-            <label class="row">Panel degradation %/yr
-              <span class="info-icon" data-key="deg">ℹ️</span>
-            </label>
-            <input class="field" id="deg" type="number" step="0.1" inputmode="decimal" placeholder="e.g., 0.5" />
-          </div>
-        </div>
-
-        <hr style="border:none; height:1px; background: rgba(255,255,255,0.03); margin:12px 0">
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <div style="flex:1 1 140px">
-            <label class="row">System voltage (V)
-              <span class="info-icon" data-key="volt">ℹ️</span>
-            </label>
-            <input class="field" id="voltage" type="number" inputmode="numeric" placeholder="e.g., 48" />
-          </div>
-
-          <div style="flex:1 1 140px">
-            <label class="row">Days autonomy
-              <span class="info-icon" data-key="aut">ℹ️</span>
-            </label>
-            <input class="field" id="autonomy" type="number" inputmode="numeric" placeholder="e.g., 2" />
-          </div>
-
-          <div style="flex:1 1 140px">
-            <label class="row">DoD (0.2–0.95)
-              <span class="info-icon" data-key="dod">ℹ️</span>
-            </label>
-            <input class="field" id="dod" type="number" step="0.01" inputmode="decimal" placeholder="e.g., 0.8" />
-          </div>
-        </div>
-
-        <hr style="border:none; height:1px; background: rgba(255,255,255,0.03); margin:12px 0">
-
-        <h2 style="font-size:14px; margin-bottom:8px">Financial</h2>
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <div style="flex:1 1 160px">
-            <label class="row">Tariff ($/kWh)
-              <span class="info-icon" data-key="tariff">ℹ️</span>
-            </label>
-            <input class="field" id="tariff" type="number" step="0.01" inputmode="decimal" placeholder="e.g., 0.15" />
-          </div>
-
-          <div style="flex:1 1 160px">
-            <label class="row">Cost per kW ($)
-              <span class="info-icon" data-key="cost">ℹ️</span>
-            </label>
-            <input class="field" id="costkW" type="number" step="1" inputmode="numeric" placeholder="e.g., 800" />
-          </div>
-
-          <div style="flex:1 1 100px">
-            <label class="row">Lifetime (yrs)
-              <span class="info-icon" data-key="life">ℹ️</span>
-            </label>
-            <input class="field" id="life" type="number" inputmode="numeric" placeholder="25" />
-          </div>
-        </div>
-
-        <div class="control-actions" style="margin-top:14px">
-          <button class="btn primary" id="calcBtn">Calculate</button>
-          <button class="btn ghost" id="resetBtn">Reset</button>
-        </div>
-
-        <div class="muted" style="margin-top:10px; font-size:12px">Tip: all fields accept numbers only. Invalid entries are blocked while typing.</div>
-      </section>
-
-      <!-- RIGHT: RESULTS -->
-      <aside class="card" aria-labelledby="results-title">
-        <h2 id="results-title">Results</h2>
-        <div class="results" id="resultsArea">
-          <div class="kpi">
-            <div class="kpi-card"><small>PV size</small><strong id="pvSize">— kW</strong></div>
-            <div class="kpi-card"><small>Panels</small><strong id="panels">—</strong></div>
-            <div class="kpi-card"><small>Inverter</small><strong id="inverter">— kW</strong></div>
-            <div class="kpi-card"><small>Battery (usable)</small><strong id="battery">— kWh</strong></div>
-          </div>
-          <div class="result-section" style="margin-top:8px">
-            <div class="result-card"><h4>Generation (AC)</h4><p id="year1">Year 1: — kWh</p><p id="year10">Year 10: — kWh</p></div>
-            <div class="result-card"><h4>Financial</h4><p id="sysCost">System cost: —</p><p id="yearSave">Yearly savings: —</p><p id="payback">Payback: — yrs</p><p id="lcoe">LCOE: — $/kWh</p></div>
-            <div class="result-card"><h4>Lifetime</h4><p id="lifeGen">Lifetime generation: — kWh</p><p id="lifeSave">Lifetime savings: —</p></div>
-          </div>
-        </div>
-      </aside>
-
-    </div>
+<div class="container">
+  <!-- Step 1 -->
+  <div class="step active" id="step1">
+    <h2>Step 1: Load</h2>
+    <label>Daily Energy (kWh)</label>
+    <input type="number" id="daily" min="1">
+    <button onclick="nextStep(2)">Next</button>
   </div>
 
-  <!-- INFO MODAL (blue) -->
-  <div id="infoModal" class="modal backdrop" aria-hidden="true">
-    <div class="modal-card info-style" role="dialog" aria-modal="true">
-      <h3 id="infoTitle">Info</h3>
-      <p id="infoText" style="margin-top:8px; color:var(--muted)"></p>
-      <div style="text-align:center"><button class="close info-close" onclick="closeInfo()">Close</button></div>
-    </div>
+  <!-- Step 2 -->
+  <div class="step" id="step2">
+    <h2>Step 2: Sun Hours</h2>
+    <label>Peak Sun Hours</label>
+    <input type="number" id="sun" min="1" step="0.1">
+    <button onclick="nextStep(3)">Next</button>
   </div>
 
-  <!-- WARN MODAL (red) -->
-  <div id="warnModal" class="modal backdrop" aria-hidden="true">
-    <div class="modal-card warn-style" role="alert" aria-modal="true">
-      <h3 id="warnTitle">Warning</h3>
-      <p id="warnText" style="margin-top:8px; color:var(--muted)"></p>
-      <div style="text-align:center"><button class="close warn-close" onclick="closeWarn()">Close</button></div>
-    </div>
+  <!-- Step 3 -->
+  <div class="step" id="step3">
+    <h2>Step 3: Panel Size</h2>
+    <label>Panel Wattage (W)</label>
+    <input type="number" id="watt" min="10">
+    <button onclick="calculate()">Calculate</button>
   </div>
 
+  <!-- Results Page -->
+  <div class="step" id="results">
+    <h2>Results</h2>
+    <div class="results-card" id="resultsContent">
+      <!-- JS fills results here -->
+    </div>
+    <button class="pdf-btn" onclick="exportPDF()">Export as PDF</button>
+    <button class="reset-btn" onclick="resetWizard()">Reset</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
-/* ---------- Input settings: min / max ranges ---------- */
-const RANGES = {
-  daily: {min:0.1, max:10000},
-  sun: {min:0.1, max:24},
-  panelW: {min:50, max:700},
-  derate: {min:0.5, max:1.0},
-  invEff: {min:0.7, max:0.99},
-  deg: {min:0, max:5}, // percent per year
-  voltage: {min:12, max:400},
-  autonomy: {min:0, max:30},
-  dod: {min:0.2, max:0.95},
-  tariff: {min:0, max:1000},
-  costkW: {min:10, max:100000},
-  life: {min:5, max:50}
-};
-
-/* ---------- info texts for Learn More icons ---------- */
-const INFO = {
-  consumption: "Daily electricity consumption in kilowatt-hours (kWh). Enter your average daily usage.",
-  sun: "Average peak sun hours per day at your location (kWh/m²/day). Use local solar maps or an approximate value.",
-  panelW: "Nominal panel wattage (W). Typical modern panels are 300–550 W.",
-  derate: "System derating (0.5–1.0). Accounts for losses: soiling, wiring, temperature, mismatch. Typical 0.7–0.85.",
-  inv: "Inverter efficiency (0.70–0.99). Represents DC→AC conversion losses.",
-  deg: "Panel annual degradation (%). Typical manufacturers state ~0.3–0.8% per year.",
-  volt: "Nominal battery system voltage (e.g., 12, 24, 48 V).",
-  aut: "Days of autonomy: number of days battery should supply load without sun.",
-  dod: "Battery Depth-of-Discharge (0.2–0.95). Fraction of battery capacity usable.",
-  tariff: "Electricity price per kWh. Used to compute savings.",
-  cost: "Installed system cost per kW (includes panels, inverter, BOS, installation).",
-  life: "System lifetime in years for lifetime savings & LCOE calculation."
-};
-
-/* ---------- utility: modal control ---------- */
-const infoModal = document.getElementById('infoModal');
-const infoTitle = document.getElementById('infoTitle');
-const infoText = document.getElementById('infoText');
-const warnModal = document.getElementById('warnModal');
-const warnTitle = document.getElementById('warnTitle');
-const warnText = document.getElementById('warnText');
-
-function openInfo(key){
-  infoTitle.innerText = keyToLabel(key);
-  infoText.innerText = INFO[key] || '';
-  infoModal.style.display = 'flex'; infoModal.classList.add('show');
-  infoModal.setAttribute('aria-hidden','false');
-}
-function closeInfo(){
-  infoModal.classList.remove('show'); setTimeout(()=>{infoModal.style.display='none'; infoModal.setAttribute('aria-hidden','true');},260);
-}
-function openWarn(title, message){
-  warnTitle.innerText = title || 'Warning';
-  warnText.innerText = message || '';
-  warnModal.style.display = 'flex';
-  warnModal.classList.add('show','shake');
-  warnModal.setAttribute('aria-hidden','false');
-  // remove shake class after animation
-  setTimeout(()=>warnModal.classList.remove('shake'),600);
-}
-function closeWarn(){
-  warnModal.classList.remove('show'); setTimeout(()=>{warnModal.style.display='none'; warnModal.setAttribute('aria-hidden','true');},260);
-}
-function keyToLabel(key){
-  const map = {consumption:'Daily consumption', sun:'Peak sun', panelW:'Panel watt', derate:'System derate', inv:'Inverter efficiency', deg:'Degradation', volt:'System voltage', aut:'Autonomy', dod:'DoD', tariff:'Tariff', cost:'Cost per kW', life:'Lifetime'};
-  return map[key] || key;
-}
-
-/* ---------- attach info icon handlers ---------- */
-document.querySelectorAll('.info-icon').forEach(el=>{
-  el.addEventListener('click', (e)=>{
-    const key = el.dataset.key || (el.getAttribute('data-key')||'');
-    if(!key) return;
-    openInfo(key);
-  });
-});
-
-/* ---------- input sanitization helper ---------- */
-function sanitizeNumericInput(evt, config){
-  // block invalid keys early: e, +, -, spaces
-  if(evt.type === 'keydown'){
-    const forbidden = ['e','E','+','-',' '];
-    if(forbidden.includes(evt.key)) evt.preventDefault();
-    // allow navigation keys
-    const allowedControl = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Home','End'];
-    if(allowedControl.includes(evt.key)) return;
+  function showToast(msg){
+    let t=document.getElementById("toast");
+    t.innerText=msg;
+    t.className="toast show";
+    setTimeout(()=>{t.className=t.className.replace("show","");},3000);
   }
-  // on input / paste: sanitize value to keep digits and single dot
-  if(evt.type === 'input' || evt.type === 'paste'){
-    const target = evt.target;
-    let v = target.value + '';
-    // remove all except digits and dot
-    v = v.replace(/[^0-9.]/g,'');
-    // keep only first dot
-    const parts = v.split('.');
-    if(parts.length>2) v = parts.shift() + '.' + parts.join('');
-    // trim leading zeros sensibly (but allow "0." entries)
-    if(v.startsWith('00')) v = v.replace(/^0+/, '0');
-    // apply min/max snapping if numeric
-    if(v!=='' && !isNaN(+v) && config){
-      const n = +v;
-      if(typeof config.min === 'number' && n < config.min){
-        // don't auto-snap while typing to min (except if n is 0 or empty). We'll show on blur.
-      }
-      if(typeof config.max === 'number' && n > config.max){
-        // snap to max (prevent typing absurdly large values)
-        v = String(config.max);
-      }
+
+  function nextStep(step){
+    if(step===2 && !document.getElementById('daily').value){
+      showToast("Please enter your daily energy need.");
+      return;
     }
-    target.value = v;
-  }
-}
-
-/* ---------- apply live restrictions to each field ---------- */
-function bindField(id, key){
-  const el = document.getElementById(id);
-  const cfg = RANGES[key];
-  if(!el) return;
-  // initial placeholder/defaults for UX
-  el.addEventListener('keydown', (e)=> sanitizeNumericInput(e, cfg));
-  el.addEventListener('input', (e)=> sanitizeNumericInput(e, cfg));
-  el.addEventListener('paste', (e)=> sanitizeNumericInput(e, cfg));
-  // on blur, enforce min/max and show warning if outside
-  el.addEventListener('blur', ()=>{
-    const v = parseFloat(el.value);
-    if(isNaN(v) || el.value.trim()===''){ el.value=''; return; }
-    if(cfg){
-      if(v < cfg.min){
-        el.value = String(cfg.min);
-        openWarn('Value too small', `${keyToLabel(key)} minimum is ${cfg.min}. It has been set to the minimum.`);
-      } else if(v > cfg.max){
-        el.value = String(cfg.max);
-        openWarn('Value too large', `${keyToLabel(key)} maximum is ${cfg.max}. It has been set to the maximum.`);
-      } else {
-        // format to reasonable precision
-        if(Number.isInteger(cfg.min) && Number.isInteger(cfg.max)) el.value = String(Math.round(v));
-        else el.value = (Math.round(v * 100) / 100).toString();
-      }
-    } else {
-      el.value = (Math.round(v * 100) / 100).toString();
+    if(step===3 && !document.getElementById('sun').value){
+      showToast("Please enter peak sun hours.");
+      return;
     }
-  });
-}
-
-/* Bind fields */
-bindField('daily','daily');
-bindField('sun','sun');
-bindField('panelW','panelW');
-bindField('derate','derate');
-bindField('invEff','invEff');
-bindField('deg','deg');
-bindField('voltage','voltage');
-bindField('autonomy','autonomy');
-bindField('dod','dod');
-bindField('tariff','tariff');
-bindField('costkW','costkW');
-bindField('life','life');
-
-/* ---------- calculation logic ---------- */
-function safeGet(id){ const v = document.getElementById(id).value.trim(); return v===''? NaN : parseFloat(v); }
-
-function suggestInverter(kW){
-  // common inverter sizes in kW
-  const sizes = [0.8,1,1.5,2,3,3.6,4,5,6,8,10,12,15,20,25,30,40,50];
-  for(const s of sizes) if(s >= kW*1.05) return s;
-  return Math.max( Math.ceil(kW), 0.8 );
-}
-
-document.getElementById('calcBtn').addEventListener('click', ()=>{
-  // read values
-  const daily = safeGet('daily');
-  const sun = safeGet('sun');
-  const panelW = safeGet('panelW');
-  const derate = safeGet('derate');
-  const invEff = safeGet('invEff');
-  const degPct = safeGet('deg');
-  const voltage = safeGet('voltage');
-  const autonomy = safeGet('autonomy');
-  const dod = safeGet('dod');
-  const tariff = safeGet('tariff');
-  const costkW = safeGet('costkW');
-  const life = safeGet('life');
-
-  // basic required fields
-  if(isNaN(daily) || isNaN(sun)){
-    openWarn('Missing input', 'Please enter valid daily consumption and peak sun hours.');
-    return;
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step'+step).classList.add('active');
   }
-  // validate ranges once more before heavy calculation
-  const checks = [
-    {val:daily,key:'daily'}, {val:sun,key:'sun'}, {val:panelW,key:'panelW'}, {val:derate,key:'derate'},
-    {val:invEff,key:'invEff'}, {val:degPct,key:'deg'}, {val:voltage,key:'voltage'}, {val:autonomy,key:'autonomy'},
-    {val:dod,key:'dod'}, {val:tariff,key:'tariff'}, {val:costkW,key:'costkW'}, {val:life,key:'life'}
-  ];
-  for(const c of checks){
-    if(isNaN(c.val)) continue; // optional fields allowed but if present, check
-    const r = RANGES[c.key];
-    if(r){
-      if(c.val < r.min || c.val > r.max){
-        openWarn('Invalid value', `${keyToLabel(c.key)} should be between ${r.min} and ${r.max}. Please correct it.`);
-        return;
-      }
+
+  function calculate(){
+    let daily = parseFloat(document.getElementById('daily').value)||0;
+    let sun   = parseFloat(document.getElementById('sun').value)||1;
+    let watt  = parseFloat(document.getElementById('watt').value)||1;
+
+    if(!document.getElementById('watt').value){
+      showToast("Please enter panel wattage.");
+      return;
     }
+
+    let totalWatt = (daily*1000)/sun;
+    let panels = Math.ceil(totalWatt/watt);
+
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('results').classList.add('active');
+    document.getElementById('resultsContent').innerHTML = `
+      <h3>Your Solar Setup</h3>
+      <p><b>Daily Need:</b> ${daily} kWh</p>
+      <p><b>Total Power Required:</b> ${totalWatt.toFixed(0)} W</p>
+      <p><b>Panels Needed:</b> ${panels} (of ${watt}W each)</p>
+    `;
   }
 
-  // Normalize some defaults where user left blanks
-  const panelW_final = isNaN(panelW)? 430: panelW;
-  const derate_final = isNaN(derate)? 0.77: derate;
-  const invEff_final = isNaN(invEff)? 0.95: invEff;
-  const deg_final = isNaN(degPct)? 0.5: degPct; // percent
-  const voltage_final = isNaN(voltage)? 48: voltage;
-  const autonomy_final = isNaN(autonomy)? 2: autonomy;
-  const dod_final = isNaN(dod)? 0.8: dod;
-  const tariff_final = isNaN(tariff)? 0.13: tariff;
-  const costkW_final = isNaN(costkW)? 800: costkW;
-  const life_final = isNaN(life)? 25: life;
-
-  // --- FORMULAS (checked) ---
-  // 1) Required PV (kW DC)
-  // array_kW = daily_kWh / (peak_sun_hrs * derate * inverter_eff)
-  const array_kW = (daily) / (sun * derate_final * invEff_final);
-  const array_kW_clamped = Math.max(0, array_kW);
-
-  // 2) Panels
-  const panels = Math.ceil((array_kW_clamped * 1000) / panelW_final);
-
-  // 3) Suggested inverter (kW AC)
-  const inverter_kW = suggestInverter(array_kW_clamped);
-
-  // 4) Yearly AC generation (Year 1) = daily * 365 (delivered AC energy after inverter)
-  const yearlyGen1 = daily * 365;
-
-  // 5) Year N with degradation (deg_final%/yr)
-  const degFrac = deg_final / 100;
-  const yearlyGen10 = yearlyGen1 * Math.pow((1 - degFrac), 9); // year 10 is after 9 reductions
-
-  // 6) Battery sizing (nominal capacity in Wh and Ah)
-  // Battery nominal Wh required so that after DoD and inverter losses it supplies daily*autonomy (AC)
-  // battery_nominal_Wh * DoD * inverter_eff = daily_kWh * 1000 * autonomy
-  // -> battery_nominal_Wh = daily*1000*autonomy / (DoD * inverter_eff)
-  const battery_nominal_Wh = (daily * 1000 * autonomy_final) / (dod_final * invEff_final);
-  const battery_nominal_kWh = battery_nominal_Wh / 1000;
-  const battery_Ah = battery_nominal_Wh / voltage_final;
-
-  // 7) Financials
-  const systemCost = array_kW_clamped * costkW_final; // $ per kW * kW
-  // Lifetime generation sum accounting degradation
-  let lifetime_gen = 0;
-  for(let y=0; y<life_final; y++){
-    lifetime_gen += yearlyGen1 * Math.pow((1 - degFrac), y);
+  function resetWizard(){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('daily').value='';
+    document.getElementById('sun').value='';
+    document.getElementById('watt').value='';
   }
-  const yearlySavings = yearlyGen1 * tariff_final;
-  const payback = yearlySavings > 0 ? systemCost / yearlySavings : Infinity;
-  const lcoe = lifetime_gen > 0 ? systemCost / lifetime_gen : Infinity;
-  const lifetimeSavings = lifetime_gen * tariff_final;
 
-  // Populate UI
-  document.getElementById('pvSize').innerText = array_kW_clamped.toFixed(2) + ' kW';
-  document.getElementById('panels').innerText = panels;
-  document.getElementById('inverter').innerText = inverter_kW.toFixed(2) + ' kW';
-  document.getElementById('battery').innerText = battery_nominal_kWh.toFixed(2) + ' kWh';
-
-  document.getElementById('year1').innerText = 'Year 1: ' + yearlyGen1.toFixed(0) + ' kWh';
-  document.getElementById('year10').innerText = 'Year 10: ' + yearlyGen10.toFixed(0) + ' kWh';
-
-  document.getElementById('sysCost').innerText = 'System cost: $' + systemCost.toFixed(0);
-  document.getElementById('yearSave').innerText = 'Yearly savings: $' + yearlySavings.toFixed(0);
-  document.getElementById('payback').innerText = 'Payback: ' + (isFinite(payback) ? payback.toFixed(1) : '—') + ' yrs';
-  document.getElementById('lcoe').innerText = 'LCOE: $' + (isFinite(lcoe) ? lcoe.toFixed(3) : '—') + ' / kWh';
-
-  document.getElementById('lifeGen').innerText = 'Lifetime generation: ' + lifetime_gen.toFixed(0) + ' kWh';
-  document.getElementById('lifeSave').innerText = 'Lifetime savings: $' + lifetimeSavings.toFixed(0);
-});
-
-/* ---------- reset handler ---------- */
-document.getElementById('resetBtn').addEventListener('click', ()=>{
-  const ids = ['daily','sun','panelW','derate','invEff','deg','voltage','autonomy','dod','tariff','costkW','life'];
-  ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  // restore some friendly defaults
-  document.getElementById('panelW').value = '430';
-  document.getElementById('derate').value = '0.77';
-  document.getElementById('invEff').value = '0.95';
-  document.getElementById('deg').value = '0.5';
-  document.getElementById('voltage').value = '48';
-  document.getElementById('autonomy').value = '2';
-  document.getElementById('dod').value = '0.8';
-  document.getElementById('life').value = '25';
-  // clear results
-  document.getElementById('pvSize').innerText = '— kW';
-  document.getElementById('panels').innerText = '—';
-  document.getElementById('inverter').innerText = '— kW';
-  document.getElementById('battery').innerText = '— kWh';
-  document.getElementById('year1').innerText = 'Year 1: — kWh';
-  document.getElementById('year10').innerText = 'Year 10: — kWh';
-  document.getElementById('sysCost').innerText = 'System cost: —';
-  document.getElementById('yearSave').innerText = 'Yearly savings: —';
-  document.getElementById('payback').innerText = 'Payback: — yrs';
-  document.getElementById('lcoe').innerText = 'LCOE: — $/kWh';
-  document.getElementById('lifeGen').innerText = 'Lifetime generation: —';
-  document.getElementById('lifeSave').innerText = 'Lifetime savings: —';
-});
-
-/* initialize defaults */
-document.getElementById('panelW').value = '430';
-document.getElementById('derate').value = '0.77';
-document.getElementById('invEff').value = '0.95';
-document.getElementById('deg').value = '0.5';
-document.getElementById('voltage').value = '48';
-document.getElementById('autonomy').value = '2';
-document.getElementById('dod').value = '0.8';
-document.getElementById('life').value = '25';
+  function exportPDF(){
+    const element = document.getElementById('resultsContent');
+    html2pdf().from(element).set({
+      margin: 10,
+      filename: 'solar_calculator_results.pdf',
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).save();
+  }
 </script>
+
 </body>
 </html>
