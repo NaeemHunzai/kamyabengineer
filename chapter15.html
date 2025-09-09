@@ -3,31 +3,37 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Smart Series MCQs</title>
+<title>Smart Series</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        background: #ffffff; /* plain white background */
         color: #333;
+    }
+    .header {
+        position: fixed; /* stays always at top */
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 14px;
+        text-align: center;
+        font-size: 22px; /* smaller font like Pakistan Studies */
+        font-weight: bold;
+        color: #00796b;
+        border-bottom: 3px solid #00796b; /* straight teal underline */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* light shadow */
+        z-index: 1000;
     }
     .container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 30px 20px;
-    }
-    h1 {
-        text-align: center;
-        background-color: #00796b;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        padding: 80px 20px 30px; /* adjust for fixed header */
     }
     .mcq {
-        background: #ffffffd9;
+        background: #ffffff;
         border-left: 6px solid #00796b;
         border-radius: 10px;
         padding: 20px;
@@ -43,14 +49,14 @@
 </style>
 </head>
 <body>
+
+<!-- sticky header styled like Pakistan Studies -->
+<div class="header">Smart Series</div>
+
 <div class="container">
-<h1>Smart Series MCQs</h1>
 
-<!-- Q1 to Q22: Original -->
-<!-- (Keep all your existing MCQs from your original HTML here exactly as before) -->
+    <!-- Continue with your other MCQs -->
 
-<!-- Q23 to Q60: Newly added -->
-  
   <div class="mcq"><div class="question">Q281. U235 is an isotope of Uranium making up about % of natural uranium.</div><div class="options"><div class="option">A. 0.7%</div><div class="option">B. 0.9%</div><div class="option">C. 0.10%</div><div class="option">D. 0.5%</div></div><div class="answer">Answer: A</div></div>
 
 <div class="mcq"><div class="question">Q282. Which of the following is used as a moderator in nuclear reactor?</div><div class="options"><div class="option">A. Graphite</div><div class="option">B. Boron</div><div class="option">C. Uranium</div><div class="option">D. Hydrogen</div></div><div class="answer">Answer: A</div></div>
@@ -90,3 +96,7 @@
 <div class="mcq"><div class="question">Q299. Closed loop gain of a feedback amplifier is the gain obtained when</div><div class="options"><div class="option">A. Its output terminals are closed</div><div class="option">B. Negative feedback is applied</div><div class="option">C. Feedback loop is closed</div><div class="option">D. Feedback factor exceeds unity</div></div><div class="answer">Answer: C</div></div>
 
 <div class="mcq"><div class="question">Q300. Feedback in an amplifier always helps to</div><div class="options"><div class="option">A. Control its output</div><div class="option">B. Increase its gain</div><div class="option">C. Decrease its input impedance</div><div class="option">D. Stabilize its gain</div></div><div class="answer">Answer: A</div></div>
+</div>
+
+</body>
+</html>
