@@ -70,7 +70,46 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 <!-- STEP 1 -->
 <div id="step1" class="card">
   <h2>1 • System & Load</h2>
-  ...
+
+  <label>System Mode
+    <button class="info-btn" onclick="showInfo('mode')">i</button>
+  </label>
+  <select id="mode">
+    <option value="grid">Grid-tied</option>
+    <option value="hybrid">Hybrid</option>
+    <option value="off">Off-grid</option>
+  </select>
+
+  <div class="row" style="margin-top:10px">
+    <div class="col">
+      <label>Daily consumption (kWh)
+        <button class="info-btn" onclick="showInfo('consumption')">i</button>
+      </label>
+      <input id="daily" type="number" min="0" max="1000" placeholder="e.g., 20" oninput="validateInput(this,0,1000)" />
+    </div>
+    <div class="col">
+      <label>Peak sun hours (hrs)
+        <button class="info-btn" onclick="showInfo('sun')">i</button>
+      </label>
+      <input id="sunHours" type="number" step="0.1" min="0" max="12" placeholder="e.g., 5.5" oninput="validateInput(this,0,12)" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label>Inverter efficiency (fraction)
+        <button class="info-btn" onclick="showInfo('inverter')">i</button>
+      </label>
+      <input id="invEff" type="number" step="0.01" min="0.5" max="1" placeholder="0.95" oninput="validateInput(this,0.5,1)" />
+    </div>
+    <div class="col">
+      <label>System derate (fraction)
+        <button class="info-btn" onclick="showInfo('derate')">i</button>
+      </label>
+      <input id="derate" type="number" step="0.01" min="0.5" max="1" placeholder="0.77" oninput="validateInput(this,0.5,1)" />
+    </div>
+  </div>
+
   <div class="actions">
     <button class="btn-ghost" onclick="resetAll()">Reset</button>
     <button class="btn-primary" onclick="goToStep(2)">Next →</button>
@@ -80,7 +119,37 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 <!-- STEP 2 -->
 <div id="step2" class="card" style="display:none">
   <h2>2 • Panels, Roof & Battery</h2>
-  ...
+
+  <div class="row">
+    <div class="col">
+      <label>Panel watt (W)
+        <button class="info-btn" onclick="showInfo('panelW')">i</button>
+      </label>
+      <input id="panelW" type="number" min="50" max="600" placeholder="e.g., 400" oninput="validateInput(this,50,600)" />
+    </div>
+    <div class="col">
+      <label>Number of panels
+        <button class="info-btn" onclick="showInfo('numPanels')">i</button>
+      </label>
+      <input id="numPanels" type="number" min="1" max="100" placeholder="e.g., 12" oninput="validateInput(this,1,100)" />
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <div class="col">
+      <label>Battery voltage (V)
+        <button class="info-btn" onclick="showInfo('batV')">i</button>
+      </label>
+      <input id="batV" type="number" min="12" max="600" placeholder="48" oninput="validateInput(this,12,600)" />
+    </div>
+    <div class="col">
+      <label>Battery days autonomy
+        <button class="info-btn" onclick="showInfo('batDays')">i</button>
+      </label>
+      <input id="batDays" type="number" min="1" max="7" placeholder="2" oninput="validateInput(this,1,7)" />
+    </div>
+  </div>
+
   <div class="actions">
     <button class="btn-ghost" onclick="goToStep(1)">← Back</button>
     <button class="btn-primary" onclick="goToStep(3)">Next →</button>
@@ -90,7 +159,22 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 <!-- STEP 3 -->
 <div id="step3" class="card" style="display:none">
   <h2>3 • Inverter & Misc</h2>
-  ...
+
+  <div class="row">
+    <div class="col">
+      <label>Power Factor (PF)
+        <button class="info-btn" onclick="showInfo('pf')">i</button>
+      </label>
+      <input id="pf" type="number" step="0.01" min="0.7" max="1" placeholder="0.9" oninput="validateInput(this,0.7,1)" />
+    </div>
+    <div class="col">
+      <label>Inverter efficiency (optional)
+        <button class="info-btn" onclick="showInfo('invEff2')">i</button>
+      </label>
+      <input id="invEff2" type="number" step="0.01" min="0.5" max="1" placeholder="0.95" oninput="validateInput(this,0.5,1)" />
+    </div>
+  </div>
+
   <div class="actions">
     <button class="btn-ghost" onclick="goToStep(2)">← Back</button>
     <button class="btn-primary" onclick="goToStep(4)">Calculate ✅</button>
@@ -154,10 +238,10 @@ function goToStep(step){
   }
   if(step===4) calculateResults();
 
-  // scroll to the top of the current step card
-  const card = document.getElementById('step'+step);
+  // scroll to the top of the visible card instead of page
+  const card=document.getElementById('step'+step);
   if(card){
-    card.scrollIntoView({behavior:'smooth', block:'start'});
+    card.scrollIntoView({behavior:'smooth',block:'start'});
   }
 }
 
