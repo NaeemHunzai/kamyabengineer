@@ -1,207 +1,73 @@
-  <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Chemistry MCQs </title>
-    <style>
-     body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solar Wizard Test</title>
+<style>
+  body {
     margin: 0;
-    padding: 70px 20px 70px 20px;  /* top = header height, bottom = pagination height */
-    background-color: #ffffff;
-    color: #333;
-}
-
-.container {
-    max-width: 900px;
-    margin: 0 auto;   /* centered horizontally */
-}
-
-
-
-
-
-        h1 {
-            text-align: center;
-            background-color: #00796b;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .mcq {
-            background: #ffffffd9;
-            border-left: 6px solid #00796b;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-        .mcq:hover { transform: scale(1.01); }
-        .question { font-size: 18px; font-weight: bold; }
-        .options { margin-top: 15px; }
-        .option { margin: 6px 0; padding-left: 10px; }
-        .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
-.pagination {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border-top: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    gap: 14px; /* spacing so buttons don’t feel cramped */
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
-}
-
-.pagination button {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;   /* round shape */
-    background-color: #00796b;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;  /* suitable size for both arrows & text */
-    display: flex;
-    justify-content: center;
-    align-items: center;  /* ensures perfect centering */
-    transition: background 0.2s;
-    line-height: 40px;    /* match button height for vertical centering */
-    padding: 0;
-}
-
-.pagination button:hover {
-    background-color: #004d40;
-}
-
-.pagination input {
-    width: 55px;
-    padding: 6px;
-    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg,#000000,#111111);
+    color: #e8eef6;
     text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 15px; /* slightly rounded */
-}
-
-      
-.sticky-header { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1100;
-    background-color: #ffffff;   /* white background */
-    color: #00796b;              /* teal text */
-    padding: 12px;
-    font-size: 18px;             /* normal text size */
-    font-weight: 600;            /* semi-bold for clarity */
-    text-align: center;
-    border-radius: 0 0 12px 12px;
-    margin: 0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* subtle shadow */
-    height: auto;
-    line-height: 1.4;
-    border-bottom: 2px solid #00796b; /* underline */
-}
-
-
-      
-      
-      
-        }
-  </style>
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  .stepper {margin:12px 0; display:flex; justify-content:center; gap:10px}
+  .dot {width:16px; height:16px; border-radius:50%; background:#444}
+  .dot.active {background:#06d6a0}
+  .page {display:none; padding:20px; border-radius:12px; background:rgba(255,255,255,0.05); margin-top:20px}
+  .page.show {display:block; animation: fade 0.4s}
+  @keyframes fade {from{opacity:0}to{opacity:1}}
+  button{margin:10px;padding:10px 16px;border:none;border-radius:8px;cursor:pointer}
+  .primary{background:#06d6a0;color:#000}
+  .results-card{margin-top:20px;padding:16px;border-radius:12px;background:rgba(255,255,255,0.08);box-shadow:0 0 20px rgba(6,214,160,0.2);animation:pulse 3s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 10px rgba(6,214,160,0.2)}50%{box-shadow:0 0 30px rgba(6,214,160,0.5)}100%{box-shadow:0 0 10px rgba(6,214,160,0.2)}}
+</style>
 </head>
 <body>
- <div class="container">
-<h1 class="sticky-header">Chemistry MCQs</h1>
-    <div id="mcq-container"></div>
- <div class="pagination">
-    <button onclick="prevPage()">&#9664;</button>   <!-- ◀ Back -->
-    <input type="number" id="pageInput" min="1" placeholder="Pg" />
-    <button onclick="goToPage()">Go</button>       <!-- Go button with text -->
-    <button onclick="nextPage()">&#9654;</button>  <!-- ▶ Forward -->
-</div>
-
-
-  <script>
-  const mcqs = [
-    {"q":"The atomic number of an element represents the number of:","o":["Neutrons","Protons","Electrons + Neutrons","Isotopes"],"a":"B"},
-    {"q":"Which of the following is a noble gas?","o":["Oxygen","Nitrogen","Argon","Hydrogen"],"a":"C"},
-    {"q":"Avogadro’s number is:","o":["6.022 × 10^23","3.14","9.8","1.6 × 10^-19"],"a":"A"},
-    {"q":"The SI unit of pressure is:","o":["Torr","Pascal","Bar","Atmosphere"],"a":"B"},
-    {"q":"pH of a neutral solution at 25°C is:","o":["0","7","14","1"],"a":"B"},
-    {"q":"Which gas is released during the reaction of acid with metal?","o":["Oxygen","Nitrogen","Hydrogen","Carbon dioxide"],"a":"C"},
-    {"q":"Molarity is defined as:","o":["Moles of solute / L of solvent","Moles of solute / L of solution","Grams of solute / L of solvent","Grams of solute / mL of solvent"],"a":"B"},
-    {"q":"Who proposed the planetary model of the atom?","o":["Dalton","Rutherford","Bohr","Thomson"],"a":"B"},
-    {"q":"Which orbital has spherical shape?","o":["s-orbital","p-orbital","d-orbital","f-orbital"],"a":"A"},
-    {"q":"Which law states that volume of gas is directly proportional to temperature at constant pressure?","o":["Boyle’s law","Charles’s law","Avogadro’s law","Dalton’s law"],"a":"B"},
-    {"q":"The valency of carbon in methane is:","o":["1","2","3","4"],"a":"D"},
-    {"q":"Which element has the highest electronegativity?","o":["Oxygen","Chlorine","Fluorine","Nitrogen"],"a":"C"},
-    {"q":"The bond in NaCl is:","o":["Covalent","Ionic","Metallic","Hydrogen"],"a":"B"},
-    {"q":"The main constituent of natural gas is:","o":["Methane","Ethane","Propane","Butane"],"a":"A"},
-    {"q":"Which of the following is an amphoteric oxide?","o":["Na2O","Al2O3","SO2","CO2"],"a":"B"},
-    {"q":"The molar mass of water is:","o":["10 g/mol","18 g/mol","20 g/mol","12 g/mol"],"a":"B"},
-    {"q":"Which of the following is not a state function?","o":["Work","Energy","Enthalpy","Pressure"],"a":"A"},
-    {"q":"The rate of reaction depends on:","o":["Concentration","Temperature","Catalyst","All of these"],"a":"D"},
-    {"q":"Which acid is present in vinegar?","o":["Formic acid","Acetic acid","Lactic acid","Citric acid"],"a":"B"},
-    {"q":"Which of the following is a strong electrolyte?","o":["Glucose","NaCl","Urea","Alcohol"],"a":"B"},
-    // ...
-    // 👉 Continue listing all MCQs here up to 200 (I have them ready in my dataset).
-    // ...
-  ];
-
-  const itemsPerPage = 10;
-  let currentPage = 1;
-  const totalPages = Math.ceil(mcqs.length / itemsPerPage);
-
-  function renderOptions(opts) {
-    let html = '';
-    const labels = ['A','B','C','D'];
-    for (let i = 0; i < 4; i++) {
-      const text = opts[i] || '';
-      html += `<div class='option'>${labels[i]}. ${text}</div>`;
+  <div class="app">
+    <h2>Solar Wizard Test</h2>
+    <div class="stepper">
+      <div class="dot" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+      <div class="dot" id="dot3"></div>
+    </div>
+    <div class="page show" id="p1">
+      <h3>Step 1</h3>
+      <input id="daily" type="number" placeholder="Daily kWh">
+      <br><button class="primary" onclick="next(2)">Next →</button>
+    </div>
+    <div class="page" id="p2">
+      <h3>Step 2</h3>
+      <input id="sun" type="number" placeholder="Sun hours">
+      <br><button onclick="next(1)">← Back</button><button class="primary" onclick="next(3)">Next →</button>
+    </div>
+    <div class="page" id="p3">
+      <h3>Results</h3>
+      <div class="results-card">
+        <p><b>PV Size:</b> <span id="pv">—</span></p>
+        <p><b>Panels:</b> <span id="panels">—</span></p>
+      </div>
+      <button onclick="next(1)">Start Again</button>
+    </div>
+  </div>
+<script>
+  let cur=1; const dots=[dot1,dot2,dot3]; const pages=[p1,p2,p3];
+  function show(n){pages.forEach((p,i)=>p.classList.toggle('show',i===n-1));dots.forEach((d,i)=>d.classList.toggle('active',i===n-1));cur=n;}
+  function next(n){
+    if(n===3){ // simple calc
+      const d=parseFloat(daily.value)||20; const s=parseFloat(sun.value)||5;
+      const pv=(d/(s*0.75)).toFixed(2);
+      pv.innerText=pv+" kW"; panels.innerText=Math.round((pv*1000)/400);
     }
-    return html;
+    show(n);
   }
-
-  function display(page) {
-    if (page < 1) page = 1;
-    if (page > totalPages) page = totalPages;
-    currentPage = page;
-    const cont = document.getElementById('mcq-container');
-    cont.innerHTML = '';
-    const start = (page - 1) * itemsPerPage;
-    const end = Math.min(start + itemsPerPage, mcqs.length);
-    for (let i = start; i < end; i++) {
-      const item = mcqs[i];
-      const qnum = i + 1;
-      const div = document.createElement('div');
-      div.className = 'mcq';
-      div.innerHTML = `<div class='question'>${qnum}. ${item.q}</div>
-                       <div class='options'>${renderOptions(item.o)}</div>
-                       <div class='answer'>Answer: ${item.a}</div>`;
-      cont.appendChild(div);
-    }
-    document.getElementById('pageInput').value = currentPage;
-    window.scrollTo(0,0);
-  }
-
-  function prevPage() { if (currentPage > 1) display(currentPage - 1); }
-  function nextPage() { if (currentPage < totalPages) display(currentPage + 1); }
-  function goToPage() {
-    const p = parseInt(document.getElementById('pageInput').value);
-    if (!isNaN(p) && p >= 1 && p <= totalPages) display(p);
-  }
-
-  display(1);
-  </script>
+  show(1);
+</script>
 </body>
 </html>
