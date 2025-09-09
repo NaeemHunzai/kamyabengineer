@@ -23,7 +23,7 @@ body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(-
 .wrap{max-width:520px;margin:0 auto;padding:16px}
 .stepper{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:relative;padding:0 6px}
 .stepper::before{content:'';position:absolute;left:30px;right:30px;height:4px;background:#e6eef6;top:50%;transform:translateY(-50%);z-index:0;border-radius:999px}
-.step-dot{z-index:2;width:36px;height:36px;border-radius:50%;background:#e6eef6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#374151}
+.step-dot{z-index:2;width:36px;height:36px;border-radius:50%;background:#e6eef6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#374151;cursor:pointer;transition:0.3s}
 .step-dot.active{background:linear-gradient(90deg,var(--primary),var(--accent)); color:white; box-shadow:0 6px 18px rgba(3,105,79,0.12)}
 .card{background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(16,24,40,0.06);padding:18px;margin-bottom:14px}
 h1{font-size:18px;margin:0 0 8px}
@@ -34,7 +34,7 @@ input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e
 .row{display:flex;gap:10px;flex-wrap:wrap}
 .col{flex:1;min-width:120px;display:flex;flex-direction:column}
 .actions{display:flex;gap:10px;margin-top:16px;justify-content:center}
-button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer;transition:0.3s}
 .btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;flex:1;min-width:120px}
 .btn-ghost{background:#fff;border:1px solid #e6eef6;color:var(--muted);flex:1;min-width:120px}
 .btn-secondary{background:#f3f4f6;color:#111;flex:1}
@@ -45,7 +45,7 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 .small{font-size:12px;color:var(--muted)}
 .full-card{padding:14px;border-radius:12px;background:linear-gradient(90deg,#fff,#f7fcfb);border:1px solid #e6eef6;margin-top:12px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#fffbeb;color:#92400e;padding:12px 16px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.12);display:none;z-index:9999}
-.info-btn{font-size:12px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--info-bg);color:#0369a1;cursor:pointer;border:none;margin-left:6px}
+.info-btn{font-size:12px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--info-bg);color:#0369a1;cursor:pointer;border:none;margin-left:6px}
 @media (max-width:480px){ .stepper::before{left:20px;right:20px} .step-dot{width:30px;height:30px;font-size:13px} }
 </style>
 </head>
@@ -61,10 +61,10 @@ button{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointe
 </div>
 
 <div class="stepper" aria-hidden>
-  <div id="dot1" class="step-dot active">1</div>
-  <div id="dot2" class="step-dot">2</div>
-  <div id="dot3" class="step-dot">3</div>
-  <div id="dot4" class="step-dot">4</div>
+  <div id="dot1" class="step-dot active" onclick="goToStep(1)">1</div>
+  <div id="dot2" class="step-dot" onclick="goToStep(2)">2</div>
+  <div id="dot3" class="step-dot" onclick="goToStep(3)">3</div>
+  <div id="dot4" class="step-dot" onclick="goToStep(4)">4</div>
 </div>
 
 <!-- STEP 1 -->
