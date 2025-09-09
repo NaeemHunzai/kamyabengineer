@@ -3,31 +3,37 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Smart Series MCQs</title>
+<title>Smart Series</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        background: #ffffff; /* plain white background */
         color: #333;
+    }
+    .header {
+        position: fixed; /* stays always at top */
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 14px;
+        text-align: center;
+        font-size: 22px; /* smaller font like Pakistan Studies */
+        font-weight: bold;
+        color: #00796b;
+        border-bottom: 3px solid #00796b; /* straight teal underline */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* light shadow */
+        z-index: 1000;
     }
     .container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 30px 20px;
-    }
-    h1 {
-        text-align: center;
-        background-color: #00796b;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        padding: 80px 20px 30px; /* adjust for fixed header */
     }
     .mcq {
-        background: #ffffffd9;
+        background: #ffffff;
         border-left: 6px solid #00796b;
         border-radius: 10px;
         padding: 20px;
@@ -43,16 +49,13 @@
 </style>
 </head>
 <body>
+
+<!-- sticky header styled like Pakistan Studies -->
+<div class="header">Smart Series</div>
+
 <div class="container">
-<h1>Smart Series MCQs</h1>
 
-<!-- Q1 to Q22: Original -->
-<!-- (Keep all your existing MCQs from your original HTML here exactly as before) -->
-
-<!-- Q23 to Q60: Newly added -->
-  
-  
-  
+    <!-- Continue with your other MCQs -->
   <div class="mcq"><div class="question">Q691. In parallel resonance RLC circuit</div><div class="options"><div class="option">A. Impedance is minimum</div><div class="option">B. Power factor is unity</div><div class="option">C. Current is maximum</div><div class="option">D. None of above</div></div><div class="answer">Answer: B</div></div>
 
 <div class="mcq"><div class="question">Q692. Cross over distortion is maximum in amplifier.</div><div class="options"><div class="option">A. Class A</div><div class="option">B. Class B</div><div class="option">C. Class H</div><div class="option">D. Class C</div><div class="option">E. Class AB</div></div><div class="answer">Answer: B</div></div>
@@ -112,3 +115,9 @@
 <div class="mcq"><div class="question">Q719. The primary reason for the low power factor is due to the installation of</div><div class="options"><div class="option">A. DC motors</div><div class="option">B. Synchronous motors</div><div class="option">C. Induction motors</div><div class="option">D. Commutator motors</div></div><div class="answer">Answer: C</div></div>
 
 <div class="mcq"><div class="question">Q720. The most suitable location for the power factor improvement device is</div><div class="options"><div class="option">A. Near the electrical appliance which is responsible for the poor power factor</div><div class="option">B. At the sending end</div><div class="option">C. At receiving end in case of transmission lines</div><div class="option">D. Both (a) and (c)</div></div><div class="answer">Answer: D</div></div>
+
+  
+</div>
+
+</body>
+</html>
