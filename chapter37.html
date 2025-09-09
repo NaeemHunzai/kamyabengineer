@@ -3,31 +3,37 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Smart Series MCQs</title>
+<title>Smart Series</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        background: #ffffff; /* plain white background */
         color: #333;
+    }
+    .header {
+        position: fixed; /* stays always at top */
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 14px;
+        text-align: center;
+        font-size: 22px; /* smaller font like Pakistan Studies */
+        font-weight: bold;
+        color: #00796b;
+        border-bottom: 3px solid #00796b; /* straight teal underline */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* light shadow */
+        z-index: 1000;
     }
     .container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 30px 20px;
-    }
-    h1 {
-        text-align: center;
-        background-color: #00796b;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        padding: 80px 20px 30px; /* adjust for fixed header */
     }
     .mcq {
-        background: #ffffffd9;
+        background: #ffffff;
         border-left: 6px solid #00796b;
         border-radius: 10px;
         padding: 20px;
@@ -43,15 +49,13 @@
 </style>
 </head>
 <body>
+
+<!-- ✅ Sticky Header -->
+<div class="header">Smart Series</div>
+
+<!-- ✅ Container for MCQs -->
 <div class="container">
-<h1>Smart Series MCQs</h1>
-
-<!-- Q1 to Q22: Original -->
-<!-- (Keep all your existing MCQs from your original HTML here exactly as before) -->
-
-<!-- Q23 to Q60: Newly added -->
-  
-  <div class="mcq">
+ <div class="mcq">
   <div class="question">931. The effect of wind pressure is more predominant on</div>
   <div class="options">
     <div class="option">A. Transmission lines</div>
@@ -379,3 +383,10 @@
   <div class="answer">ANS. B</div>
 </div>
 
+
+  
+
+</div> <!-- end .container -->
+
+</body>
+</html>
