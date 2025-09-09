@@ -1,257 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advanced Solar Calculator</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Solar Wizard</title>
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    color: #333;
-  }
-  .container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  .card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    padding: 20px;
-    margin-top: 20px;
-    animation: fadeIn 0.4s;
-  }
-  .step {
-    display: none;
-  }
-  .step.active {
-    display: block;
-  }
-  h2 {
-    margin-top: 0;
-    color: #006d77;
-    font-size: 1.2rem;
-  }
-  label {
-    display: block;
-    margin-top: 15px;
-    font-weight: 600;
-  }
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-  }
-  button {
-    background: #006d77;
-    color: #fff;
-    padding: 12px 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    font-size: 1rem;
-  }
-  button:hover {
-    background: #004f55;
-  }
-  .info {
-    display: inline-block;
-    background: #e0f7fa;
-    color: #00707a;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    text-align: center;
-    line-height: 18px;
-    font-size: 0.8rem;
-    margin-left: 5px;
-    cursor: pointer;
-  }
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 10;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4);
-  }
-  .modal-content {
-    background: #fff;
-    margin: 20% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-  }
-  .close {
-    float: right;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .notifier {
-    display: none;
-    background: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-    padding: 12px;
-    margin-top: 15px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-  }
-  @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
+  /* Light theme styling */
+  body{margin:0;font-family:sans-serif;background:#f5f5f5;color:#333;}
+  .container{max-width:480px;margin:20px auto;padding:20px;}
+  .card{background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);padding:16px;margin-top:12px;}
+  .step{display:none;}
+  .step.active{display:block;}
+  label{display:block; margin:12px 0 4px;font-weight:600;}
+  input, select{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;}
+  button{margin-top:16px;padding:10px;background:#0077cc;color:#fff;border:none;border-radius:6px;width:100%;}
+  .toggles{display:flex;gap:8px;}
 </style>
 </head>
 <body>
 <div class="container">
-
+  <!-- Step 1 -->
   <div id="step1" class="card step active">
-    <h2>Step 1: Energy Details</h2>
-    <label>Daily Consumption (kWh) <span class="info" onclick="openInfo('consumption')">i</span></label>
-    <input type="number" id="consumption" placeholder="e.g. 20">
-
-    <label>Peak Sun Hours <span class="info" onclick="openInfo('psh')">i</span></label>
-    <input type="number" id="psh" placeholder="e.g. 5">
-
-    <button onclick="nextStep(1)">Next</button>
-    <div id="warn1" class="notifier"></div>
+    <h2>Step 1: Tech Details</h2>
+    <label>Daily Energy (kWh)</label><input id="consumption" type="number">
+    <label>Peak Sun Hours</label><input id="psh" type="number">
+    <label>Panel Wattage (W)</label><input id="watt" type="number">
+    <label>Panel Efficiency (%)</label><input id="eff" type="number">
+    <label>System Losses (%)</label><input id="loss" type="number">
+    <div class="toggles">
+      <label><input id="modeGrid" type="radio" name="mode" checked> Grid-Tied</label>
+      <label><input id="modeOff" type="radio" name="mode"> Off-Grid</label>
+    </div>
+    <div id="offgridInputs" style="display:none;">
+      <label>Autonomy (days)</label><input id="autonomy" type="number">
+      <label>DoD (%)</label><input id="dod" type="number">
+      <label>System Voltage (V)</label><input id="voltage" type="number">
+    </div>
+    <button onclick="goto(2)">Next</button>
   </div>
 
+  <!-- Step 2 -->
   <div id="step2" class="card step">
-    <h2>Step 2: Panel Details</h2>
-    <label>Panel Wattage (W) <span class="info" onclick="openInfo('watt')">i</span></label>
-    <input type="number" id="watt" placeholder="e.g. 400">
-
-    <label>Panel Efficiency (%) <span class="info" onclick="openInfo('eff')">i</span></label>
-    <input type="number" id="eff" placeholder="e.g. 18">
-
-    <label>System Losses (%) <span class="info" onclick="openInfo('loss')">i</span></label>
-    <input type="number" id="loss" placeholder="e.g. 15">
-
-    <button onclick="nextStep(2)">Next</button>
-    <div id="warn2" class="notifier"></div>
+    <h2>Step 2: Constraints & Financials</h2>
+    <label>Roof Area <span id="unitRoof">m²</span></label>
+    <div class="toggles">
+      <input id="roofVal" type="number"><button type="button" onclick="toggleRoofUnit()">Toggle m²/ft²</button>
+    </div>
+    <label>Install Cost ($/kW)</label><input id="costkw" type="number">
+    <label>Tariff ($/kWh)</label><input id="tariff" type="number">
+    <button onclick="goto(3)">Next</button>
   </div>
 
+  <!-- Step 3 -->
   <div id="step3" class="card step">
-    <h2>Step 3: Long Term</h2>
-    <label>Panel Degradation (%/year) <span class="info" onclick="openInfo('degrade')">i</span></label>
-    <input type="number" id="degrade" placeholder="e.g. 0.5">
-
-    <button onclick="calculate()">Calculate</button>
-    <div id="warn3" class="notifier"></div>
-  </div>
-
-  <div id="results" class="card step">
-    <h2>Results</h2>
-    <p id="output"></p>
-    <button onclick="resetCalc()">Reset</button>
-  </div>
-</div>
-
-<!-- Info Modal -->
-<div id="infoModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeInfo()">&times;</span>
-    <p id="infoText"></p>
+    <h2>Step 3: Results</h2>
+    <div id="output"></div>
+    <button onclick="resetAll()">Reset</button>
   </div>
 </div>
 
 <script>
-  function nextStep(n) {
-    let warn = document.getElementById("warn"+n);
-    warn.style.display = "none";
+  // Toggle off-grid inputs
+  document.getElementById('modeOff').onchange = function(){
+    document.getElementById('offgridInputs').style.display = 'block';
+  };
+  document.getElementById('modeGrid').onchange = function(){
+    document.getElementById('offgridInputs').style.display = 'none';
+  };
 
-    if(n===1){
-      let c = document.getElementById("consumption").value;
-      let p = document.getElementById("psh").value;
-      if(!c || !p){
-        warn.innerText="Please enter valid values.";
-        warn.style.display="block";
-        return;
-      }
-      document.getElementById("step1").classList.remove("active");
-      document.getElementById("step2").classList.add("active");
-    }
-    if(n===2){
-      let w = document.getElementById("watt").value;
-      let e = document.getElementById("eff").value;
-      let l = document.getElementById("loss").value;
-      if(!w || !e || !l){
-        warn.innerText="Please enter valid values.";
-        warn.style.display="block";
-        return;
-      }
-      document.getElementById("step2").classList.remove("active");
-      document.getElementById("step3").classList.add("active");
-    }
+  // Toggle roof unit
+  let roofUnit = 'm²';
+  function toggleRoofUnit(){
+    roofUnit = roofUnit==='m²'?'ft²':'m²';
+    document.getElementById('unitRoof').innerText = roofUnit;
   }
 
-  function calculate(){
-    let warn = document.getElementById("warn3");
-    warn.style.display="none";
+  function goto(step){
+    document.querySelectorAll('.step').forEach(el=>el.classList.remove('active'));
+    document.getElementById('step'+step).classList.add('active');
+    if(step===3) computeResults();
+  }
 
-    let c = parseFloat(document.getElementById("consumption").value)||0;
-    let p = parseFloat(document.getElementById("psh").value)||0;
-    let w = parseFloat(document.getElementById("watt").value)||0;
-    let e = parseFloat(document.getElementById("eff").value)||0;
-    let l = parseFloat(document.getElementById("loss").value)||0;
-    let d = parseFloat(document.getElementById("degrade").value)||0;
+  function computeResults(){
+    const c = +document.getElementById('consumption').value;
+    const p = +document.getElementById('psh').value;
+    const w = +document.getElementById('watt').value;
+    const e = +document.getElementById('eff').value;
+    const l = +document.getElementById('loss').value;
+    const botG = document.getElementById('modeOff').checked;
+    const roof = +document.getElementById('roofVal').value;
+    const costkw = +document.getElementById('costkw').value;
+    const tariff = +document.getElementById('tariff').value;
 
-    if(!c || !p || !w || !e){
-      warn.innerText="Please fill all required fields.";
-      warn.style.display="block";
-      return;
-    }
+    const dailyGen = w*(e/100)*p*(1 - l/100)/1000;
+    const panels = Math.ceil(c / dailyGen);
+    const systemKW = (panels*w)/1000;
+    const cost = systemKW * costkw;
+    const savingsYear = c * 365 * tariff;
+    const payback = cost/savingsYear;
 
-    let dailyGen = (w * (e/100) * p * (1 - l/100)) / 1000;
-    let panelsNeeded = Math.ceil(c / dailyGen);
-    let year1 = dailyGen * panelsNeeded;
-    let year10 = year1 * Math.pow((1 - d/100), 9);
-
-    let output = `
-      <b>Panels Required:</b> ${panelsNeeded}<br>
-      <b>Daily Generation (Year 1):</b> ${year1.toFixed(2)} kWh<br>
-      <b>Daily Generation (Year 10):</b> ${year10.toFixed(2)} kWh
+    let html = `
+      <p><b>Panels:</b> ${panels}</p>
+      <p><b>Generation/day:</b> ${dailyGen.toFixed(2)} kWh</p>
+      <p><b>System Size:</b> ${systemKW.toFixed(2)} kW</p>
+      <p><b>Cost:</b> $${cost.toFixed(0)}</p>
+      <p><b>Yearly Savings:</b> $${savingsYear.toFixed(0)}</p>
+      <p><b>Payback:</b> ${payback.toFixed(1)} yrs</p>
     `;
-    document.getElementById("output").innerHTML=output;
-
-    document.getElementById("step3").classList.remove("active");
-    document.getElementById("results").classList.add("active");
-  }
-
-  function resetCalc(){
-    document.querySelectorAll("input").forEach(i=>i.value="");
-    document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
-    document.getElementById("step1").classList.add("active");
-  }
-
-  function openInfo(type){
-    let text="";
-    switch(type){
-      case 'consumption': text="Daily consumption in kWh (kilowatt hours) your household uses."; break;
-      case 'psh': text="Average Peak Sun Hours available in your region."; break;
-      case 'watt': text="Wattage of a single solar panel."; break;
-      case 'eff': text="Efficiency percentage of solar panel (usually 15-22%)."; break;
-      case 'loss': text="System losses due to wiring, inverter, dust, etc."; break;
-      case 'degrade': text="Annual degradation rate of panels (0.5% typical)."; break;
+    if(botG){
+      const a = +document.getElementById('autonomy').value;
+      const dod = +document.getElementById('dod').value/100;
+      const volt = +document.getElementById('voltage').value;
+      html += `<p><i>Off-grid battery sizing can be added later</i></p>`;
     }
-    document.getElementById("infoText").innerText=text;
-    document.getElementById("infoModal").style.display="block";
+    document.getElementById('output').innerHTML = html;
   }
-  function closeInfo(){
-    document.getElementById("infoModal").style.display="none";
+
+  function resetAll(){
+    document.querySelectorAll('input').forEach(i=>i.value='');
+    goto(1);
   }
 </script>
-</body>
-</html>
