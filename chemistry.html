@@ -237,12 +237,8 @@ function goToStep(step){
     document.getElementById('dot'+i).classList.toggle('active',i<=step);
   }
   if(step===4) calculateResults();
-
-  // scroll to the top of the visible card instead of page
-  const card=document.getElementById('step'+step);
-  if(card){
-    card.scrollIntoView({behavior:'smooth',block:'start'});
-  }
+  // scroll to top when switching steps
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // Reset all fields
