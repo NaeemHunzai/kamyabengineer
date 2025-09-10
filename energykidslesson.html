@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Energy Calculator</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0; padding: 0;
+    background: linear-gradient(to bottom, #c8e6c9, #ffffff);
+    color: #333;
+}
+.container {
+    max-width: 480px; margin: 15px auto; padding: 20px;
+    background: #ffffffaa; border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    backdrop-filter: blur(8px);
+}
+h1 {
+    text-align: center;
+    color: #1b5e20;
+    margin-bottom: 20px;
+    font-size: 26px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+h2 { font-size: 20px; color: #2e7d32; text-align:center; margin-bottom:20px; }
+.appliance-list, .selected-appliances { margin-bottom: 20px; }
+label { display: block; padding: 8px 0; font-weight: 500; cursor: pointer; }
+input[type=number], select {
+    padding: 10px; border-radius: 12px; border:1px solid #ccc; width: 100%; box-sizing: border-box;
+    margin-bottom: 6px; font-size: 14px;
+    transition: 0.3s;
+}
+input[type=number]:focus, select:focus { border-color: #1b5e20; box-shadow: 0 0 6px #1b5e20aa; outline: none; }
+.calculate-btn, .next-btn, .back-btn, .copy-btn, .reset-btn {
+    width: 100%; padding: 12px; margin-top: 8px; border: none; border-radius: 15px;
+    font-size: 16px; cursor: pointer; transition: 0.3s;
+}
+.calculate-btn, .next-btn, .copy-btn { background: linear-gradient(to right, #43a047, #1b5e20); color: #fff; }
+.calculate-btn:hover, .next-btn:hover, .copy-btn:hover { background: linear-gradient(to right, #1b5e20, #43a047); }
+.back-btn { background:#9e9e9e; color:#fff; margin-bottom:8px; }
+.back-btn:hover { background:#616161; }
+.reset-btn { background:#e53935; color:#fff; }
+.reset-btn:hover { background:#b71c1c; }
+.field-group {
+    margin-bottom: 15px; padding: 15px; background: linear-gradient(to right, #e8f5e9, #ffffff);
+    border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative;
+    transition: 0.3s;
+}
+.field-group:hover { transform: scale(1.02); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+.field-group label { font-weight: bold; margin-bottom: 4px; display: block; }
+.appliance-icon { position:absolute; right:20px; top:20px; font-size:26px; color:#388e3c; }
+
+.results-overlay {
+    position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.35);
+    display:flex; justify-content:center; align-items:center; z-index:999; display:none;
+}
+.results-card {
+    background: rgba(255,255,255,0.95); padding: 25px; border-radius: 20px; text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25); max-width: 90%;
+    animation: fadeIn 0.4s;
+}
+@keyframes fadeIn { from {opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
+.results-card p { margin: 8px 0; font-weight: 500; font-size: 16px; }
+.results-card div { display:flex; gap:10px; margin-top: 15px; justify-content:center; flex-wrap:wrap; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1><i class="fa-solid fa-bolt"></i> Energy Calculator</h1>
+
+<div id="step1">
+    <h2>Select Your Appliances</h2>
+    <div class="appliance-list" id="applianceList"></div>
+    <button class="next-btn" onclick="proceedToStep2()"><i class="fa-solid fa-arrow-right"></i> Next</button>
+</div>
+
+<div id="step2" style="display:none;">
+    <h2>Enter Usage Details</h2>
+    <button class="back-btn" onclick="backToStep1()"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    <div class="selected-appliances" id="selectedAppliances"></div>
+    <button class="calculate-btn" onclick="calculateConsumption()"><i class="fa-solid fa-calculator"></i> Calculate</button>
+</div>
+</div>
+
+<div class="results-overlay" id="resultsOverlay">
+    <div class="results-card" id="resultsCard">
+        <h2><i class="fa-solid fa-chart-simple"></i> Energy Summary</h2>
+        <p><strong>Total Daily:</strong> <span id="dailyKWH">0</span> kWh</p>
+        <p><strong>Total Monthly:</strong> <span id="monthlyKWH">0</span> kWh</p>
+        <p><strong>Total Yearly:</strong> <span id="yearlyKWH">0</span> kWh</p>
+        <p><strong>Monthly Cost:</strong> $<span id="totalCost">0</span></p>
+        <div>
+            <button class="copy-btn" onclick="copyMonthly()"><i class="fa-solid fa-copy"></i> Copy Monthly kWh</button>
+            <button class="reset-btn" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const appliances = [
+    { name: "LED Bulb", watt: 10, icon: "fa-lightbulb" },
+    { name: "CFL Bulb", watt: 15, icon: "fa-lightbulb" },
+    { name: "Ceiling Fan", watt: 60, icon: "fa-fan" },
+    { name: "Table Fan", watt: 50, icon: "fa-fan" },
+    { name: "Refrigerator", watt: 150, icon: "fa-snowflake" },
+    { name: "AC", watt: 1500, icon: "fa-snowflake" },
+    { name: "TV", watt: 100, icon: "fa-tv" },
+    { name: "Laptop", watt: 50, icon: "fa-laptop" },
+    { name: "Desktop Computer", watt: 200, icon: "fa-desktop" },
+    { name: "Washing Machine", watt: 800, icon: "fa-soap" },
+    { name: "Phone Charger", watt: 15, icon: "fa-mobile-screen-button" },
+    { name: "Electric Kettle", watt: 1500, icon: "fa-mug-hot" },
+    { name: "Microwave Oven", watt: 1200, icon: "fa-mug-saucer" },
+    { name: "Water Heater", watt: 3000, icon: "fa-fire" },
+    { name: "Iron", watt: 1000, icon: "fa-shirt" },
+    { name: "Vacuum Cleaner", watt: 600, icon: "fa-broom" },
+    { name: "Toaster", watt: 800, icon: "fa-bread-slice" },
+    { name: "Rice Cooker", watt: 700, icon: "fa-bowl-rice" }
+];
+
+const applianceList = document.getElementById('applianceList');
+appliances.forEach((app, idx) => {
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" id="chk-${idx}" value="${idx}"> <i class="fa-solid ${app.icon} appliance-icon"></i> ${app.name} (${app.watt} W)`;
+    applianceList.appendChild(label);
+});
+
+function proceedToStep2(){
+    const selected = [];
+    appliances.forEach((app, idx) => {
+        if(document.getElementById(`chk-${idx}`).checked){
+            selected.push({...app, idx:idx});
+        }
+    });
+    if(selected.length===0){ alert("Select at least one appliance"); return; }
+
+    document.getElementById('step1').style.display='none';
+    document.getElementById('step2').style.display='block';
+
+    const container = document.getElementById('selectedAppliances');
+    container.innerHTML='';
+    selected.forEach(app=>{
+        const row = document.createElement('div');
+        row.className='field-group';
+        row.innerHTML = `
+            <label>${app.name} Wattage (W)</label>
+            <input type="number" id="watt-${app.idx}" value="${app.watt}" min="1">
+            <label>Hours per day</label>
+            <input type="number" id="hours-${app.idx}" value="0" min="0" max="24">
+            <label>Quantity</label>
+            <select id="qty-${app.idx}">
+                ${[...Array(30).keys()].map(i=>`<option value="${i+1}">${i+1}</option>`).join('')}
+            </select>
+            <i class="fa-solid ${app.icon} appliance-icon"></i>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function backToStep1(){
+    document.getElementById('step2').style.display='none';
+    document.getElementById('step1').style.display='block';
+    document.getElementById('resultsOverlay').style.display='none';
+}
+
+function calculateConsumption(){
+    let dailyKWH=0;
+    appliances.forEach((app, idx)=>{
+        const wattField=document.getElementById(`watt-${idx}`);
+        const hoursField=document.getElementById(`hours-${idx}`);
+        const qtyField=document.getElementById(`qty-${idx}`);
+        if(!wattField) return;
+
+        const watt = parseFloat(wattField.value)||app.watt;
+        const hours = parseFloat(hoursField.value);
+        const qty = parseInt(qtyField.value)||1;
+
+        if(isNaN(hours)||hours<0||hours>24){
+            alert(`Enter valid hours (0-24) for ${app.name}`); return;
+        }
+
+        dailyKWH += (watt*hours*qty)/1000;
+    });
+    const rate=0.25;
+    const monthlyKWH=dailyKWH*30;
+    const yearlyKWH=dailyKWH*365;
+    const totalCost=monthlyKWH*rate;
+
+    document.getElementById('dailyKWH').innerText=dailyKWH.toFixed(2);
+    document.getElementById('monthlyKWH').innerText=monthlyKWH.toFixed(2);
+    document.getElementById('yearlyKWH').innerText=yearlyKWH.toFixed(2);
+    document.getElementById('totalCost').innerText=totalCost.toFixed(2);
+
+    document.getElementById('resultsOverlay').style.display='flex';
+}
+
+function copyMonthly(){
+    const monthly = document.getElementById('monthlyKWH').innerText;
+    navigator.clipboard.writeText(`Monthly Energy Consumption: ${monthly} kWh`)
+        .then(()=>alert("Monthly energy consumption copied!"));
+}
+
+function resetAll(){ location.reload(); }
+</script>
+</body>
+</html>
