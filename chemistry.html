@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Islamiat MCQs</title>
-<style>
-   body {
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Chemistry </title>
+    <style>
+     body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 70px 20px 70px 20px;  /* top = header height, bottom = pagination height */
@@ -117,10 +118,10 @@
       
       
         }
-</style>
-</head>
-<body>
- <div class="container">
+    </style>
+    </head>
+    <body>
+    <div class="container">
 <h1 class="sticky-header">Chemistry MCQs</h1>
     <div id="mcq-container"></div>
  <div class="pagination">
@@ -129,9 +130,15 @@
     <button onclick="goToPage()">Go</button>       <!-- Go button with text -->
     <button onclick="nextPage()">&#9654;</button>  <!-- ▶ Forward -->
 </div>
-</div>
-<script>
-const mcqs = [{"q": "What is the chemical symbol for Gold?", "o": ["Ag", "Au", "Pt", "Pb"], "a": "B"},
+
+
+
+    </div>
+
+    <script>
+    const mcqs = [
+      
+    {"q": "What is the chemical symbol for Gold?", "o": ["Ag", "Au", "Pt", "Pb"], "a": "B"},
 {"q": "Which gas is most abundant in Earth's atmosphere?", "o": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"], "a": "C"},
 {"q": "pH value less than 7 indicates?", "o": ["Base", "Neutral", "Acid", "Salt"], "a": "C"},
 {"q": "Who is known as the father of modern chemistry?", "o": ["Isaac Newton", "Antoine Lavoisier", "Dmitri Mendeleev", "Robert Boyle"], "a": "B"},
@@ -145,8 +152,8 @@ const mcqs = [{"q": "What is the chemical symbol for Gold?", "o": ["Ag", "Au", "
 {"q": "Which gas turns lime water milky?", "o": ["Carbon Dioxide", "Ammonia", "Sulfur Dioxide", "Chlorine"], "a": "A"},
 {"q": "Which of the following is a metalloid?", "o": ["Sodium", "Silicon", "Oxygen", "Iron"], "a": "B"},
 {"q": "Which particle has a negative charge?", "o": ["Proton", "Electron", "Neutron", "Alpha particle"], "a": "B"},
-{"q": "Which law states that mass can neither be created nor destroyed?", "o": ["Boyle’s Law", "Law of Conservation of Mass", "Avogadro’s Law", "Charles’ Law"], "a": "B"},
-{"q": "Who developed the periodic table?", "o": ["Lavoisier", "Dalton", "Mendeleev", "Bohr"], "a": "C"},
+{"q": "Which law states that mass can neither be created nor destroyed?", "o": ["Boyle’s Law", "Law of Conservation of Mass", "Avogadro’s Law", "Charles’ Law"], "a": "B"},  
+      {"q": "Who developed the periodic table?", "o": ["Lavoisier", "Dalton", "Mendeleev", "Bohr"], "a": "C"},
 {"q": "The chemical symbol for Iron is?", "o": ["Ir", "In", "Fe", "I"], "a": "C"},
 {"q": "Which metal is liquid at room temperature?", "o": ["Mercury", "Gallium", "Cesium", "Bromine"], "a": "A"},
 {"q": "Which of the following is an organic compound?", "o": ["NaCl", "CH4", "CaCO3", "H2O"], "a": "B"},
@@ -160,7 +167,7 @@ const mcqs = [{"q": "What is the chemical symbol for Gold?", "o": ["Ag", "Au", "
 {"q": "Which branch of chemistry deals with carbon compounds?", "o": ["Inorganic Chemistry", "Organic Chemistry", "Physical Chemistry", "Analytical Chemistry"], "a": "B"},
 {"q": "The smallest unit of an element is?", "o": ["Molecule", "Atom", "Electron", "Proton"], "a": "B"},
 {"q": "Which gas is essential for respiration?", "o": ["Carbon Dioxide", "Nitrogen", "Oxygen", "Helium"], "a": "C"},
-{"q": "Which element is used in pencil lead?", "o": ["Carbon", "Lead", "Silicon", "Graphite"], "a": "D"}
+{"q": "Which element is used in pencil lead?", "o": ["Carbon", "Lead", "Silicon", "Graphite"], "a": "D"},
 {"q": "What is the molecular formula of methane?", "o": ["CH2", "CH3", "CH4", "C2H6"], "a": "C"},
 {"q": "Which element has the atomic number 17?", "o": ["Chlorine", "Fluorine", "Sulfur", "Phosphorus"], "a": "A"},
 {"q": "What is the chemical symbol for Potassium?", "o": ["P", "Po", "Pt", "K"], "a": "D"},
@@ -190,213 +197,63 @@ const mcqs = [{"q": "What is the chemical symbol for Gold?", "o": ["Ag", "Au", "
 {"q": "What is the chemical name of table salt?", "o": ["Sodium nitrate", "Sodium chloride", "Potassium chloride", "Calcium carbonate"], "a": "B"},
 {"q": "Which of the following is an alkaline earth metal?", "o": ["Sodium", "Magnesium", "Iron", "Copper"], "a": "B"},
 {"q": "Which of the following is not a halogen?", "o": ["Fluorine", "Chlorine", "Bromine", "Oxygen"], "a": "D"},
-{"q": "Which law states that matter can neither be created nor destroyed?", "o": ["Law of Multiple Proportions", "Law of Conservation of Mass", "Boyle’s Law", "Dalton’s Law"], "a": "B"}
-{"q": "Which gas turns lime water milky?", "o": ["Oxygen", "Carbon dioxide", "Sulfur dioxide", "Hydrogen"], "a": "B"},
-{"q": "Which element is known as the 'King of Chemicals'?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Acetic acid"], "a": "A"},
-{"q": "The atomic mass of an element is approximately equal to?", "o": ["Number of protons", "Number of neutrons", "Sum of protons and neutrons", "Number of electrons"], "a": "C"},
-{"q": "Which isotope of hydrogen is radioactive?", "o": ["Protium", "Deuterium", "Tritium", "All of these"], "a": "C"},
-{"q": "Which metal is extracted from bauxite?", "o": ["Iron", "Aluminium", "Copper", "Zinc"], "a": "B"},
-{"q": "The pH of lemon juice is usually?", "o": ["2", "4", "6", "8"], "a": "A"},
-{"q": "Who proposed the atomic theory?", "o": ["Newton", "Dalton", "Bohr", "Rutherford"], "a": "B"},
-{"q": "Which part of the atom was discovered by J.J. Thomson?", "o": ["Proton", "Electron", "Neutron", "Nucleus"], "a": "B"},
-{"q": "Which metal is used in galvanization?", "o": ["Copper", "Zinc", "Tin", "Lead"], "a": "B"},
-{"q": "Which gas is used in balloons?", "o": ["Hydrogen", "Oxygen", "Helium", "Nitrogen"], "a": "C"},
-{"q": "Which is the heaviest naturally occurring element?", "o": ["Uranium", "Plutonium", "Lead", "Thorium"], "a": "A"},
-{"q": "Which element is essential for hemoglobin?", "o": ["Calcium", "Magnesium", "Iron", "Copper"], "a": "C"},
-{"q": "What is the lightest metal?", "o": ["Sodium", "Lithium", "Potassium", "Calcium"], "a": "B"},
-{"q": "Which law relates pressure and volume of gas?", "o": ["Charles’s Law", "Boyle’s Law", "Avogadro’s Law", "Dalton’s Law"], "a": "B"},
-{"q": "What is the chemical formula of ammonia?", "o": ["NH3", "NO2", "N2O", "NH4"], "a": "A"},
-{"q": "What is the process of loss of electrons called?", "o": ["Oxidation", "Reduction", "Neutralization", "Hydrolysis"], "a": "A"},
-{"q": "Which is the most reactive alkali metal?", "o": ["Sodium", "Potassium", "Cesium", "Lithium"], "a": "C"},
-{"q": "Which vitamin requires cobalt in its structure?", "o": ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"], "a": "B"},
-{"q": "Which allotrope of carbon is used in pencils?", "o": ["Diamond", "Graphite", "Fullerene", "Charcoal"], "a": "B"},
-{"q": "Which gas is known as laughing gas?", "o": ["Carbon monoxide", "Nitrous oxide", "Methane", "Ozone"], "a": "B"},
-{"q": "Which process is used to purify water?", "o": ["Evaporation", "Filtration", "Distillation", "Crystallization"], "a": "C"},
-{"q": "The main constituent of glass is?", "o": ["Silica", "Lime", "Soda", "Alumina"], "a": "A"},
-{"q": "Which gas protects us from harmful UV rays?", "o": ["Oxygen", "Nitrogen", "Ozone", "Carbon dioxide"], "a": "C"},
-{"q": "Which of the following is a strong electrolyte?", "o": ["Glucose", "Urea", "Sodium chloride", "Alcohol"], "a": "C"},
-{"q": "Which of the following is liquid non-metal at room temperature?", "o": ["Chlorine", "Bromine", "Iodine", "Phosphorus"], "a": "B"},
-{"q": "Which acid is secreted in the stomach?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Phosphoric acid"], "a": "C"},
-{"q": "Which element is the basis of organic chemistry?", "o": ["Oxygen", "Carbon", "Nitrogen", "Sulfur"], "a": "B"},
-{"q": "Which scientist discovered the neutron?", "o": ["Rutherford", "J.J. Thomson", "James Chadwick", "Niels Bohr"], "a": "C"},
-{"q": "Which type of reaction releases heat energy?", "o": ["Endothermic", "Exothermic", "Neutralization", "Electrolysis"], "a": "B"},
-{"q": "Which of the following is used as a refrigerant?", "o": ["Oxygen", "Freon", "Helium", "Methane"], "a": "B"}
-{"q": "Which gas is known as Marsh gas?", "o": ["Ethane", "Methane", "Propane", "Butane"], "a": "B"},
-{"q": "Which metal is used in making thermometers?", "o": ["Mercury", "Lead", "Zinc", "Copper"], "a": "A"},
-{"q": "What is the chemical formula of table salt?", "o": ["KCl", "NaCl", "Na2CO3", "NaHCO3"], "a": "B"},
-{"q": "Which scientist gave the planetary model of the atom?", "o": ["Dalton", "Rutherford", "Bohr", "Thomson"], "a": "C"},
-{"q": "Which element has the highest electronegativity?", "o": ["Oxygen", "Fluorine", "Chlorine", "Nitrogen"], "a": "B"},
-{"q": "The process of coating iron with zinc is called?", "o": ["Alloying", "Galvanization", "Electroplating", "Corrosion"], "a": "B"},
-{"q": "What is the molar volume of an ideal gas at STP?", "o": ["11.2 L", "22.4 L", "44.8 L", "33.6 L"], "a": "B"},
-{"q": "Which of the following is not a noble gas?", "o": ["Helium", "Argon", "Neon", "Nitrogen"], "a": "D"},
-{"q": "Which gas is responsible for acid rain?", "o": ["CO2", "SO2", "N2", "CH4"], "a": "B"},
-{"q": "Which polymer is used to make non-stick cookware?", "o": ["Nylon", "Teflon", "PVC", "Polystyrene"], "a": "B"},
-{"q": "The most abundant element in Earth's crust is?", "o": ["Oxygen", "Silicon", "Aluminium", "Iron"], "a": "A"},
-{"q": "What is the main ore of iron?", "o": ["Bauxite", "Hematite", "Galena", "Magnetite"], "a": "B"},
-{"q": "Which gas is used in welding?", "o": ["Hydrogen", "Acetylene", "Oxygen", "Nitrogen"], "a": "B"},
-{"q": "Which type of bond is formed by sharing of electrons?", "o": ["Ionic", "Covalent", "Metallic", "Hydrogen"], "a": "B"},
-{"q": "Which isotope is used in nuclear reactors?", "o": ["U-235", "C-14", "H-3", "O-16"], "a": "A"},
-{"q": "Which of the following is a halogen?", "o": ["Oxygen", "Chlorine", "Nitrogen", "Sulfur"], "a": "B"},
-{"q": "The main constituent of natural gas is?", "o": ["Ethane", "Methane", "Propane", "Butane"], "a": "B"},
-{"q": "Which process converts sugar into alcohol?", "o": ["Photosynthesis", "Fermentation", "Distillation", "Oxidation"], "a": "B"},
-{"q": "Which gas is produced when metals react with acids?", "o": ["Oxygen", "Carbon dioxide", "Hydrogen", "Nitrogen"], "a": "C"},
-{"q": "Which element is used in light bulb filaments?", "o": ["Copper", "Iron", "Tungsten", "Nickel"], "a": "C"},
-{"q": "Which metal is liquid at room temperature?", "o": ["Gallium", "Mercury", "Sodium", "Potassium"], "a": "B"},
-{"q": "The process of separation of liquids based on boiling points is?", "o": ["Filtration", "Distillation", "Evaporation", "Sublimation"], "a": "B"},
-{"q": "Which acid is present in vinegar?", "o": ["Formic acid", "Acetic acid", "Citric acid", "Lactic acid"], "a": "B"},
-{"q": "Which of the following is a greenhouse gas?", "o": ["O2", "CO2", "N2", "Ar"], "a": "B"},
-{"q": "Which of the following is not an alkali metal?", "o": ["Sodium", "Potassium", "Calcium", "Lithium"], "a": "C"},
-{"q": "Which scientist discovered radioactivity?", "o": ["Rutherford", "Henri Becquerel", "Marie Curie", "James Chadwick"], "a": "B"},
-{"q": "Which of the following is a biodegradable polymer?", "o": ["Nylon", "Polythene", "Polylactic acid", "PVC"], "a": "C"},
-{"q": "The blue color of copper compounds is due to?", "o": ["Iron", "Chromium", "Copper ions", "Nickel"], "a": "C"},
-{"q": "Which gas is used for artificial ripening of fruits?", "o": ["Methane", "Carbon dioxide", "Ethylene", "Butane"], "a": "C"},
-{"q": "Which scientist discovered the proton?", "o": ["J.J. Thomson", "Rutherford", "Bohr", "Chadwick"], "a": "B"}
-{"q": "Which element is the lightest?", "o": ["Helium", "Hydrogen", "Lithium", "Oxygen"], "a": "B"},
-{"q": "Which is the most abundant gas in the Earth's atmosphere?", "o": ["Oxygen", "Carbon dioxide", "Nitrogen", "Argon"], "a": "C"},
-{"q": "Which acid is present in citrus fruits?", "o": ["Acetic acid", "Formic acid", "Citric acid", "Oxalic acid"], "a": "C"},
-{"q": "The nucleus of an atom consists of?", "o": ["Protons and electrons", "Protons and neutrons", "Neutrons and electrons", "Protons only"], "a": "B"},
-{"q": "Which particle has no charge?", "o": ["Proton", "Electron", "Neutron", "Positron"], "a": "C"},
-{"q": "Which is the smallest unit of an element?", "o": ["Molecule", "Atom", "Compound", "Ion"], "a": "B"},
-{"q": "Which law states that mass is conserved in a chemical reaction?", "o": ["Boyle’s law", "Law of conservation of mass", "Dalton’s law", "Avogadro’s law"], "a": "B"},
-{"q": "The atomic number of oxygen is?", "o": ["6", "7", "8", "9"], "a": "C"},
-{"q": "Which gas is used in fire extinguishers?", "o": ["Oxygen", "Carbon dioxide", "Nitrogen", "Chlorine"], "a": "B"},
-{"q": "Which liquid is called universal solvent?", "o": ["Alcohol", "Water", "Ether", "Acetone"], "a": "B"},
-{"q": "Which of the following is an alkaline earth metal?", "o": ["Sodium", "Potassium", "Magnesium", "Lithium"], "a": "C"},
-{"q": "Which metal is used in making aircraft bodies?", "o": ["Iron", "Aluminium", "Copper", "Lead"], "a": "B"},
-{"q": "The SI unit of amount of substance is?", "o": ["Kilogram", "Mole", "Gram", "Liter"], "a": "B"},
-{"q": "Which scientist discovered the electron?", "o": ["Rutherford", "J.J. Thomson", "Bohr", "Dalton"], "a": "B"},
-{"q": "Which non-metal is liquid at room temperature?", "o": ["Iodine", "Bromine", "Chlorine", "Sulfur"], "a": "B"},
-{"q": "The atomic number of carbon is?", "o": ["4", "6", "8", "12"], "a": "B"},
-{"q": "Which substance is used in the manufacture of matchsticks?", "o": ["Phosphorus", "Sulfur", "Potassium nitrate", "All of these"], "a": "D"},
-{"q": "Which of the following is a chemical change?", "o": ["Melting of ice", "Burning of paper", "Breaking of glass", "Dissolving sugar in water"], "a": "B"},
-{"q": "What is the chemical symbol of gold?", "o": ["Au", "Ag", "Gd", "Ga"], "a": "A"},
-{"q": "Which gas has the lowest density?", "o": ["Oxygen", "Helium", "Nitrogen", "Hydrogen"], "a": "D"},
-{"q": "Which substance is known as caustic soda?", "o": ["NaOH", "KOH", "Na2CO3", "NaHCO3"], "a": "A"},
-{"q": "Which scientist discovered that the atom has a nucleus?", "o": ["Rutherford", "Bohr", "Dalton", "Chadwick"], "a": "A"},
-{"q": "The chemical name of baking soda is?", "o": ["Sodium carbonate", "Sodium bicarbonate", "Calcium carbonate", "Potassium carbonate"], "a": "B"},
-{"q": "Which gas is used in the Haber process?", "o": ["Hydrogen and Nitrogen", "Oxygen and Nitrogen", "Hydrogen and Oxygen", "Carbon dioxide and Oxygen"], "a": "A"},
-{"q": "Which of the following is not a transition metal?", "o": ["Iron", "Copper", "Zinc", "Chromium"], "a": "C"},
-{"q": "The common name of H2O2 is?", "o": ["Bleaching powder", "Hydrogen peroxide", "Baking soda", "Quicklime"], "a": "B"},
-{"q": "Which of the following is an example of exothermic reaction?", "o": ["Photosynthesis", "Melting of ice", "Combustion of fuel", "Electrolysis of water"], "a": "C"},
-{"q": "Which of the following is used in making soft drinks?", "o": ["CO2", "O2", "N2", "H2"], "a": "A"},
-{"q": "Which acid is found in ant stings?", "o": ["Lactic acid", "Formic acid", "Acetic acid", "Citric acid"], "a": "B"},
-{"q": "Which of the following metals is the best conductor of electricity?", "o": ["Copper", "Gold", "Silver", "Aluminium"], "a": "C"}
-{"q": "Which of the following is a noble gas?", "o": ["Nitrogen", "Oxygen", "Helium", "Hydrogen"], "a": "C"},
-{"q": "Which element is called the King of Chemicals?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Phosphoric acid"], "a": "A"},
-{"q": "What is the atomic number of sodium?", "o": ["10", "11", "12", "13"], "a": "B"},
-{"q": "Which element is commonly used in thermometers?", "o": ["Mercury", "Lead", "Iron", "Copper"], "a": "A"},
-{"q": "Which acid is present in vinegar?", "o": ["Lactic acid", "Acetic acid", "Formic acid", "Citric acid"], "a": "B"},
-{"q": "Which metal is liquid at room temperature?", "o": ["Mercury", "Sodium", "Aluminium", "Zinc"], "a": "A"},
-{"q": "The most abundant element in the human body is?", "o": ["Carbon", "Oxygen", "Hydrogen", "Nitrogen"], "a": "B"},
-{"q": "Which gas is produced during photosynthesis?", "o": ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"], "a": "B"},
-{"q": "What is the chemical symbol of potassium?", "o": ["K", "P", "Pt", "Po"], "a": "A"},
-{"q": "Which gas is known as laughing gas?", "o": ["CO2", "N2O", "NO2", "NH3"], "a": "B"},
-{"q": "Which of the following is an alkali metal?", "o": ["Magnesium", "Calcium", "Sodium", "Aluminium"], "a": "C"},
-{"q": "What is the chemical formula of ozone?", "o": ["O2", "O3", "OH", "CO2"], "a": "B"},
-{"q": "Which metal is used in making galvanised iron?", "o": ["Copper", "Zinc", "Tin", "Lead"], "a": "B"},
-{"q": "Which is the hardest natural substance?", "o": ["Diamond", "Graphite", "Quartz", "Silicon"], "a": "A"},
-{"q": "Which gas turns limewater milky?", "o": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], "a": "B"},
-{"q": "Which acid is found in milk?", "o": ["Lactic acid", "Acetic acid", "Formic acid", "Oxalic acid"], "a": "A"},
-{"q": "Which of the following elements is radioactive?", "o": ["Uranium", "Iron", "Zinc", "Calcium"], "a": "A"},
-{"q": "Which non-metal conducts electricity?", "o": ["Sulfur", "Carbon (graphite)", "Phosphorus", "Iodine"], "a": "B"},
-{"q": "Which gas is used for welding?", "o": ["Hydrogen", "Oxygen", "Acetylene", "Methane"], "a": "C"},
-{"q": "Which type of bond involves sharing of electron pairs?", "o": ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"], "a": "B"},
-{"q": "Which scientist proposed the planetary model of the atom?", "o": ["Dalton", "Rutherford", "Bohr", "Thomson"], "a": "C"},
-{"q": "Which acid is secreted in the stomach?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Acetic acid"], "a": "C"},
-{"q": "Which metal is most abundant in the Earth's crust?", "o": ["Iron", "Aluminium", "Calcium", "Magnesium"], "a": "B"},
-{"q": "Which of the following is a greenhouse gas?", "o": ["Oxygen", "Carbon dioxide", "Argon", "Nitrogen"], "a": "B"},
-{"q": "The common name of CaO is?", "o": ["Quicklime", "Slaked lime", "Limestone", "Gypsum"], "a": "A"},
-{"q": "Which type of mixture is air?", "o": ["Compound", "Solution", "Homogeneous mixture", "Heterogeneous mixture"], "a": "C"},
-{"q": "Which gas is released when metals react with acids?", "o": ["Oxygen", "Nitrogen", "Hydrogen", "Carbon dioxide"], "a": "C"},
-{"q": "Which scientist gave the atomic theory?", "o": ["Dalton", "Rutherford", "Bohr", "Thomson"], "a": "A"},
-{"q": "Which part of the atom was discovered by Chadwick?", "o": ["Electron", "Proton", "Neutron", "Nucleus"], "a": "C"},
-{"q": "Which acid is present in apples?", "o": ["Citric acid", "Tartaric acid", "Malic acid", "Lactic acid"], "a": "C"}
-{"q": "Which of the following is a halogen?", "o": ["Oxygen", "Chlorine", "Nitrogen", "Neon"], "a": "B"},
-{"q": "What is the pH of pure water at 25°C?", "o": ["6", "7", "8", "9"], "a": "B"},
-{"q": "Which of the following is an allotrope of carbon?", "o": ["Diamond", "Salt", "Quartz", "Gypsum"], "a": "A"},
-{"q": "The atomic number of carbon is?", "o": ["5", "6", "7", "8"], "a": "B"},
-{"q": "Which gas is known as marsh gas?", "o": ["Methane", "Ethane", "Butane", "Propane"], "a": "A"},
-{"q": "Which acid is present in citrus fruits?", "o": ["Lactic acid", "Citric acid", "Oxalic acid", "Formic acid"], "a": "B"},
-{"q": "Which gas is filled in electric bulbs?", "o": ["Helium", "Nitrogen", "Argon", "Hydrogen"], "a": "C"},
-{"q": "What is the symbol of silver?", "o": ["Si", "Ag", "Au", "S"], "a": "B"},
-{"q": "Which metal is used in making filaments of electric bulbs?", "o": ["Copper", "Tungsten", "Aluminium", "Iron"], "a": "B"},
-{"q": "Which isotope is used in nuclear reactors?", "o": ["U-238", "U-235", "C-12", "O-16"], "a": "B"},
-{"q": "What is the chemical formula of baking soda?", "o": ["NaCl", "Na2CO3", "NaHCO3", "K2CO3"], "a": "C"},
-{"q": "Which gas is used in fire extinguishers?", "o": ["Nitrogen", "Carbon dioxide", "Oxygen", "Helium"], "a": "B"},
-{"q": "Which of the following is a noble metal?", "o": ["Iron", "Gold", "Zinc", "Lead"], "a": "B"},
-{"q": "The process of converting solid directly into gas is called?", "o": ["Evaporation", "Condensation", "Sublimation", "Distillation"], "a": "C"},
-{"q": "Which element has the highest electronegativity?", "o": ["Oxygen", "Chlorine", "Fluorine", "Nitrogen"], "a": "C"},
-{"q": "The SI unit of amount of substance is?", "o": ["Mole", "Gram", "Kilogram", "Atom"], "a": "A"},
-{"q": "Which of the following is an alkaline earth metal?", "o": ["Sodium", "Calcium", "Potassium", "Lithium"], "a": "B"},
-{"q": "Which gas is produced by the reaction of calcium carbide with water?", "o": ["Methane", "Ethane", "Acetylene", "Propane"], "a": "C"},
-{"q": "Which is the lightest metal?", "o": ["Sodium", "Lithium", "Potassium", "Calcium"], "a": "B"},
-{"q": "Which of the following is a non-renewable source of energy?", "o": ["Coal", "Solar", "Wind", "Hydro"], "a": "A"},
-{"q": "The atomic mass of oxygen is approximately?", "o": ["14", "15", "16", "18"], "a": "C"},
-{"q": "Which of the following acids is diprotic?", "o": ["HCl", "H2SO4", "HNO3", "H3PO4"], "a": "B"},
-{"q": "Which is the heaviest naturally occurring element?", "o": ["Uranium", "Plutonium", "Thorium", "Radium"], "a": "A"},
-{"q": "Which type of bond is present in NaCl?", "o": ["Covalent", "Ionic", "Metallic", "Hydrogen"], "a": "B"},
-{"q": "The pH of lemon juice is?", "o": ["Less than 7", "Equal to 7", "Greater than 7", "Around 14"], "a": "A"},
-{"q": "Which gas is known as water gas?", "o": ["H2 + CO", "H2 + CO2", "CO2 + O2", "CO + O2"], "a": "A"},
-{"q": "Which oxide is known as laughing gas?", "o": ["NO2", "N2O", "CO2", "SO2"], "a": "B"},
-{"q": "The process of purification of water using alum is called?", "o": ["Chlorination", "Sedimentation", "Coagulation", "Filtration"], "a": "C"},
-{"q": "Which element is known as quicksilver?", "o": ["Mercury", "Silver", "Platinum", "Chromium"], "a": "A"},
-{"q": "Which gas is used in balloons?", "o": ["Helium", "Hydrogen", "Nitrogen", "Oxygen"], "a": "A"},
-{"q": "Which metal is used in thermite welding?", "o": ["Copper", "Iron", "Aluminium", "Nickel"], "a": "C"},
-{"q": "The molecular mass of water is?", "o": ["16", "18", "20", "22"], "a": "B"},
-{"q": "Which acid is found in ant stings?", "o": ["Acetic acid", "Formic acid", "Oxalic acid", "Tartaric acid"], "a": "B"},
-{"q": "The blue color of copper salts is due to?", "o": ["Cu2+", "Cu+", "CuO", "Cu(OH)2"], "a": "A"},
-{"q": "Which element has the chemical symbol 'Sn'?", "o": ["Sodium", "Tin", "Silver", "Sulfur"], "a": "B"},
-{"q": "Which scientist discovered the electron?", "o": ["Rutherford", "J.J. Thomson", "Bohr", "Dalton"], "a": "B"},
-{"q": "The chemical formula of gypsum is?", "o": ["CaSO4·2H2O", "CaCO3", "CaO", "CaCl2"], "a": "A"},
-{"q": "Which of the following is a polyatomic ion?", "o": ["Na+", "Cl−", "SO4^2−", "K+"], "a": "C"},
-{"q": "Which of the following is a base?", "o": ["HCl", "NaOH", "HNO3", "H2SO4"], "a": "B"},
-{"q": "The main component of natural gas is?", "o": ["Methane", "Ethane", "Propane", "Butane"], "a": "A"},
-{"q": "Which metal is extracted from bauxite?", "o": ["Iron", "Aluminium", "Copper", "Zinc"], "a": "B"},
-{"q": "Which of the following is a greenhouse gas?", "o": ["Helium", "Nitrogen", "Methane", "Argon"], "a": "C"},
-{"q": "The rusting of iron is an example of?", "o": ["Reduction", "Oxidation", "Distillation", "Evaporation"], "a": "B"},
-{"q": "Which element is known as the building block of life?", "o": ["Oxygen", "Nitrogen", "Carbon", "Hydrogen"], "a": "C"},
-{"q": "Which gas is called dry ice in solid form?", "o": ["Oxygen", "Carbon dioxide", "Methane", "Ammonia"], "a": "B"},
-{"q": "Which of the following is a noble gas?", "o": ["Hydrogen", "Oxygen", "Neon", "Nitrogen"], "a": "C"},
-{"q": "Which liquid is called universal solvent?", "o": ["Ethanol", "Water", "Acetone", "Benzene"], "a": "B"},
-{"q": "The atomic number of chlorine is?", "o": ["16", "17", "18", "19"], "a": "B"},
-{"q": "The catalyst used in the Haber process is?", "o": ["Copper", "Nickel", "Iron", "Platinum"], "a": "C"}
 
-             
-             ];
-const itemsPerPage = 10;
-let currentPage = 1;
-const totalPages = Math.ceil(mcqs.length / itemsPerPage);
 
-function displayMCQs(page) {
-  currentPage = page;
-  const container = document.getElementById('mcq-container');
-  container.innerHTML = '';
-  const start = (page - 1) * itemsPerPage;
-  const end = Math.min(start + itemsPerPage, mcqs.length);
-  const labels = ['A','B','C','D'];
-  for (let i = start; i < end; i++) {
-    const item = mcqs[i];
-    const qNumber = i + 1;
-    const div = document.createElement('div');
-    div.className = 'mcq';
-    let optsHtml = '';
-    for (let j=0;j<4;j++) { optsHtml += <div class="option">${labels[j]}. ${item.o[j]}</div>; }
-    div.innerHTML = 
-      <div class="question">${qNumber}. ${item.q}</div>
-      <div class="options">${optsHtml}</div>
-      <div class="answer">Answer: ${item.a}</div>
-    ;
-    container.appendChild(div);
-  }
-  document.getElementById('pageInput').value = currentPage;
-  window.scrollTo(0,0);
-}
+      
+];
 
-function nextPage() { if (currentPage < totalPages) displayMCQs(currentPage+1); }
-function prevPage() { if (currentPage > 1) displayMCQs(currentPage-1); }
-function goToPage() { const p = parseInt(document.getElementById('pageInput').value); if (!isNaN(p) && p>=1 && p<=totalPages) displayMCQs(p); }
+    const itemsPerPage = 10;
+    let currentPage = 1;
+    const totalPages = Math.ceil(mcqs.length / itemsPerPage);
 
-displayMCQs(1);
-</script>
-</body>
-</html>
+    function displayMCQs(page) {
+        const container = document.getElementById("mcq-container");
+        container.innerHTML = "";
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageItems = mcqs.slice(start, end);
+
+        pageItems.forEach((item, index) => {
+            const mcqDiv = document.createElement("div");
+            mcqDiv.classList.add("mcq");
+            const qNumber = start + index + 1;
+            mcqDiv.innerHTML = `
+                <div class="question">${qNumber}. ${item.q}</div>
+                <div class="options">
+                    ${item.o.map(opt => `<div class="option">${opt}</div>`).join("")}
+                </div>
+                <div class="answer">${item.a}</div>
+            `;
+            container.appendChild(mcqDiv);
+        });
+
+        document.getElementById("pageInput").value = currentPage;
+        window.scrollTo(0,0);
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayMCQs(currentPage);
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            displayMCQs(currentPage);
+        }
+    }
+
+    function goToPage() {
+        const page = parseInt(document.getElementById("pageInput").value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            displayMCQs(currentPage);
+        }
+    }
+
+    displayMCQs(currentPage);
+    </script>
+    </body>
+    </html>
