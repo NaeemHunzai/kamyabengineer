@@ -1,760 +1,402 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Advanced Solar Calculator — Polished UI</title>
-
-<!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Islamiat MCQs</title>
 <style>
-:root{
-  --primary:#00796b; --accent:#06b6d4; --bg:#f5f7fa; --muted:#6b7280; --card:#fff; --radius:12px;
+   body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 70px 20px 70px 20px;  /* top = header height, bottom = pagination height */
+    background-color: #ffffff;
+    color: #333;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;width:100%;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:#111; -webkit-text-size-adjust:100%}
-body{display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
 
-/* wrapper */
-.wrap{max-width:520px;margin:0 auto;padding:12px;}
-
-/* header */
-.header{display:flex;gap:12px;align-items:center;margin-bottom:8px}
-.logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
-.title{font-size:16px;font-weight:700}
-.subtitle{font-size:12px;color:var(--muted)}
-
-/* stepper */
-/* MADE STICKY: position changed from relative to sticky and will stay at top */
-.stepper{display:flex;justify-content:space-between;align-items:center;margin:12px 0;position:sticky;top:0;background:var(--bg);padding:0 6px;z-index:1000}
-.stepper::before{content:'';position:absolute;left:24px;right:24px;height:4px;background:#e6eef6;top:50%;transform:translateY(-50%);z-index:0;border-radius:999px}
-.step-dot{z-index:2;width:32px;height:32px;border-radius:50%;background:#e6eef6;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#374151}
-.step-dot.active{background:linear-gradient(90deg,var(--primary),var(--accent)); color:white; box-shadow:0 6px 18px rgba(3,105,79,0.12)}
-
-/* card layout */
-.card{background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(16,24,40,0.06);padding:14px;margin-bottom:12px}
-h2{color:var(--primary);margin:0 0 6px;font-size:15px}
-label.rowLabel{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;font-size:13px;color:#374151}
-.inputRow{display:grid;grid-template-columns:1fr 42px;gap:8px;align-items:center;margin-top:8px}
-.inputRow.full{grid-template-columns:1fr}
-.inputField{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fbfdff;font-size:14px}
-.selectField{padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fbfdff}
-
-/* small uniform info button */
-.infoBtn{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:none;background:#e6f7ff;color:#0369a1;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.04)}
-
-/* actions */
-.actions{display:flex;gap:8px;margin-top:12px}
-button{padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-size:14px}
-.btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;flex:1}
-.btn-ghost{background:#fff;border:1px solid #e6eef6;color:var(--muted);flex:1}
-.btn-secondary{background:#f3f4f6;color:#111;flex:1}
-
-/* results */
-#resultsWrap{display:none}
-.result-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.result-card{flex:1 1 calc(50% - 8px);min-width:150px;background:linear-gradient(180deg,#ffffff,#fbffff);border-radius:8px;padding:10px;border:1px solid #e6eef6;display:flex;gap:10px;align-items:center}
-.result-icon{font-size:18px;color:var(--primary);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(0,121,107,0.06)}
-.value{font-size:15px;font-weight:800;color:#0f1724}
-.small{font-size:12px;color:var(--muted)}
-.full-card{padding:10px;border-radius:10px;background:linear-gradient(90deg,#fff,#f7fcfb);border:1px solid #e6eef6;margin-top:10px;font-size:14px}
-
-/* toast & info notifier bottom center */
-.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#fffbeb;color:#92400e;padding:8px 12px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.12);display:none;z-index:9999;font-size:13px}
-.infoToast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#ffffff;color:#111;padding:10px 14px;border-radius:10px;border:1px solid #e6eef6;box-shadow:0 8px 30px rgba(2,6,23,0.12);display:none;z-index:9999;max-width:92%;font-size:13px;text-align:left}
-
-/* responsive: results become 1 column under 480px */
-@media (max-width:480px){
-  .stepper::before{left:18px;right:18px}
-  .result-card{flex:1 1 100%}
-  .inputRow{grid-template-columns:1fr}
-  .infoBtn{width:32px;height:32px;font-size:12px}
+.container {
+    max-width: 900px;
+    margin: 0 auto;   /* centered horizontally */
 }
+
+
+
+
+
+        h1 {
+            text-align: center;
+            background-color: #00796b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .mcq {
+            background: #ffffffd9;
+            border-left: 6px solid #00796b;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .mcq:hover { transform: scale(1.01); }
+        .question { font-size: 18px; font-weight: bold; }
+        .options { margin-top: 15px; }
+        .option { margin: 6px 0; padding-left: 10px; }
+        .answer { margin-top: 15px; font-weight: bold; color: #1b5e20; }
+.pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 14px; /* spacing so buttons don’t feel cramped */
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.pagination button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;   /* round shape */
+    background-color: #00796b;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;  /* suitable size for both arrows & text */
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* ensures perfect centering */
+    transition: background 0.2s;
+    line-height: 40px;    /* match button height for vertical centering */
+    padding: 0;
+}
+
+.pagination button:hover {
+    background-color: #004d40;
+}
+
+.pagination input {
+    width: 55px;
+    padding: 6px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* slightly rounded */
+}
+
+      
+.sticky-header { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    background-color: #ffffff;   /* white background */
+    color: #00796b;              /* teal text */
+    padding: 12px;
+    font-size: 18px;             /* normal text size */
+    font-weight: 600;            /* semi-bold for clarity */
+    text-align: center;
+    border-radius: 0 0 12px 12px;
+    margin: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* subtle shadow */
+    height: auto;
+    line-height: 1.4;
+    border-bottom: 2px solid #00796b; /* underline */
+}
+
+
+      
+      
+      
+        }
 </style>
 </head>
 <body>
-  <div class="wrap">
-
-    <div class="header">
-     
-      </div>
-    </div>
-
-    <div class="stepper" aria-hidden>
-      <div id="dot1" class="step-dot active">1</div>
-      <div id="dot2" class="step-dot">2</div>
-      <div id="dot3" class="step-dot">3</div>
-      <div id="dot4" class="step-dot">4</div>
-    </div>
-
-    <!-- STEP 1 -->
-    <div id="step1" class="card">
-      <h2>1 • System & Load</h2>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">System Mode</label>
-          <select id="systemMode" class="selectField">
-            <option value="grid">Grid-tied</option>
-            <option value="hybrid">Hybrid (grid + battery)</option>
-            <option value="offgrid">Off-Grid</option>
-          </select>
-        </div>
-        <button class="infoBtn" data-info="mode">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Daily consumption (kWh)</label>
-          <input id="dailyKwh" class="inputField" type="number" min="0" step="0.1" placeholder="e.g. 20">
-        </div>
-        <button class="infoBtn" data-info="consumption">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Peak sun hours (hrs)</label>
-          <input id="peakSun" class="inputField" type="number" min="0" max="12" step="0.1" placeholder="e.g. 5.5">
-        </div>
-        <button class="infoBtn" data-info="sun">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Peak instantaneous load (kW) — optional</label>
-          <input id="peakLoad" class="inputField" type="number" min="0" step="0.1" placeholder="optional">
-        </div>
-        <button class="infoBtn" data-info="peakload">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">DC/AC ratio (array ÷ inverter)</label>
-          <input id="dcacRatio" class="inputField" type="number" min="0.5" step="0.05" value="1.2">
-        </div>
-        <button class="infoBtn" data-info="dcac">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Inverter efficiency (%)</label>
-          <input id="inverterEff" class="inputField" type="number" min="70" max="100" step="0.1" value="95">
-        </div>
-        <button class="infoBtn" data-info="inverterEff">i</button>
-      </div>
-
-      <div class="actions">
-        <button class="btn-ghost" onclick="resetAll()">Reset</button>
-        <button class="btn-primary" onclick="goTo(2)">Next →</button>
-      </div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div id="step2" class="card" style="display:none">
-      <h2>2 • Panels, Roof & Battery</h2>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Panel watt (W)</label>
-          <input id="panelW" class="inputField" data-even="true" type="number" min="50" step="1" value="430">
-        </div>
-        <button class="infoBtn" data-info="panelW">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Panel efficiency (%)</label>
-          <input id="panelEff" class="inputField" type="number" min="8" max="25" step="0.1" value="19.5">
-        </div>
-        <button class="infoBtn" data-info="panelEff">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Panel degradation (%/yr)</label>
-          <input id="degradation" class="inputField" type="number" min="0" step="0.1" value="0.5">
-        </div>
-        <button class="infoBtn" data-info="degradation">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">System derate (%)</label>
-          <input id="deratePct" class="inputField" type="number" min="50" max="100" step="0.1" value="77">
-        </div>
-        <button class="infoBtn" data-info="derate">i</button>
-      </div>
-
-      <div class="inputRow full">
-        <div>
-          <label class="rowLabel">Available roof area</label>
-          <div style="display:flex;gap:8px;margin-top:6px">
-            <input id="roofArea" class="inputField" data-even="true" type="number" min="0" step="1" placeholder="e.g. 40">
-            <select id="roofUnit" class="selectField" style="width:110px">
-              <option value="m2">m²</option>
-              <option value="ft2">ft²</option>
-            </select>
-          </div>
-        </div>
-        <button class="infoBtn" data-info="roof">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Tilt angle (°)</label>
-          <input id="tilt" class="inputField" type="number" min="0" max="90" step="0.1" value="20">
-        </div>
-        <button class="infoBtn" data-info="tilt">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Orientation</label>
-          <select id="orientation" class="selectField">
-            <option>South</option><option>East</option><option>West</option><option>Flat</option>
-          </select>
-        </div>
-        <button class="infoBtn" data-info="orientation">i</button>
-      </div>
-
-      <!-- battery block -->
-      <div id="batteryBlock" style="display:none;margin-top:10px;padding:10px;border-radius:8px;background:#fbffff;border:1px solid #e6eef6">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Battery & autonomy</strong>
-          <div class="small">Shown for Hybrid/Off-grid</div>
-        </div>
-
-        <div class="inputRow" style="margin-top:8px">
-          <div>
-            <label class="rowLabel">Autonomy (days)</label>
-            <input id="autonomy" data-even="true" class="inputField" type="number" min="0" step="0.25" value="2">
-          </div>
-          <button class="infoBtn" data-info="autonomy">i</button>
-        </div>
-
-        <div class="inputRow">
-          <div>
-            <label class="rowLabel">Depth of Discharge (%)</label>
-            <input id="dod" class="inputField" type="number" min="10" max="95" step="1" value="80">
-          </div>
-          <button class="infoBtn" data-info="dod">i</button>
-        </div>
-
-        <div class="inputRow">
-          <div>
-            <label class="rowLabel">System voltage (V)</label>
-            <select id="sysVoltage" class="selectField">
-              <option value="12">12V</option><option value="24">24V</option><option value="48" selected>48V</option>
-            </select>
-          </div>
-          <button class="infoBtn" data-info="sysV">i</button>
-        </div>
-
-        <div class="inputRow">
-          <div>
-            <label class="rowLabel">Battery type</label>
-            <select id="batteryType" class="selectField">
-              <option value="li">Lithium</option><option value="la">Lead Acid</option>
-            </select>
-          </div>
-          <button class="infoBtn" data-info="battType">i</button>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn-ghost" onclick="goTo(1)">← Back</button>
-        <button class="btn-primary" onclick="goTo(3)">Next →</button>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div id="step3" class="card" style="display:none">
-      <h2>3 • Financial & Advanced</h2>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Installed cost ($/kW)</label>
-          <input id="costPerkW" class="inputField" type="number" min="0" step="1" value="800">
-        </div>
-        <button class="infoBtn" data-info="cost">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Electricity tariff ($/kWh)</label>
-          <input id="tariff" class="inputField" type="number" min="0" step="0.001" value="0.13">
-        </div>
-        <button class="infoBtn" data-info="tariff">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">System lifetime (yrs)</label>
-          <input id="lifetime" class="inputField" type="number" min="1" step="1" value="25">
-        </div>
-        <button class="infoBtn" data-info="lifetime">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Incentives (%)</label>
-          <input id="incentives" class="inputField" type="number" min="0" step="0.1" value="0">
-        </div>
-        <button class="infoBtn" data-info="incentives">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Grid emission factor (kg CO₂/kWh)</label>
-          <input id="co2Factor" class="inputField" type="number" min="0" step="0.01" value="0.5">
-        </div>
-        <button class="infoBtn" data-info="co2">i</button>
-      </div>
-
-      <div class="inputRow">
-        <div>
-          <label class="rowLabel">Panel area safety factor (%)</label>
-          <input id="areaFactor" class="inputField" type="number" min="0" step="1" value="10">
-        </div>
-        <button class="infoBtn" data-info="areafactor">i</button>
-      </div>
-
-      <div style="margin-top:10px" class="actions">
-        <button class="btn-ghost" onclick="goTo(2)">← Back</button>
-        <button class="btn-primary" onclick="calculateAll()">Calculate</button>
-      </div>
-    </div>
-
-    <!-- RESULTS -->
-    <div id="resultsWrap" style="display:none">
-      <div class="card">
-        <h2>Results</h2>
-
-        <div id="resultGrid" class="result-grid"></div>
-
-        <div class="full-card" style="margin-top:10px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div class="small">Net system cost</div>
-              <div class="value" id="outNetCost">$—</div>
-            </div>
-            <div style="text-align:right">
-              <div class="small">Payback</div>
-              <div class="value" id="outPayback">— yrs</div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:12px;margin-top:12px">
-            <div style="flex:1">
-              <div class="small">Lifetime generation</div>
-              <div id="outLifetimeGen" class="value">— kWh</div>
-            </div>
-            <div style="flex:1">
-              <div class="small">Lifetime savings</div>
-              <div id="outLifetimeSave" class="value">$—</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="actions" style="margin-top:12px">
-          <button class="btn-primary" onclick="exportPDF()">Export PDF</button>
-          <button class="btn-ghost" onclick="resetAll()">Reset</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Toasts -->
-  <div id="toast" class="toast" role="status" aria-hidden="true"></div>
-  <div id="infoToast" class="infoToast" role="dialog" aria-hidden="true"></div>
-
-<!-- html2pdf -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+ <div class="container">
+<h1 class="sticky-header">Chemistry MCQs</h1>
+    <div id="mcq-container"></div>
+ <div class="pagination">
+    <button onclick="prevPage()">&#9664;</button>   <!-- ◀ Back -->
+    <input type="number" id="pageInput" min="1" placeholder="Pg" />
+    <button onclick="goToPage()">Go</button>       <!-- Go button with text -->
+    <button onclick="nextPage()">&#9654;</button>  <!-- ▶ Forward -->
+</div>
+</div>
 <script>
-/* ------------------ UI helpers ------------------ */
-const PF = 0.85; // fixed power factor as requested
+const mcqs = [{"q": "What is the chemical symbol for Gold?", "o": ["Ag", "Au", "Pt", "Pb"], "a": "B"},
+{"q": "Which gas is most abundant in Earth's atmosphere?", "o": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"], "a": "C"},
+{"q": "pH value less than 7 indicates?", "o": ["Base", "Neutral", "Acid", "Salt"], "a": "C"},
+{"q": "Who is known as the father of modern chemistry?", "o": ["Isaac Newton", "Antoine Lavoisier", "Dmitri Mendeleev", "Robert Boyle"], "a": "B"},
+{"q": "Which of the following is an alkali metal?", "o": ["Calcium", "Sodium", "Magnesium", "Aluminum"], "a": "B"},
+{"q": "What is the chemical formula of water?", "o": ["H2O2", "H2O", "HO2", "OH"], "a": "B"},
+{"q": "Which element has the highest electronegativity?", "o": ["Oxygen", "Nitrogen", "Fluorine", "Chlorine"], "a": "C"},
+{"q": "What is the molar mass of oxygen gas (O2)?", "o": ["16 g/mol", "18 g/mol", "32 g/mol", "28 g/mol"], "a": "C"},
+{"q": "Which of the following is a noble gas?", "o": ["Hydrogen", "Nitrogen", "Oxygen", "Neon"], "a": "D"},
+{"q": "The atomic number represents?", "o": ["Mass Number", "Neutrons", "Protons", "Electrons"], "a": "C"},
+{"q": "Which acid is present in lemon?", "o": ["Tartaric Acid", "Acetic Acid", "Citric Acid", "Lactic Acid"], "a": "C"},
+{"q": "Which gas turns lime water milky?", "o": ["Carbon Dioxide", "Ammonia", "Sulfur Dioxide", "Chlorine"], "a": "A"},
+{"q": "Which of the following is a metalloid?", "o": ["Sodium", "Silicon", "Oxygen", "Iron"], "a": "B"},
+{"q": "Which particle has a negative charge?", "o": ["Proton", "Electron", "Neutron", "Alpha particle"], "a": "B"},
+{"q": "Which law states that mass can neither be created nor destroyed?", "o": ["Boyle’s Law", "Law of Conservation of Mass", "Avogadro’s Law", "Charles’ Law"], "a": "B"},
+{"q": "Who developed the periodic table?", "o": ["Lavoisier", "Dalton", "Mendeleev", "Bohr"], "a": "C"},
+{"q": "The chemical symbol for Iron is?", "o": ["Ir", "In", "Fe", "I"], "a": "C"},
+{"q": "Which metal is liquid at room temperature?", "o": ["Mercury", "Gallium", "Cesium", "Bromine"], "a": "A"},
+{"q": "Which of the following is an organic compound?", "o": ["NaCl", "CH4", "CaCO3", "H2O"], "a": "B"},
+{"q": "What is Avogadro’s number?", "o": ["6.022 × 10^23", "9.81 m/s^2", "3.14", "1.67 × 10^-27"], "a": "A"},
+{"q": "What is the pH of pure water at 25°C?", "o": ["0", "7", "14", "1"], "a": "B"},
+{"q": "Which type of bond involves sharing of electron pairs?", "o": ["Ionic Bond", "Covalent Bond", "Metallic Bond", "Hydrogen Bond"], "a": "B"},
+{"q": "The process of converting solid directly into gas is called?", "o": ["Condensation", "Sublimation", "Evaporation", "Deposition"], "a": "B"},
+{"q": "Which of the following is the lightest element?", "o": ["Helium", "Hydrogen", "Lithium", "Oxygen"], "a": "B"},
+{"q": "Which gas is known as laughing gas?", "o": ["Nitrogen Dioxide", "Nitrous Oxide", "Carbon Monoxide", "Sulfur Dioxide"], "a": "B"},
+{"q": "The atomic mass of Carbon is?", "o": ["6", "12", "14", "16"], "a": "B"},
+{"q": "Which branch of chemistry deals with carbon compounds?", "o": ["Inorganic Chemistry", "Organic Chemistry", "Physical Chemistry", "Analytical Chemistry"], "a": "B"},
+{"q": "The smallest unit of an element is?", "o": ["Molecule", "Atom", "Electron", "Proton"], "a": "B"},
+{"q": "Which gas is essential for respiration?", "o": ["Carbon Dioxide", "Nitrogen", "Oxygen", "Helium"], "a": "C"},
+{"q": "Which element is used in pencil lead?", "o": ["Carbon", "Lead", "Silicon", "Graphite"], "a": "D"}
+{"q": "What is the molecular formula of methane?", "o": ["CH2", "CH3", "CH4", "C2H6"], "a": "C"},
+{"q": "Which element has the atomic number 17?", "o": ["Chlorine", "Fluorine", "Sulfur", "Phosphorus"], "a": "A"},
+{"q": "What is the chemical symbol for Potassium?", "o": ["P", "Po", "Pt", "K"], "a": "D"},
+{"q": "Which acid is present in vinegar?", "o": ["Acetic acid", "Formic acid", "Citric acid", "Lactic acid"], "a": "A"},
+{"q": "Which of the following is a noble gas?", "o": ["Nitrogen", "Oxygen", "Argon", "Hydrogen"], "a": "C"},
+{"q": "What type of bond is formed by the sharing of electrons?", "o": ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"], "a": "B"},
+{"q": "What is the chemical formula of sulfuric acid?", "o": ["HCl", "HNO3", "H2SO4", "H3PO4"], "a": "C"},
+{"q": "Which element is the lightest?", "o": ["Hydrogen", "Helium", "Lithium", "Beryllium"], "a": "A"},
+{"q": "The atomic number is equal to the number of?", "o": ["Protons", "Neutrons", "Electrons", "Isotopes"], "a": "A"},
+{"q": "Which metal is liquid at room temperature?", "o": ["Sodium", "Mercury", "Calcium", "Potassium"], "a": "B"},
+{"q": "pH value of neutral solution at 25°C is?", "o": ["5", "6", "7", "8"], "a": "C"},
+{"q": "What is the most abundant gas in Earth's atmosphere?", "o": ["Oxygen", "Nitrogen", "Carbon dioxide", "Argon"], "a": "B"},
+{"q": "Which branch of chemistry deals with carbon compounds?", "o": ["Physical chemistry", "Inorganic chemistry", "Organic chemistry", "Analytical chemistry"], "a": "C"},
+{"q": "What is the symbol for gold?", "o": ["Ag", "Au", "Gd", "Go"], "a": "B"},
+{"q": "Which element has the highest electronegativity?", "o": ["Oxygen", "Chlorine", "Nitrogen", "Fluorine"], "a": "D"},
+{"q": "The process of conversion of a solid directly into gas is called?", "o": ["Condensation", "Evaporation", "Sublimation", "Deposition"], "a": "C"},
+{"q": "What is the molar mass of water?", "o": ["16 g/mol", "18 g/mol", "20 g/mol", "22 g/mol"], "a": "B"},
+{"q": "What is the electron configuration of oxygen (Z=8)?", "o": ["1s² 2s² 2p²", "1s² 2s² 2p⁴", "1s² 2s² 2p⁶", "1s² 2s¹ 2p⁵"], "a": "B"},
+{"q": "What is the common name of NaHCO3?", "o": ["Baking soda", "Washing soda", "Bleaching powder", "Slaked lime"], "a": "A"},
+{"q": "Which gas is produced when metal reacts with acid?", "o": ["Oxygen", "Hydrogen", "Carbon dioxide", "Nitrogen"], "a": "B"},
+{"q": "Diamond and graphite are examples of?", "o": ["Isotopes", "Allotropes", "Isomers", "Polymers"], "a": "B"},
+{"q": "What is the SI unit of amount of substance?", "o": ["Mole", "Gram", "Liter", "Kilogram"], "a": "A"},
+{"q": "Which of the following is a greenhouse gas?", "o": ["Oxygen", "Carbon dioxide", "Nitrogen", "Argon"], "a": "B"},
+{"q": "What is the main component of natural gas?", "o": ["Ethane", "Propane", "Methane", "Butane"], "a": "C"},
+{"q": "Which process is used to separate crude oil into components?", "o": ["Filtration", "Fractional distillation", "Crystallization", "Chromatography"], "a": "B"},
+{"q": "The nucleus of an atom consists of?", "o": ["Electrons only", "Protons and electrons", "Protons and neutrons", "Neutrons only"], "a": "C"},
+{"q": "What is the chemical name of table salt?", "o": ["Sodium nitrate", "Sodium chloride", "Potassium chloride", "Calcium carbonate"], "a": "B"},
+{"q": "Which of the following is an alkaline earth metal?", "o": ["Sodium", "Magnesium", "Iron", "Copper"], "a": "B"},
+{"q": "Which of the following is not a halogen?", "o": ["Fluorine", "Chlorine", "Bromine", "Oxygen"], "a": "D"},
+{"q": "Which law states that matter can neither be created nor destroyed?", "o": ["Law of Multiple Proportions", "Law of Conservation of Mass", "Boyle’s Law", "Dalton’s Law"], "a": "B"}
+{"q": "Which gas turns lime water milky?", "o": ["Oxygen", "Carbon dioxide", "Sulfur dioxide", "Hydrogen"], "a": "B"},
+{"q": "Which element is known as the 'King of Chemicals'?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Acetic acid"], "a": "A"},
+{"q": "The atomic mass of an element is approximately equal to?", "o": ["Number of protons", "Number of neutrons", "Sum of protons and neutrons", "Number of electrons"], "a": "C"},
+{"q": "Which isotope of hydrogen is radioactive?", "o": ["Protium", "Deuterium", "Tritium", "All of these"], "a": "C"},
+{"q": "Which metal is extracted from bauxite?", "o": ["Iron", "Aluminium", "Copper", "Zinc"], "a": "B"},
+{"q": "The pH of lemon juice is usually?", "o": ["2", "4", "6", "8"], "a": "A"},
+{"q": "Who proposed the atomic theory?", "o": ["Newton", "Dalton", "Bohr", "Rutherford"], "a": "B"},
+{"q": "Which part of the atom was discovered by J.J. Thomson?", "o": ["Proton", "Electron", "Neutron", "Nucleus"], "a": "B"},
+{"q": "Which metal is used in galvanization?", "o": ["Copper", "Zinc", "Tin", "Lead"], "a": "B"},
+{"q": "Which gas is used in balloons?", "o": ["Hydrogen", "Oxygen", "Helium", "Nitrogen"], "a": "C"},
+{"q": "Which is the heaviest naturally occurring element?", "o": ["Uranium", "Plutonium", "Lead", "Thorium"], "a": "A"},
+{"q": "Which element is essential for hemoglobin?", "o": ["Calcium", "Magnesium", "Iron", "Copper"], "a": "C"},
+{"q": "What is the lightest metal?", "o": ["Sodium", "Lithium", "Potassium", "Calcium"], "a": "B"},
+{"q": "Which law relates pressure and volume of gas?", "o": ["Charles’s Law", "Boyle’s Law", "Avogadro’s Law", "Dalton’s Law"], "a": "B"},
+{"q": "What is the chemical formula of ammonia?", "o": ["NH3", "NO2", "N2O", "NH4"], "a": "A"},
+{"q": "What is the process of loss of electrons called?", "o": ["Oxidation", "Reduction", "Neutralization", "Hydrolysis"], "a": "A"},
+{"q": "Which is the most reactive alkali metal?", "o": ["Sodium", "Potassium", "Cesium", "Lithium"], "a": "C"},
+{"q": "Which vitamin requires cobalt in its structure?", "o": ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"], "a": "B"},
+{"q": "Which allotrope of carbon is used in pencils?", "o": ["Diamond", "Graphite", "Fullerene", "Charcoal"], "a": "B"},
+{"q": "Which gas is known as laughing gas?", "o": ["Carbon monoxide", "Nitrous oxide", "Methane", "Ozone"], "a": "B"},
+{"q": "Which process is used to purify water?", "o": ["Evaporation", "Filtration", "Distillation", "Crystallization"], "a": "C"},
+{"q": "The main constituent of glass is?", "o": ["Silica", "Lime", "Soda", "Alumina"], "a": "A"},
+{"q": "Which gas protects us from harmful UV rays?", "o": ["Oxygen", "Nitrogen", "Ozone", "Carbon dioxide"], "a": "C"},
+{"q": "Which of the following is a strong electrolyte?", "o": ["Glucose", "Urea", "Sodium chloride", "Alcohol"], "a": "C"},
+{"q": "Which of the following is liquid non-metal at room temperature?", "o": ["Chlorine", "Bromine", "Iodine", "Phosphorus"], "a": "B"},
+{"q": "Which acid is secreted in the stomach?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Phosphoric acid"], "a": "C"},
+{"q": "Which element is the basis of organic chemistry?", "o": ["Oxygen", "Carbon", "Nitrogen", "Sulfur"], "a": "B"},
+{"q": "Which scientist discovered the neutron?", "o": ["Rutherford", "J.J. Thomson", "James Chadwick", "Niels Bohr"], "a": "C"},
+{"q": "Which type of reaction releases heat energy?", "o": ["Endothermic", "Exothermic", "Neutralization", "Electrolysis"], "a": "B"},
+{"q": "Which of the following is used as a refrigerant?", "o": ["Oxygen", "Freon", "Helium", "Methane"], "a": "B"}
+{"q": "Which gas is known as Marsh gas?", "o": ["Ethane", "Methane", "Propane", "Butane"], "a": "B"},
+{"q": "Which metal is used in making thermometers?", "o": ["Mercury", "Lead", "Zinc", "Copper"], "a": "A"},
+{"q": "What is the chemical formula of table salt?", "o": ["KCl", "NaCl", "Na2CO3", "NaHCO3"], "a": "B"},
+{"q": "Which scientist gave the planetary model of the atom?", "o": ["Dalton", "Rutherford", "Bohr", "Thomson"], "a": "C"},
+{"q": "Which element has the highest electronegativity?", "o": ["Oxygen", "Fluorine", "Chlorine", "Nitrogen"], "a": "B"},
+{"q": "The process of coating iron with zinc is called?", "o": ["Alloying", "Galvanization", "Electroplating", "Corrosion"], "a": "B"},
+{"q": "What is the molar volume of an ideal gas at STP?", "o": ["11.2 L", "22.4 L", "44.8 L", "33.6 L"], "a": "B"},
+{"q": "Which of the following is not a noble gas?", "o": ["Helium", "Argon", "Neon", "Nitrogen"], "a": "D"},
+{"q": "Which gas is responsible for acid rain?", "o": ["CO2", "SO2", "N2", "CH4"], "a": "B"},
+{"q": "Which polymer is used to make non-stick cookware?", "o": ["Nylon", "Teflon", "PVC", "Polystyrene"], "a": "B"},
+{"q": "The most abundant element in Earth's crust is?", "o": ["Oxygen", "Silicon", "Aluminium", "Iron"], "a": "A"},
+{"q": "What is the main ore of iron?", "o": ["Bauxite", "Hematite", "Galena", "Magnetite"], "a": "B"},
+{"q": "Which gas is used in welding?", "o": ["Hydrogen", "Acetylene", "Oxygen", "Nitrogen"], "a": "B"},
+{"q": "Which type of bond is formed by sharing of electrons?", "o": ["Ionic", "Covalent", "Metallic", "Hydrogen"], "a": "B"},
+{"q": "Which isotope is used in nuclear reactors?", "o": ["U-235", "C-14", "H-3", "O-16"], "a": "A"},
+{"q": "Which of the following is a halogen?", "o": ["Oxygen", "Chlorine", "Nitrogen", "Sulfur"], "a": "B"},
+{"q": "The main constituent of natural gas is?", "o": ["Ethane", "Methane", "Propane", "Butane"], "a": "B"},
+{"q": "Which process converts sugar into alcohol?", "o": ["Photosynthesis", "Fermentation", "Distillation", "Oxidation"], "a": "B"},
+{"q": "Which gas is produced when metals react with acids?", "o": ["Oxygen", "Carbon dioxide", "Hydrogen", "Nitrogen"], "a": "C"},
+{"q": "Which element is used in light bulb filaments?", "o": ["Copper", "Iron", "Tungsten", "Nickel"], "a": "C"},
+{"q": "Which metal is liquid at room temperature?", "o": ["Gallium", "Mercury", "Sodium", "Potassium"], "a": "B"},
+{"q": "The process of separation of liquids based on boiling points is?", "o": ["Filtration", "Distillation", "Evaporation", "Sublimation"], "a": "B"},
+{"q": "Which acid is present in vinegar?", "o": ["Formic acid", "Acetic acid", "Citric acid", "Lactic acid"], "a": "B"},
+{"q": "Which of the following is a greenhouse gas?", "o": ["O2", "CO2", "N2", "Ar"], "a": "B"},
+{"q": "Which of the following is not an alkali metal?", "o": ["Sodium", "Potassium", "Calcium", "Lithium"], "a": "C"},
+{"q": "Which scientist discovered radioactivity?", "o": ["Rutherford", "Henri Becquerel", "Marie Curie", "James Chadwick"], "a": "B"},
+{"q": "Which of the following is a biodegradable polymer?", "o": ["Nylon", "Polythene", "Polylactic acid", "PVC"], "a": "C"},
+{"q": "The blue color of copper compounds is due to?", "o": ["Iron", "Chromium", "Copper ions", "Nickel"], "a": "C"},
+{"q": "Which gas is used for artificial ripening of fruits?", "o": ["Methane", "Carbon dioxide", "Ethylene", "Butane"], "a": "C"},
+{"q": "Which scientist discovered the proton?", "o": ["J.J. Thomson", "Rutherford", "Bohr", "Chadwick"], "a": "B"}
+{"q": "Which element is the lightest?", "o": ["Helium", "Hydrogen", "Lithium", "Oxygen"], "a": "B"},
+{"q": "Which is the most abundant gas in the Earth's atmosphere?", "o": ["Oxygen", "Carbon dioxide", "Nitrogen", "Argon"], "a": "C"},
+{"q": "Which acid is present in citrus fruits?", "o": ["Acetic acid", "Formic acid", "Citric acid", "Oxalic acid"], "a": "C"},
+{"q": "The nucleus of an atom consists of?", "o": ["Protons and electrons", "Protons and neutrons", "Neutrons and electrons", "Protons only"], "a": "B"},
+{"q": "Which particle has no charge?", "o": ["Proton", "Electron", "Neutron", "Positron"], "a": "C"},
+{"q": "Which is the smallest unit of an element?", "o": ["Molecule", "Atom", "Compound", "Ion"], "a": "B"},
+{"q": "Which law states that mass is conserved in a chemical reaction?", "o": ["Boyle’s law", "Law of conservation of mass", "Dalton’s law", "Avogadro’s law"], "a": "B"},
+{"q": "The atomic number of oxygen is?", "o": ["6", "7", "8", "9"], "a": "C"},
+{"q": "Which gas is used in fire extinguishers?", "o": ["Oxygen", "Carbon dioxide", "Nitrogen", "Chlorine"], "a": "B"},
+{"q": "Which liquid is called universal solvent?", "o": ["Alcohol", "Water", "Ether", "Acetone"], "a": "B"},
+{"q": "Which of the following is an alkaline earth metal?", "o": ["Sodium", "Potassium", "Magnesium", "Lithium"], "a": "C"},
+{"q": "Which metal is used in making aircraft bodies?", "o": ["Iron", "Aluminium", "Copper", "Lead"], "a": "B"},
+{"q": "The SI unit of amount of substance is?", "o": ["Kilogram", "Mole", "Gram", "Liter"], "a": "B"},
+{"q": "Which scientist discovered the electron?", "o": ["Rutherford", "J.J. Thomson", "Bohr", "Dalton"], "a": "B"},
+{"q": "Which non-metal is liquid at room temperature?", "o": ["Iodine", "Bromine", "Chlorine", "Sulfur"], "a": "B"},
+{"q": "The atomic number of carbon is?", "o": ["4", "6", "8", "12"], "a": "B"},
+{"q": "Which substance is used in the manufacture of matchsticks?", "o": ["Phosphorus", "Sulfur", "Potassium nitrate", "All of these"], "a": "D"},
+{"q": "Which of the following is a chemical change?", "o": ["Melting of ice", "Burning of paper", "Breaking of glass", "Dissolving sugar in water"], "a": "B"},
+{"q": "What is the chemical symbol of gold?", "o": ["Au", "Ag", "Gd", "Ga"], "a": "A"},
+{"q": "Which gas has the lowest density?", "o": ["Oxygen", "Helium", "Nitrogen", "Hydrogen"], "a": "D"},
+{"q": "Which substance is known as caustic soda?", "o": ["NaOH", "KOH", "Na2CO3", "NaHCO3"], "a": "A"},
+{"q": "Which scientist discovered that the atom has a nucleus?", "o": ["Rutherford", "Bohr", "Dalton", "Chadwick"], "a": "A"},
+{"q": "The chemical name of baking soda is?", "o": ["Sodium carbonate", "Sodium bicarbonate", "Calcium carbonate", "Potassium carbonate"], "a": "B"},
+{"q": "Which gas is used in the Haber process?", "o": ["Hydrogen and Nitrogen", "Oxygen and Nitrogen", "Hydrogen and Oxygen", "Carbon dioxide and Oxygen"], "a": "A"},
+{"q": "Which of the following is not a transition metal?", "o": ["Iron", "Copper", "Zinc", "Chromium"], "a": "C"},
+{"q": "The common name of H2O2 is?", "o": ["Bleaching powder", "Hydrogen peroxide", "Baking soda", "Quicklime"], "a": "B"},
+{"q": "Which of the following is an example of exothermic reaction?", "o": ["Photosynthesis", "Melting of ice", "Combustion of fuel", "Electrolysis of water"], "a": "C"},
+{"q": "Which of the following is used in making soft drinks?", "o": ["CO2", "O2", "N2", "H2"], "a": "A"},
+{"q": "Which acid is found in ant stings?", "o": ["Lactic acid", "Formic acid", "Acetic acid", "Citric acid"], "a": "B"},
+{"q": "Which of the following metals is the best conductor of electricity?", "o": ["Copper", "Gold", "Silver", "Aluminium"], "a": "C"}
+{"q": "Which of the following is a noble gas?", "o": ["Nitrogen", "Oxygen", "Helium", "Hydrogen"], "a": "C"},
+{"q": "Which element is called the King of Chemicals?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Phosphoric acid"], "a": "A"},
+{"q": "What is the atomic number of sodium?", "o": ["10", "11", "12", "13"], "a": "B"},
+{"q": "Which element is commonly used in thermometers?", "o": ["Mercury", "Lead", "Iron", "Copper"], "a": "A"},
+{"q": "Which acid is present in vinegar?", "o": ["Lactic acid", "Acetic acid", "Formic acid", "Citric acid"], "a": "B"},
+{"q": "Which metal is liquid at room temperature?", "o": ["Mercury", "Sodium", "Aluminium", "Zinc"], "a": "A"},
+{"q": "The most abundant element in the human body is?", "o": ["Carbon", "Oxygen", "Hydrogen", "Nitrogen"], "a": "B"},
+{"q": "Which gas is produced during photosynthesis?", "o": ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"], "a": "B"},
+{"q": "What is the chemical symbol of potassium?", "o": ["K", "P", "Pt", "Po"], "a": "A"},
+{"q": "Which gas is known as laughing gas?", "o": ["CO2", "N2O", "NO2", "NH3"], "a": "B"},
+{"q": "Which of the following is an alkali metal?", "o": ["Magnesium", "Calcium", "Sodium", "Aluminium"], "a": "C"},
+{"q": "What is the chemical formula of ozone?", "o": ["O2", "O3", "OH", "CO2"], "a": "B"},
+{"q": "Which metal is used in making galvanised iron?", "o": ["Copper", "Zinc", "Tin", "Lead"], "a": "B"},
+{"q": "Which is the hardest natural substance?", "o": ["Diamond", "Graphite", "Quartz", "Silicon"], "a": "A"},
+{"q": "Which gas turns limewater milky?", "o": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], "a": "B"},
+{"q": "Which acid is found in milk?", "o": ["Lactic acid", "Acetic acid", "Formic acid", "Oxalic acid"], "a": "A"},
+{"q": "Which of the following elements is radioactive?", "o": ["Uranium", "Iron", "Zinc", "Calcium"], "a": "A"},
+{"q": "Which non-metal conducts electricity?", "o": ["Sulfur", "Carbon (graphite)", "Phosphorus", "Iodine"], "a": "B"},
+{"q": "Which gas is used for welding?", "o": ["Hydrogen", "Oxygen", "Acetylene", "Methane"], "a": "C"},
+{"q": "Which type of bond involves sharing of electron pairs?", "o": ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"], "a": "B"},
+{"q": "Which scientist proposed the planetary model of the atom?", "o": ["Dalton", "Rutherford", "Bohr", "Thomson"], "a": "C"},
+{"q": "Which acid is secreted in the stomach?", "o": ["Sulfuric acid", "Nitric acid", "Hydrochloric acid", "Acetic acid"], "a": "C"},
+{"q": "Which metal is most abundant in the Earth's crust?", "o": ["Iron", "Aluminium", "Calcium", "Magnesium"], "a": "B"},
+{"q": "Which of the following is a greenhouse gas?", "o": ["Oxygen", "Carbon dioxide", "Argon", "Nitrogen"], "a": "B"},
+{"q": "The common name of CaO is?", "o": ["Quicklime", "Slaked lime", "Limestone", "Gypsum"], "a": "A"},
+{"q": "Which type of mixture is air?", "o": ["Compound", "Solution", "Homogeneous mixture", "Heterogeneous mixture"], "a": "C"},
+{"q": "Which gas is released when metals react with acids?", "o": ["Oxygen", "Nitrogen", "Hydrogen", "Carbon dioxide"], "a": "C"},
+{"q": "Which scientist gave the atomic theory?", "o": ["Dalton", "Rutherford", "Bohr", "Thomson"], "a": "A"},
+{"q": "Which part of the atom was discovered by Chadwick?", "o": ["Electron", "Proton", "Neutron", "Nucleus"], "a": "C"},
+{"q": "Which acid is present in apples?", "o": ["Citric acid", "Tartaric acid", "Malic acid", "Lactic acid"], "a": "C"}
+{"q": "Which of the following is a halogen?", "o": ["Oxygen", "Chlorine", "Nitrogen", "Neon"], "a": "B"},
+{"q": "What is the pH of pure water at 25°C?", "o": ["6", "7", "8", "9"], "a": "B"},
+{"q": "Which of the following is an allotrope of carbon?", "o": ["Diamond", "Salt", "Quartz", "Gypsum"], "a": "A"},
+{"q": "The atomic number of carbon is?", "o": ["5", "6", "7", "8"], "a": "B"},
+{"q": "Which gas is known as marsh gas?", "o": ["Methane", "Ethane", "Butane", "Propane"], "a": "A"},
+{"q": "Which acid is present in citrus fruits?", "o": ["Lactic acid", "Citric acid", "Oxalic acid", "Formic acid"], "a": "B"},
+{"q": "Which gas is filled in electric bulbs?", "o": ["Helium", "Nitrogen", "Argon", "Hydrogen"], "a": "C"},
+{"q": "What is the symbol of silver?", "o": ["Si", "Ag", "Au", "S"], "a": "B"},
+{"q": "Which metal is used in making filaments of electric bulbs?", "o": ["Copper", "Tungsten", "Aluminium", "Iron"], "a": "B"},
+{"q": "Which isotope is used in nuclear reactors?", "o": ["U-238", "U-235", "C-12", "O-16"], "a": "B"},
+{"q": "What is the chemical formula of baking soda?", "o": ["NaCl", "Na2CO3", "NaHCO3", "K2CO3"], "a": "C"},
+{"q": "Which gas is used in fire extinguishers?", "o": ["Nitrogen", "Carbon dioxide", "Oxygen", "Helium"], "a": "B"},
+{"q": "Which of the following is a noble metal?", "o": ["Iron", "Gold", "Zinc", "Lead"], "a": "B"},
+{"q": "The process of converting solid directly into gas is called?", "o": ["Evaporation", "Condensation", "Sublimation", "Distillation"], "a": "C"},
+{"q": "Which element has the highest electronegativity?", "o": ["Oxygen", "Chlorine", "Fluorine", "Nitrogen"], "a": "C"},
+{"q": "The SI unit of amount of substance is?", "o": ["Mole", "Gram", "Kilogram", "Atom"], "a": "A"},
+{"q": "Which of the following is an alkaline earth metal?", "o": ["Sodium", "Calcium", "Potassium", "Lithium"], "a": "B"},
+{"q": "Which gas is produced by the reaction of calcium carbide with water?", "o": ["Methane", "Ethane", "Acetylene", "Propane"], "a": "C"},
+{"q": "Which is the lightest metal?", "o": ["Sodium", "Lithium", "Potassium", "Calcium"], "a": "B"},
+{"q": "Which of the following is a non-renewable source of energy?", "o": ["Coal", "Solar", "Wind", "Hydro"], "a": "A"},
+{"q": "The atomic mass of oxygen is approximately?", "o": ["14", "15", "16", "18"], "a": "C"},
+{"q": "Which of the following acids is diprotic?", "o": ["HCl", "H2SO4", "HNO3", "H3PO4"], "a": "B"},
+{"q": "Which is the heaviest naturally occurring element?", "o": ["Uranium", "Plutonium", "Thorium", "Radium"], "a": "A"},
+{"q": "Which type of bond is present in NaCl?", "o": ["Covalent", "Ionic", "Metallic", "Hydrogen"], "a": "B"},
+{"q": "The pH of lemon juice is?", "o": ["Less than 7", "Equal to 7", "Greater than 7", "Around 14"], "a": "A"},
+{"q": "Which gas is known as water gas?", "o": ["H2 + CO", "H2 + CO2", "CO2 + O2", "CO + O2"], "a": "A"},
+{"q": "Which oxide is known as laughing gas?", "o": ["NO2", "N2O", "CO2", "SO2"], "a": "B"},
+{"q": "The process of purification of water using alum is called?", "o": ["Chlorination", "Sedimentation", "Coagulation", "Filtration"], "a": "C"},
+{"q": "Which element is known as quicksilver?", "o": ["Mercury", "Silver", "Platinum", "Chromium"], "a": "A"},
+{"q": "Which gas is used in balloons?", "o": ["Helium", "Hydrogen", "Nitrogen", "Oxygen"], "a": "A"},
+{"q": "Which metal is used in thermite welding?", "o": ["Copper", "Iron", "Aluminium", "Nickel"], "a": "C"},
+{"q": "The molecular mass of water is?", "o": ["16", "18", "20", "22"], "a": "B"},
+{"q": "Which acid is found in ant stings?", "o": ["Acetic acid", "Formic acid", "Oxalic acid", "Tartaric acid"], "a": "B"},
+{"q": "The blue color of copper salts is due to?", "o": ["Cu2+", "Cu+", "CuO", "Cu(OH)2"], "a": "A"},
+{"q": "Which element has the chemical symbol 'Sn'?", "o": ["Sodium", "Tin", "Silver", "Sulfur"], "a": "B"},
+{"q": "Which scientist discovered the electron?", "o": ["Rutherford", "J.J. Thomson", "Bohr", "Dalton"], "a": "B"},
+{"q": "The chemical formula of gypsum is?", "o": ["CaSO4·2H2O", "CaCO3", "CaO", "CaCl2"], "a": "A"},
+{"q": "Which of the following is a polyatomic ion?", "o": ["Na+", "Cl−", "SO4^2−", "K+"], "a": "C"},
+{"q": "Which of the following is a base?", "o": ["HCl", "NaOH", "HNO3", "H2SO4"], "a": "B"},
+{"q": "The main component of natural gas is?", "o": ["Methane", "Ethane", "Propane", "Butane"], "a": "A"},
+{"q": "Which metal is extracted from bauxite?", "o": ["Iron", "Aluminium", "Copper", "Zinc"], "a": "B"},
+{"q": "Which of the following is a greenhouse gas?", "o": ["Helium", "Nitrogen", "Methane", "Argon"], "a": "C"},
+{"q": "The rusting of iron is an example of?", "o": ["Reduction", "Oxidation", "Distillation", "Evaporation"], "a": "B"},
+{"q": "Which element is known as the building block of life?", "o": ["Oxygen", "Nitrogen", "Carbon", "Hydrogen"], "a": "C"},
+{"q": "Which gas is called dry ice in solid form?", "o": ["Oxygen", "Carbon dioxide", "Methane", "Ammonia"], "a": "B"},
+{"q": "Which of the following is a noble gas?", "o": ["Hydrogen", "Oxygen", "Neon", "Nitrogen"], "a": "C"},
+{"q": "Which liquid is called universal solvent?", "o": ["Ethanol", "Water", "Acetone", "Benzene"], "a": "B"},
+{"q": "The atomic number of chlorine is?", "o": ["16", "17", "18", "19"], "a": "B"},
+{"q": "The catalyst used in the Haber process is?", "o": ["Copper", "Nickel", "Iron", "Platinum"], "a": "C"}
 
-function showToast(msg, ms=2400){
-  const t = document.getElementById('toast');
-  t.innerText = msg;
-  t.style.display = 'block';
-  t.setAttribute('aria-hidden','false');
-  clearTimeout(t._hide);
-  t._hide = setTimeout(()=>{ t.style.display='none'; t.setAttribute('aria-hidden','true'); }, ms);
-}
-function showInfoToast(title, body, ms=4200){
-  const t = document.getElementById('infoToast');
-  t.innerHTML = '<strong style="display:block;margin-bottom:6px">'+title+'</strong><div style="color:#374151">'+body+'</div>';
-  t.style.display = 'block';
-  t.setAttribute('aria-hidden','false');
-  clearTimeout(t._hideI);
-  t._hideI = setTimeout(()=>{ t.style.display='none'; t.setAttribute('aria-hidden','true'); }, ms);
-}
+             
+             ];
+const itemsPerPage = 10;
+let currentPage = 1;
+const totalPages = Math.ceil(mcqs.length / itemsPerPage);
 
-/* info button wiring */
-document.querySelectorAll('.infoBtn').forEach(b=>{
-  b.addEventListener('click', (e)=>{
-    const key = b.getAttribute('data-info');
-    const info = {
-      mode: 'Choose Grid-tied, Hybrid (grid + battery), or Off-grid. Hybrid and Off-grid will show battery inputs.',
-      consumption: 'Daily energy consumption in kWh. Use monthly consumption ÷ 30 if needed.',
-      sun: 'Peak Sun Hours (equivalent full-sun hours). Must be ≤ 12. Defaults applied if blank.',
-      peakload: 'Peak instantaneous AC load in kW. Optional — used to size inverter if provided.',
-      dcac: 'DC/AC ratio (array_kW ÷ inverter_kW). Typical 1.1–1.3. Higher ratio increases array size.',
-      inverterEff: 'Inverter efficiency in percent (used for energy throughput).',
-      panelW: 'Panel rated power (Watts at STC). Auto-corrected to even numbers for consistency.',
-      panelEff: 'Panel efficiency percent (used to estimate area).',
-      degradation: 'Annual panel degradation percent (e.g., 0.5).',
-      derate: 'System derate percent accounts for wiring, soiling, mismatch (e.g., 77).',
-      roof: 'Usable roof area (enter in chosen units). Used to check if panels fit.',
-      tilt: 'Tilt angle of panels in degrees. Affects production slightly.',
-      autonomy: 'Battery autonomy days. How many days battery must supply the load without sun.',
-      dod: 'Depth of Discharge percent (usable capacity fraction).',
-      sysV: 'Battery system voltage (12/24/48 V). Affects Ah calculation.',
-      battType: 'Battery chemistry: Lithium typically supports deeper DoD than lead acid.',
-      cost: 'Installed system cost per kW (including panels, BOS, inverter, installation).',
-      tariff: 'Electricity tariff $/kWh, used to compute savings & payback.',
-      lifetime: 'System lifetime in years (used to calculate lifetime generation).',
-      incentives: 'Percent of system cost covered by incentives.',
-      co2: 'Grid emission factor (kg CO₂ per kWh) for CO₂ avoided estimate.',
-      areafactor: 'Extra area factor percent to allow spacing (tilt, gaps).'
-    }[key] || 'Info';
-    showInfoToast(key.toUpperCase(), info);
-  });
-});
-
-/* ------------------ uniform odd-value enforcement ------------------
-   Changed: enforcement only applied to specific integer fields and runs on blur (not on input)
-*/
-(function(){
-  const evenIds = ['panelW','roofArea']; // only enforce for these integer fields to avoid interfering with e.g. autonomy (step=0.25)
-  evenIds.forEach(id=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.addEventListener('blur',(ev)=>{
-      const vRaw = el.value;
-      if(vRaw === '') return; // allow blank until calc
-      let v = Number(vRaw);
-      if(isNaN(v)) return;
-      v = Math.round(v); // enforce integer
-      if(v % 2 !== 0){
-        const corrected = v + 1;
-        el.value = corrected;
-        showToast('Value adjusted to nearest even: ' + corrected, 1400);
-      } else {
-        el.value = v; // keep normalized integer
-      }
-    });
-  });
-})();
-
-/* Peak Sun Hours clamp to <= 12 enforcement */
-const peakEl = document.getElementById('peakSun');
-peakEl.addEventListener('input', ()=>{
-  let vRaw = peakEl.value;
-  if(vRaw === '') return;
-  let v = Number(vRaw);
-  if(isNaN(v)) return;
-  if(v > 12){
-    peakEl.value = 12;
-    showToast('Peak Sun Hours cannot exceed 12. Adjusted to 12.');
-  } else if(v < 0) {
-    peakEl.value = 0;
+function displayMCQs(page) {
+  currentPage = page;
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  const start = (page - 1) * itemsPerPage;
+  const end = Math.min(start + itemsPerPage, mcqs.length);
+  const labels = ['A','B','C','D'];
+  for (let i = start; i < end; i++) {
+    const item = mcqs[i];
+    const qNumber = i + 1;
+    const div = document.createElement('div');
+    div.className = 'mcq';
+    let optsHtml = '';
+    for (let j=0;j<4;j++) { optsHtml += <div class="option">${labels[j]}. ${item.o[j]}</div>; }
+    div.innerHTML = 
+      <div class="question">${qNumber}. ${item.q}</div>
+      <div class="options">${optsHtml}</div>
+      <div class="answer">Answer: ${item.a}</div>
+    ;
+    container.appendChild(div);
   }
-});
-
-/* ------------------ scroll helpers & flag ------------------ */
-/* suppress scroll for the initial goTo(1) on page load */
-let _suppressInitialScroll = true;
-
-function findScrollableAncestor(el){
-  let node = el.parentElement;
-  while(node && node !== document.body && node !== document.documentElement){
-    const cs = getComputedStyle(node);
-    const overflowY = cs.overflowY;
-    if (node.scrollHeight > node.clientHeight && (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay')){
-      return node;
-    }
-    node = node.parentElement;
-  }
-  return window;
-}
-
-function detectTopFixedHeaderHeight(){
-  // check some common selectors for a fixed header (ADDED .stepper so sticky stepper is accounted for)
-  const candidates = Array.from(document.querySelectorAll('header, .header, .topbar, .navbar, .stepper, [role=\"banner\"]'));
-  for(const e of candidates){
-    const cs = getComputedStyle(e);
-    if ((cs.position === 'fixed' || cs.position === 'sticky') && parseFloat(cs.top) <= 0 && e.offsetHeight > 0){
-      return e.offsetHeight;
-    }
-  }
-  return 0;
-}
-
-/* ------------------ navigation (replaced - includes robust scroll) ------------------ */
-function goTo(step){
-  // step validation
-  if(step === 2){
-    const daily = parseFloat(document.getElementById('dailyKwh').value);
-    const sun = parseFloat(document.getElementById('peakSun').value);
-    if(isNaN(daily) || daily <= 0){ showToast('Enter a valid daily consumption'); return; }
-    if(isNaN(sun) || sun <= 0){ showToast('Enter valid peak sun hours'); return; }
-  }
-  if(step === 3){
-    const panelW = parseFloat(document.getElementById('panelW').value);
-    const panelEff = parseFloat(document.getElementById('panelEff').value);
-    if(isNaN(panelW) || panelW <= 0){ showToast('Enter panel wattage'); return; }
-    if(isNaN(panelEff) || panelEff <= 0){ showToast('Enter panel efficiency'); return; }
-  }
-
-  // dots
-  [1,2,3,4].forEach(i=>{
-    const el = document.getElementById('dot'+i);
-    if(!el) return;
-    el.classList.toggle('active', i<=step);
-  });
-
-  // show/hide steps/results
-  document.getElementById('step1').style.display = (step === 1 ? 'block' : 'none');
-  document.getElementById('step2').style.display = (step === 2 ? 'block' : 'none');
-  document.getElementById('step3').style.display = (step === 3 ? 'block' : 'none');
-  document.getElementById('resultsWrap').style.display = (step === 4 ? 'block' : 'none');
-
-  // battery block visibility based on mode
-  const mode = document.getElementById('systemMode').value;
-  document.getElementById('batteryBlock').style.display = (mode === 'hybrid' || mode === 'offgrid') ? 'block' : 'none';
-
-  // ----- scroll to the top of the newly shown card (robust) -----
-  // skip scroll only for the initial call done on load
-  if(_suppressInitialScroll){
-    _suppressInitialScroll = false;
-    return;
-  }
-
-  const targetId = (step === 4) ? 'resultsWrap' : ('step' + step);
-  const target = document.getElementById(targetId);
-  if(!target){
-    console.warn('goTo: scroll target not found ->', targetId);
-    return;
-  }
-
-  // wait two frames to allow layout changes (display:block) to take effect, then measure and scroll
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      const headerH = detectTopFixedHeaderHeight();
-      const scrollAncestor = findScrollableAncestor(target);
-
-      if(scrollAncestor === window){
-        const rect = target.getBoundingClientRect();
-        const topY = window.scrollY + rect.top - headerH - 8; // small offset
-        window.scrollTo({ top: Math.max(0, topY), behavior: 'smooth' });
-      } else {
-        const ancRect = scrollAncestor.getBoundingClientRect();
-        const tgtRect = target.getBoundingClientRect();
-        const topOffset = tgtRect.top - ancRect.top + scrollAncestor.scrollTop - headerH - 8;
-        scrollAncestor.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
-      }
-    });
-  });
-}
-
-/* ------------------ calculation core ------------------ */
-function calculateAll(){
-  // collect inputs; if empty, mark default and apply later
-  const defaultsApplied = [];
-
-  function getNumber(id, def){
-    const el = document.getElementById(id);
-    const raw = el.value;
-    if(raw === '' || raw === undefined || raw === null){
-      defaultsApplied.push({id,def});
-      el.value = def;
-      return Number(def);
-    }
-    const n = Number(raw);
-    if(isNaN(n)){
-      defaultsApplied.push({id,def});
-      el.value = def;
-      return Number(def);
-    }
-    return n;
-  }
-
-  const mode = document.getElementById('systemMode').value;
-
-  // required numeric inputs (with defaults if empty)
-  const daily = getNumber('dailyKwh', 10);        // kWh/day default 10
-  let sun = getNumber('peakSun', 5);             // hours default 5
-  if(sun > 12){ sun = 12; document.getElementById('peakSun').value = 12; showToast('Peak Sun Hours capped to 12'); }
-
-  const peakLoad = getNumber('peakLoad', 0);     // optional; default 0
-  const dcac = getNumber('dcacRatio', 1.2);
-  const inverterEffPct = getNumber('inverterEff', 95);
-  const inverterEff = inverterEffPct / 100;
-
-  const panelW = getNumber('panelW', 430);
-  const panelEffPct = getNumber('panelEff', 19.5);
-  const panelEff = panelEffPct / 100;
-  const degradation = getNumber('degradation', 0.5);
-  const deratePct = getNumber('deratePct', 77);
-  const derate = deratePct / 100;
-
-  // roof
-  const roofAreaRaw = document.getElementById('roofArea').value;
-  let roofArea = roofAreaRaw === '' ? 0 : Number(roofAreaRaw);
-  const roofUnit = document.getElementById('roofUnit').value;
-
-  const tilt = getNumber('tilt', 20);
-  const orientation = document.getElementById('orientation').value;
-
-  // battery
-  let autonomy = getNumber('autonomy', 1);
-  const dodPct = getNumber('dod', 80);
-  const dod = dodPct/100;
-  const sysVoltage = Number(document.getElementById('sysVoltage').value) || 48;
-  const battType = document.getElementById('batteryType').value;
-
-  // financial
-  const costPerkW = getNumber('costPerkW', 800);
-  const tariff = getNumber('tariff', 0.13);
-  const lifetime = getNumber('lifetime', 25);
-  const incentives = getNumber('incentives', 0);
-  const co2Factor = getNumber('co2Factor', 0.5);
-  const areaFactor = getNumber('areaFactor', 10);
-
-  // show defaults toast if any
-  if(defaultsApplied.length){
-    const ids = defaultsApplied.map(d => d.id).slice(0,6).join(', ');
-    showToast('Defaults applied for empty fields');
-  }
-
-  // core PV sizing (same as before)
-  const array_kW = daily / (sun * derate * inverterEff);
-  const array_W = array_kW * 1000;
-  const panels = Math.max(0, Math.ceil(array_W / panelW));
-
-  // panel area (m2)
-  const panelArea_m2 = panelW / (1000 * panelEff);
-  let totalPanelArea_m2 = panelArea_m2 * panels * (1 + areaFactor/100);
-
-  // convert roof unit
-  let roofM2 = roofArea;
-  if(roofUnit === 'ft2') roofM2 = roofArea * 0.092903;
-
-  const roofFits = roofM2 === 0 ? null : (totalPanelArea_m2 <= roofM2);
-
-  // inverter size (see earlier reasoning)
-  const inverter_kW_by_array = array_kW / dcac;
-  const inverter_kW_required = Math.max(inverter_kW_by_array, peakLoad || 0);
-  const inverter_kVA_required = inverter_kW_required / PF;
-
-  // battery sizing
-  let battery_kWh = 0, battery_Ah = 0;
-  if(mode === 'hybrid' || mode === 'offgrid'){
-    autonomy = Math.max(autonomy, 1); // ensure at least 1 day
-    const battery_nominal_Wh = daily * 1000 * autonomy / (dod * inverterEff);
-    battery_kWh = battery_nominal_Wh / 1000;
-    battery_Ah = battery_nominal_Wh / sysVoltage;
-  }
-
-  // financials lifetime
-  const systemCostGross = array_kW * costPerkW;
-  const netCost = systemCostGross * (1 - incentives/100);
-  const yearlyGen1 = daily * 365;
-  const degFraction = degradation/100;
-  let lifetimeGen = 0;
-  for(let y=0;y<lifetime;y++) lifetimeGen += yearlyGen1 * Math.pow(1 - degFraction, y);
-  const yearlySavings = yearlyGen1 * tariff;
-  const payback = yearlySavings > 0 ? netCost / yearlySavings : Infinity;
-  const lcoe = lifetimeGen > 0 ? netCost / lifetimeGen : Infinity;
-  const lifetimeSavings = lifetimeGen * tariff;
-  const co2Avoid_kg = yearlyGen1 * co2Factor;
-  const co2Avoid_t = co2Avoid_kg / 1000;
-
-  // prepare results UI
-  const grid = document.getElementById('resultGrid');
-  grid.innerHTML = '';
-  function card(icon, title, main, sub){
-    const d = document.createElement('div'); d.className='result-card';
-    d.innerHTML = `<div class="result-icon"><i class="${icon}"></i></div>
-      <div><div class="small">${title}</div><div class="value">${main}</div>${sub?'<div class="small" style="margin-top:6px;color:var(--muted)">'+sub+'</div>':''}</div>`;
-    return d;
-  }
-
-  grid.appendChild(card('fas fa-solar-panel','PV array', array_kW.toFixed(2)+' kW', array_W.toFixed(0)+' W DC'));
-  grid.appendChild(card('fas fa-th-large','Panels', panels+' pcs', panelW+' W each'));
-  grid.appendChild(card('fas fa-plug','Inverter', inverter_kW_required.toFixed(2)+' kW', inverter_kVA_required.toFixed(2)+' kVA @ PF '+PF.toFixed(2)));
-  if(mode==='hybrid' || mode==='offgrid'){
-    grid.appendChild(card('fas fa-battery-full','Battery usable', battery_kWh>0 ? battery_kWh.toFixed(2)+' kWh' : '—', battery_Ah>0 ? Math.round(battery_Ah)+' Ah @ '+sysVoltage+'V' : '—'));
-  } else {
-    grid.appendChild(card('fas fa-chart-line','Mode','Grid-tied','No battery sizing'));
-  }
-  grid.appendChild(card('fas fa-ruler-combined','Panel area', totalPanelArea_m2.toFixed(1)+' m²', 'per panel ≈ '+panelArea_m2.toFixed(2)+' m²'));
-  grid.appendChild(card('fas fa-home','Roof fit', roofArea? (roofFits ? 'Fits ✅' : 'Too small ❌') : 'No roof area', roofArea? ('Available '+roofArea+' '+roofUnit) : 'Enter roof area'));
-  grid.appendChild(card('fas fa-dollar-sign','System cost (gross)','$'+systemCostGross.toFixed(0), 'Cost/kW $'+costPerkW));
-  grid.appendChild(card('fas fa-money-bill-wave','Net cost','$'+netCost.toFixed(0), 'Incentives '+incentives+'%'));
-  grid.appendChild(card('fas fa-coins','Yearly savings','$'+yearlySavings.toFixed(0), 'Tariff $'+tariff+'/kWh'));
-  grid.appendChild(card('fas fa-hourglass-half','Payback', isFinite(payback)?payback.toFixed(1)+' yrs':'—',''));
-  grid.appendChild(card('fas fa-seedling','CO₂ avoided/yr', co2Avoid_t.toFixed(2)+' t', co2Avoid_kg.toFixed(0)+' kg'));
-  grid.appendChild(card('fas fa-percent','LCOE', isFinite(lcoe)?'$'+lcoe.toFixed(3)+'/kWh':'—',''));
-
-  // summary
-  document.getElementById('outNetCost').innerText = '$' + netCost.toFixed(0);
-  document.getElementById('outPayback').innerText = isFinite(payback) ? payback.toFixed(1)+' yrs' : '—';
-  document.getElementById('outLifetimeGen').innerText = lifetimeGen.toFixed(0) + ' kWh';
-  document.getElementById('outLifetimeSave').innerText = '$' + lifetimeSavings.toFixed(0);
-
-  // show results (full width)
-  goTo(4);
-
-  if(defaultsApplied && defaultsApplied.length){
-    showToast('Missing inputs used defaults.');
-  }
+  document.getElementById('pageInput').value = currentPage;
+  window.scrollTo(0,0);
 }
 
-/* ------------------ export / reset ------------------ */
-function exportPDF(){
-  const card = document.querySelector('#resultsWrap .card');
-  if(!card){ showToast('Nothing to export'); return; }
-  html2pdf().from(card).set({margin:12, filename:'solar_results.pdf', html2canvas:{scale:2}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).save();
-}
+function nextPage() { if (currentPage < totalPages) displayMCQs(currentPage+1); }
+function prevPage() { if (currentPage > 1) displayMCQs(currentPage-1); }
+function goToPage() { const p = parseInt(document.getElementById('pageInput').value); if (!isNaN(p) && p>=1 && p<=totalPages) displayMCQs(p); }
 
-function resetAll(){
-  // clear all inputs (but keep some sensible defaults)
-  document.querySelectorAll('input').forEach(i=>i.value='');
-  document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
-  document.getElementById('panelW').value = '430';
-  document.getElementById('panelEff').value = '19.5';
-  document.getElementById('degradation').value='0.5';
-  document.getElementById('deratePct').value='77';
-  document.getElementById('dcacRatio').value='1.2';
-  document.getElementById('inverterEff').value='95';
-  document.getElementById('costPerkW').value='800';
-  document.getElementById('tariff').value='0.13';
-  document.getElementById('lifetime').value='25';
-  document.getElementById('co2Factor').value='0.5';
-  document.getElementById('areaFactor').value='10';
-  document.getElementById('batteryBlock').style.display='none';
-  document.getElementById('resultGrid').innerHTML='';
-  document.getElementById('outNetCost').innerText='$—';
-  document.getElementById('outPayback').innerText='— yrs';
-  document.getElementById('outLifetimeGen').innerText='—';
-  document.getElementById('outLifetimeSave').innerText='$—';
-  goTo(1);
-}
-
-/* initial state */
-goTo(1);
-
-/* battery block display logic on mode change */
-document.getElementById('systemMode').addEventListener('change', function(){
-  const v = this.value;
-  document.getElementById('batteryBlock').style.display = (v==='hybrid' || v==='offgrid') ? 'block' : 'none';
-});
+displayMCQs(1);
 </script>
 </body>
 </html>
