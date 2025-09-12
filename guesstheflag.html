@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess the Flag</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: white;
+    }
+    h1 {
+      margin: 20px 0;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .game-container {
+      max-width: 95%;
+      margin: 10px auto;
+      padding: 20px;
+      background: #ffffff;
+      color: #333;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      border: 4px solid transparent;
+      transition: border-color 0.5s, box-shadow 0.5s;
+    }
+    #flag {
+      width: 90%;
+      max-width: 350px;
+      height: auto;
+      border: 2px solid #ccc;
+      margin: 15px auto;
+      display: block;
+      border-radius: 12px;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 15px;
+    }
+    button {
+      padding: 14px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background: #007bff;
+      color: white;
+      transition: transform 0.2s, background 0.3s;
+      width: 100%;
+    }
+    button:hover {
+      background: #0056b3;
+      transform: scale(1.05);
+    }
+    #score, #timer {
+      margin: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    #timer img {
+      width: 22px;
+      height: 22px;
+      vertical-align: middle;
+    }
+    #nextBtn {
+      margin: 20px auto 10px;
+      display: block;
+      background: #28a745;
+      width: 80%;
+      max-width: 250px;
+      font-size: 18px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    #nextBtn.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #nextBtn:hover {
+      background: #1e7e34;
+    }
+    .toggle {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    #gameOver {
+      display: none;
+      margin-top: 20px;
+    }
+    #gameOver button {
+      background: #ff5722;
+      width: 80%;
+      max-width: 250px;
+      font-size: 18px;
+      margin-top: 15px;
+    }
+    /* Feedback glow */
+    .correct {
+      border-color: #28a745 !important;
+      box-shadow: 0 0 20px #28a745;
+    }
+    .wrong {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 20px #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌍 Guess the Flag</h1>
+  <div class="game-container" id="gameContainer">
+    <div id="score">Score: 0</div>
+    <div id="timer">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSLbDieSlRBK8dCZ2CEkTtm4Q8ucAnPtPFIaTZ2DoqbfF7y8VrfLgNodZr_z19jzNfDrrsv7ePnRmDfw6mDtxCl-UOt5YHM-m-yJ8TvYtJ6F_K9hOBEdLbKKDTfGzzX2OT3MYNr8xhia0pWL9Jr5nGHI5fqTQY3REiDGyXxFsG4AFeqcHU9-GK2u8lkiEO/s512/timer.png" alt="timer">
+      <span id="timeText">15s</span>
+    </div>
+    <img id="flag" src="" alt="Flag">
+    <div class="options" id="options"></div>
+    <button id="nextBtn">Next</button>
+
+    <div class="toggle">
+      <label>
+        <input type="checkbox" id="autoNextToggle" checked>
+        Auto Next
+      </label>
+    </div>
+
+    <div id="gameOver">
+      <h2>Game Over!</h2>
+      <p id="finalScore"></p>
+      <button onclick="restartGame()">Restart</button>
+    </div>
+  </div>
+
+  <script>
+    const countries = [
+      {name: "Pakistan", code: "pk"},
+      {name: "India", code: "in"},
+      {name: "United States", code: "us"},
+      {name: "United Kingdom", code: "gb"},
+      {name: "Canada", code: "ca"},
+      {name: "Germany", code: "de"},
+      {name: "France", code: "fr"},
+      {name: "Japan", code: "jp"},
+      {name: "China", code: "cn"},
+      {name: "Brazil", code: "br"},
+    ];
+
+    let score = 0;
+    let questionCount = 0;
+    let totalQuestions = 10; 
+    let currentCountry;
+    let timer;
+    let timeLeft = 15;
+    let autoNext = true;
+    let answered = false;
+
+    const flagImg = document.getElementById("flag");
+    const optionsDiv = document.getElementById("options");
+    const scoreDiv = document.getElementById("score");
+    const timerDiv = document.getElementById("timer");
+    const timeText = document.getElementById("timeText");
+    const nextBtn = document.getElementById("nextBtn");
+    const autoNextToggle = document.getElementById("autoNextToggle");
+    const gameOverDiv = document.getElementById("gameOver");
+    const finalScore = document.getElementById("finalScore");
+    const gameContainer = document.getElementById("gameContainer");
+
+    autoNextToggle.addEventListener("change", () => {
+      autoNext = autoNextToggle.checked;
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (nextBtn.classList.contains("enabled")) {
+        loadQuestion();
+      }
+    });
+
+    function startTimer() {
+      clearInterval(timer);
+      timeLeft = 15;
+      timeText.textContent = `${timeLeft}s`;
+      timer = setInterval(() => {
+        timeLeft--;
+        timeText.textContent = `${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          handleAnswer(null);
+        }
+      }, 1000);
+    }
+
+    function loadQuestion() {
+      if (questionCount >= totalQuestions) {
+        endGame();
+        return;
+      }
+
+      nextBtn.classList.remove("enabled");
+      optionsDiv.innerHTML = "";
+      gameContainer.classList.remove("correct", "wrong");
+      answered = false;
+
+      currentCountry = countries[Math.floor(Math.random() * countries.length)];
+      flagImg.src = `https://flagcdn.com/w320/${currentCountry.code}.png`;
+      
+      let options = [currentCountry];
+      while (options.length < 4) {
+        let rand = countries[Math.floor(Math.random() * countries.length)];
+        if (!options.includes(rand)) options.push(rand);
+      }
+      options.sort(() => Math.random() - 0.5);
+
+      options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option.name;
+        btn.onclick = () => handleAnswer(option.name);
+        optionsDiv.appendChild(btn);
+      });
+
+      startTimer();
+      questionCount++;
+    }
+
+    function handleAnswer(answer) {
+      if (answered) return;
+      answered = true;
+
+      clearInterval(timer);
+      if (answer === currentCountry?.name) {
+        score++;
+        scoreDiv.textContent = `Score: ${score}`;
+        gameContainer.classList.add("correct");
+      } else {
+        gameContainer.classList.add("wrong");
+      }
+
+      if (autoNext) {
+        setTimeout(() => {
+          loadQuestion();
+        }, 1000);
+      } else {
+        nextBtn.classList.add("enabled");
+      }
+    }
+
+    function endGame() {
+      flagImg.style.display = "none";
+      optionsDiv.style.display = "none";
+      timerDiv.style.display = "none";
+      nextBtn.style.display = "none";
+      document.querySelector(".toggle").style.display = "none";
+      gameOverDiv.style.display = "block";
+      finalScore.textContent = `Your final score is ${score} out of ${totalQuestions}`;
+    }
+
+    function restartGame() {
+      score = 0;
+      questionCount = 0;
+      scoreDiv.textContent = "Score: 0";
+      flagImg.style.display = "block";
+      optionsDiv.style.display = "grid";
+      timerDiv.style.display = "flex";
+      document.querySelector(".toggle").style.display = "block";
+      gameOverDiv.style.display = "none";
+      nextBtn.style.display = "block";
+      nextBtn.classList.remove("enabled");
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
