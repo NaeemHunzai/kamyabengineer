@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guess the Flag</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guess the Flag (Ultra HD Preload)</title>
   <style>
+    /* === YOUR ORIGINAL UI STYLES (unchanged) === */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
@@ -113,16 +114,71 @@
       border-color: #dc3545 !important;
       box-shadow: 0 0 20px #dc3545;
     }
+
+    /* === LOADING OVERLAY (added) === */
+    #preloadOverlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.9));
+      color: #fff;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+    #preloadOverlay h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+    #progressBox {
+      width: 90%;
+      max-width: 420px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    #progressBar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.16);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    #progressFill {
+      height: 100%;
+      width: 0%;
+      background: #ff9800;
+      transition: width 0.2s linear;
+    }
+    #preloadStats {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    /* Make sure overlay text is smaller on small screens */
+    @media (max-width: 420px){
+      #preloadOverlay h2 { font-size: 18px; }
+    }
   </style>
 </head>
 <body>
   <h1>🌍 Guess the Flag</h1>
+
+  <!-- Game UI (unchanged layout) -->
   <div class="game-container" id="gameContainer">
     <div id="score">Score: 0</div>
+
     <div id="timer">
       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSLbDieSlRBK8dCZ2CEkTtm4Q8ucAnPtPFIaTZ2DoqbfF7y8VrfLgNodZr_z19jzNfDrrsv7ePnRmDfw6mDtxCl-UOt5YHM-m-yJ8TvYtJ6F_K9hOBEdLbKKDTfGzzX2OT3MYNr8xhia0pWL9Jr5nGHI5fqTQY3REiDGyXxFsG4AFeqcHU9-GK2u8lkiEO/s512/timer.png" alt="timer">
       <span id="timeText">15s</span>
     </div>
+
     <img id="flag" src="" alt="Flag">
     <div class="options" id="options"></div>
     <button id="nextBtn">Next</button>
@@ -141,36 +197,300 @@
     </div>
   </div>
 
+  <!-- Full-screen preload overlay -->
+  <div id="preloadOverlay" aria-hidden="false">
+    <h2>Preparing ultra-HD flags — please wait</h2>
+    <div id="progressBox">
+      <div id="progressBar"><div id="progressFill"></div></div>
+      <div id="preloadStats">Loaded <span id="loadedCount">0</span> / <span id="totalCount">195</span> flags</div>
+      <div style="margin-top:10px;font-size:13px;color:#ffefc5;">
+        This downloads large images once (w1280). It may use significant data on mobile.
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Example countries list (expand to all 195 later)
+    /*****************************************************************************************
+     * Full list of 195 countries (ISO alpha-2 codes). Kept as requested (all 195 entries).
+     * If you want to edit/trim, change this array.
+     *****************************************************************************************/
     const countries = [
-      {name: "Pakistan", code: "pk"},
-      {name: "India", code: "in"},
-      {name: "United States", code: "us"},
-      {name: "United Kingdom", code: "gb"},
-      {name: "Canada", code: "ca"},
-      {name: "Germany", code: "de"},
-      {name: "France", code: "fr"},
-      {name: "Japan", code: "jp"},
-      {name: "China", code: "cn"},
-      {name: "Brazil", code: "br"}
+      {name:"Afghanistan", code:"af"},
+      {name:"Albania", code:"al"},
+      {name:"Algeria", code:"dz"},
+      {name:"Andorra", code:"ad"},
+      {name:"Angola", code:"ao"},
+      {name:"Antigua and Barbuda", code:"ag"},
+      {name:"Argentina", code:"ar"},
+      {name:"Armenia", code:"am"},
+      {name:"Australia", code:"au"},
+      {name:"Austria", code:"at"},
+      {name:"Azerbaijan", code:"az"},
+      {name:"Bahamas", code:"bs"},
+      {name:"Bahrain", code:"bh"},
+      {name:"Bangladesh", code:"bd"},
+      {name:"Barbados", code:"bb"},
+      {name:"Belarus", code:"by"},
+      {name:"Belgium", code:"be"},
+      {name:"Belize", code:"bz"},
+      {name:"Benin", code:"bj"},
+      {name:"Bhutan", code:"bt"},
+      {name:"Bolivia", code:"bo"},
+      {name:"Bosnia and Herzegovina", code:"ba"},
+      {name:"Botswana", code:"bw"},
+      {name:"Brazil", code:"br"},
+      {name:"Brunei", code:"bn"},
+      {name:"Bulgaria", code:"bg"},
+      {name:"Burkina Faso", code:"bf"},
+      {name:"Burundi", code:"bi"},
+      {name:"Cabo Verde", code:"cv"},
+      {name:"Cambodia", code:"kh"},
+      {name:"Cameroon", code:"cm"},
+      {name:"Canada", code:"ca"},
+      {name:"Central African Republic", code:"cf"},
+      {name:"Chad", code:"td"},
+      {name:"Chile", code:"cl"},
+      {name:"China", code:"cn"},
+      {name:"Colombia", code:"co"},
+      {name:"Comoros", code:"km"},
+      {name:"Congo (Republic)", code:"cg"},
+      {name:"Costa Rica", code:"cr"},
+      {name:"Côte d'Ivoire", code:"ci"},
+      {name:"Croatia", code:"hr"},
+      {name:"Cuba", code:"cu"},
+      {name:"Cyprus", code:"cy"},
+      {name:"Czechia", code:"cz"},
+      {name:"Democratic Republic of the Congo", code:"cd"},
+      {name:"Denmark", code:"dk"},
+      {name:"Djibouti", code:"dj"},
+      {name:"Dominica", code:"dm"},
+      {name:"Dominican Republic", code:"do"},
+      {name:"Ecuador", code:"ec"},
+      {name:"Egypt", code:"eg"},
+      {name:"El Salvador", code:"sv"},
+      {name:"Equatorial Guinea", code:"gq"},
+      {name:"Eritrea", code:"er"},
+      {name:"Estonia", code:"ee"},
+      {name:"Eswatini", code:"sz"},
+      {name:"Ethiopia", code:"et"},
+      {name:"Federated States of Micronesia", code:"fm"},
+      {name:"Fiji", code:"fj"},
+      {name:"Finland", code:"fi"},
+      {name:"France", code:"fr"},
+      {name:"Gabon", code:"ga"},
+      {name:"Gambia", code:"gm"},
+      {name:"Georgia", code:"ge"},
+      {name:"Germany", code:"de"},
+      {name:"Ghana", code:"gh"},
+      {name:"Greece", code:"gr"},
+      {name:"Grenada", code:"gd"},
+      {name:"Guatemala", code:"gt"},
+      {name:"Guinea", code:"gn"},
+      {name:"Guinea-Bissau", code:"gw"},
+      {name:"Guyana", code:"gy"},
+      {name:"Haiti", code:"ht"},
+      {name:"Honduras", code:"hn"},
+      {name:"Hungary", code:"hu"},
+      {name:"Iceland", code:"is"},
+      {name:"India", code:"in"},
+      {name:"Indonesia", code:"id"},
+      {name:"Iran", code:"ir"},
+      {name:"Iraq", code:"iq"},
+      {name:"Ireland", code:"ie"},
+      {name:"Israel", code:"il"},
+      {name:"Italy", code:"it"},
+      {name:"Jamaica", code:"jm"},
+      {name:"Japan", code:"jp"},
+      {name:"Jordan", code:"jo"},
+      {name:"Kazakhstan", code:"kz"},
+      {name:"Kenya", code:"ke"},
+      {name:"Kiribati", code:"ki"},
+      {name:"Kosovo", code:"xk"}, /* note: XK often used for Kosovo, not an official ISO but many datasets use it */
+      {name:"Kuwait", code:"kw"},
+      {name:"Kyrgyzstan", code:"kg"},
+      {name:"Laos", code:"la"},
+      {name:"Latvia", code:"lv"},
+      {name:"Lebanon", code:"lb"},
+      {name:"Lesotho", code:"ls"},
+      {name:"Liberia", code:"lr"},
+      {name:"Libya", code:"ly"},
+      {name:"Liechtenstein", code:"li"},
+      {name:"Lithuania", code:"lt"},
+      {name:"Luxembourg", code:"lu"},
+      {name:"Madagascar", code:"mg"},
+      {name:"Malawi", code:"mw"},
+      {name:"Malaysia", code:"my"},
+      {name:"Maldives", code:"mv"},
+      {name:"Mali", code:"ml"},
+      {name:"Malta", code:"mt"},
+      {name:"Marshall Islands", code:"mh"},
+      {name:"Mauritania", code:"mr"},
+      {name:"Mauritius", code:"mu"},
+      {name:"Mexico", code:"mx"},
+      {name:"Moldova", code:"md"},
+      {name:"Monaco", code:"mc"},
+      {name:"Mongolia", code:"mn"},
+      {name:"Montenegro", code:"me"},
+      {name:"Morocco", code:"ma"},
+      {name:"Mozambique", code:"mz"},
+      {name:"Myanmar", code:"mm"},
+      {name:"Namibia", code:"na"},
+      {name:"Nauru", code:"nr"},
+      {name:"Nepal", code:"np"},
+      {name:"Netherlands", code:"nl"},
+      {name:"New Zealand", code:"nz"},
+      {name:"Nicaragua", code:"ni"},
+      {name:"Niger", code:"ne"},
+      {name:"Nigeria", code:"ng"},
+      {name:"North Korea", code:"kp"},
+      {name:"North Macedonia", code:"mk"},
+      {name:"Norway", code:"no"},
+      {name:"Oman", code:"om"},
+      {name:"Pakistan", code:"pk"},
+      {name:"Palau", code:"pw"},
+      {name:"Panama", code:"pa"},
+      {name:"Papua New Guinea", code:"pg"},
+      {name:"Paraguay", code:"py"},
+      {name:"Peru", code:"pe"},
+      {name:"Philippines", code:"ph"},
+      {name:"Poland", code:"pl"},
+      {name:"Portugal", code:"pt"},
+      {name:"Qatar", code:"qa"},
+      {name:"Romania", code:"ro"},
+      {name:"Russia", code:"ru"},
+      {name:"Rwanda", code:"rw"},
+      {name:"Saint Kitts and Nevis", code:"kn"},
+      {name:"Saint Lucia", code:"lc"},
+      {name:"Saint Vincent and the Grenadines", code:"vc"},
+      {name:"Samoa", code:"ws"},
+      {name:"San Marino", code:"sm"},
+      {name:"Sao Tome and Principe", code:"st"},
+      {name:"Saudi Arabia", code:"sa"},
+      {name:"Senegal", code:"sn"},
+      {name:"Serbia", code:"rs"},
+      {name:"Seychelles", code:"sc"},
+      {name:"Sierra Leone", code:"sl"},
+      {name:"Singapore", code:"sg"},
+      {name:"Slovakia", code:"sk"},
+      {name:"Slovenia", code:"si"},
+      {name:"Solomon Islands", code:"sb"},
+      {name:"Somalia", code:"so"},
+      {name:"South Africa", code:"za"},
+      {name:"South Korea", code:"kr"},
+      {name:"South Sudan", code:"ss"},
+      {name:"Spain", code:"es"},
+      {name:"Sri Lanka", code:"lk"},
+      {name:"Sudan", code:"sd"},
+      {name:"Suriname", code:"sr"},
+      {name:"Sweden", code:"se"},
+      {name:"Switzerland", code:"ch"},
+      {name:"Syria", code:"sy"},
+      {name:"Taiwan", code:"tw"},
+      {name:"Tajikistan", code:"tj"},
+      {name:"Tanzania", code:"tz"},
+      {name:"Thailand", code:"th"},
+      {name:"Timor-Leste", code:"tl"},
+      {name:"Togo", code:"tg"},
+      {name:"Tonga", code:"to"},
+      {name:"Trinidad and Tobago", code:"tt"},
+      {name:"Tunisia", code:"tn"},
+      {name:"Turkey", code:"tr"},
+      {name:"Turkmenistan", code:"tm"},
+      {name:"Tuvalu", code:"tv"},
+      {name:"Uganda", code:"ug"},
+      {name:"Ukraine", code:"ua"},
+      {name:"United Arab Emirates", code:"ae"},
+      {name:"United Kingdom", code:"gb"},
+      {name:"United States", code:"us"},
+      {name:"Uruguay", code:"uy"},
+      {name:"Uzbekistan", code:"uz"},
+      {name:"Vanuatu", code:"vu"},
+      {name:"Vatican City", code:"va"},
+      {name:"Venezuela", code:"ve"},
+      {name:"Vietnam", code:"vn"},
+      {name:"Yemen", code:"ye"},
+      {name:"Zambia", code:"zm"},
+      {name:"Zimbabwe", code:"zw"}
     ];
 
-    // Preload flags in highest quality (w640 or w1280)
-    const flagCache = {};
-    function preloadFlags() {
-      countries.forEach(c => {
+    /* NOTE about Kosovo (xk):
+       - 'xk' is used by some datasets for Kosovo even though it's not official ISO-3166-1.
+       - If your flag source doesn't have xk, you'll see an error for that one.
+       - You can remove Kosovo or change behavior if needed.
+    */
+
+    /* === Settings === */
+    const FLAG_SIZE = 'w1280'; // ultra HD
+    const TOTAL_FLAGS = countries.length; // expected 195
+    document.getElementById('totalCount').textContent = TOTAL_FLAGS;
+
+    /* Preload store: store Image objects so the browser caches them */
+    const preloadedFlags = {};
+    let flagsLoaded = 0;
+    let preloadFailed = 0;
+    const preloadOverlay = document.getElementById('preloadOverlay');
+    const loadedCountSpan = document.getElementById('loadedCount');
+    const progressFill = document.getElementById('progressFill');
+
+    function updateProgress() {
+      loadedCountSpan.textContent = flagsLoaded + preloadFailed;
+      const percent = Math.round(((flagsLoaded + preloadFailed) / TOTAL_FLAGS) * 100);
+      progressFill.style.width = percent + '%';
+    }
+
+    function preloadAllFlags(callback) {
+      // Show overlay (already visible by default)
+      preloadOverlay.style.display = 'flex';
+      flagsLoaded = 0;
+      preloadFailed = 0;
+      updateProgress();
+
+      countries.forEach(country => {
+        const code = country.code.toLowerCase();
+        const url = `https://flagcdn.com/${FLAG_SIZE}/${code}.png`;
         const img = new Image();
-        img.src = `https://flagcdn.com/w640/${c.code}.png`;
-        flagCache[c.code] = img;
+
+        // Use crossOrigin to allow caching across domains (if needed)
+        img.crossOrigin = 'anonymous';
+
+        img.onload = () => {
+          preloadedFlags[code] = img;
+          flagsLoaded++;
+          updateProgress();
+          if ((flagsLoaded + preloadFailed) === TOTAL_FLAGS) {
+            // small delay to show 100%
+            setTimeout(() => {
+              preloadOverlay.style.display = 'none';
+              callback && callback();
+            }, 300);
+          }
+        };
+
+        img.onerror = () => {
+          // fallback: try svg if png fails
+          preloadFailed++;
+          // store fallback URL so later we can still use something
+          preloadedFlags[code] = url; // keep url even if failed to let loadQuestion use it
+          updateProgress();
+          if ((flagsLoaded + preloadFailed) === TOTAL_FLAGS) {
+            setTimeout(() => {
+              preloadOverlay.style.display = 'none';
+              callback && callback();
+            }, 300);
+          }
+        };
+
+        // start loading
+        img.src = url;
       });
     }
 
+    /* === Game variables and DOM references (kept as your UI expects) === */
     let score = 0;
     let questionCount = 0;
-    let totalQuestions = 10;
-    let currentCountry;
-    let timer;
+    const totalQuestions = 10; // you can change
+    let currentCountry = null;
+    let timer = null;
     let timeLeft = 15;
     let autoNext = true;
     let answered = false;
@@ -178,7 +498,6 @@
     const flagImg = document.getElementById("flag");
     const optionsDiv = document.getElementById("options");
     const scoreDiv = document.getElementById("score");
-    const timerDiv = document.getElementById("timer");
     const timeText = document.getElementById("timeText");
     const nextBtn = document.getElementById("nextBtn");
     const autoNextToggle = document.getElementById("autoNextToggle");
@@ -186,16 +505,19 @@
     const finalScore = document.getElementById("finalScore");
     const gameContainer = document.getElementById("gameContainer");
 
-    autoNextToggle.addEventListener("change", () => {
+    /* Auto-next toggle handling */
+    autoNextToggle.addEventListener('change', () => {
       autoNext = autoNextToggle.checked;
     });
 
-    nextBtn.addEventListener("click", () => {
-      if (nextBtn.classList.contains("enabled")) {
+    /* Next button */
+    nextBtn.addEventListener('click', () => {
+      if (nextBtn.classList.contains('enabled')) {
         loadQuestion();
       }
     });
 
+    /* Timer functions (kept as in your UI) */
     function startTimer() {
       clearInterval(timer);
       timeLeft = 15;
@@ -210,35 +532,40 @@
       }, 1000);
     }
 
+    /* Load a question: pick random country, show preloaded flag, create 4 option buttons */
     function loadQuestion() {
       if (questionCount >= totalQuestions) {
         endGame();
         return;
       }
 
-      nextBtn.classList.remove("enabled");
-      optionsDiv.innerHTML = "";
-      gameContainer.classList.remove("correct", "wrong");
+      nextBtn.classList.remove('enabled');
+      optionsDiv.innerHTML = '';
+      gameContainer.classList.remove('correct', 'wrong');
       answered = false;
 
       currentCountry = countries[Math.floor(Math.random() * countries.length)];
 
-      // Use preloaded flag
-      if (flagCache[currentCountry.code]) {
-        flagImg.src = flagCache[currentCountry.code].src;
+      // set flag: prefer preloaded Image object, fallback to direct URL
+      const code = currentCountry.code.toLowerCase();
+      if (preloadedFlags[code] && preloadedFlags[code].src) {
+        flagImg.src = preloadedFlags[code].src;
+      } else {
+        flagImg.src = `https://flagcdn.com/${FLAG_SIZE}/${code}.png`;
       }
 
-      let options = [currentCountry];
+      // prepare options array (4 unique)
+      const options = [currentCountry];
       while (options.length < 4) {
-        let rand = countries[Math.floor(Math.random() * countries.length)];
-        if (!options.includes(rand)) options.push(rand);
+        const rand = countries[Math.floor(Math.random() * countries.length)];
+        if (!options.some(o => o.code === rand.code)) options.push(rand);
       }
       options.sort(() => Math.random() - 0.5);
 
       options.forEach(option => {
-        const btn = document.createElement("button");
+        const btn = document.createElement('button');
         btn.textContent = option.name;
-        btn.onclick = () => handleAnswer(option.name);
+        btn.onclick = () => handleAnswer(option.name, btn);
         optionsDiv.appendChild(btn);
       });
 
@@ -246,7 +573,8 @@
       questionCount++;
     }
 
-    function handleAnswer(answer) {
+    /* Handle answer -> show green/red border and update score; if autoNext false, enable Next */
+    function handleAnswer(answer, btn = null) {
       if (answered) return;
       answered = true;
 
@@ -254,47 +582,61 @@
       if (answer === currentCountry?.name) {
         score++;
         scoreDiv.textContent = `Score: ${score}`;
-        gameContainer.classList.add("correct");
+        gameContainer.classList.add('correct');
+        // If a button is provided, highlight it green
+        if (btn) btn.style.background = '#28a745';
       } else {
-        gameContainer.classList.add("wrong");
+        gameContainer.classList.add('wrong');
+        if (btn) btn.style.background = '#dc3545';
       }
 
+      // If autoNext is on, continue after short delay
       if (autoNext) {
         setTimeout(() => {
           loadQuestion();
         }, 1000);
       } else {
-        nextBtn.classList.add("enabled");
+        // enable Next for manual progression
+        nextBtn.classList.add('enabled');
       }
     }
 
     function endGame() {
-      flagImg.style.display = "none";
-      optionsDiv.style.display = "none";
-      timerDiv.style.display = "none";
-      nextBtn.style.display = "none";
-      document.querySelector(".toggle").style.display = "none";
-      gameOverDiv.style.display = "block";
+      flagImg.style.display = 'none';
+      optionsDiv.style.display = 'none';
+      document.getElementById('timer').style.display = 'none';
+      nextBtn.style.display = 'none';
+      document.querySelector('.toggle').style.display = 'none';
+      gameOverDiv.style.display = 'block';
       finalScore.textContent = `Your final score is ${score} out of ${totalQuestions}`;
     }
 
     function restartGame() {
       score = 0;
       questionCount = 0;
-      scoreDiv.textContent = "Score: 0";
-      flagImg.style.display = "block";
-      optionsDiv.style.display = "grid";
-      timerDiv.style.display = "flex";
-      document.querySelector(".toggle").style.display = "block";
-      gameOverDiv.style.display = "none";
-      nextBtn.style.display = "block";
-      nextBtn.classList.remove("enabled");
+      scoreDiv.textContent = 'Score: 0';
+      flagImg.style.display = 'block';
+      optionsDiv.style.display = 'grid';
+      document.getElementById('timer').style.display = 'flex';
+      document.querySelector('.toggle').style.display = 'block';
+      gameOverDiv.style.display = 'none';
+      nextBtn.style.display = 'block';
+      nextBtn.classList.remove('enabled');
       loadQuestion();
     }
 
-    // Preload flags before starting
-    preloadFlags();
-    loadQuestion();
+    /* Start: preload everything then start the quiz */
+    window.addEventListener('load', () => {
+      preloadAllFlags(() => {
+        // after preload completes:
+        // hide overlay already handled in preloadAllFlags
+        // initialize / start first question
+        loadQuestion();
+      });
+    });
+
+    /* Accessibility: if user navigates away or needs to cancel, we still keep functionality.
+       Note: you may want to add a Cancel button to overlay in future versions. */
   </script>
 </body>
 </html>
