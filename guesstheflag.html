@@ -142,9 +142,8 @@
   </div>
 
   <script>
-    // ✅ Full list of countries with ISO codes
-    // (Generated from ISO 3166-1 alpha-2 codes)
-    const countries = [
+    // ✅ Full country list (same as you pasted earlier)
+    const countries = [ 
       {name:"Afghanistan", code:"af"},
       {name:"Albania", code:"al"},
       {name:"Algeria", code:"dz"},
@@ -297,9 +296,19 @@
       {name:"Zimbabwe", code:"zw"}
     ];
 
+    // ✅ Preload all flag images (higher quality w512)
+    const preloadedFlags = {};
+    function preloadFlags() {
+      countries.forEach(c => {
+        const img = new Image();
+        img.src = `https://flagcdn.com/w512/${c.code}.png`;
+        preloadedFlags[c.code] = img;
+      });
+    }
+
     let score = 0;
     let questionCount = 0;
-    let totalQuestions = 10; 
+    let totalQuestions = 10;
     let currentCountry;
     let timer;
     let timeLeft = 15;
@@ -352,7 +361,7 @@
       answered = false;
 
       currentCountry = countries[Math.floor(Math.random() * countries.length)];
-      flagImg.src = `https://flagcdn.com/w320/${currentCountry.code}.png`;
+      flagImg.src = preloadedFlags[currentCountry.code].src; // ✅ use cached image
 
       let options = [currentCountry];
       while (options.length < 4) {
@@ -418,6 +427,8 @@
       loadQuestion();
     }
 
+    // ✅ Preload flags before game starts
+    preloadFlags();
     loadQuestion();
   </script>
 </body>
