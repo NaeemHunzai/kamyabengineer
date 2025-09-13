@@ -113,11 +113,6 @@
       border-color: #dc3545 !important;
       box-shadow: 0 0 20px #dc3545;
     }
-    #loading {
-      font-size: 20px;
-      margin-top: 20px;
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -144,86 +139,52 @@
       <p id="finalScore"></p>
       <button onclick="restartGame()">Restart</button>
     </div>
-
-    <div id="loading">⏳ Preloading flags... <span id="loadedCount">0</span>/<span id="totalCount"></span></div>
   </div>
 
   <script>
+    // Example countries list (expand to all 195 later)
     const countries = [
-      {name:"Afghanistan", code:"af"},{name:"Albania", code:"al"},{name:"Algeria", code:"dz"},
-      {name:"Andorra", code:"ad"},{name:"Angola", code:"ao"},{name:"Argentina", code:"ar"},
-      {name:"Armenia", code:"am"},{name:"Australia", code:"au"},{name:"Austria", code:"at"},
-      {name:"Azerbaijan", code:"az"},{name:"Bahamas", code:"bs"},{name:"Bahrain", code:"bh"},
-      {name:"Bangladesh", code:"bd"},{name:"Barbados", code:"bb"},{name:"Belarus", code:"by"},
-      {name:"Belgium", code:"be"},{name:"Belize", code:"bz"},{name:"Benin", code:"bj"},
-      {name:"Bhutan", code:"bt"},{name:"Bolivia", code:"bo"},{name:"Bosnia and Herzegovina", code:"ba"},
-      {name:"Botswana", code:"bw"},{name:"Brazil", code:"br"},{name:"Brunei", code:"bn"},
-      {name:"Bulgaria", code:"bg"},{name:"Burkina Faso", code:"bf"},{name:"Burundi", code:"bi"},
-      {name:"Cambodia", code:"kh"},{name:"Cameroon", code:"cm"},{name:"Canada", code:"ca"},
-      {name:"Cape Verde", code:"cv"},{name:"Central African Republic", code:"cf"},{name:"Chad", code:"td"},
-      {name:"Chile", code:"cl"},{name:"China", code:"cn"},{name:"Colombia", code:"co"},
-      {name:"Comoros", code:"km"},{name:"Congo", code:"cg"},{name:"Costa Rica", code:"cr"},
-      {name:"Croatia", code:"hr"},{name:"Cuba", code:"cu"},{name:"Cyprus", code:"cy"},
-      {name:"Czechia", code:"cz"},{name:"Denmark", code:"dk"},{name:"Djibouti", code:"dj"},
-      {name:"Dominican Republic", code:"do"},{name:"Ecuador", code:"ec"},{name:"Egypt", code:"eg"},
-      {name:"El Salvador", code:"sv"},{name:"Estonia", code:"ee"},{name:"Ethiopia", code:"et"},
-      {name:"Fiji", code:"fj"},{name:"Finland", code:"fi"},{name:"France", code:"fr"},
-      {name:"Germany", code:"de"},{name:"Ghana", code:"gh"},{name:"Greece", code:"gr"},
-      {name:"Hungary", code:"hu"},{name:"Iceland", code:"is"},{name:"India", code:"in"},
-      {name:"Indonesia", code:"id"},{name:"Iran", code:"ir"},{name:"Iraq", code:"iq"},
-      {name:"Ireland", code:"ie"},{name:"Israel", code:"il"},{name:"Italy", code:"it"},
-      {name:"Jamaica", code:"jm"},{name:"Japan", code:"jp"},{name:"Jordan", code:"jo"},
-      {name:"Kazakhstan", code:"kz"},{name:"Kenya", code:"ke"},{name:"Kuwait", code:"kw"},
-      {name:"Kyrgyzstan", code:"kg"},{name:"Laos", code:"la"},{name:"Latvia", code:"lv"},
-      {name:"Lebanon", code:"lb"},{name:"Libya", code:"ly"},{name:"Lithuania", code:"lt"},
-      {name:"Luxembourg", code:"lu"},{name:"Madagascar", code:"mg"},{name:"Malaysia", code:"my"},
-      {name:"Maldives", code:"mv"},{name:"Mali", code:"ml"},{name:"Malta", code:"mt"},
-      {name:"Mexico", code:"mx"},{name:"Moldova", code:"md"},{name:"Monaco", code:"mc"},
-      {name:"Mongolia", code:"mn"},{name:"Montenegro", code:"me"},{name:"Morocco", code:"ma"},
-      {name:"Mozambique", code:"mz"},{name:"Myanmar", code:"mm"},{name:"Namibia", code:"na"},
-      {name:"Nepal", code:"np"},{name:"Netherlands", code:"nl"},{name:"New Zealand", code:"nz"},
-      {name:"Nicaragua", code:"ni"},{name:"Niger", code:"ne"},{name:"Nigeria", code:"ng"},
-      {name:"North Korea", code:"kp"},{name:"North Macedonia", code:"mk"},{name:"Norway", code:"no"},
-      {name:"Oman", code:"om"},{name:"Pakistan", code:"pk"},{name:"Palestine", code:"ps"},
-      {name:"Panama", code:"pa"},{name:"Paraguay", code:"py"},{name:"Peru", code:"pe"},
-      {name:"Philippines", code:"ph"},{name:"Poland", code:"pl"},{name:"Portugal", code:"pt"},
-      {name:"Qatar", code:"qa"},{name:"Romania", code:"ro"},{name:"Russia", code:"ru"},
-      {name:"Rwanda", code:"rw"},{name:"Saudi Arabia", code:"sa"},{name:"Senegal", code:"sn"},
-      {name:"Serbia", code:"rs"},{name:"Singapore", code:"sg"},{name:"Slovakia", code:"sk"},
-      {name:"Slovenia", code:"si"},{name:"Somalia", code:"so"},{name:"South Africa", code:"za"},
-      {name:"South Korea", code:"kr"},{name:"Spain", code:"es"},{name:"Sri Lanka", code:"lk"},
-      {name:"Sudan", code:"sd"},{name:"Sweden", code:"se"},{name:"Switzerland", code:"ch"},
-      {name:"Syria", code:"sy"},{name:"Taiwan", code:"tw"},{name:"Tajikistan", code:"tj"},
-      {name:"Tanzania", code:"tz"},{name:"Thailand", code:"th"},{name:"Tunisia", code:"tn"},
-      {name:"Turkey", code:"tr"},{name:"Turkmenistan", code:"tm"},{name:"Uganda", code:"ug"},
-      {name:"Ukraine", code:"ua"},{name:"United Arab Emirates", code:"ae"},{name:"United Kingdom", code:"gb"},
-      {name:"United States", code:"us"},{name:"Uruguay", code:"uy"},{name:"Uzbekistan", code:"uz"},
-      {name:"Vatican City", code:"va"},{name:"Venezuela", code:"ve"},{name:"Vietnam", code:"vn"},
-      {name:"Yemen", code:"ye"},{name:"Zambia", code:"zm"},{name:"Zimbabwe", code:"zw"}
+      {name: "Pakistan", code: "pk"},
+      {name: "India", code: "in"},
+      {name: "United States", code: "us"},
+      {name: "United Kingdom", code: "gb"},
+      {name: "Canada", code: "ca"},
+      {name: "Germany", code: "de"},
+      {name: "France", code: "fr"},
+      {name: "Japan", code: "jp"},
+      {name: "China", code: "cn"},
+      {name: "Brazil", code: "br"}
     ];
+
+    // Preload flags in highest quality (w640 or w1280)
+    const flagCache = {};
+    function preloadFlags() {
+      countries.forEach(c => {
+        const img = new Image();
+        img.src = `https://flagcdn.com/w640/${c.code}.png`;
+        flagCache[c.code] = img;
+      });
+    }
 
     let score = 0;
     let questionCount = 0;
-    let totalQuestions = 10; 
+    let totalQuestions = 10;
     let currentCountry;
     let timer;
     let timeLeft = 15;
     let autoNext = true;
     let answered = false;
-    let preloadedFlags = {};
 
     const flagImg = document.getElementById("flag");
     const optionsDiv = document.getElementById("options");
     const scoreDiv = document.getElementById("score");
+    const timerDiv = document.getElementById("timer");
     const timeText = document.getElementById("timeText");
     const nextBtn = document.getElementById("nextBtn");
     const autoNextToggle = document.getElementById("autoNextToggle");
     const gameOverDiv = document.getElementById("gameOver");
     const finalScore = document.getElementById("finalScore");
     const gameContainer = document.getElementById("gameContainer");
-    const loadingDiv = document.getElementById("loading");
-    const loadedCountSpan = document.getElementById("loadedCount");
-    const totalCountSpan = document.getElementById("totalCount");
 
     autoNextToggle.addEventListener("change", () => {
       autoNext = autoNextToggle.checked;
@@ -249,34 +210,6 @@
       }, 1000);
     }
 
-    function preloadFlags(callback) {
-      loadingDiv.style.display = "block";
-      totalCountSpan.textContent = countries.length;
-      let loaded = 0;
-
-      countries.forEach(country => {
-        const img = new Image();
-        img.src = `https://flagcdn.com/w320/${country.code}.png`;
-        img.onload = () => {
-          preloadedFlags[country.code] = img.src;
-          loaded++;
-          loadedCountSpan.textContent = loaded;
-          if (loaded === countries.length) {
-            loadingDiv.style.display = "none";
-            callback();
-          }
-        };
-        img.onerror = () => {
-          loaded++;
-          loadedCountSpan.textContent = loaded;
-          if (loaded === countries.length) {
-            loadingDiv.style.display = "none";
-            callback();
-          }
-        };
-      });
-    }
-
     function loadQuestion() {
       if (questionCount >= totalQuestions) {
         endGame();
@@ -289,7 +222,11 @@
       answered = false;
 
       currentCountry = countries[Math.floor(Math.random() * countries.length)];
-      flagImg.src = preloadedFlags[currentCountry.code] || `https://flagcdn.com/w320/${currentCountry.code}.png`;
+
+      // Use preloaded flag
+      if (flagCache[currentCountry.code]) {
+        flagImg.src = flagCache[currentCountry.code].src;
+      }
 
       let options = [currentCountry];
       while (options.length < 4) {
@@ -334,7 +271,7 @@
     function endGame() {
       flagImg.style.display = "none";
       optionsDiv.style.display = "none";
-      document.getElementById("timer").style.display = "none";
+      timerDiv.style.display = "none";
       nextBtn.style.display = "none";
       document.querySelector(".toggle").style.display = "none";
       gameOverDiv.style.display = "block";
@@ -347,7 +284,7 @@
       scoreDiv.textContent = "Score: 0";
       flagImg.style.display = "block";
       optionsDiv.style.display = "grid";
-      document.getElementById("timer").style.display = "flex";
+      timerDiv.style.display = "flex";
       document.querySelector(".toggle").style.display = "block";
       gameOverDiv.style.display = "none";
       nextBtn.style.display = "block";
@@ -355,10 +292,9 @@
       loadQuestion();
     }
 
-    // ✅ First preload, then start game
-    preloadFlags(() => {
-      loadQuestion();
-    });
+    // Preload flags before starting
+    preloadFlags();
+    loadQuestion();
   </script>
 </body>
 </html>
