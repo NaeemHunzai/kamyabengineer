@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Guess the Landmark Quiz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile scaling -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,11 +17,11 @@
 
     #gameContainer {
       background: #fff;
-      padding: 16px 20px;
+      padding: 20px 30px;
       border-radius: 12px;
       box-shadow: 0 6px 16px rgba(0,0,0,0.15);
       text-align: center;
-      width: 95%;
+      width: 90%;
       max-width: 700px;
       transition: box-shadow 0.3s ease;
     }
@@ -36,41 +35,39 @@
 
     h1 {
       margin-top: 0;
-      font-size: 24px;
+      font-size: 28px;
       color: #333;
     }
 
     #score, #timer {
       display: inline-block;
-      margin: 8px 12px;
+      margin: 10px 15px;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
       color: #444;
     }
 
     #landmarkImg {
-      width: 100%;
-      height: auto;
-      max-height: 300px;
-      margin: 15px auto;
+      max-width: 100%;
+      max-height: 380px;
+      margin: 20px auto;
       display: block;
       border-radius: 10px;
       border: 3px solid #eee;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      object-fit: cover;
     }
 
     .options {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 15px auto;
+      gap: 12px;
+      margin: 20px auto;
     }
 
     /* Option buttons */
     .options button {
-      padding: 10px;
-      font-size: 15px;
+      padding: 12px;
+      font-size: 16px;
       cursor: pointer;
       border: none;
       border-radius: 8px;
@@ -78,7 +75,6 @@
       color: #fff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: transform 0.15s ease, background 0.2s;
-      word-wrap: break-word;
     }
 
     .options button:hover:not(:disabled) {
@@ -93,17 +89,15 @@
 
     /* Next button */
     #nextBtn {
-      margin-top: 12px;
-      padding: 10px 20px;
-      font-size: 15px;
+      margin-top: 15px;
+      padding: 12px 24px;
+      font-size: 16px;
       border: none;
       border-radius: 8px;
       background: #ff9800;
       color: #fff;
       cursor: pointer;
       transition: background 0.3s;
-      width: 100%;
-      max-width: 200px;
     }
 
     #nextBtn:hover:not(:disabled) {
@@ -135,7 +129,7 @@
     #gameOver button {
       margin-top: 10px;
       padding: 10px 20px;
-      font-size: 15px;
+      font-size: 16px;
       border: none;
       border-radius: 8px;
       background: #007bff;
@@ -160,14 +154,11 @@
       justify-content: center;
       z-index: 9999;
       color: #fff;
-      padding: 20px;
-      text-align: center;
     }
 
     #progressBar {
-      width: 80%;
-      max-width: 400px;
-      height: 16px;
+      width: 70%;
+      height: 18px;
       border: 1px solid #fff;
       margin-top: 20px;
       border-radius: 6px;
@@ -180,15 +171,6 @@
       width: 0%;
       background: #ff9800;
       transition: width 0.3s;
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 480px) {
-      h1 { font-size: 20px; }
-      #score, #timer { font-size: 14px; }
-      .options { grid-template-columns: 1fr; }
-      .options button { font-size: 14px; padding: 10px; }
-      #landmarkImg { max-height: 220px; }
     }
   </style>
 </head>
@@ -209,8 +191,8 @@
 
     <div class="options" id="options"></div>
 
-    <label><input type="checkbox" id="autoNextToggle" checked> Auto Next</label>
     <button id="nextBtn" disabled>Next</button>
+    <label><input type="checkbox" id="autoNextToggle" checked> Auto Next</label>
 
     <div id="gameOver">
       <h2>Game Over!</h2>
@@ -221,11 +203,44 @@
 
   <script>
     const landmarks = [
-      { name: "Eiffel Tower", img: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg" },
-      { name: "Taj Mahal – Agra, India", img: "https://upload.wikimedia.org/wikipedia/commons/d/da/Taj-Mahal.jpg" },
-      { name: "Rakaposhi Hunza Nagar", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7x0nBQvwRcVoev9DNjJ5OwDPvjUuOL7_ttGstf2vCiDXwDLmmsmgadikjOhO2lf_sdIvY5wAZvLBT5CWD88fyqKCKN4qntGb0NSHSGmKf_7LDyocnXPjoXUPxpq3yFDWo6kvUv5qoosB0GpK7r6bTBBRBeG8_Ft-xKx2gLIyoodo_OPaiMPWPw25MDwOL/s6016/Mount%20Rakaposhi%20Hunza%20Nagarpexels-wasifmehmood997-19442083.jpg" },
-      { name: "Passu Cones Hunza Valley", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbVbVCVij38FbqsWYa_sNtJmTyB65arfZKQp4guADowY8GTq6NlEdkaDY2s6D2P2JUOAg_NGUvcwMEyXpe64ScfHJCcSrPvaJvI3uWQH6k_WZRPeLm_-g6uddW6EPJrkgfX9EetO-5T6kp0aP4pnAuaKFcYoeZuwQWVZkc8UE_3gcDHGobJcXNuhgtAcTK/s4608/Passu%20Cones%20Hunza%20Valley%20pexels-hilal-aziz-2541642-16883433.jpg" },
-      { name: "Faisal Mosque Islamabad", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhu5Uudh6-znwAi9ZIKLJqBr1e2l8CaGLlXfuBSpxP1JVNMe9js1umabsvFJ0FyYhkWVKfaXwatFaxUrX-W-D_XlbpeLgktXfHCuth0MAXdcPXtOU7DVii52P7Ayl11IepPLGtqLwS_IdMMA1bkMeNlidm7M2dMo8eY6p2TE0R65VHtgVJcggZuvaaa9VOq/s6343/Faisal%20Mosque%20%E2%80%93%20Islamabad%20pexels-faysal9-27698081.jpg" }
+      { name: "Eiffel Tower", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipL8cfCTRB4JfxVaDNy7pH52QCyOMb4IQbJKIUnnz4VHjOAbUIgChoYUUGyUn6yT49-42an0mVL2H6UCTHD92BzR02_U-3Gq7UkDoNz_Mz-ekUPVCbS7hLdwntZDVh_YAc0dOmzKq3hLWO1aMrLHOGIWxAAl9xuYHpNVyfG4PTtLBe_wKaOrHGaqcIYIRD/s6656/Eiffel%20Tower-anthony-delanoix-Q0-fOL2nqZc-unsplash.jpg" },
+      { name: "Statue of Liberty", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4iZPTzOrPMu_-kne3vKWNaMhyQLbVtAGiWkNcXTgfH-bB0C_ph0urOO-UYB7x6FDrazvwKlU96EtDTrwfWydQPnnwr3EjmVYb7lloFOLwiOK1hZjqH3OkSs0eUXDmFh4WZSAt4CQ31do8r3ex7aEKkLvPtnedQ9e_D89VMLnQMQndhL7SjMgUSNzam-PT/s5481/Statue%20of%20Liberty.jpg" },
+      { name: "Great Wall of China", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgEP0olk5G5ROBWY6b5Rs5Wa4j0K9L9uJI_eVdun_3itWMqwoHQjeynVxjGo8-RbuBFTSle-Z3GRXJyURA-WR2xbZ7pChoCqzo0iKRTy1sJuGhdjNrSnvn2bKyTHcmhU8c3R1UUwGbh1hge_jTuxsV7gCGb8LuTiYTs9KRmB9S_gi56nTRsCMQa1SHFs5f6/s3992/Great%20Wall%20of%20China%20%E2%80%93%20China%20pexels-alex-qian-1180283-2304791.jpg" },
+      { name: "Taj Mahal Agra, India", img: "https://upload.wikimedia.org/wikipedia/commons/d/da/Taj-Mahal.jpg" },
+      { name: "Sydney Opera House", img: "https://upload.wikimedia.org/wikipedia/commons/4/40/Sydney_Opera_House_Sails.jpg" },
+            { name: "Rakaposhi Hunza Nagar", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7x0nBQvwRcVoev9DNjJ5OwDPvjUuOL7_ttGstf2vCiDXwDLmmsmgadikjOhO2lf_sdIvY5wAZvLBT5CWD88fyqKCKN4qntGb0NSHSGmKf_7LDyocnXPjoXUPxpq3yFDWo6kvUv5qoosB0GpK7r6bTBBRBeG8_Ft-xKx2gLIyoodo_OPaiMPWPw25MDwOL/s6016/Mount%20Rakaposhi%20Hunza%20Nagarpexels-wasifmehmood997-19442083.jpg" },
+
+                  { name: "Passu Cones Hunza Valley", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbVbVCVij38FbqsWYa_sNtJmTyB65arfZKQp4guADowY8GTq6NlEdkaDY2s6D2P2JUOAg_NGUvcwMEyXpe64ScfHJCcSrPvaJvI3uWQH6k_WZRPeLm_-g6uddW6EPJrkgfX9EetO-5T6kp0aP4pnAuaKFcYoeZuwQWVZkc8UE_3gcDHGobJcXNuhgtAcTK/s4608/Passu%20Cones%20Hunza%20Valley%20pexels-hilal-aziz-2541642-16883433.jpg" },
+                      { name: "Baltit Fort Hunza Valley", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjevm-a4IoMpwaeUSfpipLQz-yhvKQI_DtiByzc4znn5jT2dhlHaPW4Fsj1LaN4clrOfSCcBw858nwgmPgfQtZjToiW9YvbbrW2rq5qvwOXqlW5tO5FAqk-U889A4khUq-IacrLO_otNJcla6DAmuMJh_qdLYyNfgs2AFv6UgF0TfNGrFof09s0cWqb9RMF/s5472/Baltit%20Fort%20Hunza%20Valleyybpexels-aakashraf-1454409.jpg" },
+
+                      { name: "Faisal Mosque Islamabad", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhu5Uudh6-znwAi9ZIKLJqBr1e2l8CaGLlXfuBSpxP1JVNMe9js1umabsvFJ0FyYhkWVKfaXwatFaxUrX-W-D_XlbpeLgktXfHCuth0MAXdcPXtOU7DVii52P7Ayl11IepPLGtqLwS_IdMMA1bkMeNlidm7M2dMo8eY6p2TE0R65VHtgVJcggZuvaaa9VOq/s6343/Faisal%20Mosque%20%E2%80%93%20Islamabad%20pexels-faysal9-27698081.jpg" },
+
+                      { name: "Minar e Pakistan", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEieOikqJU3iffB-kt9A2ur6ib9XwEpASApOk6Z58ct3D7a44BWlrjHqPflg7kA_X2LZfeaczojjyICImjkLLpKHCPeRMgwWPAxaWlFAtkeePTRk6BdAjC4XBUbhn7bcd6QTDJJbLzWS1Ic_-HSxPG9_G45JN-djhzlsnNfBfiPaJyO7E9HLeZwAkZUSXuqN/s4000/Minar-e-Pakistan%20%E2%80%93%20Lahore%20pexels-sufian-sajjad-116747568-13406843.jpg" },
+      
+      { name: "St. Basil’s Cathedral & Kremlin, Moscow", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhohjqmwMO9END9JSo06McrbKgTh1gQpxrr0YpY_jR0fCsQxxY7Hh03zdYu8-kZ35kAv6m3mP3UWuXzVsXyCOUn3nqMbybD3uUpEwRfGR6Q4CVuxAAxy0KXjQotY7UIrCcYoaW7atDOZyCOf5H54KLuEhIuZ0gPdsDTfg4UaAnko6YEUsN5rqUTusno2K35/s3968/St.%20Basil%E2%80%99s%20Cathedral%20&amp;%20Kremlin%20%E2%80%93%20Moscow,%20Russia%20pexels-sean-na-chiang-mai-38056761-11741324.jpg" }, 
+
+      { name: "Eiffel’s Arc de Triomphe, Paris", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi84FaGI5AFdM1wgdJvyMMa7ScCaxQgpVF_PPjXUgpcyEhoxoVd2EBu5hWtvs91Fqll4-2jvPSTpGPFnV33D4CVf-urE66LnDks71jUp7eX3F_obVSDQuqZzIhkzhyu_8ddXBP96UutWiZIZUJvXcTEqJXu30JCaF3uqhiWNyPLnPN1idhHVKkDwBdHLne7/s4749/Eiffel%E2%80%99s%20Arc%20de%20Triomphe%20%E2%80%93%20Paris,%20France%20pexels-arcanjosaddi-31052947.jpg" },
+
+      { name: "Neuschwanstein Castle, Bavaria, Germany", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKELXkC2CiS7qUsuJmFmnVc1ixRlhFZ2z6vnYgrdaObnSMH9fB1V9S9mXnudwuvgM8qLX6-6psqO_1HVH9L3Q86dNqCligFilMaY2Xot2n_hNp9l3wCz-oZtpofx9lMdkOkVWHHP1Vwoq-EE8MPZZp-auvqWfL2ZtgvPGMqSUgk5H3tzZH1cOX90I6nhpt/s3593/Neuschwanstein%20Castle%20%E2%80%93%20Bavaria,%20Germany%20pexels-kylenehashimoto-1334441.jpg" },
+
+      { name: "Brandenburg Gate, Berlin", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-QT2IK5yU-tVBNSXf3SboFwHFQWTLidXS6YthS8ay1IBMaeNu3pohN6OAm8elkB3bDEyGi8ZfHP5XaB-kQoRoIk2_FKS1bEIlkGGq4YRQNFbEbtzSw4uaZDNzM3ce_lygrzOjQ4VAF6DyI-wnly6kv9sn9VQh_QzHSgazqFBdsd5IoOybu4uQvVBtkyEM/s4032/Brandenburg%20Gate%20%E2%80%93%20Berlin,%20Germany%20pexels-esther-perez-300282223-29864197.jpg" },
+
+      { name: "Sagrada Família, Barcelona, Spain", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjv9XbDAVEfvjBNPEobjQr9RAwnu2UTRw2frGHyKm0BnC3Twt-lo6c_wpaK6ukWb9D_1vyw3THki2hlJPiwKjc2WZhnM88Pl8hZEJlQI0ykz0XgFIWpmm4wJ3Se8Gmb1qLDd286yR9cPxr2xvKo9vtYPcQveRrHHbFO7HNU8nI3-xcbIJ2sU94DTJD2v6R9/s6016/Sagrada%20Fam%C3%ADlia%20%E2%80%93%20Barcelona,%20Spain%20pexels-mario-cuadros-1166886-2567935.jpg" },
+
+      { name: "Acropolis & Parthenon, Athens, Greece", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhxqUUhqUoD0vIUnjclPGXwpC_0sPWmSunr7kEehUsclk5mjhPunKpfUunAcrrRgxMS3vPdy0K70CitGB42iWzosRY3DqB-GaowmHIXPLzfv79f6PbIe93ho8hnmPa4DoZUIH0d61K0VHQHlr4msKuK2ytaP_8V6ChWKOpNjBfaeetT9Wd4SfWWStULAs6M/s4256/Acropolis%20&amp;%20Parthenon%20%E2%80%93%20Athens,%20Greece%20pexels-pixabay-164336.jpg" },
+
+      { name: "Stonehenge, Wiltshire, UK", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhayI7HntA2QJcFKUzXmzbUujkGZwMQaD0o-48Q3AS5sS9wHmr6stqSoJIaN_-_Kemqa-5meGPtEiGkMOZdJqHB-kab7lqU2CTpPLo0AyYa4lMlOnGYzGI9ob7O1skXT_sx8hsc5L-Cxy_Um2lj7wwdmIGD8NmLqqgR9kDsk8C1LUvyVysQquoAQvHlmLNg/s6016/Stonehenge%20%E2%80%93%20Wiltshire,%20UK%20said-camlica-_Z9YFrzLJMQ-unsplash.jpg" },
+
+      { name: "Buckingham Palace, London", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgJq9mUvTYHzUITTE09QeKVQprkbvrqErFcL_2abBV77nu6CWGLNrFMyHhFZ48lc_4sTOBLVUcVsKmVAa3Ye3Xt1_6y_XDVa1qrt2xE7MRIPAfcpvcRMEjm1W12DsP_DIeSx7EodPn_rTtEH30DYgyJMkNem-k5yYFZw-069jZ5K2iaOj65XYfuOr3rhtsa/s6000/Buckingham%20Palace%20%E2%80%93%20London,%20UK%20pexels-axp-photography-500641970-18729263.jpg" },
+
+      { name: "Tower Bridge", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhwx5vRlvJna9qb6jg-jo__fROmfXwErLnq7GuvgIr1PuNwCJXnnjc8B5cuIqEUopk_z0hvKlo4K-obwQmsJ0EW_EXlfMwJoDqwQRXBe87JPmCyfxmPCyTspDPR2OkmOphEjhWq9GOZozKEjeV4mTLHBm82jzN8Stx6d5b04QZKDksmKs-2op0t1vTzKjQ4/s5616/tower%20bridge%20charles-postiaux-Q6UehpkBSnQ-unsplash.jpg" },
+
+      { name: "Big Ben & Houses of Parliament", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDDwi2mUBd1V75ePQ3sBzHQrJI-m-clYZvVFvGqmiJ25gNxZLn3bpFc9Sk-r0nI2KxPgY2ILwDkRwWcn3sQtYuH_UertmVe0AedS7E0gMFNcU0UYW8L_tlcscl2gaVwOUabsM4drJ_rxmt7ckd3yRnBKEc5DwlO17y7NkBCYou8W59tbw4df6MZfm5Z2ku/s5116/Big%20Ben%20&amp;%20Houses%20of%20Parliament%20greace-xaveria-o9tf5c0mjlg-unsplash.jpg" },
+
+
+    
+
+
     ];
 
     let score = 0;
@@ -243,35 +258,23 @@
     const finalScore = document.getElementById("finalScore");
     const gameContainer = document.getElementById("gameContainer");
 
-    // preload with error handling
-    const preloadOverlay = document.getElementById("preloadOverlay");
-    const progressFill = document.getElementById("progressFill");
-    const loadedCountEl = document.getElementById("loadedCount");
-    const totalCountEl = document.getElementById("totalCount");
-
+    // preload images
     let loadedCount = 0;
-    const uniqueImages = [...new Set(landmarks.map(l => l.img))];
-    const totalCount = uniqueImages.length;
-    totalCountEl.textContent = totalCount;
+    document.getElementById("totalCount").textContent = landmarks.length;
 
-    function imageLoaded() {
-      loadedCount++;
-      loadedCountEl.textContent = loadedCount;
-      progressFill.style.width = ((loadedCount / totalCount) * 100) + "%";
-
-      if (loadedCount >= totalCount) {
-        setTimeout(() => {
-          preloadOverlay.style.display = "none";
-          startGame();
-        }, 400);
-      }
-    }
-
-    uniqueImages.forEach(src => {
+    landmarks.forEach(l => {
       const img = new Image();
-      img.onload = imageLoaded;
-      img.onerror = imageLoaded;
-      img.src = src;
+      img.src = l.img;
+      img.onload = () => {
+        loadedCount++;
+        document.getElementById("loadedCount").textContent = loadedCount;
+        document.getElementById("progressFill").style.width =
+          (loadedCount / landmarks.length) * 100 + "%";
+        if (loadedCount === landmarks.length) {
+          document.getElementById("preloadOverlay").style.display = "none";
+          startGame();
+        }
+      };
     });
 
     function startGame() {
@@ -337,7 +340,7 @@
       scoreElement.textContent = "🏆 Score: " + score;
 
       if (autoNextToggle.checked) {
-        setTimeout(nextQuestion, 1200);
+        setTimeout(nextQuestion, 1500);
       } else {
         nextBtn.disabled = false;
       }
@@ -351,7 +354,7 @@
       });
       gameContainer.classList.add("wrong");
       if (autoNextToggle.checked) {
-        setTimeout(nextQuestion, 1200);
+        setTimeout(nextQuestion, 1500);
       } else {
         nextBtn.disabled = false;
       }
