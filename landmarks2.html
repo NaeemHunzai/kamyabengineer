@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guess the Landmark Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #gameContainer {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      width: 90%;
+      max-width: 700px;
+      transition: box-shadow 0.3s ease;
+    }
+
+    #gameContainer.correct {
+      box-shadow: 0 0 20px 4px #28a745;
+    }
+    #gameContainer.wrong {
+      box-shadow: 0 0 20px 4px #dc3545;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+      color: #333;
+    }
+
+    #score, #timer {
+      display: inline-block;
+      margin: 10px 15px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #444;
+    }
+
+    #landmarkImg {
+      max-width: 100%;
+      max-height: 380px;
+      margin: 20px auto;
+      display: block;
+      border-radius: 10px;
+      border: 3px solid #eee;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px auto;
+    }
+
+    /* Option buttons */
+    .options button {
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.15s ease, background 0.2s;
+    }
+
+    .options button:hover:not(:disabled) {
+      background: #0056b3;
+      transform: scale(1.03);
+    }
+
+    .options button:disabled {
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
+
+    /* Next button */
+    #nextBtn {
+      margin-top: 15px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #ff9800;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #nextBtn:hover:not(:disabled) {
+      background: #e68900;
+    }
+
+    #nextBtn:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    #gameOver {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #gameOver h2 {
+      color: #333;
+    }
+
+    /* Restart button */
+    #gameOver button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #gameOver button:hover {
+      background: #0056b3;
+    }
+
+    /* Preload overlay */
+    #preloadOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: #fff;
+    }
+
+    #progressBar {
+      width: 70%;
+      height: 18px;
+      border: 1px solid #fff;
+      margin-top: 20px;
+      border-radius: 6px;
+      background: #333;
+      overflow: hidden;
+    }
+
+    #progressFill {
+      height: 100%;
+      width: 0%;
+      background: #ff9800;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <!-- Preload overlay -->
+  <div id="preloadOverlay">
+    <h2>Loading Landmarks...</h2>
+    <div id="progressBar"><div id="progressFill"></div></div>
+    <p><span id="loadedCount">0</span> / <span id="totalCount">0</span> images loaded</p>
+  </div>
+
+  <div id="gameContainer">
+    <h1>Guess the Landmark Quiz</h1>
+    <div id="score">🏆 Score: 0</div>
+    <div id="timer">⏱ Time Left: <span id="timeLeft">15</span>s</div>
+
+    <img id="landmarkImg" alt="Landmark" />
+
+    <div class="options" id="options"></div>
+
+    <button id="nextBtn" disabled>Next</button>
+    <label><input type="checkbox" id="autoNextToggle" checked> Auto Next</label>
+
+    <div id="gameOver">
+      <h2>Game Over!</h2>
+      <p>Your final score: <span id="finalScore"></span></p>
+      <button onclick="restartGame()">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const landmarks = [
+       
+
+                    { name: "St. Peter’s Basilica & Vatican City", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEimrAZ-nV-kKrT_4TmzufeXGgDYoInUa5eEr-VG2rr34SiECsT8eVPOUgbgK2OMxRK8HTEAclBgolT3buFFBJd0pNKAqizFsNvYUF5cpsCRNz_DrIL8jAWXBfCGljRS05u5vNIHOUzdlyMXTb3RLI1ThzVNR_b5ogmrrkxkvB-CTRENnD9N45DCzFE_i0Is/s6000/St.%20Peter%E2%80%99s%20Basilica%20&amp;%20Vatican%20City%20maria-rodideal-yv7Veg-by_E-unsplash.jpg" },
+ { name: "Leaning Tower of Pisa", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhnxXuPErj36MVCg1ZKMNBjs7G5U8qGHz7SQQg48FLDfqm8tVma4K3vKz3spZlLZPSiDn-9Qu8vZrpaWw7uHIItn-St15etl9VhNBgTnfVn5MtF7WnaMQ1X3jnHjRQtj9_rC2NJfeIPAgY1CvdRsHUMj3d0wewggLy7CetMb5ZrICyRzyjdwUxI65yMXyQ_/s4032/Leaning%20Tower%20of%20Pisa%20jamie-brammer-q5Uzm0xiVJo-unsplash.jpg" },
+
+      { name: "Colosseum", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWa_KiZ1OarNfWyoWEXxyN358phDTqqI6o1GxPN5fZ-e8ZJDVS_5zqenafYospsWl1mP4U6lP8A4915dI7svAksBRTFghnjFEBxEt-OSDGCXT39wTn4Vs1cP4spwPnwQIFoEep7kEVUwmiqBT0aouxvS7VWAtA2ICEYTF_NwvhJRbTLIF2Qc_e945fmPnn/s8064/Colosseum%20atif-zafrak-cN6UVJPpbkU-unsplash.jpg" },
+
+      { name: "Louvre Museum & Pyramid ", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhc0P_4-WmYSZw9iqPKzxjKzUJDSFiDYHeK0LMjENzyVMx9seDqYvEVSvRKdzS8aDZnCSa-tPSwbKBuay4OCL7zyyC-DNS3UpLNHzpn2kWg0D8Vi2cIi3-K7L1RGSGXPcuMAlcpUFPRy1RSTZgDp-LW6tKohei_D38mD0bQY4FJdVFrSMYYN-Q_Jcorvv3o/s2516/Louvre%20Museum%20&amp;%20Pyramid%20robert-bye-6uqWm003xj0-unsplash.jpg" },
+
+      { name: "Eiffel Tower", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipL8cfCTRB4JfxVaDNy7pH52QCyOMb4IQbJKIUnnz4VHjOAbUIgChoYUUGyUn6yT49-42an0mVL2H6UCTHD92BzR02_U-3Gq7UkDoNz_Mz-ekUPVCbS7hLdwntZDVh_YAc0dOmzKq3hLWO1aMrLHOGIWxAAl9xuYHpNVyfG4PTtLBe_wKaOrHGaqcIYIRD/s6656/Eiffel%20Tower-anthony-delanoix-Q0-fOL2nqZc-unsplash.jpg" },
+
+      { name: "Chichen Itza", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEifNfzB_4zuoIs6fvoRaqDYoeeHBpt-IoH0gtMOmQt61_boDepbVTp3rIpSiSMlAcvBlQnrbAoo5hEKyI74YkRUZ9j0Sl8jc4wkI8CGV1HzkHSkvA08oKgPOM6FJ8xc4p5lpyHFEfLD7OkqruQrbuOmdqK7eXtU0n0llIhYhDiaxO9gI_R0sit5BxvCdTGW/s4387/Chichen%20Itza%20-alex-azabache-8L7mOETNgHA-unsplash.jpg" },
+
+     
+
+            { name: "Empire State Building", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4YHx4cHX3PIxnC0_2zeT4yBf6EZ24Wa2PIVic7VudcP6MCgDcdoiRC7cdDnS_4KVjeYQaxMxDDzKi6Q8R84z75EGNkDgU13e13bSE0iwz9MBjz5yqHjEFedaVuEKzOL-1HGqjaztlw63gE-ZhIC5eSqJu2IR7pjJ30LWY6Y8L50DDvCi2E_mjbuJ-rok2/s8640/Empire%20State%20Building.jpg" },
+      
+      
+
+                      { name: "Shahi Qilla Lahore", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiPCfO-72zpCGVpNAOdfx7ZuxtozSv0avb_Xem2bTMsWdcfVolGTb8xp-l_SBJdXLVn-pZ9EkvFN6irFf7mAtWXwMFtMs1lBZTbomMpFpBkkUHFgu3cIs_tm6Uc2cga1WSRoEHZj_eQjUvj9GHqxpdbk62xzYXvtFUPnjVtZsHrK4z5O2gvzTCLXTaStRCn/s2631/Lahore%20Fort%20(Shahi%20Qila)%20%E2%80%93%20Lahore%20pexels-null-factor-56680775-13023314.jpg" },
+
+        { name: "Badshahi Mosque Lahore", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhW1btzU6deHZl9Bm6ooso3b-gJ9PbMmOGNhZVZUTmoHj3dGwUAUYV9gw7NTIsV_t1Z1Rc0gl9hykx4PZoIMezuqSIzrUUkBtz7WlpbsFDBgbz1NYcR6mmeN-idAOvBksLeZr4n5i_Opre2AgmOoNIUuFwDVMc9-Hw-9mWu4fnduD2Pem-cChbjRWvXXGbC/s5046/Badshahi%20Mosque%20%E2%80%93%20Lahore%20pexels-aitizaz-naqvi-3660550-6255712.jpg" }, 
+        { name: "Salt Flats Bolivia", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSF6WbISZQvhLWZ0gdkCQfN-TTGnMqdZotiKqiJdOcpYHoKZyVa4nqooM5_JMMzDtgVk6Fsucq821-RgGHjgwszJBKBz8hNi4B6egsSyVNzUcjB4J1xlzpbfImXDX7bhmkbHkmDnL043uuNh2sBqT0DNaAaKUIadNHbJ1I5V1LBQJEF1XOrIsVO01FKlmZ/s5683/Salar%20de%20Uyuni%20(Salt%20Flats)%20%E2%80%93%20Bolivia%20pexels-leorossatti-2613110.jpg" }, 
+        { name: "Easter Island Moai Statues Chile", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyRZGFJRddsfyVjNvPluGQVVPFLtAIaVLmwD1cry7Zhq6rsgZQdzntvrzhXVRrM3lEviKWVnJBOhspnoscjZ7oe74xpMSHEfWddR1reu5ejrPdfuZAG8S7c_ZAq-s0yjof0cENAkkCWZ68DGcGvEbTCs-_b4YARzPNbQ5caCs4z8qQs6VZtPp9Ob_j_Emw/s4000/Easter%20Island%20Moai%20Statues%20%E2%80%93%20Chile%20pexels-agustin-ramirez-24040544-32852130.jpg" }, 
+       { name: "Machu Picchu Peru", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgOUUgBQPd5noHvz8eIInguUhOVQQT6PEkUUtwz1NWkE6TGT4wBF8-niBPakoRfZgdFBHjkPMQ2FejRhH-d3TVWpGx3q0kbgorL6j0AV7tPsWSnaIytfbYISt4n3b789kvZUBmzjBg9fn3m6XlpWZrHrjNrj90LMTiXRuaMr4qlfKFqBbqB5oz2XpkJ0L6y/s4032/Machu%20Picchu%20%E2%80%93%20Peru%20pexels-chelsea-cook-1520634-2929906.jpg" }, 
+
+        { name: "Sugarloaf Mountain, Rio de Janeiro, Brazil", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgkuBtUTtf5DDLQPkyFqhDrnKNldlj3AONctD0lFVtTfZpVrPTaPgK-kcmVPY1JaYaxEOHbIrww7rhPZKfSPuKZD-2VdnB7zXiSd0IBGwP86L2o-cw_QdNIQECZc2cX4Q5qZ3-mdHKllfbqsyB1fIuNExusUAV2AYRxc1rRSc1DeujMe8HYLKc0xUC0Oggz/s3500/Sugarloaf%20Mountain%20%E2%80%93%20Rio%20de%20Janeiro,%20Brazil%20pexels-viniciusvieirafotografia-31703233.jpg" }, 
+
+        { name: "Christ the Redeemer, Rio de Janeiro, Brazil", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj32-89ky0RJHJZS2AzkPfCf8cW7nsl7EM9OwXzAyc488TF51CJwWfmryd_DQlp76xlCnPCWuKC_cBkNquibdbyZa2VNq9IzymjJVChWgkSvzkT_rgjM8W6jf3yW8CI1u3Ar5IGpvMyyhQeLLxuBkKCPRyjoJ2ICU1sL0pg45wrF7G3k6yv2SLxhE5w2Yj3/s4000/Christ%20the%20Redeemer%20%E2%80%93%20Rio%20de%20Janeiro,%20Brazil%20pexels-lua-45421265-13707534.jpg" }, 
+
+        { name: "Rock-Hewn Churches of Lalibela, Ethiopia", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiY0XuxOTtAQR3M7Q3CLZaqUtvDooBc2JQM_MvqYShQs-g7ueFpKuNTa2S58k0uxlqM7Tcbcn4EDLl-3sZUCS2TEa9UcVt1rL4NuA2d-zs5ueA0pHhE5uM1DohfAj888YN5G0-DgKO3HU-MfJzn1kGZpqVPX6p0DM8myRO0nrvvzeC1Qo3ZRsSirkZ4Vxdq/s6000/Rock-Hewn%20Churches%20of%20Lalibela%20%E2%80%93%20Ethiopia%20pexels-estella-44057930-7438884.jpg" }, 
+
+        { name: "Mount Kilimanjaro, Tanzania", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpFE4-J8eCIS6_uY1OZN4AD27oJHFYmdRaihtBSEHtE3RTkz1dRmzMDhPKO-g6gBt0WHyFYrb7xENM1JC-xNJIXlTNsszFBRqI-Cth9X3FcjZxodkfCDYgznrrmP8822N91SSDCANxksexoINVNh4iUUakr2oB_GppY1348Phf3H8FV0CtQdyUZQOSDDnx/s6000/Mount%20Kilimanjaro%20%E2%80%93%20Tanzania%20pexels-mwauraken-29093739.jpg" }, 
+ { name: "Victoria Falls, Zimbabwe Zambia", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjeU-WZoORiidEAMOgM-Mju0mPLXdkCZHRQNCEggr-O_EvslwmFxLrNjxJrYBNizkzEZyk4qKSB4iSmmcFfXPnG8xapfCbRcvWv2sAdCuMObQEYBqcHdb8GOk5FcVa39QFmGbN49J0zmqW4gm51zHhKs4bmfEeA33qtoZh0vtFC1nbpXZ_a6Ag5hxgUT0bZ/s5184/Victoria%20Falls%20%E2%80%93%20ZimbabweZambia%20sean-nyatsine-hslhxkirFfU-unsplash.jpg" }, 
+
+
+
+              { name: "Table Mountain, Cape Town, South Africa", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhqPCWFaH1QNbFSI35sdSIl_Ta727DA2vXQ_rlv87np9zX0iYnSthMGWhkwdqcEnJXB3fT7jszpTAxpAUxuGDS2lSNjZj8yj80MQeMPtPSIE4thTKFAhUZj0HRxzmzH1Dxi-MKM2U8kak64okQobl8qNpTJvvEt5xw7dDO_zGcYoNMnUvZ70CVPNWTOqg1y/s8047/Table%20Mountain%20%E2%80%93%20Cape%20Town,%20South%20Africa%20pexels-magda-ehlers-pexels-32555592.jpg" }, 
+
+
+
+
+
+
+              { name: "Abu Simbel Temples, Egypt", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjrb16s5cpwK0eSuiPNxWdpt38xyoKV06w4Hqhr7p-YHgyfQ2pZvQZdeckvMDDoYhyphenhyphenk-FASGSwclwyPFaxZol17fDBjiFhJVNwnztzWKAbN8kOJCNp_8N9EF9kxCiVlUKLsSaB0XuaOJVl1RPPq9Mih9jb6F7vKOouGrNLaVvMN_Af1HY8r1XVZeoybjxMA/s3707/Abu%20Simbel%20Temples%20%E2%80%93%20Egypt%20pexels-ahad-hasan-1816309676-33789082.jpg" }, 
+
+
+
+              { name: "Sky Tower, Auckland, New Zealand", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjCJ9WX4wrj0p480NDHZ8rb0MpSNM6HqMkTyy-2gUwCkb_UEoFP5usIOcGlBBqYT_1ujxC9eVB_698VaXAL2FI7KDiH-LWIKSirhUrFKXPmtuKkWQ8B-Qj-x-6aNUnJLucyKLGJ-mh2qfbPhXWh2RBdF8JwcQFBXet16Kvt4GUEUUSlNB0fldsazzEDd5B/s4000/Sky%20Tower%20%E2%80%93%20Auckland,%20New%20Zealand%20pexels-captureviva-28297065.jpg" }, 
+
+
+
+    
+
+
+    ];
+
+    let score = 0;
+    let currentIndex = 0;
+    let timer;
+    let timeLeft = 15;
+
+    const imgElement = document.getElementById("landmarkImg");
+    const optionsContainer = document.getElementById("options");
+    const scoreElement = document.getElementById("score");
+    const timerElement = document.getElementById("timeLeft");
+    const nextBtn = document.getElementById("nextBtn");
+    const autoNextToggle = document.getElementById("autoNextToggle");
+    const gameOverDiv = document.getElementById("gameOver");
+    const finalScore = document.getElementById("finalScore");
+    const gameContainer = document.getElementById("gameContainer");
+
+    // preload images
+    let loadedCount = 0;
+    document.getElementById("totalCount").textContent = landmarks.length;
+
+    landmarks.forEach(l => {
+      const img = new Image();
+      img.src = l.img;
+      img.onload = () => {
+        loadedCount++;
+        document.getElementById("loadedCount").textContent = loadedCount;
+        document.getElementById("progressFill").style.width =
+          (loadedCount / landmarks.length) * 100 + "%";
+        if (loadedCount === landmarks.length) {
+          document.getElementById("preloadOverlay").style.display = "none";
+          startGame();
+        }
+      };
+    });
+
+    function startGame() {
+      score = 0;
+      currentIndex = 0;
+      gameOverDiv.style.display = "none";
+      scoreElement.textContent = "🏆 Score: " + score;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      resetState();
+      const currentLandmark = landmarks[currentIndex];
+      imgElement.src = currentLandmark.img;
+
+      let options = [currentLandmark.name];
+      while (options.length < 4) {
+        let random = landmarks[Math.floor(Math.random() * landmarks.length)].name;
+        if (!options.includes(random)) {
+          options.push(random);
+        }
+      }
+      options = options.sort(() => Math.random() - 0.5);
+
+      options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(btn, currentLandmark.name);
+        optionsContainer.appendChild(btn);
+      });
+
+      timeLeft = 15;
+      timerElement.textContent = timeLeft;
+      timer = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      timerElement.textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        showCorrect(landmarks[currentIndex].name);
+      }
+    }
+
+    function selectAnswer(button, correctAnswer) {
+      clearInterval(timer);
+      const allButtons = optionsContainer.querySelectorAll("button");
+      allButtons.forEach(btn => (btn.disabled = true));
+
+      if (button && button.textContent === correctAnswer) {
+        button.style.background = "#28a745";
+        score++;
+        gameContainer.classList.add("correct");
+      } else {
+        if (button) button.style.background = "#dc3545";
+        allButtons.forEach(btn => {
+          if (btn.textContent === correctAnswer) btn.style.background = "#28a745";
+        });
+        gameContainer.classList.add("wrong");
+      }
+
+      scoreElement.textContent = "🏆 Score: " + score;
+
+      if (autoNextToggle.checked) {
+        setTimeout(nextQuestion, 1500);
+      } else {
+        nextBtn.disabled = false;
+      }
+    }
+
+    function showCorrect(correctAnswer) {
+      const allButtons = optionsContainer.querySelectorAll("button");
+      allButtons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correctAnswer) btn.style.background = "#28a745";
+      });
+      gameContainer.classList.add("wrong");
+      if (autoNextToggle.checked) {
+        setTimeout(nextQuestion, 1500);
+      } else {
+        nextBtn.disabled = false;
+      }
+    }
+
+    function resetState() {
+      clearInterval(timer);
+      optionsContainer.innerHTML = "";
+      nextBtn.disabled = true;
+      gameContainer.classList.remove("correct", "wrong");
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < landmarks.length) {
+        loadQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      resetState();
+      finalScore.textContent = score;
+      gameOverDiv.style.display = "block";
+    }
+
+    function restartGame() {
+      score = 0;
+      currentIndex = 0;
+      gameOverDiv.style.display = "none";
+      loadQuestion();
+    }
+
+    nextBtn.addEventListener("click", nextQuestion);
+  </script>
+</body>
+</html>
