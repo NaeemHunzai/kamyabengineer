@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulas for Nerds</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f4f7f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 25px;
+      color: #004d40;
+    }
+    .accordion {
+      background: #fff;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .accordion-header {
+      padding: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 17px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      transition: background 0.3s ease;
+    }
+    .accordion-header:hover {
+      background: #dcedc8;
+    }
+    /* Special styling for Privacy Policy button */
+    .accordion-header.privacy {
+      background: #009688;
+      color: #fff;
+      text-align: center;
+    }
+    .accordion-header.privacy:hover {
+      background: #00796b;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      background: #fafafa;
+      padding: 0 16px;
+    }
+    .accordion-content.open {
+      padding: 16px;
+    }
+    .accordion-content p, .accordion-content ul {
+      margin: 12px 0;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .accordion-content code {
+      display: block;
+      background: #f1f8e9;
+      padding: 10px;
+      border-left: 4px solid #66bb6a;
+      border-radius: 6px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Formulas for Nerds</h1>
+
+    <div class="accordion">
+      <div class="accordion-header">1. Daily Energy Consumption</div>
+      <div class="accordion-content">
+        <p><b>Formula:</b></p>
+        <code>Daily Consumption (kWh/day) = Monthly Consumption (kWh) ÷ 30</code>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header">2. Required Solar Panel Array Power</div>
+      <div class="accordion-content">
+        <p><b>Formula:</b></p>
+        <code>Required Solar Power (kW) = Daily Consumption (kWh/day) ÷ Average Sunlight Hours (h/day)</code>
+        <code>Required Solar Power (W) = Required Solar Power (kW) × 1000</code>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header">3. Number of Solar Panels</div>
+      <div class="accordion-content">
+        <p><b>Formula:</b></p>
+        <code>Number of Panels = Required Solar Power (W) ÷ Single Panel Power (W)</code>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header">4. Inverter Sizing</div>
+      <div class="accordion-content">
+        <p><b>Formula:</b></p>
+        <code>Inverter Size (kVA) = Required Solar Power (kW) ÷ Power Factor (0.85)</code>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header">5. Battery Sizing</div>
+      <div class="accordion-content">
+        <p><b>Steps:</b></p>
+        <code>Average Load (W) = (Daily Consumption (kWh) × 1000) ÷ 24</code>
+        <code>Backup Energy (Wh) = Average Load (W) × Backup Hours (h)</code>
+        <code>Nominal Energy (Wh) = Backup Energy (Wh) ÷ (Depth of Discharge × Battery Efficiency)</code>
+        <code>Battery Capacity (Ah) = Nominal Energy (Wh) ÷ System Voltage (V)</code>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header">6. Rounding Rules</div>
+      <div class="accordion-content">
+        <ul>
+          <li>Panels → Round up to nearest whole number</li>
+          <li>Battery Capacity → Round up</li>
+          <li>Inverter Size → Next higher commercial rating</li>
+        </ul>
+      </div>
+    </div>
+
+  
+    <div class="accordion">
+      <div class="accordion-header privacy">Privacy Policy</div>
+      <div class="accordion-content">
+        <h3>Privacy Policy</h3>
+        <p><b>Effective Date:</b> September 12, 2025</p>
+                <p><b>App developed by Naeem Ud Din, (Electrical Power Engineer)</b> 
+
+        <p><b>Solar Calculator</b> values your privacy. This Privacy Policy explains how our app handles user information.</p>
+
+        <p><b>Information We Collect</b></p>
+        <p>No Personal Data: The Solar Calculator app does not collect, store, or share any personally identifiable information from users.</p>
+        <p>Non-Personal Data: The app may collect non-identifiable information such as app usage statistics (e.g., crashes, performance data) through third-party services like Google Play.</p>
+
+        <p><b>How We Use Information</b></p>
+        <p>The app is designed solely to help users estimate electricity bills and calculate solar system requirements. Any non-personal data collected is used only to improve app performance, stability, and user experience.</p>
+
+        <p><b>Data Sharing</b></p>
+        <p>We do not sell, trade, or share your personal information with third parties. Ads shown in the app may be served by third-party providers (e.g., Google AdMob), which may use cookies to provide personalized ads.</p>
+
+        <p><b>Third-Party Services</b></p>
+        <p>Our app may use third-party services that collect information in accordance with their own privacy policies. These may include: AdMob.</p>
+
+        <p><b>Security</b></p>
+        <p>We take reasonable measures to protect your information. However, since the app does not collect personal data, there are minimal privacy risks to users.</p>
+
+        <p><b>Children’s Privacy</b></p>
+        <p>Our app does not knowingly collect data from children under 13. Since no personal data is collected, the app is safe for all age groups.</p>
+
+        <p><b>Changes to This Policy</b></p>
+        <p>We may update this Privacy Policy from time to time. Any changes will be posted within the app or on the Play Store listing.</p>
+
+        <p><b>Contact Us</b></p>
+        <p>If you have questions or concerns about this Privacy Policy, you may contact us at:<br>
+        📧 <a href="mailto:naeemuddin458@yahoo.com">naeemuddin458@yahoo.com</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const headers = document.querySelectorAll(".accordion-header");
+    headers.forEach(header => {
+      header.addEventListener("click", () => {
+        const content = header.nextElementSibling;
+        document.querySelectorAll(".accordion-content").forEach(c => {
+          if (c !== content) {
+            c.style.maxHeight = null;
+            c.classList.remove("open");
+          }
+        });
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+          content.classList.remove("open");
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+          content.classList.add("open");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
