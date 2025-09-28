@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Continents of the World Quiz</title>
+  <style>
+    :root{
+      --primary: #007bff;
+      --btn-bg: #007bff;
+      --btn-bg-hover: #0056b3;
+      --ok: #28a745;
+      --bad: #dc3545;
+      --white: #ffffff;
+      --black: #111;
+    }
+
+    body{
+      margin:0;
+      padding:12px;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--white);
+      color:var(--black);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      min-height:100vh;
+    }
+
+    .quiz-container{
+      width:100%;
+      max-width:520px;
+      background:var(--white);
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      padding:16px;
+      box-sizing:border-box;
+      border:4px solid transparent;
+      transition:border-color .20s ease, transform .12s ease;
+      text-align:center;
+    }
+    .quiz-container.correct{ border-color: var(--ok); }
+    .quiz-container.wrong{ border-color: var(--bad); }
+
+    #question {
+      margin: 0 0 12px 0;
+      font-size: 20px;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .options{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin:12px 0;
+    }
+
+    .option-btn{
+      background:var(--btn-bg);
+      color:var(--white);
+      border:0;
+      padding:12px 10px;
+      font-size:15px;
+      border-radius:8px;
+      cursor:pointer;
+      width:100%;
+      word-break:break-word;
+      transition: transform .10s ease, background .12s ease, opacity .12s ease;
+    }
+    .option-btn:active{ transform: translateY(1px); }
+    .option-btn:hover{ background:var(--btn-bg-hover); }
+    .option-btn[disabled]{ opacity: .7; cursor: default; }
+
+    .timer{
+      margin:10px 0;
+      font-weight:700;
+      font-size:16px;
+      text-align:center;
+    }
+
+    .auto-next {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+      margin-bottom:8px;
+      font-size:14px;
+    }
+
+    .controls {
+      display:flex;
+      gap:8px;
+      flex-direction:column;
+      align-items:stretch;
+      margin-top:6px;
+    }
+
+    .next-btn, .restart-btn {
+      background:var(--ok);
+      color:var(--white);
+      border:0;
+      padding:12px;
+      border-radius:8px;
+      font-size:15px;
+      cursor:pointer;
+      width:100%;
+    }
+    .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
+
+    .score {
+      margin-top:12px;
+      text-align:center;
+      font-weight:700;
+      font-size:16px;
+    }
+
+    @media (max-width:420px){
+      .options{ grid-template-columns:1fr; }
+      #question{ font-size:18px; }
+      .option-btn{ padding:14px; font-size:16px; }
+      .timer{ font-size:15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox">
+    <h2 id="question">Loading question...</h2>
+    <div class="options" id="options"></div>
+    <div class="timer" id="timer">Time: 10s</div>
+    <div class="auto-next" id="autoNextWrap">
+      <input type="checkbox" id="autoNext" />
+      <label for="autoNext">Auto Next</label>
+    </div>
+    <div class="controls">
+      <button id="nextBtn" class="next-btn" type="button">Next</button>
+      <button id="restartBtn" class="restart-btn" type="button" style="display:none;">Restart Quiz</button>
+    </div>
+    <div id="scoreBox" class="score"></div>
+  </div>
+
+  <script>
+    /*********** Provided Question Database ***********/
+   const questions = [
+  { question: "Which continent is the largest by land area?", options: ["Africa","Asia","North America","Europe"], answer: "Asia" },
+  { question: "Which continent has the most countries?", options: ["Africa","Europe","Asia","South America"], answer: "Africa" },
+  { question: "Which continent is known as the 'Frozen Continent'?", options: ["North America","Antarctica","Europe","Australia"], answer: "Antarctica" },
+  { question: "Mount Everest, the highest peak in the world, is located on which continent?", options: ["Asia","Europe","South America","Africa"], answer: "Asia" },
+  { question: "Which continent is home to the Amazon Rainforest?", options: ["South America","Africa","Asia","Australia"], answer: "South America" },
+  { question: "Which continent is also considered a country?", options: ["Europe","Australia","South America","Antarctica"], answer: "Australia" },
+  { question: "Which continent is crossed by both the Tropic of Cancer and Tropic of Capricorn?", options: ["Africa","South America","Asia","Australia"], answer: "Africa" },
+  { question: "Which continent has the Sahara Desert?", options: ["Asia","Australia","Africa","North America"], answer: "Africa" },
+  { question: "Which continent is surrounded by the Southern Ocean?", options: ["Antarctica","Australia","Europe","South America"], answer: "Antarctica" },
+  { question: "Which continent has the least population?", options: ["Australia","Europe","Antarctica","South America"], answer: "Antarctica" },
+  { question: "Which continent is known as the birthplace of humankind?", options: ["Africa","Asia","Europe","South America"], answer: "Africa" },
+  { question: "The Great Wall of China is located on which continent?", options: ["Asia","Europe","South America","Africa"], answer: "Asia" },
+  { question: "Which continent has the longest river, the Nile?", options: ["South America","Asia","Africa","Europe"], answer: "Africa" },
+  { question: "Which continent has the most spoken languages?", options: ["Europe","Asia","Africa","South America"], answer: "Africa" },
+  { question: "Which continent is known as the driest inhabited continent?", options: ["Africa","Australia","North America","South America"], answer: "Australia" },
+  { question: "Which continent contains the Andes Mountains?", options: ["Europe","South America","Asia","Africa"], answer: "South America" },
+  { question: "Which continent lies entirely in the Southern Hemisphere?", options: ["Australia","Africa","Asia","North America"], answer: "Australia" },
+  { question: "Which continent has the most time zones?", options: ["Europe","North America","Asia","Africa"], answer: "Asia" },
+  { question: "Which continent is Greenland considered part of geographically?", options: ["Europe","North America","Asia","Antarctica"], answer: "North America" },
+  { question: "Which continent has the largest population density?", options: ["Europe","Africa","Asia","South America"], answer: "Asia" },
+  { question: "Which continent is the only one without reptiles?", options: ["Antarctica","Europe","Australia","North America"], answer: "Antarctica" },
+  { question: "Which continent has the worlds largest hot desert?", options: ["Africa","Australia","Asia","South America"], answer: "Africa" },
+  { question: "Which continent has the longest coastline?", options: ["Australia","Asia","North America","Europe"], answer: "Asia" },
+  { question: "Which continent is the smallest by land area?", options: ["Europe","Australia","Antarctica","South America"], answer: "Australia" },
+  { question: "Which continent is known as the 'Dark Continent'?", options: ["Africa","South America","Australia","Antarctica"], answer: "Africa" },
+  { question: "Which continent is home to the Himalayas?", options: ["Europe","South America","Asia","Africa"], answer: "Asia" },
+  { question: "Which continent has the second-largest land area?", options: ["Africa","North America","Asia","Europe"], answer: "Africa" },
+  { question: "Which continent does the equator not pass through?", options: ["Asia","South America","Australia","Africa"], answer: "Australia" },
+  { question: "Which continent is home to kangaroos and koalas?", options: ["Australia","Africa","South America","North America"], answer: "Australia" },
+  { question: "Which continent has the largest freshwater lake by surface area (Lake Superior)?", options: ["Europe","Africa","Asia","North America"], answer: "North America" },
+  { question: "Which continent is entirely within the Western Hemisphere?", options: ["South America","Australia","Europe","Africa"], answer: "South America" },
+  { question: "Which continent has the Alps mountain range?", options: ["Europe","Asia","South America","North America"], answer: "Europe" },
+  { question: "Which continent is home to the Gobi Desert?", options: ["Australia","Africa","Asia","South America"], answer: "Asia" },
+  { question: "Which continent is home to the Serengeti?", options: ["Africa","Australia","South America","Asia"], answer: "Africa" },
+  { question: "Which continent has the Great Barrier Reef?", options: ["Australia","Asia","Africa","South America"], answer: "Australia" },
+  { question: "Which continent has the world’s tallest building, Burj Khalifa?", options: ["North America","Asia","Europe","Australia"], answer: "Asia" },
+  { question: "Which continent is Madagascar part of?", options: ["Africa","Asia","Australia","South America"], answer: "Africa" },
+  { question: "Which continent has the Rockies mountain range?", options: ["Europe","South America","North America","Australia"], answer: "North America" },
+  { question: "Which continent contains the city of Istanbul that straddles two continents?", options: ["Asia & Europe","Africa","South America","North America"], answer: "Asia & Europe" },
+  { question: "Which continent is the flattest overall?", options: ["Australia","Africa","Europe","South America"], answer: "Australia" },
+  { question: "Which continent is home to Mount Kilimanjaro?", options: ["Asia","South America","Africa","Europe"], answer: "Africa" },
+  { question: "Which continent has the largest economy?", options: ["Europe","Asia","North America","Africa"], answer: "Asia" },
+  { question: "Which continent contains the driest place on Earth (Atacama Desert)?", options: ["South America","Australia","Africa","Asia"], answer: "South America" },
+  { question: "Which continent is entirely ice-covered?", options: ["Europe","Antarctica","Australia","North America"], answer: "Antarctica" },
+  { question: "Which continent is known for the Great Rift Valley?", options: ["Asia","South America","Africa","Europe"], answer: "Africa" },
+  { question: "Which continent has the Volga River, the longest in it?", options: ["Europe","Asia","Africa","Australia"], answer: "Europe" },
+  { question: "Which continent has the Panama Canal connecting two oceans?", options: ["North America","South America","Europe","Asia"], answer: "North America" },
+  { question: "Which continent is home to penguins naturally?", options: ["Antarctica","Africa","Asia","Australia"], answer: "Antarctica" },
+  { question: "Which continent has both the highest and lowest points on Earth?", options: ["Asia","Africa","North America","South America"], answer: "Asia" },
+  { question: "Which continent name means 'opposite to the north'?", options: ["South America","Antarctica","Australia","Africa"], answer: "Antarctica" },
+  { question: "Which continent is home to the Kalahari Desert?", options: ["Africa","Asia","Australia","South America"], answer: "Africa" },
+  { question: "Which continent has the Danube River?", options: ["Europe","Asia","South America","North America"], answer: "Europe" },
+  { question: "Which continent has the Great Victoria Desert?", options: ["Africa","Asia","Australia","South America"], answer: "Australia" },
+  { question: "Which continent is home to Machu Picchu?", options: ["South America","Asia","Europe","Africa"], answer: "South America" },
+  { question: "Which continent has the Caspian Sea?", options: ["Asia","Europe","South America","Africa"], answer: "Asia" },
+  { question: "Which continent is known as the cradle of Western civilization?", options: ["Europe","Asia","Africa","Australia"], answer: "Europe" },
+  { question: "Which continent has the Himalayas and the Gobi Desert?", options: ["Asia","Africa","Europe","South America"], answer: "Asia" },
+  { question: "Which continent is home to Victoria Falls?", options: ["Africa","South America","Asia","Australia"], answer: "Africa" },
+  { question: "Which continent has the city of Buenos Aires?", options: ["South America","Europe","Asia","North America"], answer: "South America" },
+  { question: "Which continent contains the Baltic Sea?", options: ["Europe","Asia","Africa","Australia"], answer: "Europe" },
+  { question: "Which continent has the Great Dividing Range?", options: ["Australia","Africa","Asia","Europe"], answer: "Australia" },
+  { question: "Which continent contains the Dead Sea?", options: ["Asia","Europe","Africa","South America"], answer: "Asia" },
+  { question: "Which continent is home to the city of Nairobi?", options: ["Africa","Asia","Europe","South America"], answer: "Africa" },
+  { question: "Which continent has the Mississippi River?", options: ["North America","South America","Europe","Asia"], answer: "North America" },
+  { question: "Which continent is home to the Black Forest?", options: ["Europe","Asia","Africa","Australia"], answer: "Europe" },
+  { question: "Which continent has the Outback?", options: ["Australia","Africa","South America","North America"], answer: "Australia" },
+  { question: "Which continent contains Mount Elbrus?", options: ["Europe","Asia","Africa","South America"], answer: "Europe" },
+  { question: "Which continent is home to the Yangtze River?", options: ["Asia","Africa","Europe","South America"], answer: "Asia" },
+  { question: "Which continent has Angel Falls, the tallest waterfall?", options: ["South America","North America","Africa","Europe"], answer: "South America" },
+  { question: "Which continent is home to the Kruger National Park?", options: ["Africa","Australia","Asia","Europe"], answer: "Africa" },
+  { question: "Which continent has the longest mountain range?", options: ["South America","Asia","North America","Europe"], answer: "South America" },
+  { question: "Which continent has the Great Lakes?", options: ["North America","Africa","Asia","Europe"], answer: "North America" },
+  { question: "Which continent is Mount Aconcagua located in?", options: ["South America","Asia","Africa","Europe"], answer: "South America" },
+  { question: "Which continent has the Ural Mountains?", options: ["Europe","Asia","Australia","South America"], answer: "Europe" },
+  { question: "Which continent contains the Congo River?", options: ["Africa","South America","Asia","Europe"], answer: "Africa" }
+];
+
+
+    const QUESTIONS_PER_QUIZ = 15; // number of random questions per session
+    let shuffledQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let timerInterval = null;
+    let autoAdvanceTimeout = null;
+    let timeLeft = 10;
+
+    const quizBox = document.getElementById('quizBox');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const timerEl = document.getElementById('timer');
+    const scoreBox = document.getElementById('scoreBox');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const autoNextWrap = document.getElementById('autoNextWrap');
+
+    function shuffleArray(arr){
+      return arr.map(v => ({v, r: Math.random()}))
+                .sort((a,b)=> a.r - b.r)
+                .map(x => x.v);
+    }
+
+    function clearTimers(){
+      if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+      if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+    }
+
+    function startQuiz(){
+      shuffledQuestions = shuffleArray(questions).slice(0, QUESTIONS_PER_QUIZ);
+      currentIndex = 0;
+      score = 0;
+      answered = false;
+      scoreBox.textContent = '';
+      restartBtn.style.display = 'none';
+      nextBtn.style.display = 'block';
+      autoNextWrap.style.display = 'flex';
+      loadQuestion();
+    }
+
+    function loadQuestion(){
+      clearTimers();
+      quizBox.classList.remove('correct','wrong');
+      answered = false;
+
+      if(currentIndex >= shuffledQuestions.length) return endQuiz();
+
+      const q = shuffledQuestions[currentIndex];
+      questionEl.textContent = q.question;
+
+      const opts = shuffleArray(q.options);
+
+      optionsEl.innerHTML = '';
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.disabled = false;
+        btn.addEventListener('click', () => onSelectOption(opt, q.answer));
+        optionsEl.appendChild(btn);
+      });
+
+      timeLeft = 10;
+      timerEl.textContent = `Time: ${timeLeft}s`;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time: ${timeLeft}s`;
+        if(timeLeft <= 0){
+          clearTimers();
+          quizBox.classList.add('wrong');
+          answered = false;
+          if(document.getElementById('autoNext').checked){
+            autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
+          }
+        }
+      }, 1000);
+    }
+
+    function onSelectOption(optionText, correctAnswer){
+      if(answered) return;
+      answered = true;
+      Array.from(optionsEl.children).forEach(b => b.disabled = true);
+      clearTimers();
+
+      const isCorrect = optionText === correctAnswer;
+
+      if(isCorrect){
+        quizBox.classList.add('correct');
+        score++;
+      } else {
+        quizBox.classList.add('wrong');
+      }
+
+      if(document.getElementById('autoNext').checked){
+        autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
+      }
+    }
+
+    function nextQuestion(){
+      clearTimers();
+      if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
+        quizBox.classList.add('wrong');
+        setTimeout(() => { advanceToNext(); }, 700);
+      } else {
+        setTimeout(() => { advanceToNext(); }, 200);
+      }
+    }
+
+    function advanceToNext(){
+      clearTimers();
+      currentIndex++;
+      loadQuestion();
+    }
+
+    function endQuiz(){
+      clearTimers();
+      questionEl.textContent = 'Quiz Completed!';
+      optionsEl.innerHTML = '';
+      nextBtn.style.display = 'none';
+      restartBtn.style.display = 'block';
+      timerEl.textContent = '';
+      autoNextWrap.style.display = 'none';
+      scoreBox.textContent = `Your Score: ${score} / ${shuffledQuestions.length}`;
+    }
+
+    function restartQuiz(){
+      clearTimers();
+      quizBox.classList.remove('correct','wrong');
+      scoreBox.textContent = '';
+      startQuiz();
+    }
+
+    nextBtn.addEventListener('click', nextQuestion);
+    restartBtn.addEventListener('click', restartQuiz);
+
+    startQuiz();
+  </script>
+</body>
+</html>
