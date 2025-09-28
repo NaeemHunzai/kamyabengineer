@@ -2,38 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Important for mobile -->
   <title>Currency Quiz</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: white;
-      color: #fff;
+      color: #000;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      padding: 15px;      /* padding for mobile edges */
       margin: 0;
     }
     .quiz-container {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  width: 90%;             /* take 90% of screen */
-  max-width: 450px;       /* but not more than 450px */
-  padding: 20px;
-  text-align: center;
-  border: 5px solid transparent;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box; /* ensure padding doesn’t overflow */
-}
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      width: 100%;             /* full width on small screens */
+      max-width: 450px;        /* limit on large screens */
+      padding: 20px;
+      text-align: center;
+      border: 5px solid transparent;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
     .quiz-container.correct { border-color: #2ecc71; }
     .quiz-container.wrong { border-color: #e74c3c; }
 
-  h2 {
-  margin-bottom: 20px;
-  font-size: 22px;
-  color: #000;   /* question text color = black */
-}
+    h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #000;
+      line-height: 1.4;
+    }
 
     .options {
       display: grid;
@@ -42,15 +44,15 @@
       margin-bottom: 15px;
     }
     .option-btn {
-        font-size: 15px;   /* scale button text */
-
+      font-size: 15px;
       background: #2980b9;
       color: #fff;
       border: none;
-      padding: 10px;
+      padding: 12px;
       border-radius: 8px;
       cursor: pointer;
       transition: transform 0.2s, background 0.2s;
+      word-wrap: break-word;   /* handle long currency names */
     }
     .option-btn:hover { background: #1f6391; transform: scale(1.05); }
 
@@ -64,15 +66,16 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.2s;
+      font-size: 15px;
     }
     .next-btn:hover, .restart-btn:hover { background: #219150; }
 
-.timer {
-  margin: 15px 0;
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;   /* timer text color = black */
-}
+    .timer {
+      margin: 15px 0;
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+    }
     .auto-next {
       display: flex;
       justify-content: center;
@@ -80,13 +83,21 @@
       gap: 6px;
       margin-top: 10px;
       margin-bottom: 10px;
-  font-size: 14px;
-  color: #000;   
+      font-size: 14px;
+      color: #000;
     }
     .score {
       font-size: 20px;
       font-weight: bold;
       margin-top: 15px;
+      color: #000;
+    }
+
+    /* Make buttons 1 per row on very small screens */
+    @media (max-width: 400px) {
+      .options {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -109,123 +120,26 @@
   </div>
 
   <script>
-    // --- SAMPLE DATABASE (extend later) ---
-   const database = [
-    { country: "United States", currency: "US Dollar" },
-    { country: "United Kingdom", currency: "Pound Sterling" },
-    { country: "Japan", currency: "Yen" },
-    { country: "India", currency: "Indian Rupee" },
-    { country: "China", currency: "Yuan (Renminbi)" },
-    { country: "Saudi Arabia", currency: "Saudi Riyal" },
-    { country: "Russia", currency: "Russian Ruble" },
-    { country: "Switzerland", currency: "Swiss Franc" },
-    { country: "Brazil", currency: "Brazilian Real" },
-    { country: "Pakistan", currency: "Pakistani Rupee" },
-    { country: "Canada", currency: "Canadian Dollar" },
-    { country: "Australia", currency: "Australian Dollar" },
-    { country: "New Zealand", currency: "New Zealand Dollar" },
-    { country: "South Africa", currency: "South African Rand" },
-    { country: "Nigeria", currency: "Nigerian Naira" },
-    { country: "Mexico", currency: "Mexican Peso" },
-    { country: "Argentina", currency: "Argentine Peso" },
-    { country: "Turkey", currency: "Turkish Lira" },
-    { country: "Egypt", currency: "Egyptian Pound" },
-    { country: "Bangladesh", currency: "Bangladeshi Taka" },
-    { country: "Indonesia", currency: "Indonesian Rupiah" },
-    { country: "Malaysia", currency: "Malaysian Ringgit" },
-    { country: "Singapore", currency: "Singapore Dollar" },
-    { country: "Thailand", currency: "Thai Baht" },
-    { country: "Philippines", currency: "Philippine Peso" },
-    { country: "Vietnam", currency: "Vietnamese Dong" },
-    { country: "South Korea", currency: "South Korean Won" },
-    { country: "North Korea", currency: "North Korean Won" },
-    { country: "UAE", currency: "UAE Dirham" },
-    { country: "Qatar", currency: "Qatari Riyal" },
-    { country: "Kuwait", currency: "Kuwaiti Dinar" },
-    { country: "Bahrain", currency: "Bahraini Dinar" },
-    { country: "Oman", currency: "Omani Rial" },
-    { country: "Iran", currency: "Iranian Rial" },
-    { country: "Iraq", currency: "Iraqi Dinar" },
-    { country: "Afghanistan", currency: "Afghan Afghani" },
-    { country: "Nepal", currency: "Nepalese Rupee" },
-    { country: "Sri Lanka", currency: "Sri Lankan Rupee" },
-    { country: "Kenya", currency: "Kenyan Shilling" },
-    { country: "Tanzania", currency: "Tanzanian Shilling" },
-    { country: "Uganda", currency: "Ugandan Shilling" },
-    { country: "Ethiopia", currency: "Ethiopian Birr" },
-    { country: "Morocco", currency: "Moroccan Dirham" },
-    { country: "Algeria", currency: "Algerian Dinar" },
-    { country: "Sudan", currency: "Sudanese Pound" },
-    { country: "Ghana", currency: "Ghanaian Cedi" },
-    { country: "Zimbabwe", currency: "Zimbabwean Dollar" },
-    { country: "Israel", currency: "Israeli New Shekel" },
-    { country: "European Union", currency: "Euro" },
-    { country: "Sweden", currency: "Swedish Krona" },
-    { country: "Norway", currency: "Norwegian Krone" },
-    { country: "Denmark", currency: "Danish Krone" },
-    { country: "Iceland", currency: "Icelandic Krona" },
-    { country: "Poland", currency: "Polish Zloty" },
-    { country: "Czech Republic", currency: "Czech Koruna" },
-    { country: "Hungary", currency: "Hungarian Forint" },
-    { country: "Romania", currency: "Romanian Leu" },
-    { country: "Bulgaria", currency: "Bulgarian Lev" },
-    { country: "Croatia", currency: "Euro" },
-    { country: "Serbia", currency: "Serbian Dinar" },
-    { country: "Ukraine", currency: "Ukrainian Hryvnia" },
-    { country: "Belarus", currency: "Belarusian Ruble" },
-    { country: "Georgia", currency: "Georgian Lari" },
-    { country: "Armenia", currency: "Armenian Dram" },
-    { country: "Azerbaijan", currency: "Azerbaijani Manat" },
-    { country: "Kazakhstan", currency: "Kazakhstani Tenge" },
-    { country: "Uzbekistan", currency: "Uzbekistani Som" },
-    { country: "Turkmenistan", currency: "Turkmenistani Manat" },
-    { country: "Kyrgyzstan", currency: "Kyrgyzstani Som" },
-    { country: "Mongolia", currency: "Mongolian Tugrik" },
-    { country: "Maldives", currency: "Maldivian Rufiyaa" },
-    { country: "Bhutan", currency: "Bhutanese Ngultrum" },
-    { country: "Myanmar", currency: "Myanmar Kyat" },
-    { country: "Cambodia", currency: "Cambodian Riel" },
-    { country: "Laos", currency: "Lao Kip" },
-    { country: "Brunei", currency: "Brunei Dollar" },
-    { country: "Lebanon", currency: "Lebanese Pound" },
-    { country: "Jordan", currency: "Jordanian Dinar" },
-    { country: "Syria", currency: "Syrian Pound" },
-    { country: "Yemen", currency: "Yemeni Rial" },
-    { country: "Libya", currency: "Libyan Dinar" },
-    { country: "Tunisia", currency: "Tunisian Dinar" },
-    { country: "Cameroon", currency: "Central African CFA Franc" },
-    { country: "Senegal", currency: "West African CFA Franc" },
-    { country: "Ivory Coast", currency: "West African CFA Franc" },
-    { country: "Mali", currency: "West African CFA Franc" },
-    { country: "Niger", currency: "West African CFA Franc" },
-    { country: "Burkina Faso", currency: "West African CFA Franc" },
-    { country: "Chad", currency: "Central African CFA Franc" },
-    { country: "Gabon", currency: "Central African CFA Franc" },
-    { country: "Congo (Brazzaville)", currency: "Central African CFA Franc" },
-    { country: "Congo (Kinshasa)", currency: "Congolese Franc" },
-    { country: "Angola", currency: "Angolan Kwanza" },
-    { country: "Mozambique", currency: "Mozambican Metical" },
-    { country: "Zambia", currency: "Zambian Kwacha" },
-    { country: "Malawi", currency: "Malawian Kwacha" },
-    { country: "Botswana", currency: "Botswana Pula" },
-    { country: "Namibia", currency: "Namibian Dollar" },
-    { country: "Madagascar", currency: "Malagasy Ariary" },
-    { country: "Mauritius", currency: "Mauritian Rupee" },
-    { country: "Seychelles", currency: "Seychellois Rupee" },
-    { country: "Fiji", currency: "Fijian Dollar" },
-    { country: "Papua New Guinea", currency: "Papua New Guinean Kina" },
-    { country: "Solomon Islands", currency: "Solomon Islands Dollar" },
-    { country: "Samoa", currency: "Samoan Tala" },
-    { country: "Tonga", currency: "Tongan Paʻanga" }
-  ];
+    const database = [
+      { country: "United States", currency: "US Dollar" },
+      { country: "United Kingdom", currency: "Pound Sterling" },
+      { country: "Japan", currency: "Yen" },
+      { country: "India", currency: "Indian Rupee" },
+      { country: "China", currency: "Yuan (Renminbi)" },
+      { country: "Pakistan", currency: "Pakistani Rupee" },
+      { country: "Canada", currency: "Canadian Dollar" },
+      { country: "Brazil", currency: "Brazilian Real" },
+      { country: "Saudi Arabia", currency: "Saudi Riyal" },
+      { country: "South Africa", currency: "South African Rand" }
+    ];
+
     let questions = [];
     let currentQuestionIndex = 0;
     let timerInterval;
     let timeLeft = 10;
     let score = 0;
-    const MAX_QUESTIONS = 20;
+    const MAX_QUESTIONS = 5;
 
-    // Shuffle helper
     function shuffleArray(array) {
       return array
         .map(value => ({ value, sort: Math.random() }))
@@ -240,7 +154,7 @@
       document.getElementById("scoreBox").innerText = "";
       document.querySelector(".restart-btn").style.display = "none";
       document.querySelector(".next-btn").style.display = "inline-block";
-      document.querySelector(".auto-next").style.display = "flex"; // show auto-next
+      document.querySelector(".auto-next").style.display = "flex";
       loadQuestion();
     }
 
@@ -257,7 +171,6 @@
       document.getElementById("question").innerText =
         `What is the currency of ${q.country}?`;
 
-      // Generate options (1 correct + 3 random wrong)
       let options = [q.currency];
       let wrongOptions = shuffleArray(database.filter(item => item.currency !== q.currency))
                           .slice(0, 3)
@@ -297,8 +210,6 @@
       } else {
         document.getElementById("quizBox").classList.add("wrong");
       }
-
-      // Auto next if enabled
       if (document.getElementById("autoNext").checked) {
         setTimeout(nextQuestion, 800);
       }
@@ -306,14 +217,10 @@
 
     function nextQuestion() {
       clearInterval(timerInterval);
-
       const quizBox = document.getElementById("quizBox");
-      // If no answer was selected, mark wrong
       if (!quizBox.classList.contains("correct") && !quizBox.classList.contains("wrong")) {
         quizBox.classList.add("wrong");
       }
-
-      // Delay to show feedback before next
       setTimeout(() => {
         currentQuestionIndex++;
         loadQuestion();
@@ -327,7 +234,7 @@
       document.querySelector(".restart-btn").style.display = "inline-block";
       document.getElementById("timer").innerText = "";
       document.getElementById("scoreBox").innerText = `Your Score: ${score} / ${MAX_QUESTIONS}`;
-      document.querySelector(".auto-next").style.display = "none"; // hide auto-next
+      document.querySelector(".auto-next").style.display = "none";
     }
 
     function restartQuiz() {
