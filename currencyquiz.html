@@ -1,278 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Currency Quiz</title>
   <style>
-    :root{
-      --primary:#007bff;
-      --btn-bg:#007bff;
-      --btn-bg-hover:#005bb5;
-      --ok:#28a745;
-      --bad:#dc3545;
-      --white:#ffffff;
-      --black:#000000;
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 450px;
+      padding: 20px;
+      text-align: center;
+      border: 5px solid transparent;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    .quiz-container.correct { border-color: #28a745; }
+    .quiz-container.wrong { border-color: #dc3545; }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #000;
+      text-align: center;   /* question centered */
     }
 
-    body{
-      margin:0;
-      padding:12px;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background:var(--white);
-      color:var(--black);
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      min-height:100vh;
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .option-btn {
+      padding: 10px;
+      background: #007bff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s ease;
+      width: 100%;
+    }
+    .option-btn:hover { background: #0056b3; }
+
+    .timer {
+      margin: 15px 0;
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
     }
 
-    .quiz-container{
-      width:100%;
-      max-width:480px;
-      background:var(--white);
-      border-radius:12px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-      padding:16px;
-      box-sizing:border-box;
-      border:4px solid transparent;
-      transition:border-color .25s ease;
-    }
-    .quiz-container.correct{ border-color: var(--ok); }
-    .quiz-container.wrong{ border-color: var(--bad); }
-
-    #question{
-      font-size:18px;
-      line-height:1.25;
-      margin:0 0 14px 0;
-      color:var(--black);
+    .auto-next {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #000;
     }
 
-    .options{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      margin:14px 0;
+    .next-btn, .restart-btn {
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
     }
+    .next-btn:hover, .restart-btn:hover { background: #218838; }
 
-    .option-btn{
-      background:var(--btn-bg);
-      color:var(--white);
-      border:0;
-      padding:12px 10px;
-      font-size:15px;
-      border-radius:8px;
-      cursor:pointer;
-      width:100%;
-      text-align:center;
-      word-break:break-word;
-      transition:transform .12s ease, background .12s ease;
-    }
-    .option-btn:hover{ background:var(--btn-bg-hover); }
-    .option-btn:active{ transform: translateY(1px); }
-
-    .timer{
-      font-weight:700;
-      color:var(--black);
-      margin-top:2px;
-      margin-bottom:8px;
-      font-size:16px;
-      text-align:center;
-    }
-    .auto-next{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:8px;
-      margin-bottom:8px;
-      color:var(--black);
-      font-size:14px;
-    }
-    .controls{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .next-btn, .restart-btn{
-      background:var(--ok);
-      color:var(--white);
-      border:0;
-      padding:12px;
-      border-radius:8px;
-      font-size:15px;
-      cursor:pointer;
-    }
-    .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
-
-    .score{
-      margin-top:10px;
-      text-align:center;
-      font-weight:700;
-      color:var(--black);
-      font-size:16px;
-    }
-
-    @media (max-width:420px){
-      .options{ grid-template-columns:1fr; }
-      #question{ font-size:17px; }
-      .option-btn{ padding:14px; font-size:16px; }
-      .timer{ font-size:15px; }
+    .score {
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
     }
   </style>
 </head>
 <body>
-  <div class="quiz-container" id="quizBox">
-    <h2 id="question">Loading question...</h2>
-
-    <div class="options" id="options"></div>
-
-    <div class="timer" id="timer">Time: 10s</div>
-
-    <div class="auto-next" id="autoNextWrap">
-      <input type="checkbox" id="autoNext" />
-      <label for="autoNext">Auto Next</label>
+  <div class="quiz-container" id="quiz">
+    <h2 id="question">Loading...</h2>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(0)"></button>
+      <button class="option-btn" onclick="selectOption(1)"></button>
+      <button class="option-btn" onclick="selectOption(2)"></button>
+      <button class="option-btn" onclick="selectOption(3)"></button>
     </div>
-
-    <div class="controls">
-      <button class="next-btn" id="nextBtn" type="button">Next</button>
-      <button class="restart-btn" id="restartBtn" type="button" style="display:none;">Restart Quiz</button>
+    <div class="timer" id="timer">Time: 10</div>
+    <div class="auto-next">
+      <input type="checkbox" id="autoNext">
+      <label for="autoNext">Auto-Next</label>
     </div>
-
-    <div class="score" id="scoreBox"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+    <div id="result" class="score"></div>
+    <button class="restart-btn" id="restart" style="display:none;" onclick="restartQuiz()">Restart Quiz</button>
   </div>
 
   <script>
-    const database = [
-      { country: "United States", currency: "US Dollar" },
-      { country: "United Kingdom", currency: "Pound Sterling" },
-      { country: "Japan", currency: "Yen" },
-      { country: "India", currency: "Indian Rupee" },
-      { country: "China", currency: "Yuan (Renminbi)" },
-      { country: "Saudi Arabia", currency: "Saudi Riyal" },
-      { country: "Russia", currency: "Russian Ruble" },
-      { country: "Switzerland", currency: "Swiss Franc" },
-      { country: "Brazil", currency: "Brazilian Real" },
-      { country: "Pakistan", currency: "Pakistani Rupee" },
-      { country: "Canada", currency: "Canadian Dollar" },
-      { country: "Australia", currency: "Australian Dollar" },
-      { country: "New Zealand", currency: "New Zealand Dollar" },
-      { country: "South Africa", currency: "South African Rand" },
-      { country: "Nigeria", currency: "Nigerian Naira" },
-      { country: "Mexico", currency: "Mexican Peso" },
-      { country: "Argentina", currency: "Argentine Peso" },
-      { country: "Turkey", currency: "Turkish Lira" },
-      { country: "Egypt", currency: "Egyptian Pound" },
-      { country: "Bangladesh", currency: "Bangladeshi Taka" }
+    const questions = [
+      {question: "What is the currency of USA?", options: ["Dollar", "Euro", "Pound", "Yen"], answer: 0},
+      {question: "What is the currency of Japan?", options: ["Yuan", "Yen", "Won", "Dollar"], answer: 1},
+      {question: "What is the currency of UK?", options: ["Euro", "Pound", "Dollar", "Franc"], answer: 1},
+      {question: "What is the currency of India?", options: ["Taka", "Rupee", "Rial", "Ringgit"], answer: 1},
+      {question: "What is the currency of Pakistan?", options: ["Rupee", "Dinar", "Taka", "Dirham"], answer: 0},
+      {question: "What is the currency of China?", options: ["Yuan", "Yen", "Won", "Dollar"], answer: 0},
+      {question: "What is the currency of Russia?", options: ["Ruble", "Lira", "Rial", "Peso"], answer: 0},
+      {question: "What is the currency of Saudi Arabia?", options: ["Rial", "Dirham", "Dinar", "Rupee"], answer: 0},
+      {question: "What is the currency of Canada?", options: ["Dollar", "Peso", "Pound", "Euro"], answer: 0},
+      {question: "What is the currency of Australia?", options: ["Dollar", "Pound", "Yen", "Euro"], answer: 0},
+      {question: "What is the currency of South Korea?", options: ["Yuan", "Won", "Yen", "Ringgit"], answer: 1},
+      {question: "What is the currency of Turkey?", options: ["Lira", "Rial", "Peso", "Euro"], answer: 0},
+      {question: "What is the currency of Brazil?", options: ["Peso", "Real", "Dollar", "Escudo"], answer: 1},
+      {question: "What is the currency of South Africa?", options: ["Rand", "Dollar", "Pound", "Peso"], answer: 0},
+      {question: "What is the currency of Switzerland?", options: ["Franc", "Euro", "Dollar", "Mark"], answer: 0},
+      {question: "What is the currency of UAE?", options: ["Rupee", "Dirham", "Dinar", "Rial"], answer: 1},
+      {question: "What is the currency of Egypt?", options: ["Dinar", "Rial", "Pound", "Dirham"], answer: 2},
+      {question: "What is the currency of Bangladesh?", options: ["Taka", "Rupee", "Rial", "Ringgit"], answer: 0},
+      {question: "What is the currency of Malaysia?", options: ["Ringgit", "Dollar", "Peso", "Rupee"], answer: 0},
+      {question: "What is the currency of Iran?", options: ["Dirham", "Rial", "Taka", "Dinar"], answer: 1}
     ];
 
-    const MAX_QUESTIONS = 20;
-    let questions = [];
-    let currentIndex = 0;
-    let timerInterval = null;
-    let timeLeft = 10;
+    let currentQuestion = 0;
     let score = 0;
-    let answered = false;
+    let timeLeft = 10;
+    let timer;
+    let selectedOption = null;
+    let quizQuestions = [];
 
-    const quizBox = document.getElementById("quizBox");
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const timerEl = document.getElementById("timer");
-    const scoreBox = document.getElementById("scoreBox");
-    const nextBtn = document.getElementById("nextBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const autoNextWrap = document.getElementById("autoNextWrap");
-
-    function shuffle(arr){ return arr.map(v=>({v,sort:Math.random()})).sort((a,b)=>a.sort-b.sort).map(({v})=>v); }
-
-    function startQuiz(){
-      questions = shuffle(database).slice(0, MAX_QUESTIONS);
-      currentIndex = 0;
+    function startQuiz() {
+      quizQuestions = shuffleArray([...questions]).slice(0, 20); // pick 20 random questions
+      currentQuestion = 0;
       score = 0;
-      scoreBox.textContent = "";
-      restartBtn.style.display = "none";
-      nextBtn.style.display = "block";
-      autoNextWrap.style.display = "flex";
       loadQuestion();
     }
 
-    function loadQuestion(){
-      clearInterval(timerInterval);
-      quizBox.classList.remove("correct","wrong");
-      answered = false;
+    function loadQuestion() {
+      if (currentQuestion >= quizQuestions.length) {
+        document.getElementById("question").style.display = "none";
+        document.querySelector(".options").style.display = "none";
+        document.getElementById("timer").style.display = "none";
+        document.querySelector(".auto-next").style.display = "none";
+        document.querySelector(".next-btn").style.display = "none";
+        document.getElementById("result").innerText = `Your Score: ${score} / ${quizQuestions.length}`;
+        document.getElementById("restart").style.display = "block";
+        return;
+      }
 
-      if(currentIndex >= questions.length) return endQuiz();
-
-      const q = questions[currentIndex];
-      questionEl.textContent = `What is the currency of ${q.country}?`;
-
-      const wrongs = shuffle(database.filter(x=>x.currency!==q.currency)).slice(0,3).map(x=>x.currency);
-      const opts = shuffle([q.currency,...wrongs]);
-
-      optionsEl.innerHTML = "";
-      opts.forEach(opt=>{
-        const btn=document.createElement("button");
-        btn.type="button";
-        btn.className="option-btn";
-        btn.textContent=opt;
-        btn.onclick=()=>checkAnswer(opt===q.currency);
-        optionsEl.appendChild(btn);
+      const q = quizQuestions[currentQuestion];
+      document.getElementById("question").innerText = q.question;
+      document.querySelectorAll(".option-btn").forEach((btn, i) => {
+        btn.innerText = q.options[i];
+        btn.disabled = false;
       });
 
-      timeLeft=10;
-      timerEl.textContent=`Time: ${timeLeft}s`;
-      timerInterval=setInterval(()=>{
-        timeLeft--;
-        timerEl.textContent=`Time: ${timeLeft}s`;
-        if(timeLeft<=0){
-          clearInterval(timerInterval);
-          quizBox.classList.add("wrong");
-          if(document.getElementById("autoNext").checked){
-            setTimeout(nextQuestion,700);
-          }
-        }
-      },1000);
+      document.getElementById("quiz").classList.remove("correct", "wrong");
+      selectedOption = null;
+
+      resetTimer();
     }
 
-    function checkAnswer(isCorrect){
-      if(answered) return;
-      answered=true;
-      clearInterval(timerInterval);
-      if(isCorrect){
-        quizBox.classList.add("correct");
+    function selectOption(i) {
+      selectedOption = i;
+      const q = quizQuestions[currentQuestion];
+      if (i === q.answer) {
+        document.getElementById("quiz").classList.add("correct");
         score++;
       } else {
-        quizBox.classList.add("wrong");
+        document.getElementById("quiz").classList.add("wrong");
       }
-      if(document.getElementById("autoNext").checked){
-        setTimeout(nextQuestion,700);
+      document.querySelectorAll(".option-btn").forEach(btn => btn.disabled = true);
+
+      if (document.getElementById("autoNext").checked) {
+        setTimeout(nextQuestion, 500);
       }
     }
 
-    function nextQuestion(){
-      clearInterval(timerInterval);
-      if(!quizBox.classList.contains("correct")&&!quizBox.classList.contains("wrong")){
-        quizBox.classList.add("wrong");
+    function nextQuestion() {
+      clearInterval(timer);
+      if (selectedOption === null) {
+        document.getElementById("quiz").classList.add("wrong");
       }
-      setTimeout(()=>{
-        currentIndex++;
-        loadQuestion();
-      },700);
+      currentQuestion++;
+      loadQuestion();
     }
 
-    function endQuiz(){
-      clearInterval(timerInterval);
-      questionEl.textContent="Quiz Completed!";
-      optionsEl.innerHTML="";
-      nextBtn.style.display="none";
-      restartBtn.style.display="block";
-      timerEl.textContent="";
-      autoNextWrap.style.display="none";
-      scoreBox.textContent=`Your Score: ${score} / ${MAX_QUESTIONS}`;
+    function resetTimer() {
+      clearInterval(timer);
+      timeLeft = 10;
+      document.getElementById("timer").innerText = `Time: ${timeLeft}`;
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = `Time: ${timeLeft}`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          nextQuestion();
+        }
+      }, 1000);
     }
 
-    nextBtn.onclick=nextQuestion;
-    restartBtn.onclick=startQuiz;
-    window.onload=startQuiz;
+    function restartQuiz() {
+      document.getElementById("question").style.display = "block";
+      document.querySelector(".options").style.display = "grid";
+      document.getElementById("timer").style.display = "block";
+      document.querySelector(".auto-next").style.display = "flex";
+      document.querySelector(".next-btn").style.display = "block";
+      document.getElementById("result").innerText = "";
+      document.getElementById("restart").style.display = "none";
+      startQuiz();
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    startQuiz();
   </script>
 </body>
 </html>
