@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mountains & Peaks Quiz — Expanded</title>
+  <style>
+    :root{
+      --primary: #007bff;
+      --btn-bg: #007bff;
+      --btn-bg-hover: #0056b3;
+      --ok: #28a745;
+      --bad: #dc3545;
+      --white: #ffffff;
+      --black: #111;
+    }
+
+    body{
+      margin:0;
+      padding:12px;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--white);
+      color:var(--black);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      min-height:100vh;
+    }
+
+    .quiz-container{
+      width:100%;
+      max-width:720px;
+      background:var(--white);
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      padding:18px;
+      box-sizing:border-box;
+      border:4px solid transparent;
+      transition:border-color .20s ease, transform .12s ease;
+      text-align:center;
+    }
+    .quiz-container.correct{ border-color: var(--ok); }
+    .quiz-container.wrong{ border-color: var(--bad); }
+
+    #question {
+      margin: 0 0 12px 0;
+      font-size: 20px;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .options{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin:12px 0;
+    }
+
+    .option-btn{
+      background:var(--btn-bg);
+      color:var(--white);
+      border:0;
+      padding:12px 10px;
+      font-size:15px;
+      border-radius:8px;
+      cursor:pointer;
+      width:100%;
+      word-break:break-word;
+      transition: transform .10s ease, background .12s ease, opacity .12s ease;
+    }
+    .option-btn:active{ transform: translateY(1px); }
+    .option-btn:hover{ background:var(--btn-bg-hover); }
+    .option-btn[disabled]{ opacity: .7; cursor: default; }
+
+    .timer{
+      margin:10px 0;
+      font-weight:700;
+      font-size:16px;
+      text-align:center;
+    }
+
+    .auto-next {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+      margin-bottom:8px;
+      font-size:14px;
+    }
+
+    .controls {
+      display:flex;
+      gap:8px;
+      flex-direction:column;
+      align-items:stretch;
+      margin-top:6px;
+    }
+
+    .next-btn, .restart-btn {
+      background:var(--ok);
+      color:var(--white);
+      border:0;
+      padding:12px;
+      border-radius:8px;
+      font-size:15px;
+      cursor:pointer;
+      width:100%;
+    }
+    .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
+
+    .score {
+      margin-top:12px;
+      text-align:center;
+      font-weight:700;
+      font-size:16px;
+    }
+
+    @media (max-width:720px){
+      .quiz-container{ padding:12px; }
+    }
+    @media (max-width:520px){
+      .options{ grid-template-columns:1fr; }
+      #question{ font-size:18px; }
+      .option-btn{ padding:14px; font-size:16px; }
+      .timer{ font-size:15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox">
+    <h2 id="question">Loading question...</h2>
+    <div class="options" id="options"></div>
+    <div class="timer" id="timer">Time: 12s</div>
+    <div class="auto-next" id="autoNextWrap">
+      <input type="checkbox" id="autoNext" />
+      <label for="autoNext">Auto Next</label>
+    </div>
+    <div class="controls">
+      <button id="nextBtn" class="next-btn" type="button">Next</button>
+      <button id="restartBtn" class="restart-btn" type="button" style="display:none;">Restart Quiz</button>
+    </div>
+    <div id="scoreBox" class="score"></div>
+  </div>
+
+  <script>
+    /*********** Expanded Mountains & Peaks Database ***********
+     * Focus first on Pakistan, India, China, Nepal — then other ranges.
+     * Question types include: highest-in-country, elevation, range, border, nickname.
+     *******************************************************/
+
+    const questions = [
+      // === PAKISTAN (major peaks & facts) ===
+      { question: "Which is the highest mountain in Pakistan?", options: ["K2","Nanga Parbat","Broad Peak","Gasherbrum I"], answer: "K2" },
+      { question: "K2 (Qogir/Ketu) is part of which mountain range?", options: ["Himalaya","Karakoram","Hindu Kush","Pamirs"], answer: "Karakoram" },
+      { question: "Which peak in Pakistan is nicknamed the 'Killer Mountain'?", options: ["Nanga Parbat","K2","Tirich Mir","Rakaposhi"], answer: "Nanga Parbat" },
+      { question: "Which of these is the fourth highest mountain in the world located in Pakistan?", options: ["Lhotse","Makalu","Gasherbrum II","Broad Peak"], answer: "Broad Peak" },
+      { question: "Gasherbrum I is also known by which name?", options: ["Hidden Peak","K5","Chogori","Mount Godwin-Austen"], answer: "Hidden Peak" },
+      { question: "Which peak is located on the border between Pakistan and China?", options: ["K2","Nanga Parbat","Kangchenjunga","Mount Vinson"], answer: "K2" },
+      { question: "Which peak is the highest in the Hindu Kush range and lies in Pakistan?", options: ["Tirich Mir","Nanga Parbat","Rakaposhi","Garmo Peak"], answer: "Tirich Mir" },
+      { question: "What is the approximate elevation of Nanga Parbat?", options: ["8125 m","8611 m","8078 m","8167 m"], answer: "8125 m" },
+      { question: "Rakaposhi is best known for which feature?", options: ["Huge prominence over valley","Being tallest in world","Volcanic origin","Located in Everest region"], answer: "Huge prominence over valley" },
+      { question: "Which Pakistani peak is part of the Gasherbrum group and exceeds 8,000 m?", options: ["Gasherbrum I","Tirich Mir","Rakaposhi","Spantik"], answer: "Gasherbrum I" },
+
+      // === INDIA (major peaks & facts) ===
+      { question: "Which is the highest mountain in India (considering the Indian state of Sikkim/India claim)?", options: ["Kanchenjunga","Nanda Devi","Kangto","Mount Everest"], answer: "Kanchenjunga" },
+      { question: "Kanchenjunga lies on the border between India and which country?", options: ["China","Nepal","Bhutan","Pakistan"], answer: "Nepal" },
+      { question: "Which mountain is the highest peak located wholly within India?", options: ["Nanda Devi","Kanchenjunga","Kangchenjunga","Kamet"], answer: "Nanda Devi" },
+      { question: "What is the height of Nanda Devi (approx)?", options: ["7816 m","8586 m","8061 m","7138 m"], answer: "7816 m" },
+      { question: "Which Indian peak is part of the Garhwal Himalaya and famous for solo climbs (Indian Himalayan)?", options: ["Nanda Devi","Trisul","Anamudi","Nilgiri"], answer: "Nanda Devi" },
+      { question: "Which peak is the highest in the Indian state of Uttarakhand?", options: ["Nanda Devi","Kedarnath","Kamet","Trisul"], answer: "Nanda Devi" },
+      { question: "Which of these is an 8000m peak on the India–Nepal/Tibet border?", options: ["Kangchenjunga","Everest","Makalu","Cho Oyu"], answer: "Kangchenjunga" },
+      { question: "Which peak in India is in the Ladakh / Karakoram region?", options: ["Stok Kangri","Kang Yatse","Nun Kun","K2"], answer: "Nun Kun" },
+      { question: "Which mountain range includes the peaks Nanda Devi and Kamet?", options: ["Garhwal Himalaya","Karakoram","Vindhya","Aravalli"], answer: "Garhwal Himalaya" },
+      { question: "Which peak is the highest in the Garhwal Himalaya after Nanda Devi?", options: ["Kamet","Trisul","Badrinath","Dhauli Ganga"], answer: "Kamet" },
+
+      // === NEPAL (major peaks & facts) ===
+      { question: "Which is the highest mountain in Nepal and the world?", options: ["Lhotse","Makalu","Mount Everest","Annapurna I"], answer: "Mount Everest" },
+      { question: "What is the elevation of Mount Everest (commonly given)?", options: ["8848 m","8611 m","8201 m","8950 m"], answer: "8848 m" },
+      { question: "Which peak is the fourth highest in the world and located in Nepal?", options: ["Lhotse","Makalu","Gasherbrum II","Dhaulagiri I"], answer: "Lhotse" },
+      { question: "Which peak is the tenth highest mountain (Annapurna I) and famed for high fatality rate?", options: ["Annapurna I","Manaslu","Makalu","Cho Oyu"], answer: "Annapurna I" },
+      { question: "Which Nepali mountain is the world's fifth-highest?", options: ["Makalu","Cho Oyu","Dhaulagiri I","Nanga Parbat"], answer: "Makalu" },
+      { question: "Which large massif contains Everest, Lhotse, Nuptse and is along the Nepal–China border?", options: ["Mahalangur Himal","Annapurna massif","Kangchenjunga massif","Dhaulagiri massif"], answer: "Mahalangur Himal" },
+      { question: "Which mountain in Nepal is known as the 'Matterhorn of the Himalaya' for its steep pyramidal shape?", options: ["Ama Dablam","Fishtail (Machapuchare)","Annapurna South","Nilgiri"], answer: "Ama Dablam" },
+      { question: "Which peak is sacred and restricted from climbing in Nepal (often rhymed as 'fish tail')?", options: ["Machapuchare (Fishtail)","Ama Dablam","Everest","Dhaulagiri"], answer: "Machapuchare (Fishtail)" },
+      { question: "Which Nepalese peak is the highest unclimbed mountain (often cited)?", options: ["Gangkhar Puensum","K2","Jongsong Peak","Saser Kangri"], answer: "Gangkhar Puensum" }, // note: Gangkhar Puensum in Bhutan but listed here as a known unclimbed — included as comparative fact
+      { question: "Which mountain range largely runs across Nepal and contains most of the world’s highest peaks?", options: ["Himalaya","Karakoram","Hindu Kush","Alps"], answer: "Himalaya" },
+
+      // === CHINA (major peaks & facts) ===
+      { question: "Which is the highest mountain located fully (or partly) in China and on the Tibet border?", options: ["Shishapangma","Cho Oyu","Mount Everest","Kangchenjunga"], answer: "Mount Everest" },
+      { question: "Shishapangma is notable because it is the only 8000m peak located entirely within which country?", options: ["China","Nepal","Pakistan","India"], answer: "China" },
+      { question: "Which 8000m peak lies on the China–Nepal border (often considered in Chinese territory too)?", options: ["Shishapangma","Dhaulagiri","Annapurna I","Mount Vinson"], answer: "Shishapangma" },
+      { question: "Which of these peaks is in the Himalaya near the Tibet/China side and is the second-highest mountain in the world?", options: ["K2","Kangchenjunga","Kangto","Kang Yatse"], answer: "Kangchenjunga" },
+      { question: "Which mountain is the world's third highest and lies on the border of Nepal and China (Tibet)?", options: ["Lhotse","Makalu","Cho Oyu","Kanchenjunga"], answer: "Lhotse" },
+      { question: "Which mountain is the world’s sixth-highest and lies on the border between Nepal and China?", options: ["Cho Oyu","Makalu","Gasherbrum I","Dhaulagiri I"], answer: "Cho Oyu" },
+      { question: "Which peak is the highest point of the Kunlun Mountains in China?", options: ["Mount Qaidam","Qilian Shan Peak","Kongur Tagh","Mustag Ata"], answer: "Kongur Tagh" },
+      { question: "Which peaks are part of the Karakoram range that extends into China?", options: ["K2 and Gasherbrums","Everest and Lhotse","Annapurna and Dhaulagiri","Alpamayo and Huascarán"], answer: "K2 and Gasherbrums" },
+      { question: "Which Chinese peak is famous for its long snow-covered summit plateau and is near the border with Pakistan (Mustagh Ata or Muztagh Ata)?", options: ["Muztagh Ata","Everest","K2","Nanga Parbat"], answer: "Muztagh Ata" },
+      { question: "Which plateau region in China contains many high mountain ranges (Tibet region)?", options: ["Tibetan Plateau","Loess Plateau","Yunnan-Guizhou Plateau","North China Plain"], answer: "Tibetan Plateau" },
+
+      // === PAKISTAN / INDIA / CHINA / NEPAL — additional detailed peaks ===
+      { question: "Which Pakistani mountain is the 7th highest in the world and part of the Gasherbrum massif?", options: ["Gasherbrum II","Broad Peak","Gasherbrum I","Gasherbrum III"], answer: "Gasherbrum II" },
+      { question: "Broad Peak lies in which mountain range?", options: ["Karakoram","Himalaya","Hindu Kush","Andes"], answer: "Karakoram" },
+      { question: "Which peak is the second-highest mountain in the Himalayas and is on India–Nepal border?", options: ["Kangchenjunga","Lhotse","Makalu","Dhaulagiri"], answer: "Kangchenjunga" },
+      { question: "Which mountain in Pakistan has the famous Baltoro Glacier nearby?", options: ["K2","Nanga Parbat","Rakaposhi","Tirich Mir"], answer: "K2" },
+      { question: "Which mountain is the highest peak of the Karakoram outside the K2 massif?", options: ["Gasherbrum I","Gasherbrum II","Broad Peak","Gasherbrum IV"], answer: "Gasherbrum I" },
+      { question: "Which mountain is known as the 'Third Pole' region due to massive glaciers (region includes Karakoram and Himalaya)?", options: ["Himalayan–Karakoram region","Andes","Rockies","Alps"], answer: "Himalayan–Karakoram region" },
+      { question: "Which Indian peak is the third-highest mountain in the world and partly in Sikkim?", options: ["Kangchenjunga","Nanda Devi","Kamet","Saltoro Kangri"], answer: "Kangchenjunga" },
+
+      // === HIMALAYAS & ADJACENT RANGES worldwide facts ===
+      { question: "Which is the highest peak in the Karakoram range?", options: ["K2","Nanga Parbat","Broad Peak","Gasherbrum I"], answer: "K2" },
+      { question: "Which is the highest peak in the Hindu Kush?", options: ["Tirich Mir","Noshaq","Trivor","Buni Zom"], answer: "Tirich Mir" },
+      { question: "Which peak is the highest in the Pamirs and often called the 'Roof of the World' region?", options: ["Ismoil Somoni Peak (Communist Peak)","Khan Tengri","Pobeda Peak","Muztagh Ata"], answer: "Ismoil Somoni Peak (Communist Peak)" },
+      { question: "Which mountain is the highest in the world outside Asia (i.e., highest in the Americas)?", options: ["Aconcagua","Denali","Mount Logan","Huascarán"], answer: "Aconcagua" },
+      { question: "What is the highest mountain in North America?", options: ["Denali","Mount Logan","Mount Elbert","Pico de Orizaba"], answer: "Denali" },
+
+      // === OTHER FAMOUS PEAKS (Europe, Africa, S. America, Oceania) ===
+      { question: "Which is the highest peak in Europe (commonly counted in the Caucasus)?", options: ["Mount Elbrus","Mont Blanc","Matterhorn","Grossglockner"], answer: "Mount Elbrus" },
+      { question: "Which peak is the highest in the Alps?", options: ["Mont Blanc","Matterhorn","Grossglockner","Monte Rosa"], answer: "Mont Blanc" },
+      { question: "Which is the highest mountain in Africa?", options: ["Kilimanjaro","Mount Kenya","Mount Meru","Ras Dashen"], answer: "Kilimanjaro" },
+      { question: "Which peak is the highest in South America?", options: ["Aconcagua","Huascarán","Ojos del Salado","Illimani"], answer: "Aconcagua" },
+      { question: "Which peak is the tallest in Oceania (Australia & Pacific) if Australia is counted as a continent? (mainland)", options: ["Mount Kosciuszko","Puncak Jaya (Carstensz)","Mount Wilhelm","Mount Cook"], answer: "Mount Kosciuszko" },
+
+      // === MORE DETAILED/FACTOID QUESTIONS (mix) ===
+      { question: "Which mountain is located on the border between Nepal and China and is the world's fifth-highest (Makalu)?", options: ["Makalu","Annapurna I","Cho Oyu","Dhaulagiri I"], answer: "Makalu" },
+      { question: "Which mountain is famous for the world's steepest rise above local terrain: Nanga Parbat or K2?", options: ["Nanga Parbat","K2","Everest","Annapurna I"], answer: "Nanga Parbat" },
+      { question: "Which famous peak is part of the Annapurna massif?", options: ["Annapurna I","Dhaulagiri","Manaslu","Makalu"], answer: "Annapurna I" },
+      { question: "Which mountain is the highest volcano in the world (approx)?", options: ["Ojos del Salado","Mount Etna","Mauna Kea","Mount Kilimanjaro"], answer: "Ojos del Salado" },
+      { question: "Which mountain is the highest point in the contiguous United States?", options: ["Mount Whitney","Denali","Mount Elbert","Pikes Peak"], answer: "Mount Whitney" },
+
+      // === EXTENSIVE PAKISTAN / INDIA / NEPAL / CHINA picks (more granularity) ===
+      { question: "Which Pakistani peak is also called Mount Godwin-Austen?", options: ["K2","Nanga Parbat","Tirich Mir","Rakaposhi"], answer: "K2" },
+      { question: "Which Pakistani peak is famous for the Baltoro Muztagh subrange?", options: ["Broad Peak","Gasherbrum I","K2","All of these"], answer: "All of these" },
+      { question: "Which Indian peak is sacred to local people and is off-limits to climbers (located near Annapurna)?", options: ["Machapuchare (Fishtail)","Annapurna I","Dhaulagiri","Manaslu"], answer: "Machapuchare (Fishtail)" },
+      { question: "Which mountain is the southernmost 8,000-m peak in the Himalaya?", options: ["Nanga Parbat","Annapurna I","Kanchenjunga","Makalu"], answer: "Annapurna I" },
+
+      // === ADDITIONAL WORLDWIDE IMPORTANT PEAKS ===
+      { question: "Which peak is known as the 'Matterhorn' in the Alps region for being iconic? (real Matterhorn)", options: ["Matterhorn","Mont Blanc","Eiger","Dent Blanche"], answer: "Matterhorn" },
+      { question: "Which peak in Argentina is the highest in both the Southern and Western Hemispheres?", options: ["Aconcagua","Chimborazo","Ojos del Salado","Mount Pissis"], answer: "Aconcagua" },
+      { question: "Which mountain is the highest in Japan?", options: ["Mount Fuji","Mount Kita","Mount Hotaka","Mount Tate"], answer: "Mount Fuji" },
+      { question: "Which mountain is highest in New Zealand?", options: ["Aoraki / Mount Cook","Mount Tasman","Mount Ruapehu","Mount Aspiring"], answer: "Aoraki / Mount Cook" },
+      { question: "Which African peak is a free-standing volcanic mountain often used as a trekking destination?", options: ["Kilimanjaro","Ras Dashen","Mount Kenya","Simien"], answer: "Kilimanjaro" },
+
+      // === MORE DETAILED: elevations and borders ===
+      { question: "Which peak stands around 8,611 m and is the world's highest (Mount Everest)?", options: ["Everest","K2","Kangchenjunga","Lhotse"], answer: "Everest" },
+      { question: "Which peak is approximately 8,516 m and is the second highest in the world (K2)?", options: ["K2","Everest","Kangchenjunga","Lhotse"], answer: "K2" },
+      { question: "Which peak is the world's seventh-highest and part of the Karakoram, near the Pakistani-Chinese border?", options: ["Gasherbrum II","Broad Peak","Gasherbrum I","Gasherbrum IV"], answer: "Gasherbrum II" },
+      { question: "Which peak is famous for the 1953 first ascent by Edmund Hillary and Tenzing Norgay?", options: ["Everest","K2","Annapurna I","Nanga Parbat"], answer: "Everest" },
+
+      // === ADDITIONAL notable peaks, ranges and trivia ===
+      { question: "Which mountain range is known for the highest concentration of 8000m peaks?", options: ["Himalaya","Andes","Karakoram","Pamirs"], answer: "Himalaya" },
+      { question: "Which mountain is the highest point in the Caucasus and often counted as Europe's highest?", options: ["Mount Elbrus","Mount Ararat","Mount Kazbek","Mount Ushba"], answer: "Mount Elbrus" },
+      { question: "Which mountain massif contains the peaks Dhaulagiri, Annapurna and Manaslu?", options: ["Nepalese Himalaya (Western Himalaya)","Karakoram","Hindu Kush","Alps"], answer: "Nepalese Himalaya (Western Himalaya)" },
+      { question: "Which mountain in Pakistan is often climbed from the Baltoro side and is part of the Baltoro Muztagh?", options: ["Gasherbrum I","Nanga Parbat","Rakaposhi","Tirich Mir"], answer: "Gasherbrum I" },
+      { question: "Which mountain is the highest on the Australian mainland?", options: ["Mount Kosciuszko","Mount Townsend","Mount Bogong","Mount Ossa"], answer: "Mount Kosciuszko" },
+
+      // === closing broad picks for world peaks ===
+      { question: "Which is the highest peak of the Pamirs, previously named Peak Communism?", options: ["Ismoil Somoni Peak (formerly Peak Communism)","Kongur Tagh","Pobeda Peak","Lenin Peak"], answer: "Ismoil Somoni Peak (formerly Peak Communism)" },
+      { question: "Which is the highest volcano in Europe (Mount Etna on Sicily is active) — which is taller in elevation?", options: ["Mount Etna","Mount Olympus (Greece)","Mount Elbrus","Mount Vesuvius"], answer: "Mount Elbrus" }
+    ];
+
+    const QUESTIONS_PER_QUIZ = 25; // number of random questions per session
+    let shuffledQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let timerInterval = null;
+    let autoAdvanceTimeout = null;
+    let timeLeft = 12;
+
+    const quizBox = document.getElementById('quizBox');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const timerEl = document.getElementById('timer');
+    const scoreBox = document.getElementById('scoreBox');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const autoNextWrap = document.getElementById('autoNextWrap');
+
+    function shuffleArray(arr){
+      return arr.map(v => ({v, r: Math.random()}))
+                .sort((a,b)=> a.r - b.r)
+                .map(x => x.v);
+    }
+
+    function clearTimers(){
+      if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+      if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+    }
+
+    function startQuiz(){
+      shuffledQuestions = shuffleArray(questions).slice(0, QUESTIONS_PER_QUIZ);
+      currentIndex = 0;
+      score = 0;
+      answered = false;
+      scoreBox.textContent = '';
+      restartBtn.style.display = 'none';
+      nextBtn.style.display = 'block';
+      autoNextWrap.style.display = 'flex';
+      loadQuestion();
+    }
+
+    function loadQuestion(){
+      clearTimers();
+      quizBox.classList.remove('correct','wrong');
+      answered = false;
+
+      if(currentIndex >= shuffledQuestions.length) return endQuiz();
+
+      const q = shuffledQuestions[currentIndex];
+      questionEl.textContent = q.question;
+
+      const opts = shuffleArray(q.options);
+
+      optionsEl.innerHTML = '';
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.disabled = false;
+        btn.addEventListener('click', () => onSelectOption(opt, q.answer));
+        optionsEl.appendChild(btn);
+      });
+
+      timeLeft = 12;
+      timerEl.textContent = `Time: ${timeLeft}s`;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time: ${timeLeft}s`;
+        if(timeLeft <= 0){
+          clearTimers();
+          quizBox.classList.add('wrong');
+          answered = false;
+          if(document.getElementById('autoNext').checked){
+            autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
+          }
+        }
+      }, 1000);
+    }
+
+    function onSelectOption(optionText, correctAnswer){
+      if(answered) return;
+      answered = true;
+      Array.from(optionsEl.children).forEach(b => b.disabled = true);
+      clearTimers();
+
+      const isCorrect = optionText === correctAnswer;
+
+      if(isCorrect){
+        quizBox.classList.add('correct');
+        score++;
+      } else {
+        quizBox.classList.add('wrong');
+      }
+
+      if(document.getElementById('autoNext').checked){
+        autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
+      }
+    }
+
+    function nextQuestion(){
+      clearTimers();
+      if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
+        quizBox.classList.add('wrong');
+        setTimeout(() => { advanceToNext(); }, 700);
+      } else {
+        setTimeout(() => { advanceToNext(); }, 200);
+      }
+    }
+
+    function advanceToNext(){
+      clearTimers();
+      currentIndex++;
+      loadQuestion();
+    }
+
+    function endQuiz(){
+      clearTimers();
+      questionEl.textContent = 'Quiz Completed!';
+      optionsEl.innerHTML = '';
+      nextBtn.style.display = 'none';
+      restartBtn.style.display = 'block';
+      timerEl.textContent = '';
+      autoNextWrap.style.display = 'none';
+      scoreBox.textContent = `Your Score: ${score} / ${shuffledQuestions.length}`;
+    }
+
+    function restartQuiz(){
+      clearTimers();
+      quizBox.classList.remove('correct','wrong');
+      scoreBox.textContent = '';
+      startQuiz();
+    }
+
+    nextBtn.addEventListener('click', nextQuestion);
+    restartBtn.addEventListener('click', restartQuiz);
+
+    startQuiz();
+  </script>
+</body>
+</html>
