@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Currency Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: rgba(255,255,255,0.1);
+      border: 4px solid transparent;
+      border-radius: 15px;
+      padding: 20px;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      transition: border-color 0.3s;
+    }
+    .quiz-container.correct { border-color: #2ecc71; }
+    .quiz-container.wrong { border-color: #e74c3c; }
+
+    h2 { margin-bottom: 20px; }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .option-btn {
+      background: #2980b9;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .option-btn:hover { background: #1f6391; transform: scale(1.05); }
+
+    .controls { margin-top: 15px; }
+    .next-btn, .restart-btn {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .next-btn:hover, .restart-btn:hover { background: #219150; }
+
+    .timer { font-size: 18px; margin-bottom: 10px; }
+
+    .auto-next {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .score {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox">
+    <h2 id="question">Loading question...</h2>
+    <div class="options" id="options"></div>
+    <div class="timer" id="timer">Time: 10s</div>
+
+    <div class="auto-next">
+      <input type="checkbox" id="autoNext">
+      <label for="autoNext">Auto Next</label>
+    </div>
+
+    <div class="controls">
+      <button class="next-btn" onclick="nextQuestion()">Next</button>
+      <button class="restart-btn" onclick="restartQuiz()" style="display:none;">Restart Quiz</button>
+    </div>
+    <div class="score" id="scoreBox"></div>
+  </div>
+
+  <script>
+    // --- SAMPLE DATABASE (extend later) ---
+   const database = [
+    { country: "United States", currency: "US Dollar" },
+    { country: "United Kingdom", currency: "Pound Sterling" },
+    { country: "Japan", currency: "Yen" },
+    { country: "India", currency: "Indian Rupee" },
+    { country: "China", currency: "Yuan (Renminbi)" },
+    { country: "Saudi Arabia", currency: "Saudi Riyal" },
+    { country: "Russia", currency: "Russian Ruble" },
+    { country: "Switzerland", currency: "Swiss Franc" },
+    { country: "Brazil", currency: "Brazilian Real" },
+    { country: "Pakistan", currency: "Pakistani Rupee" },
+    { country: "Canada", currency: "Canadian Dollar" },
+    { country: "Australia", currency: "Australian Dollar" },
+    { country: "New Zealand", currency: "New Zealand Dollar" },
+    { country: "South Africa", currency: "South African Rand" },
+    { country: "Nigeria", currency: "Nigerian Naira" },
+    { country: "Mexico", currency: "Mexican Peso" },
+    { country: "Argentina", currency: "Argentine Peso" },
+    { country: "Turkey", currency: "Turkish Lira" },
+    { country: "Egypt", currency: "Egyptian Pound" },
+    { country: "Bangladesh", currency: "Bangladeshi Taka" },
+    { country: "Indonesia", currency: "Indonesian Rupiah" },
+    { country: "Malaysia", currency: "Malaysian Ringgit" },
+    { country: "Singapore", currency: "Singapore Dollar" },
+    { country: "Thailand", currency: "Thai Baht" },
+    { country: "Philippines", currency: "Philippine Peso" },
+    { country: "Vietnam", currency: "Vietnamese Dong" },
+    { country: "South Korea", currency: "South Korean Won" },
+    { country: "North Korea", currency: "North Korean Won" },
+    { country: "UAE", currency: "UAE Dirham" },
+    { country: "Qatar", currency: "Qatari Riyal" },
+    { country: "Kuwait", currency: "Kuwaiti Dinar" },
+    { country: "Bahrain", currency: "Bahraini Dinar" },
+    { country: "Oman", currency: "Omani Rial" },
+    { country: "Iran", currency: "Iranian Rial" },
+    { country: "Iraq", currency: "Iraqi Dinar" },
+    { country: "Afghanistan", currency: "Afghan Afghani" },
+    { country: "Nepal", currency: "Nepalese Rupee" },
+    { country: "Sri Lanka", currency: "Sri Lankan Rupee" },
+    { country: "Kenya", currency: "Kenyan Shilling" },
+    { country: "Tanzania", currency: "Tanzanian Shilling" },
+    { country: "Uganda", currency: "Ugandan Shilling" },
+    { country: "Ethiopia", currency: "Ethiopian Birr" },
+    { country: "Morocco", currency: "Moroccan Dirham" },
+    { country: "Algeria", currency: "Algerian Dinar" },
+    { country: "Sudan", currency: "Sudanese Pound" },
+    { country: "Ghana", currency: "Ghanaian Cedi" },
+    { country: "Zimbabwe", currency: "Zimbabwean Dollar" },
+    { country: "Israel", currency: "Israeli New Shekel" },
+    { country: "European Union", currency: "Euro" },
+    { country: "Sweden", currency: "Swedish Krona" },
+    { country: "Norway", currency: "Norwegian Krone" },
+    { country: "Denmark", currency: "Danish Krone" },
+    { country: "Iceland", currency: "Icelandic Krona" },
+    { country: "Poland", currency: "Polish Zloty" },
+    { country: "Czech Republic", currency: "Czech Koruna" },
+    { country: "Hungary", currency: "Hungarian Forint" },
+    { country: "Romania", currency: "Romanian Leu" },
+    { country: "Bulgaria", currency: "Bulgarian Lev" },
+    { country: "Croatia", currency: "Euro" },
+    { country: "Serbia", currency: "Serbian Dinar" },
+    { country: "Ukraine", currency: "Ukrainian Hryvnia" },
+    { country: "Belarus", currency: "Belarusian Ruble" },
+    { country: "Georgia", currency: "Georgian Lari" },
+    { country: "Armenia", currency: "Armenian Dram" },
+    { country: "Azerbaijan", currency: "Azerbaijani Manat" },
+    { country: "Kazakhstan", currency: "Kazakhstani Tenge" },
+    { country: "Uzbekistan", currency: "Uzbekistani Som" },
+    { country: "Turkmenistan", currency: "Turkmenistani Manat" },
+    { country: "Kyrgyzstan", currency: "Kyrgyzstani Som" },
+    { country: "Mongolia", currency: "Mongolian Tugrik" },
+    { country: "Maldives", currency: "Maldivian Rufiyaa" },
+    { country: "Bhutan", currency: "Bhutanese Ngultrum" },
+    { country: "Myanmar", currency: "Myanmar Kyat" },
+    { country: "Cambodia", currency: "Cambodian Riel" },
+    { country: "Laos", currency: "Lao Kip" },
+    { country: "Brunei", currency: "Brunei Dollar" },
+    { country: "Lebanon", currency: "Lebanese Pound" },
+    { country: "Jordan", currency: "Jordanian Dinar" },
+    { country: "Syria", currency: "Syrian Pound" },
+    { country: "Yemen", currency: "Yemeni Rial" },
+    { country: "Libya", currency: "Libyan Dinar" },
+    { country: "Tunisia", currency: "Tunisian Dinar" },
+    { country: "Cameroon", currency: "Central African CFA Franc" },
+    { country: "Senegal", currency: "West African CFA Franc" },
+    { country: "Ivory Coast", currency: "West African CFA Franc" },
+    { country: "Mali", currency: "West African CFA Franc" },
+    { country: "Niger", currency: "West African CFA Franc" },
+    { country: "Burkina Faso", currency: "West African CFA Franc" },
+    { country: "Chad", currency: "Central African CFA Franc" },
+    { country: "Gabon", currency: "Central African CFA Franc" },
+    { country: "Congo (Brazzaville)", currency: "Central African CFA Franc" },
+    { country: "Congo (Kinshasa)", currency: "Congolese Franc" },
+    { country: "Angola", currency: "Angolan Kwanza" },
+    { country: "Mozambique", currency: "Mozambican Metical" },
+    { country: "Zambia", currency: "Zambian Kwacha" },
+    { country: "Malawi", currency: "Malawian Kwacha" },
+    { country: "Botswana", currency: "Botswana Pula" },
+    { country: "Namibia", currency: "Namibian Dollar" },
+    { country: "Madagascar", currency: "Malagasy Ariary" },
+    { country: "Mauritius", currency: "Mauritian Rupee" },
+    { country: "Seychelles", currency: "Seychellois Rupee" },
+    { country: "Fiji", currency: "Fijian Dollar" },
+    { country: "Papua New Guinea", currency: "Papua New Guinean Kina" },
+    { country: "Solomon Islands", currency: "Solomon Islands Dollar" },
+    { country: "Samoa", currency: "Samoan Tala" },
+    { country: "Tonga", currency: "Tongan Paʻanga" }
+  ];
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let timerInterval;
+    let timeLeft = 10;
+    let score = 0;
+    const MAX_QUESTIONS = 20;
+
+    // Shuffle helper
+    function shuffleArray(array) {
+      return array
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+    }
+
+    function startQuiz() {
+      questions = shuffleArray(database).slice(0, MAX_QUESTIONS);
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById("scoreBox").innerText = "";
+      document.querySelector(".restart-btn").style.display = "none";
+      document.querySelector(".next-btn").style.display = "inline-block";
+      document.querySelector(".auto-next").style.display = "flex"; // show auto-next
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(timerInterval);
+      document.getElementById("quizBox").classList.remove("correct", "wrong");
+
+      if (currentQuestionIndex >= questions.length) {
+        endQuiz();
+        return;
+      }
+
+      const q = questions[currentQuestionIndex];
+      document.getElementById("question").innerText =
+        `What is the currency of ${q.country}?`;
+
+      // Generate options (1 correct + 3 random wrong)
+      let options = [q.currency];
+      let wrongOptions = shuffleArray(database.filter(item => item.currency !== q.currency))
+                          .slice(0, 3)
+                          .map(item => item.currency);
+      options = shuffleArray([...options, ...wrongOptions]);
+
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.classList.add("option-btn");
+        btn.onclick = () => checkAnswer(opt === q.currency);
+        optionsDiv.appendChild(btn);
+      });
+
+      timeLeft = 10;
+      document.getElementById("timer").innerText = `Time: ${timeLeft}s`;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("quizBox").classList.add("wrong");
+          if (document.getElementById("autoNext").checked) {
+            setTimeout(nextQuestion, 800);
+          }
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(isCorrect) {
+      clearInterval(timerInterval);
+      if (isCorrect) {
+        document.getElementById("quizBox").classList.add("correct");
+        score++;
+      } else {
+        document.getElementById("quizBox").classList.add("wrong");
+      }
+
+      // Auto next if enabled
+      if (document.getElementById("autoNext").checked) {
+        setTimeout(nextQuestion, 800);
+      }
+    }
+
+    function nextQuestion() {
+      clearInterval(timerInterval);
+
+      const quizBox = document.getElementById("quizBox");
+      // If no answer was selected, mark wrong
+      if (!quizBox.classList.contains("correct") && !quizBox.classList.contains("wrong")) {
+        quizBox.classList.add("wrong");
+      }
+
+      // Delay to show feedback before next
+      setTimeout(() => {
+        currentQuestionIndex++;
+        loadQuestion();
+      }, 800);
+    }
+
+    function endQuiz() {
+      document.getElementById("question").innerText = "Quiz Completed!";
+      document.getElementById("options").innerHTML = "";
+      document.querySelector(".next-btn").style.display = "none";
+      document.querySelector(".restart-btn").style.display = "inline-block";
+      document.getElementById("timer").innerText = "";
+      document.getElementById("scoreBox").innerText = `Your Score: ${score} / ${MAX_QUESTIONS}`;
+      document.querySelector(".auto-next").style.display = "none"; // hide auto-next
+    }
+
+    function restartQuiz() {
+      document.getElementById("quizBox").classList.remove("correct", "wrong");
+      startQuiz();
+    }
+
+    window.onload = startQuiz;
+  </script>
+</body>
+</html>
