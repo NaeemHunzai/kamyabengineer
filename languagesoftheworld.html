@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Languages of the Countries Quiz</title>
+  <style>
+    :root{
+      --primary: #007bff;
+      --btn-bg: #007bff;
+      --btn-bg-hover: #0056b3;
+      --ok: #28a745;
+      --bad: #dc3545;
+      --white: #ffffff;
+      --black: #111;
+    }
+
+    body{
+      margin:0;
+      padding:12px;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--white);
+      color:var(--black);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      min-height:100vh;
+    }
+
+    .quiz-container{
+      width:100%;
+      max-width:520px;
+      background:var(--white);
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      padding:16px;
+      box-sizing:border-box;
+      border:4px solid transparent;
+      transition:border-color .20s ease, transform .12s ease;
+      text-align:center;
+    }
+    .quiz-container.correct{ border-color: var(--ok); }
+    .quiz-container.wrong{ border-color: var(--bad); }
+
+    #question {
+      margin: 0 0 12px 0;
+      font-size: 20px;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .options{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin:12px 0;
+    }
+
+    .option-btn{
+      background:var(--btn-bg);
+      color:var(--white);
+      border:0;
+      padding:12px 10px;
+      font-size:15px;
+      border-radius:8px;
+      cursor:pointer;
+      width:100%;
+      word-break:break-word;
+      transition: transform .10s ease, background .12s ease, opacity .12s ease;
+    }
+    .option-btn:active{ transform: translateY(1px); }
+    .option-btn:hover{ background:var(--btn-bg-hover); }
+    .option-btn[disabled]{ opacity: .7; cursor: default; }
+
+    .timer{
+      margin:10px 0;
+      font-weight:700;
+      font-size:16px;
+      text-align:center;
+    }
+
+    .auto-next {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+      margin-bottom:8px;
+      font-size:14px;
+    }
+
+    .controls {
+      display:flex;
+      gap:8px;
+      flex-direction:column;
+      align-items:stretch;
+      margin-top:6px;
+    }
+
+    .next-btn, .restart-btn {
+      background:var(--ok);
+      color:var(--white);
+      border:0;
+      padding:12px;
+      border-radius:8px;
+      font-size:15px;
+      cursor:pointer;
+      width:100%;
+    }
+    .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
+
+    .score {
+      margin-top:12px;
+      text-align:center;
+      font-weight:700;
+      font-size:16px;
+    }
+
+    @media (max-width:420px){
+      .options{ grid-template-columns:1fr; }
+      #question{ font-size:18px; }
+      .option-btn{ padding:14px; font-size:16px; }
+      .timer{ font-size:15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox">
+    <h2 id="question">Loading question...</h2>
+    <div class="options" id="options"></div>
+    <div class="timer" id="timer">Time: 10s</div>
+    <div class="auto-next" id="autoNextWrap">
+      <input type="checkbox" id="autoNext" />
+      <label for="autoNext">Auto Next</label>
+    </div>
+    <div class="controls">
+      <button id="nextBtn" class="next-btn" type="button">Next</button>
+      <button id="restartBtn" class="restart-btn" type="button" style="display:none;">Restart Quiz</button>
+    </div>
+    <div id="scoreBox" class="score"></div>
+  </div>
+
+  <script>
+    /*********** Languages Question Database ***********/
+const questions = [
+  { question: "What is the official language of Afghanistan?", options: ["Dari","Pashto","Both Dari & Pashto","Persian"], answer: "Both Dari & Pashto" },
+  { question: "What is the official language of Albania?", options: ["Albanian","Greek","Turkish","Serbian"], answer: "Albanian" },
+  { question: "What is the official language of Algeria?", options: ["Arabic","Berber","French","Both Arabic & Berber"], answer: "Both Arabic & Berber" },
+  { question: "What is the official language of Andorra?", options: ["Spanish","French","Catalan","Portuguese"], answer: "Catalan" },
+  { question: "What is the official language of Angola?", options: ["Portuguese","French","English","Swahili"], answer: "Portuguese" },
+  { question: "What is the official language of Antigua and Barbuda?", options: ["English","Spanish","French","Dutch"], answer: "English" },
+  { question: "What is the official language of Argentina?", options: ["Spanish","Portuguese","Italian","English"], answer: "Spanish" },
+  { question: "What is the official language of Armenia?", options: ["Armenian","Russian","Georgian","Persian"], answer: "Armenian" },
+  { question: "What is the official language of Australia?", options: ["English","French","Aboriginal languages","None"], answer: "English" },
+  { question: "What is the official language of Austria?", options: ["German","Austrian","Hungarian","Slovene"], answer: "German" },
+  { question: "What is the official language of Azerbaijan?", options: ["Azerbaijani","Turkish","Russian","Georgian"], answer: "Azerbaijani" },
+  { question: "What is the official language of Bahamas?", options: ["English","Spanish","Creole","French"], answer: "English" },
+  { question: "What is the official language of Bahrain?", options: ["Arabic","English","Persian","Urdu"], answer: "Arabic" },
+  { question: "What is the official language of Bangladesh?", options: ["Bengali","Hindi","Urdu","English"], answer: "Bengali" },
+  { question: "What is the official language of Barbados?", options: ["English","French","Creole","Dutch"], answer: "English" },
+  { question: "What is the official language of Belarus?", options: ["Belarusian","Russian","Both Belarusian & Russian","Polish"], answer: "Both Belarusian & Russian" },
+  { question: "What is the official language of Belgium?", options: ["Dutch","French","German","All of these"], answer: "All of these" },
+  { question: "What is the official language of Belize?", options: ["English","Spanish","Creole","Mayan"], answer: "English" },
+  { question: "What is the official language of Benin?", options: ["French","Fon","Yoruba","Portuguese"], answer: "French" },
+  { question: "What is the official language of Bhutan?", options: ["Dzongkha","Nepali","Hindi","Tibetan"], answer: "Dzongkha" },
+  { question: "What is the official language of Bolivia?", options: ["Spanish","Quechua","Aymara","All of these"], answer: "All of these" },
+  { question: "What is the official language of Bosnia and Herzegovina?", options: ["Bosnian","Serbian","Croatian","All of these"], answer: "All of these" },
+  { question: "What is the official language of Botswana?", options: ["English","Tswana","Both English & Tswana","Zulu"], answer: "Both English & Tswana" },
+  { question: "What is the official language of Brazil?", options: ["Portuguese","Spanish","English","French"], answer: "Portuguese" },
+  { question: "What is the official language of Brunei?", options: ["Malay","English","Chinese","Arabic"], answer: "Malay" },
+  { question: "What is the official language of Bulgaria?", options: ["Bulgarian","Russian","Greek","Turkish"], answer: "Bulgarian" },
+  { question: "What is the official language of Burkina Faso?", options: ["French","Mossi","Dyula","Fulfulde"], answer: "French" },
+  { question: "What is the official language of Burundi?", options: ["Kirundi","French","English","All of these"], answer: "All of these" },
+  { question: "What is the official language of Cabo Verde?", options: ["Portuguese","Creole","Spanish","English"], answer: "Portuguese" },
+  { question: "What is the official language of Cambodia?", options: ["Khmer","Thai","Lao","Vietnamese"], answer: "Khmer" },
+  { question: "What is the official language of Cameroon?", options: ["French","English","Both French & English","Swahili"], answer: "Both French & English" },
+  { question: "What is the official language of Canada?", options: ["English","French","Both English & French","Spanish"], answer: "Both English & French" },
+  { question: "What is the official language of Central African Republic?", options: ["French","Sango","Both French & Sango","Arabic"], answer: "Both French & Sango" },
+  { question: "What is the official language of Chad?", options: ["Arabic","French","Both Arabic & French","Hausa"], answer: "Both Arabic & French" },
+  { question: "What is the official language of Chile?", options: ["Spanish","Mapudungun","English","Portuguese"], answer: "Spanish" },
+  { question: "What is the official language of China?", options: ["Mandarin","Cantonese","Tibetan","Wu"], answer: "Mandarin" },
+  { question: "What is the official language of Colombia?", options: ["Spanish","English","Quechua","Portuguese"], answer: "Spanish" },
+  { question: "What is the official language of Comoros?", options: ["Comorian","French","Arabic","All of these"], answer: "All of these" },
+  { question: "What is the official language of Congo (DRC)?", options: ["French","Lingala","Swahili","All of these"], answer: "French" },
+  { question: "What is the official language of Congo (Republic)?", options: ["French","Lingala","Kikongo","All of these"], answer: "French" },
+  { question: "What is the official language of Costa Rica?", options: ["Spanish","English","Creole","Portuguese"], answer: "Spanish" },
+  { question: "What is the official language of Croatia?", options: ["Croatian","Serbian","Slovenian","Bosnian"], answer: "Croatian" },
+  { question: "What is the official language of Cuba?", options: ["Spanish","English","French","Portuguese"], answer: "Spanish" },
+  { question: "What is the official language of Cyprus?", options: ["Greek","Turkish","Both Greek & Turkish","English"], answer: "Both Greek & Turkish" },
+  { question: "What is the official language of Czech Republic?", options: ["Czech","Slovak","German","Polish"], answer: "Czech" },
+  { question: "What is the official language of Denmark?", options: ["Danish","Swedish","Norwegian","English"], answer: "Danish" },
+  { question: "What is the official language of Djibouti?", options: ["French","Arabic","Both French & Arabic","Somali"], answer: "Both French & Arabic" },
+  { question: "What is the official language of Dominica?", options: ["English","French","Spanish","Creole"], answer: "English" },
+  { question: "What is the official language of Dominican Republic?", options: ["Spanish","Haitian Creole","English","French"], answer: "Spanish" },
+  { question: "What is the official language of Ecuador?", options: ["Spanish","Quechua","Shuar","All of these"], answer: "Spanish" },
+  { question: "What is the official language of Egypt?", options: ["Arabic","French","English","Berber"], answer: "Arabic" },
+  { question: "What is the official language of El Salvador?", options: ["Spanish","English","Nahuatl","French"], answer: "Spanish" },
+  { question: "What is the official language of Equatorial Guinea?", options: ["Spanish","French","Portuguese","All of these"], answer: "All of these" },
+  { question: "What is the official language of Eritrea?", options: ["Tigrinya","Arabic","English","All of these"], answer: "All of these" },
+  { question: "What is the official language of Estonia?", options: ["Estonian","Finnish","Russian","Swedish"], answer: "Estonian" },
+  { question: "What is the official language of Eswatini (Swaziland)?", options: ["Swazi","English","Both Swazi & English","Zulu"], answer: "Both Swazi & English" },
+  { question: "What is the official language of Ethiopia?", options: ["Amharic","Oromo","English","Tigrinya"], answer: "Amharic" },
+  { question: "What is the official language of Fiji?", options: ["English","Fijian","Hindi","All of these"], answer: "All of these" },
+  { question: "What is the official language of Finland?", options: ["Finnish","Swedish","Both Finnish & Swedish","Norwegian"], answer: "Both Finnish & Swedish" },
+  { question: "What is the official language of France?", options: ["French","English","German","Spanish"], answer: "French" },
+  { question: "What is the official language of Gabon?", options: ["French","Fang","Punu","Myene"], answer: "French" },
+  { question: "What is the official language of Gambia?", options: ["English","Mandinka","Wolof","Fula"], answer: "English" },
+  { question: "What is the official language of Georgia?", options: ["Georgian","Russian","Armenian","Azerbaijani"], answer: "Georgian" },
+  { question: "What is the official language of Germany?", options: ["German","English","Dutch","French"], answer: "German" },
+  { question: "What is the official language of Ghana?", options: ["English","Akan","Twi","Ewe"], answer: "English" },
+  { question: "What is the official language of Greece?", options: ["Greek","Turkish","Italian","Albanian"], answer: "Greek" },
+  { question: "What is the official language of Grenada?", options: ["English","French","Spanish","Creole"], answer: "English" },
+  { question: "What is the official language of Guatemala?", options: ["Spanish","K'iche'","Mam","All of these"], answer: "Spanish" },
+  { question: "What is the official language of Guinea?", options: ["French","Malinké","Peul","Susu"], answer: "French" },
+  { question: "What is the official language of Guinea-Bissau?", options: ["Portuguese","Crioulo","French","Spanish"], answer: "Portuguese" },
+  { question: "What is the official language of Guyana?", options: ["English","Creole","Spanish","Portuguese"], answer: "English" },
+  { question: "What is the official language of Haiti?", options: ["French","Haitian Creole","Both French & Haitian Creole","Spanish"], answer: "Both French & Haitian Creole" },
+  { question: "What is the official language of Honduras?", options: ["Spanish","English","Garífuna","Miskito"], answer: "Spanish" },
+  { question: "What is the official language of Hungary?", options: ["Hungarian","German","Slovak","Romanian"], answer: "Hungarian" },
+  { question: "What is the official language of Iceland?", options: ["Icelandic","English","Danish","Norwegian"], answer: "Icelandic" },
+  { question: "What is the official language of India?", options: ["Hindi","English","Both Hindi & English","Bengali"], answer: "Both Hindi & English" },
+  { question: "What is the official language of Indonesia?", options: ["Indonesian (Bahasa)","Javanese","Sundanese","Malay"], answer: "Indonesian (Bahasa)" },
+  { question: "What is the official language of Iran?", options: ["Persian (Farsi)","Arabic","Kurdish","Turkmen"], answer: "Persian (Farsi)" },
+  { question: "What is the official language of Iraq?", options: ["Arabic","Kurdish","Both Arabic & Kurdish","Persian"], answer: "Both Arabic & Kurdish" },
+  { question: "What is the official language of Ireland?", options: ["Irish","English","Both Irish & English","Welsh"], answer: "Both Irish & English" },
+  { question: "What is the official language of Israel?", options: ["Hebrew","Arabic","Both Hebrew & Arabic","English"], answer: "Hebrew" },
+  { question: "What is the official language of Italy?", options: ["Italian","Sardinian","German","French"], answer: "Italian" },
+  { question: "What is the official language of Jamaica?", options: ["English","Patois","Spanish","French"], answer: "English" },
+  { question: "What is the official language of Japan?", options: ["Japanese","Korean","Chinese","English"], answer: "Japanese" },
+  { question: "What is the official language of Jordan?", options: ["Arabic","English","Aramaic","French"], answer: "Arabic" },
+  { question: "What is the official language of Kazakhstan?", options: ["Kazakh","Russian","Both Kazakh & Russian","Uzbek"], answer: "Both Kazakh & Russian" },
+  { question: "What is the official language of Kenya?", options: ["English","Swahili","Both English & Swahili","Kikuyu"], answer: "Both English & Swahili" },
+  { question: "What is the official language of Kiribati?", options: ["English","I-Kiribati","Marshallese","Gilbertese"], answer: "Both English & I-Kiribati" },
+  { question: "What is the official language of Kosovo?", options: ["Albanian","Serbian","Both Albanian & Serbian","Turkish"], answer: "Both Albanian & Serbian" },
+  { question: "What is the official language of Kuwait?", options: ["Arabic","English","Persian","Urdu"], answer: "Arabic" },
+  { question: "What is the official language of Kyrgyzstan?", options: ["Kyrgyz","Russian","Both Kyrgyz & Russian","Uzbek"], answer: "Both Kyrgyz & Russian" },
+  { question: "What is the official language of Laos?", options: ["Lao","Thai","Vietnamese","Khmer"], answer: "Lao" },
+  { question: "What is the official language of Latvia?", options: ["Latvian","Russian","English","Lithuanian"], answer: "Latvian" },
+  { question: "What is the official language of Lebanon?", options: ["Arabic","French","Both Arabic & French","English"], answer: "Arabic" },
+  { question: "What is the official language of Lesotho?", options: ["Sesotho","English","Both Sesotho & English","Zulu"], answer: "Both Sesotho & English" },
+  { question: "What is the official language of Liberia?", options: ["English","Kpelle","Bassa","Gio"], answer: "English" },
+  { question: "What is the official language of Libya?", options: ["Arabic","Berber","Italian","French"], answer: "Arabic" },
+  { question: "What is the official language of Liechtenstein?", options: ["German","Austrian","Swiss German","Italian"], answer: "German" },
+  { question: "What is the official language of Lithuania?", options: ["Lithuanian","Polish","Russian","Latvian"], answer: "Lithuanian" },
+  { question: "What is the official language of Luxembourg?", options: ["Luxembourgish","French","German","All of these"], answer: "All of these" },
+  { question: "What is the official language of Madagascar?", options: ["Malagasy","French","Both Malagasy & French","English"], answer: "Both Malagasy & French" },
+  { question: "What is the official language of Malawi?", options: ["English","Chichewa","Both English & Chichewa","Tumbuka"], answer: "Both English & Chichewa" },
+  { question: "What is the official language of Malaysia?", options: ["Malay","English","Mandarin","Tamil"], answer: "Malay" },
+  { question: "What is the official language of Maldives?", options: ["Dhivehi","English","Arabic","Hindi"], answer: "Dhivehi" },
+  { question: "What is the official language of Mali?", options: ["French","Bambara","Fulfulde","Soninke"], answer: "French" },
+  { question: "What is the official language of Malta?", options: ["Maltese","English","Both Maltese & English","Italian"], answer: "Both Maltese & English" },
+  { question: "What is the official language of Marshall Islands?", options: ["Marshallese","English","Both Marshallese & English","Yapese"], answer: "Both Marshallese & English" },
+  { question: "What is the official language of Mauritania?", options: ["Arabic","French","Pulaar","Soninke"], answer: "Arabic" },
+  { question: "What is the official language of Mauritius?", options: ["English","French","Both English & French","Creole"], answer: "English" },
+  { question: "What is the official language of Mexico?", options: ["Spanish","Nahuatl","Mayan","All of these"], answer: "Spanish" },
+  { question: "What is the official language of Micronesia?", options: ["English","Chuukese","Yapese","Kosraean"], answer: "English" },
+  { question: "What is the official language of Moldova?", options: ["Romanian","Russian","Both Romanian & Russian","Gagauz"], answer: "Romanian" },
+  { question: "What is the official language of Monaco?", options: ["French","Monégasque","Italian","English"], answer: "French" },
+  { question: "What is the official language of Mongolia?", options: ["Mongolian","Russian","Chinese","Kazakh"], answer: "Mongolian" },
+  { question: "What is the official language of Montenegro?", options: ["Montenegrin","Serbian","Bosnian","All of these"], answer: "Montenegrin" },
+  { question: "What is the official language of Morocco?", options: ["Arabic","Berber","Both Arabic & Berber","French"], answer: "Both Arabic & Berber" },
+  { question: "What is the official language of Mozambique?", options: ["Portuguese","Emakhuwa","Tsonga","Makhuwa"], answer: "Portuguese" },
+  { question: "What is the official language of Myanmar (Burma)?", options: ["Burmese","English","Shan","Karen"], answer: "Burmese" },
+  { question: "What is the official language of Namibia?", options: ["English","Afrikaans","Oshiwambo","German"], answer: "English" },
+  { question: "What is the official language of Nauru?", options: ["Nauruan","English","Both Nauruan & English","Chinese"], answer: "Both Nauruan & English" },
+  { question: "What is the official language of Nepal?", options: ["Nepali","Hindi","Tibetan","English"], answer: "Nepali" },
+  { question: "What is the official language of Netherlands?", options: ["Dutch","English","Frisian","German"], answer: "Dutch" },
+  { question: "What is the official language of New Zealand?", options: ["English","Māori","Both English & Māori","Samoan"], answer: "Both English & Māori" },
+  { question: "What is the official language of Nicaragua?", options: ["Spanish","Miskito","English","Creole"], answer: "Spanish" },
+  { question: "What is the official language of Niger?", options: ["French","Hausa","Zarma","Both French & Hausa"], answer: "French" },
+  { question: "What is the official language of Nigeria?", options: ["English","Hausa","Yoruba","Igbo"], answer: "English" },
+  { question: "What is the official language of North Korea?", options: ["Korean","Japanese","Chinese","English"], answer: "Korean" },
+  { question: "What is the official language of North Macedonia?", options: ["Macedonian","Albanian","Both Macedonian & Albanian","Serbian"], answer: "Macedonian" },
+  { question: "What is the official language of Norway?", options: ["Norwegian","Swedish","Danish","Finnish"], answer: "Norwegian" },
+  { question: "What is the official language of Oman?", options: ["Arabic","English","Baluchi","Swahili"], answer: "Arabic" },
+  { question: "What is the official language of Pakistan?", options: ["Urdu","Punjabi","Pashto","Sindhi"], answer: "Urdu" },
+  { question: "What is the official language of Palau?", options: ["Palauan","English","Both Palauan & English","Japanese"], answer: "Both Palauan & English" },
+  { question: "What is the official language of Panama?", options: ["Spanish","English","Ngäbere","Kuna"], answer: "Spanish" },
+  { question: "What is the official language of Papua New Guinea?", options: ["English","Tok Pisin","Hiri Motu","All of these"], answer: "All of these" },
+  { question: "What is the official language of Paraguay?", options: ["Spanish","Guarani","Both Spanish & Guarani","Portuguese"], answer: "Both Spanish & Guarani" },
+  { question: "What is the official language of Peru?", options: ["Spanish","Quechua","Aymara","All of these"], answer: "Spanish" },
+  { question: "What is the official language of Philippines?", options: ["Filipino","English","Both Filipino & English","Spanish"], answer: "Both Filipino & English" },
+  { question: "What is the official language of Poland?", options: ["Polish","German","Russian","Ukrainian"], answer: "Polish" },
+  { question: "What is the official language of Portugal?", options: ["Portuguese","Spanish","Galician","French"], answer: "Portuguese" },
+  { question: "What is the official language of Qatar?", options: ["Arabic","English","Urdu","Hindi"], answer: "Arabic" },
+  { question: "What is the official language of Romania?", options: ["Romanian","Hungarian","German","Russian"], answer: "Romanian" },
+  { question: "What is the official language of Russia?", options: ["Russian","Tatar","Bashkir","All of these"], answer: "Russian" },
+  { question: "What is the official language of Rwanda?", options: ["Kinyarwanda","French","English","All of these"], answer: "Kinyarwanda" },
+  { question: "What is the official language of Saint Kitts and Nevis?", options: ["English","French","Spanish","Creole"], answer: "English" },
+  { question: "What is the official language of Saint Lucia?", options: ["English","French Creole","Both English & French Creole","Spanish"], answer: "English" },
+  { question: "What is the official language of Saint Vincent and the Grenadines?", options: ["English","French","Spanish","Creole"], answer: "English" },
+  { question: "What is the official language of Samoa?", options: ["Samoan","English","Both Samoan & English","Tongan"], answer: "Both Samoan & English" },
+  { question: "What is the official language of San Marino?", options: ["Italian","Sanmarinese","English","French"], answer: "Italian" },
+  { question: "What is the official language of Sao Tome and Principe?", options: ["Portuguese","Forro","French","Spanish"], answer: "Portuguese" },
+  { question: "What is the official language of Saudi Arabia?", options: ["Arabic","English","Urdu","Persian"], answer: "Arabic" },
+  { question: "What is the official language of Senegal?", options: ["French","Wolof","Pulaar","All of these"], answer: "French" },
+  { question: "What is the official language of Serbia?", options: ["Serbian","Croatian","Bosnian","All of these"], answer: "Serbian" },
+  { question: "What is the official language of Seychelles?", options: ["Seychellois Creole","English","French","All of these"], answer: "All of these" },
+  { question: "What is the official language of Sierra Leone?", options: ["English","Mende","Krio","Temne"], answer: "English" },
+  { question: "What is the official language of Singapore?", options: ["English","Malay","Mandarin","Tamil"], answer: "English" },
+  { question: "What is the official language of Slovakia?", options: ["Slovak","Czech","Hungarian","Polish"], answer: "Slovak" },
+  { question: "What is the official language of Slovenia?", options: ["Slovene","Italian","Hungarian","Croatian"], answer: "Slovene" },
+  { question: "What is the official language of Solomon Islands?", options: ["English","Solomon Pijin","Both English & Pijin","French"], answer: "Both English & Pijin" },
+  { question: "What is the official language of Somalia?", options: ["Somali","Arabic","Both Somali & Arabic","Italian"], answer: "Both Somali & Arabic" },
+  { question: "What is the official language of South Africa?", options: ["Zulu","Xhosa","English","All of these"], answer: "All of these" },
+  { question: "What is the official language of South Korea?", options: ["Korean","Japanese","Chinese","English"], answer: "Korean" },
+  { question: "What is the official language of South Sudan?", options: ["English","Arabic","Dinka","Nuer"], answer: "English" },
+  { question: "What is the official language of Spain?", options: ["Spanish","Catalan","Galician","All of these"], answer: "Spanish" },
+  { question: "What is the official language of Sri Lanka?", options: ["Sinhala","Tamil","Both Sinhala & Tamil","English"], answer: "Both Sinhala & Tamil" },
+  { question: "What is the official language of Sudan?", options: ["Arabic","English","Both Arabic & English","Nubian"], answer: "Arabic" },
+  { question: "What is the official language of Suriname?", options: ["Dutch","Sranan Tongo","English","Portuguese"], answer: "Dutch" },
+  { question: "What is the official language of Sweden?", options: ["Swedish","English","Finnish","Norwegian"], answer: "Swedish" },
+  { question: "What is the official language of Switzerland?", options: ["German","French","Italian","All of these"], answer: "All of these" },
+  { question: "What is the official language of Syria?", options: ["Arabic","Kurdish","Armenian","French"], answer: "Arabic" },
+  { question: "What is the official language of Taiwan?", options: ["Mandarin","Taiwanese Hokkien","Hakka","All of these"], answer: "Mandarin" },
+  { question: "What is the official language of Tajikistan?", options: ["Tajik","Russian","Both Tajik & Russian","Uzbek"], answer: "Tajik" },
+  { question: "What is the official language of Tanzania?", options: ["Swahili","English","Both Swahili & English","Kisukuma"], answer: "Both Swahili & English" },
+  { question: "What is the official language of Thailand?", options: ["Thai","Lao","Burmese","Khmer"], answer: "Thai" },
+  { question: "What is the official language of Timor-Leste (East Timor)?", options: ["Tetum","Portuguese","Both Tetum & Portuguese","Indonesian"], answer: "Both Tetum & Portuguese" },
+  { question: "What is the official language of Togo?", options: ["French","Ewe","Kabye","Hausa"], answer: "French" },
+  { question: "What is the official language of Tonga?", options: ["Tongan","English","Both Tongan & English","Samoan"], answer: "Both Tongan & English" },
+  { question: "What is the official language of Trinidad and Tobago?", options: ["English","Spanish","Creole","French"], answer: "English" },
+  { question: "What is the official language of Tunisia?", options: ["Arabic","French","Berber","All of these"], answer: "Arabic" },
+  { question: "What is the official language of Turkey?", options: ["Turkish","Kurdish","Arabic","Persian"], answer: "Turkish" },
+  { question: "What is the official language of Turkmenistan?", options: ["Turkmen","Russian","Both Turkmen & Russian","Uzbek"], answer: "Turkmen" },
+  { question: "What is the official language of Tuvalu?", options: ["Tuvaluan","English","Both Tuvaluan & English","Samoan"], answer: "Both Tuvaluan & English" },
+  { question: "What is the official language of Uganda?", options: ["English","Swahili","Both English & Swahili","Luganda"], answer: "Both English & Swahili" },
+  { question: "What is the official language of Ukraine?", options: ["Ukrainian","Russian","Both Ukrainian & Russian","Polish"], answer: "Ukrainian" },
+  { question: "What is the official language of United Arab Emirates?", options: ["Arabic","English","Both Arabic & English","Urdu"], answer: "Arabic" },
+  { question: "What is the official language of United Kingdom?", options: ["English","Welsh","Scottish Gaelic","All of these"], answer: "English" },
+  { question: "What is the official language of United States of America?", options: ["English","Spanish","No official language","Both English & Spanish"], answer: "No official language" },
+  { question: "What is the official language of Uruguay?", options: ["Spanish","Portuguese","Guarani","Italian"], answer: "Spanish" },
+  { question: "What is the official language of Uzbekistan?", options: ["Uzbek","Russian","Both Uzbek & Russian","Tajik"], answer: "Uzbek" },
+  { question: "What is the official language of Vanuatu?", options: ["Bislama","English","French","All of these"], answer: "All of these" },
+  { question: "What is the official language of Vatican City?", options: ["Italian","Latin","Both Italian & Latin","French"], answer: "Both Italian & Latin" },
+  { question: "What is the official language of Venezuela?", options: ["Spanish","Portuguese","Dutch","English"], answer: "Spanish" },
+  { question: "What is the official language of Vietnam?", options: ["Vietnamese","Chinese","French","English"], answer: "Vietnamese" },
+  { question: "What is the official language of Yemen?", options: ["Arabic","Hadhrami","Somali","English"], answer: "Arabic" },
+  { question: "What is the official language of Zambia?", options: ["English","Bemba","Nyanja","All of these"], answer: "English" },
+  { question: "What is the official language of Zimbabwe?", options: ["English","Shona","Ndebele","All of these"], answer: "All of these" }
+];
+
+    
+    
+
+    const QUESTIONS_PER_QUIZ = 15; // number of random questions per session
+    let shuffledQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let timerInterval = null;
+    let autoAdvanceTimeout = null;
+    let timeLeft = 10;
+
+    const quizBox = document.getElementById('quizBox');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const timerEl = document.getElementById('timer');
+    const scoreBox = document.getElementById('scoreBox');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const autoNextWrap = document.getElementById('autoNextWrap');
+
+    function shuffleArray(arr){
+      return arr.map(v => ({v, r: Math.random()}))
+                .sort((a,b)=> a.r - b.r)
+                .map(x => x.v);
+    }
+
+    function clearTimers(){
+      if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+      if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+    }
+
+    function startQuiz(){
+      shuffledQuestions = shuffleArray(questions).slice(0, QUESTIONS_PER_QUIZ);
+      currentIndex = 0;
+      score = 0;
+      answered = false;
+      scoreBox.textContent = '';
+      restartBtn.style.display = 'none';
+      nextBtn.style.display = 'block';
+      autoNextWrap.style.display = 'flex';
+      loadQuestion();
+    }
+
+    function loadQuestion(){
+      clearTimers();
+      quizBox.classList.remove('correct','wrong');
+      answered = false;
+
+      if(currentIndex >= shuffledQuestions.length) return endQuiz();
+
+      const q = shuffledQuestions[currentIndex];
+      questionEl.textContent = q.question;
+
+      const opts = shuffleArray(q.options);
+
+      optionsEl.innerHTML = '';
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.disabled = false;
+        btn.addEventListener('click', () => onSelectOption(opt, q.answer));
+        optionsEl.appendChild(btn);
+      });
+
+      timeLeft = 10;
+      timerEl.textContent = `Time: ${timeLeft}s`;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time: ${timeLeft}s`;
+        if(timeLeft <= 0){
+          clearTimers();
+          quizBox.classList.add('wrong');
+          answered = false;
+          if(document.getElementById('autoNext').checked){
+            autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
+          }
+        }
+      }, 1000);
+    }
+
+    function onSelectOption(optionText, correctAnswer){
+      if(answered) return;
+      answered = true;
+      Array.from(optionsEl.children).forEach(b => b.disabled = true);
+      clearTimers();
+
+      const isCorrect = optionText === correctAnswer;
+
+      if(isCorrect){
+        quizBox.classList.add('correct');
+        score++;
+      } else {
+        quizBox.classList.add('wrong');
+      }
+
+      if(document.getElementById('autoNext').checked){
+        autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
+      }
+    }
+
+    function nextQuestion(){
+      clearTimers();
+      if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
+        quizBox.classList.add('wrong');
+        setTimeout(() => { advanceToNext(); }, 700);
+      } else {
+        setTimeout(() => { advanceToNext(); }, 200);
+      }
+    }
+
+    function advanceToNext(){
+      clearTimers();
+      currentIndex++;
+      loadQuestion();
+    }
+
+    function endQuiz(){
+      clearTimers();
+      questionEl.textContent = 'Quiz Completed!';
+      optionsEl.innerHTML = '';
+      nextBtn.style.display = 'none';
+      restartBtn.style.display = 'block';
+      timerEl.textContent = '';
+      autoNextWrap.style.display = 'none';
+      scoreBox.textContent = `Your Score: ${score} / ${shuffledQuestions.length}`;
+    }
+
+    function restartQuiz(){
+      clearTimers();
+      quizBox.classList.remove('correct','wrong');
+      scoreBox.textContent = '';
+      startQuiz();
+    }
+
+    nextBtn.addEventListener('click', nextQuestion);
+    restartBtn.addEventListener('click', restartQuiz);
+
+    startQuiz();
+  </script>
+</body>
+</html>
