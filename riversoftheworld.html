@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rivers of the World Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .quiz-container {
+      width: 95%;
+      max-width: 600px;
+      background: #f9f9f9;
+      border: 3px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    #timer {
+      font-size: 18px;
+      font-weight: bold;
+      color: black;
+      margin-bottom: 15px;
+    }
+    #question {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: black;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .option-btn {
+      background: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    .option-btn:hover {
+      background: #0056b3;
+    }
+    .controls {
+      margin-top: 10px;
+    }
+    #autoNextContainer {
+      margin-bottom: 10px;
+    }
+    #autoNext {
+      transform: scale(1.2);
+      margin-right: 8px;
+    }
+    label {
+      font-size: 16px;
+      color: black;
+    }
+    #next-btn, #restart-btn {
+      background: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    #next-btn:hover, #restart-btn:hover {
+      background: #1e7e34;
+    }
+    #restart-btn {
+      display: none;
+      margin-top: 15px;
+    }
+    #score {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quiz">
+    <h1>Rivers of the World Quiz</h1>
+    <div id="timer">Time left: 10s</div>
+    <div id="question">Loading question...</div>
+    <div class="options" id="options"></div>
+    <div class="controls">
+      <div id="autoNextContainer">
+        <input type="checkbox" id="autoNext">
+        <label for="autoNext">Auto-Next</label>
+      </div>
+      <button id="next-btn">Next</button>
+      <button id="restart-btn">Restart Quiz</button>
+    </div>
+    <div id="score"></div>
+  </div>
+
+  <script>
+   const questionsDB = [
+  { question: "Which river is traditionally considered the longest in the world?", options: ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"], answer: "Nile River" },
+  { question: "Which river discharges the greatest volume of water on Earth?", options: ["Nile River", "Amazon River", "Yangtze River", "Congo River"], answer: "Amazon River" },
+  { question: "Which river flows through Cairo, Egypt?", options: ["Nile River", "Tigris River", "Euphrates River", "Jordan River"], answer: "Nile River" },
+  { question: "Which river flows through Paris, France?", options: ["Seine", "Thames", "Danube", "Rhine"], answer: "Seine" },
+  { question: "Which river flows through London, England?", options: ["Thames", "Seine", "Rhine", "Elbe"], answer: "Thames" },
+  { question: "The Yangtze River flows across which country?", options: ["India", "China", "Russia", "Mongolia"], answer: "China" },
+  { question: "Which river forms much of the border between the United States and Mexico?", options: ["Mississippi", "Rio Grande", "Colorado", "Columbia"], answer: "Rio Grande" },
+  { question: "Which river carved the Grand Canyon?", options: ["Colorado River", "Columbia River", "Missouri River", "Rio Grande"], answer: "Colorado River" },
+  { question: "Which river flows through Budapest and Vienna?", options: ["Danube", "Rhine", "Elbe", "Seine"], answer: "Danube" },
+  { question: "Which river is the longest in South America?", options: ["Amazon", "Orinoco", "Paraná", "Magdalena"], answer: "Amazon" },
+  { question: "Which river is the longest in North America when main-stem plus tributaries are counted?", options: ["Mississippi", "Missouri", "Yukon", "Mackenzie"], answer: "Missouri" },
+  { question: "Which river is the longest in Europe?", options: ["Volga", "Danube", "Rhine", "Dnieper"], answer: "Volga" },
+  { question: "Which river is the longest in Africa?", options: ["Nile", "Congo", "Zambezi", "Niger"], answer: "Nile" },
+  { question: "Which major river passes through Baghdad?", options: ["Tigris", "Euphrates", "Nile", "Indus"], answer: "Tigris" },
+  { question: "Which river joins the Ganges to form the Ganges–Brahmaputra delta?", options: ["Brahmaputra", "Indus", "Yamuna", "Godavari"], answer: "Brahmaputra" },
+  { question: "Which river is a major distributary of the Ganges and flows past Kolkata?", options: ["Hooghly", "Yamuna", "Gandak", "Kosi"], answer: "Hooghly" },
+  { question: "Which river is the longest in Australia?", options: ["Murray", "Darling", "Murrumbidgee", "Fitzroy"], answer: "Murray" },
+  { question: "Which river is associated with Victoria Falls?", options: ["Zambezi", "Congo", "Nile", "Limpopo"], answer: "Zambezi" },
+  { question: "Which river contains Marajó, the world’s largest river island near its mouth?", options: ["Amazon", "Orinoco", "Paraná", "Madeira"], answer: "Amazon" },
+  { question: "Which river flows through Shanghai, China?", options: ["Yangtze", "Yellow River", "Pearl River", "Huai"], answer: "Yangtze" },
+  { question: "Which river is the longest in India by main stem?", options: ["Ganges", "Brahmaputra", "Godavari", "Narmada"], answer: "Ganges" },
+  { question: "Which river has the second-largest discharge and flows through central Africa?", options: ["Nile", "Congo", "Zambezi", "Niger"], answer: "Congo" },
+  { question: "Which river flows through Rome?", options: ["Tiber", "Arno", "Po", "Adige"], answer: "Tiber" },
+  { question: "Which river is nicknamed the 'Yellow River'?", options: ["Yangtze", "Mekong", "Huang He", "Amur"], answer: "Huang He" },
+  { question: "Which river system forms the massive delta in Bangladesh and India?", options: ["Ganges–Brahmaputra", "Nile", "Mekong", "Amazon"], answer: "Ganges–Brahmaputra" },
+  { question: "Which river flows through St. Petersburg, Russia?", options: ["Neva", "Volga", "Don", "Dnieper"], answer: "Neva" },
+  { question: "Which river is the main tributary that combines with the Mississippi by length?", options: ["Ohio River", "Missouri River", "Arkansas River", "Tennessee River"], answer: "Missouri River" },
+  { question: "Which river flows into the Persian Gulf and was central to Mesopotamia?", options: ["Tigris", "Euphrates", "Jordan", "Indus"], answer: "Euphrates" },
+  { question: "Which river empties into the Black Sea and passes through Kyiv?", options: ["Dnieper", "Volga", "Danube", "Don"], answer: "Dnieper" },
+  { question: "Which German city is located on the Elbe River and serves as a major port?", options: ["Hamburg", "Cologne", "Munich", "Frankfurt"], answer: "Hamburg" },
+  { question: "Which South American river flows through Colombia and Venezuela (not the Amazon)?", options: ["Orinoco", "Magdalena", "Paraná", "Madeira"], answer: "Orinoco" },
+  { question: "Which French river joins the Rhône and flows through Lyon?", options: ["Saône", "Loire", "Seine", "Dordogne"], answer: "Saône" },
+  { question: "Which river in Africa is the main historic trade route for Timbuktu?", options: ["Niger", "Senegal", "Volta", "Gambia"], answer: "Niger" },
+  { question: "Which river is the major waterway through central USA and receives the Missouri?", options: ["Mississippi", "Ohio", "Arkansas", "Tennessee"], answer: "Mississippi" },
+  { question: "Which large Chinese river empties into the South China Sea near Guangzhou?", options: ["Pearl River (Zhujiang)", "Yangtze", "Yellow River", "Mekong"], answer: "Pearl River (Zhujiang)" },
+  { question: "Which river is the largest by volume in Africa and flows through the Congo rainforest?", options: ["Nile", "Congo", "Zambezi", "Niger"], answer: "Congo" },
+  { question: "Which river flows through Kolkata as the Hooghly distributary?", options: ["Hooghly", "Yamuna", "Ganges", "Brahmaputra"], answer: "Hooghly" },
+  { question: "Which river forms the border between Laos and Thailand along much of its course?", options: ["Mekong", "Salween", "Irrawaddy", "Chao Phraya"], answer: "Mekong" },
+  { question: "Which river is the longest in Russia and Europe combined (flows into the Caspian)?", options: ["Volga", "Ob", "Yenisei", "Lena"], answer: "Volga" },
+  { question: "Which river forms the delta between Argentina and Uruguay known as the Rio de la Plata?", options: ["Paraná and Uruguay combined", "Amazon", "Orinoco", "Paraná alone"], answer: "Paraná and Uruguay combined" },
+  { question: "Which river runs through Vienna, Budapest and Belgrade?", options: ["Danube", "Rhine", "Elbe", "Seine"], answer: "Danube" },
+  { question: "Which river flows through Prague, Czech Republic?", options: ["Vltava", "Elbe", "Danube", "Oder"], answer: "Vltava" },
+  { question: "Which river forms the border between Spain and Portugal in parts of its course (Duero/Douro)?", options: ["Tagus", "Douro", "Ebro", "Guadiana"], answer: "Douro" },
+  { question: "Which river is the principal river of Pakistan?", options: ["Indus", "Ganges", "Brahmaputra", "Narmada"], answer: "Indus" },
+  { question: "Which Indonesian river is the longest on Borneo?", options: ["Kapuas", "Mahakam", "Barito", "Padas"], answer: "Kapuas" },
+  { question: "Which river flows from Lake Victoria and is a main source of the Nile?", options: ["Kagera", "Blue Nile", "White Nile", "Atbara"], answer: "Kagera" },
+  { question: "Which river in Brazil is a major tributary to the Amazon and flows through Manaus (blackwater river)?", options: ["Madeira", "Rio Negro", "Tapajós", "Purus"], answer: "Rio Negro" },
+  { question: "Which river produces the world's largest freshwater island (Bananal is on the Araguaia), located in which basin?", options: ["Araguaia—Tocantins basin", "Amazon basin", "Paraná basin", "Orinoco basin"], answer: "Araguaia—Tocantins basin" },
+  { question: "Which river is associated with Niagara Falls between the USA and Canada?", options: ["Niagara River", "St. Lawrence River", "Ottawa River", "Hudson River"], answer: "Niagara River" },
+  { question: "Which European river empties into the North Sea at Rotterdam?", options: ["Rhine", "Elbe", "Seine", "Thames"], answer: "Rhine" },
+  { question: "Which river in Africa is the second-longest after the Nile and flows through the Congo Basin?", options: ["Congo", "Niger", "Zambezi", "Orange"], answer: "Congo" },
+  { question: "Which river flows through the city of Tokyo’s greater region via tributaries (major river in Kanto)?", options: ["Tone River", "Yodo River", "Kiso River", "Arakawa River"], answer: "Tone River" },
+  { question: "Which river is the longest on the Indian subcontinent that empties into the Arabian Sea (Godavari vs. Narmada)?", options: ["Godavari", "Narmada", "Cauvery", "Tapti"], answer: "Godavari" },
+  { question: "Which river flows through the Australian city of Brisbane?", options: ["Brisbane River", "Murray River", "Darling River", "Fitzroy River"], answer: "Brisbane River" },
+  { question: "Which river flows through Washington, D.C.?", options: ["Potomac", "Hudson", "Mississippi", "Ohio"], answer: "Potomac" },
+  { question: "Which river flows through Berlin, Germany?", options: ["Spree", "Rhine", "Danube", "Elbe"], answer: "Spree" },
+  { question: "Which river flows through Lisbon, Portugal?", options: ["Tagus", "Douro", "Ebro", "Guadalquivir"], answer: "Tagus" },
+  { question: "Which river flows through Hamburg and is a major German port river?", options: ["Elbe", "Rhine", "Danube", "Weser"], answer: "Elbe" },
+  { question: "Which river in Africa flows through Lagos area and is central to west African waterways?", options: ["Lagos Lagoon (area) rather than a single river", "Niger", "Benue", "Volta"], answer: "Lagos Lagoon (area) rather than a single river" },
+  { question: "Which river flows through the Italian city of Florence?", options: ["Arno", "Tiber", "Po", "Adige"], answer: "Arno" },
+  { question: "Which river in New Zealand is the longest by length on the North Island?", options: ["Waikato", "Wairoa", "Hutt", "Manawatu"], answer: "Waikato" },
+  { question: "Which river is the largest by surface area of basin in South America besides the Amazon?", options: ["Paraná", "Orinoco", "Madeira", "Magdalena"], answer: "Paraná" },
+  { question: "Which river forms the main channel of the Mississippi River system in the US Midwest?", options: ["Missouri River", "Ohio River", "Arkansas River", "Tennessee River"], answer: "Missouri River" },
+  { question: "Which river is the principal artery of trade for Montreal, Canada?", options: ["St. Lawrence", "Ottawa", "Saguenay", "Richelieu"], answer: "St. Lawrence" },
+  { question: "Which river flows through the historical city of Xi'an as a tributary of the Yellow River?", options: ["Wei River", "Yangtze", "Yellow River", "Huai River"], answer: "Wei River" },
+  { question: "Which river is the longest on Japan's Honshu island?", options: ["Shinano", "Tone", "Yodo", "Kiso"], answer: "Shinano" },
+  { question: "Which river is the longest tributary of the Amazon by discharge?", options: ["Madeira", "Negro", "Purus", "Tapajós"], answer: "Madeira" },
+  { question: "Which river is often called the 'River of Grass' in the Florida Everglades region (nickname relates to a broader system)?", options: ["Everglades is a wetland fed by the Kissimmee-Okeechobee system; not a single river", "St. Johns", "Miami", "Caloosahatchee"], answer: "Everglades is a wetland fed by the Kissimmee-Okeechobee system; not a single river" },
+  { question: "Which river flows into the Persian Gulf via the Shatt al-Arab waterway?", options: ["Tigris and Euphrates join as the Shatt al-Arab", "Indus", "Karun", "Kabul"], answer: "Tigris and Euphrates join as the Shatt al-Arab" },
+  { question: "Which river flows through the ancient city of Ur in Mesopotamia historically?", options: ["Euphrates", "Tigris", "Khabur", "Karun"], answer: "Euphrates" },
+  { question: "Which river forms the border between China and Russia in the northeast (partially)?", options: ["Amur", "Mekong", "Yangtze", "Indus"], answer: "Amur" },
+  { question: "Which river is the longest tributary feeding the Nile from the Ethiopian highlands?", options: ["Blue Nile", "Atbara", "Sobat", "Kagera"], answer: "Blue Nile" },
+  { question: "Which river is the primary river flowing through Colombia's Bogotá region (though mostly highland tributary)?", options: ["Bogotá River", "Magdalena", "Cauca", "Orinoco"], answer: "Bogotá River" },
+  { question: "Which river feeds Lake Turkana and is a major river in Kenya?", options: ["Omo (Ethiopia) feeds Lake Turkana", "Tana", "Tana River", "Awash"], answer: "Omo (Ethiopia) feeds Lake Turkana" },
+  { question: "Which river's basin includes the Pantanal, one of the largest inland wetlands on Earth?", options: ["Paraná", "Amazon", "Orinoco", "Madeira"], answer: "Paraná" },
+  { question: "Which river is the major northern drainage of Canada flowing to the Arctic Ocean (longest Canadian river by length)?", options: ["Mackenzie", "Nelson", "Fraser", "Saskatchewan"], answer: "Mackenzie" },
+  { question: "Which river in China is famed for its Three Gorges Dam?", options: ["Yangtze", "Yellow", "Pearl", "Mekong"], answer: "Yangtze" },
+  { question: "Which river has its mouth at the Bay of Bengal and is crucial to Bangladesh's fertile plains?", options: ["Ganges–Brahmaputra (Padma–Jamuna)", "Indus", "Mahanadi", "Godavari"], answer: "Ganges–Brahmaputra (Padma–Jamuna)" },
+  { question: "Which river runs through the Canadian province of Alberta and is a major tributary of the Mackenzie system?", options: ["Peace River", "Fraser River", "Saskatchewan River", "Columbia River"], answer: "Peace River" },
+  { question: "Which river in India is the main watercourse passing through Varanasi and is revered in Hinduism?", options: ["Ganges", "Yamuna", "Gandak", "Kosi"], answer: "Ganges" },
+  { question: "Which river flows through the city of Belgrade where the Sava joins it?", options: ["Danube", "Sava", "Morava", "Tisza"], answer: "Danube" },
+  { question: "Which river runs across central Russia and flows into the Caspian Sea (major Russian river)?", options: ["Volga", "Don", "Dnieper", "Neva"], answer: "Volga" },
+  { question: "Which river in western Africa flows through Nigeria and is central to the country’s agriculture?", options: ["Niger", "Congo", "Volta", "Gambia"], answer: "Niger" },
+  { question: "Which river flows through Buenos Aires into the Río de la Plata estuary?", options: ["Paraná (via Paraná Delta)", "Amazon", "Orinoco", "Magdalena"], answer: "Paraná (via Paraná Delta)" },
+  { question: "Which river forms the border between Argentina and Uruguay in part and empties into Rio de la Plata?", options: ["Paraná", "Uruguay River", "Pilcomayo", "Bermejo"], answer: "Uruguay River" },
+  { question: "Which river flows through the Sri Lankan tea regions and is the island’s longest?", options: ["Mahaweli", "Kelani", "Kalu", "Nilwala"], answer: "Mahaweli" },
+  { question: "Which river is known for the Iguazu Falls on the Argentina–Brazil border?", options: ["Iguazu", "Paraná", "Uruguay", "Pilcomayo"], answer: "Iguazu" },
+  { question: "Which river basin houses the world’s largest rainforest drainage (Amazon basin)?", options: ["Amazon", "Congo", "Paraná", "Orinoco"], answer: "Amazon" },
+  { question: "Which river is the longest tributary of the Mississippi by length?", options: ["Ohio River", "Missouri River", "Arkansas River", "Tennessee River"], answer: "Missouri River" },
+  { question: "Which river flows through the city of Lhasa in Tibet (upper reaches known by another name)?", options: ["Brahmaputra (Yarlung Tsangpo)", "Yangtze", "Indus", "Ganges"], answer: "Brahmaputra (Yarlung Tsangpo)" },
+  { question: "Which river is known as the Yellow River in China for its silt-laden color?", options: ["Huang He", "Yangtze", "Mekong", "Amur"], answer: "Huang He" },
+  { question: "Which river flows through the city of Xi'an and is a tributary of the Yellow River?", options: ["Wei River", "Yangtze", "Huai River", "Yellow River main"], answer: "Wei River" },
+  { question: "Which river is the chief navigable waterway of Egypt?", options: ["Nile", "Suez Canal", "Red Sea", "Lake Nasser"], answer: "Nile" },
+  { question: "Which river in the United States is famous for New Orleans and the Mississippi Delta?", options: ["Mississippi", "Missouri", "Ohio", "Hudson"], answer: "Mississippi" },
+  { question: "Which river flows through the Norwegian capital Oslo region (but not the biggest river in Norway)?", options: ["Glomma (largest)", "Akerselva in Oslo", "Nidelva", "Numedalslågen"], answer: "Akerselva in Oslo" },
+  { question: "Which river is the main eastern drainage for Bangladesh into the Bay of Bengal?", options: ["Megna (Meghna)/Padma", "Ganges", "Indus", "Godavari"], answer: "Meghna (Meghna)/Padma" },
+  { question: "Which river's estuary forms the port city of Antwerp?", options: ["Scheldt (Escaut)", "Rhine", "Meuse", "Elbe"], answer: "Scheldt" },
+  { question: "Which river is formed by the confluence of the White and Blue Niles at Khartoum?", options: ["Nile (continues north)", "Congo", "Zambezi", "Niger"], answer: "Nile (continues north)" },
+  { question: "Which river is the major watercourse crossing Ethiopia before joining the Nile system via the Blue Nile?", options: ["Blue Nile", "White Nile", "Atbara", "Omo"], answer: "Blue Nile" },
+  { question: "Which river is the key river for irrigation and culture in Pakistan’s Indus basin?", options: ["Indus", "Ganges", "Brahmaputra", "Narmada"], answer: "Indus" },
+  { question: "Which river flows through the Canadian province of Manitoba and is a major drainage into Hudson Bay (Nelson system)?", options: ["Nelson River", "Saskatchewan River", "Assiniboine River", "Red River"], answer: "Nelson River" },
+  { question: "Which river forms the famous Bosphorus Strait (strictly a strait rather than river) connecting two seas?", options: ["Bosphorus is a strait (not a river)", "Golden Horn", "Coruh", "None"], answer: "Bosphorus is a strait (not a river)" },
+  { question: "Which river passes through the Indian city of Varanasi and is one of the most sacred rivers in Hinduism?", options: ["Ganges", "Yamuna", "Narmada", "Godavari"], answer: "Ganges" },
+  { question: "Which river in China flows through Chongqing and is the site of the Three Gorges?", options: ["Yangtze", "Yellow", "Pearl", "Mekong"], answer: "Yangtze" },
+  { question: "Which river flows through the Peruvian city of Iquitos and is a major Amazon tributary in Peru?", options: ["Napo", "Madeira", "Ucayali", "Ucayali/Marañón system"], answer: "Napo" },
+  { question: "Which river is the main river of the Dominican Republic and forms part of the boundary with Haiti?", options: ["Yaque del Norte", "Artibonite", "Ozama", "Yaque del Sur"], answer: "Artibonite" },
+  { question: "Which river’s delta hosts the city of Calcutta (Kolkata) and the Sundarbans mangrove forest?", options: ["Ganges–Brahmaputra delta", "Nile delta", "Mekong delta", "Amazon delta"], answer: "Ganges–Brahmaputra delta" },
+  { question: "Which river in Japan flows through Kyoto's region (famous rivers in Kansai)?", options: ["Kamo River", "Yodo River", "Yodo flows through Osaka", "Kamo"], answer: "Kamo River" },
+  { question: "Which river in India forms the border of several Punjab regions and is one of the five rivers of Punjab?", options: ["Chenab", "Ganges", "Yamuna", "Godavari"], answer: "Chenab" },
+  { question: "Which river is the primary river flowing through the Australian state of Queensland (major river near Brisbane)?", options: ["Brisbane River", "Murray River", "Fitzroy River", "Darling"], answer: "Brisbane River" },
+  { question: "Which river empties into the Caspian Sea and is the longest river of Europe by discharge into an enclosed sea?", options: ["Volga", "Don", "Dniester", "Ural"], answer: "Volga" },
+  { question: "Which river in Africa flows through the Okavango Delta (endoreic basin) before dissipating?", options: ["Okavango River", "Zambezi River", "Congo River", "Nile River"], answer: "Okavango River" },
+  { question: "Which river is the principal river in Portugal flowing through Lisbon to the Atlantic Ocean?", options: ["Tagus (Tejo)", "Douro", "Guadiana", "Minho"], answer: "Tagus (Tejo)" },
+  { question: "Which African river's basin includes the Nile's major sources in East Africa (Lake Victoria feeds which Nile branch)?", options: ["Kagera feeds Lake Victoria / White Nile source", "Blue Nile feeds from Ethiopia", "Atbara", "Sobat"], answer: "Kagera feeds Lake Victoria / White Nile source" },
+  { question: "Which river in Southeast Asia flows through Myanmar and is central to that country’s transport?", options: ["Irrawaddy", "Mekong", "Salween", "Chao Phraya"], answer: "Irrawaddy" },
+  { question: "Which river flows through Kolkata and forms an estuary that was a British trading hub (Hooghly)?", options: ["Hooghly (Ganges distributary)", "Brahmaputra", "Yamuna", "Gandak"], answer: "Hooghly (Ganges distributary)" },
+  { question: "Which river in Europe flows into the Adriatic Sea and runs through the Po Plain?", options: ["Po", "Adige", "Arno", "Tiber"], answer: "Po" },
+  { question: "Which African river flows through Nigeria's interior and forms an inland delta in the Niger Delta region?", options: ["Niger", "Benue", "Volta", "Gambia"], answer: "Niger" },
+  { question: "Which river is fed by the Kagera and is one of the principal sources of the Nile?", options: ["White Nile", "Blue Nile", "Atbara", "Sobat"], answer: "White Nile" },
+  { question: "Which river flows through the center of Paris and is navigable by tourist boats?", options: ["Seine", "Thames", "Rhine", "Loire"], answer: "Seine" },
+  { question: "Which river flows through the historic Peruvian city near Cuzco and is part of the Sacred Valley (Urubamba)?", options: ["Urubamba", "Marañón", "Ucayali", "Apurímac"], answer: "Urubamba" },
+  { question: "Which river forms the border between the U.S. states of Texas and Louisiana for portions of its course? (Trick: major river forms TX border with Mexico; within US borders)", options: ["Sabine River acts between Texas and Louisiana", "Rio Grande", "Mississippi", "Red River"], answer: "Sabine River acts between Texas and Louisiana" },
+  { question: "Which European river flows through Bordeaux and forms the Gironde estuary with the Dordogne?", options: ["Garonne", "Loire", "Seine", "Rhone"], answer: "Garonne" },
+  { question: "Which river is the main watercourse in Bangladesh forming a vast delta with many distributaries?", options: ["Ganges–Brahmaputra (Padma, Jamuna etc.)", "Nile", "Mekong", "Amazon"], answer: "Ganges–Brahmaputra (Padma, Jamuna etc.)" },
+  { question: "Which river is the major east coast river of Australia flowing to the Tasman Sea (not the largest overall)?", options: ["Hawkesbury–Nepean / Brisbane River area", "Murray", "Darling", "Alligator"], answer: "Hawkesbury–Nepean / Brisbane River area" },
+  { question: "Which river in the UK flows through Glasgow and reaches the Firth of Clyde?", options: ["River Clyde", "Thames", "Severn", "Tyne"], answer: "River Clyde" },
+  { question: "Which river forms part of the boundary between the US states of New York and New Jersey (Hudson's estuary flows between NYC boroughs)?", options: ["Hudson River", "Delaware River", "East River", "Passaic River"], answer: "Hudson River" },
+  { question: "Which African river flows through Zambia and Angola and eventually into the Atlantic via the Congo system (partial) — major tributary of the Zambezi system?", options: ["Congo (different basin) — but Zambezi flows to Indian Ocean; other tributaries like Cuando/Chobe feed Okavango", "Okavango/Chobe system", "Kafue", "Limpopo"], answer: "Kafue" },
+  { question: "Which river flows through the German city of Cologne as part of the Rhine river system?", options: ["Rhine", "Elbe", "Danube", "Main"], answer: "Rhine" },
+  { question: "Which river is famous for the construction of the Itaipu Dam on the Brazil/Paraguay border?", options: ["Paraná River", "Amazon River", "Madeira River", "Tocantins River"], answer: "Paraná River" },
+  { question: "Which river flows through the city of Belém at the mouth of the Amazon?", options: ["Amazon Estuary region (Pará)", "Madeira", "Tocantins", "Tapajós"], answer: "Amazon Estuary region (Pará)" },
+  { question: "Which river is the longest entirely within Canada by main stem?", options: ["Mackenzie River", "St. Lawrence", "Fraser", "Nelson"], answer: "Mackenzie River" },
+  { question: "Which river flows through the historic city of Timbuktu and was central to Sahelian trade routes?", options: ["Niger River", "Senegal River", "Volta", "Chari"], answer: "Niger River" },
+  { question: "Which river in the Indian subcontinent flows through Srinagar and then into the Jhelum?", options: ["Jhelum", "Chenab", "Indus", "Ravi"], answer: "Jhelum" },
+  { question: "Which river is the main shipping corridor for the city of Chongqing, China?", options: ["Yangtze", "Yellow", "Pearl", "Mekong"], answer: "Yangtze" },
+  { question: "Which river in West Africa forms the border of Guinea and Mali in part of its course and drains into the Atlantic?", options: ["Niger", "Senegal", "Gambia", "Volta"], answer: "Niger" },
+  { question: "Which river runs through the city of Khartoum where two major Nile branches meet?", options: ["It’s the Nile after the confluence; White Nile + Blue Nile meet here", "Congo", "Atbara", "Sobat"], answer: "It’s the Nile after the confluence; White Nile + Blue Nile meet here" },
+  { question: "Which river flows through the ancient city of Babylon’s region historically (lower Mesopotamia)?", options: ["Euphrates", "Tigris", "Karun", "Khabur"], answer: "Euphrates" },
+  { question: "Which river is the principal river of Germany and the Netherlands, forming an important economic waterway?", options: ["Rhine", "Danube", "Elbe", "Oder"], answer: "Rhine" },
+  { question: "Which river flows through the Bolivian portion of Lake Titicaca's drainage system (altiplano rivers)?", options: ["Various small rivers feed Lake Titicaca; Desaguadero drains it", "Desaguadero", "Titicaca River", "Poopo"], answer: "Desaguadero" },
+  { question: "Which river flows through central London and is crossed by many famous bridges?", options: ["Thames", "Seine", "Tiber", "Danube"], answer: "Thames" },
+  { question: "Which river is the longest in France and flows into the Atlantic Ocean (Loire)?", options: ["Loire", "Seine", "Garonne", "Rhone"], answer: "Loire" },
+  { question: "Which major river flows into the Gulf of California in Mexico (Colorado’s delta historically)?", options: ["Colorado River", "Rio Grande", "Yaqui", "Sinaloa"], answer: "Colorado River" },
+  { question: "Which river flows through the Indian city of Srinagar and is part of the Jhelum basin?", options: ["Jhelum", "Chenab", "Indus", "Ravi"], answer: "Jhelum" },
+  { question: "Which river flows through the Malaysian state of Sabah and is one of the longest on Borneo's Malaysian side (Kinabatangan?)", options: ["Kinabatangan", "Rajang", "Kapuas", "Mahakam"], answer: "Kinabatangan" },
+  { question: "Which river flows through the Italian city of Venice as lagoon inflows rather than a single big river (various small rivers feed the lagoon)?", options: ["Venice is on a lagoon fed by several small rivers rather than a major river", "Brenta", "Po", "Piave"], answer: "Venice is on a lagoon fed by several small rivers rather than a major river" },
+  { question: "Which river feeds Lake Balkhash and flows through Kazakhstan?", options: ["Ili River", "Syr Darya", "Amu Darya", "Ili"], answer: "Ili River" },
+  { question: "Which river is the largest tributary of the Rhine within Germany (by length) — joining near Mainz as the Main?", options: ["Main", "Moselle", "Weser", "Elbe"], answer: "Main" },
+  { question: "Which river flows through Cairo and was dammed to create Lake Nasser?", options: ["Nile", "Atbara", "Blue Nile", "Sobat"], answer: "Nile" },
+  { question: "Which river in China empties into the Gulf of Tonkin and flows through Hanoi region (Red River)?", options: ["Red River (Hong River)", "Yangtze", "Mekong", "Pearl"], answer: "Red River (Hong River)" },
+  { question: "Which river forms part of the India–Bangladesh international boundary in places and then flows into the Bay of Bengal?", options: ["Teesta", "Ganges", "Meghna", "Brahmaputra"], answer: "Teesta" },
+  { question: "Which river in Italy flows through Florence and Pisa?", options: ["Arno", "Tiber", "Po", "Adige"], answer: "Arno" },
+  { question: "Which river in Africa is known for the Okavango Delta in Botswana where it dissipates inland?", options: ["Okavango River", "Zambezi River", "Limpopo River", "Congo River"], answer: "Okavango River" },
+  { question: "Which river flows through the Spanish city of Seville as the Guadalquivir?", options: ["Guadalquivir", "Ebro", "Duero", "Tagus"], answer: "Guadalquivir" },
+  { question: "Which river is the main river of Ecuador's Amazonian region and flows near the city of Coca?", options: ["Napo", "Marañón", "Putumayo", "Pastaza"], answer: "Napo" },
+  { question: "Which river flows through the French city of Rouen and is one of France’s major rivers?", options: ["Seine", "Loire", "Garonne", "Rhone"], answer: "Seine" },
+  { question: "Which river is the longest fully within the United Kingdom (by main stem)?", options: ["Severn", "Thames", "Tay", "Clyde"], answer: "Severn" },
+  { question: "Which river is the largest by drainage area in Australia and flows across the Murray–Darling basin?", options: ["Murray River", "Darling River", "Murrumbidgee", "Macquarie"], answer: "Murray River" },
+  { question: "Which river in Russia flows into the Arctic Ocean and passes near Yakutsk in the Sakha Republic (one of the great Siberian rivers)?", options: ["Lena", "Yenisei", "Ob", "Amur"], answer: "Lena" },
+  { question: "Which river in Africa flows along the border of South Africa and Namibia in parts and is famous for fish populations (Orange)?", options: ["Orange", "Limpopo", "Zambezi", "Vaal"], answer: "Orange" },
+  { question: "Which river forms the major commercial waterway for Vienna and Budapest, known for trans-European shipping?", options: ["Danube", "Rhine", "Elbe", "Volga"], answer: "Danube" },
+  { question: "Which river flows through Antwerp and is part of its estuary system?", options: ["Scheldt", "Rhine", "Meuse", "Seine"], answer: "Scheldt" },
+  { question: "Which river is the major river of Paraguay and is a tributary of the Paraná?", options: ["Paraguay River", "Uruguay River", "Pilcomayo", "Bermejo"], answer: "Paraguay River" },
+  { question: "Which river is a major tributary of the Amazon and rises in the Andes of Peru (Ucayali or Marañón)?", options: ["Ucayali", "Madeira", "Purus", "Napo"], answer: "Ucayali" },
+  { question: "Which river flows through the Scottish city of Glasgow and reaches the Firth of Clyde?", options: ["Clyde", "Thames", "Severn", "Tyne"], answer: "Clyde" },
+  { question: "Which river in India is the main river of the state of Kerala (Periyar is notable), but the longest is which one overall in the state?", options: ["Periyar is notable; longest interstate river is Godavari in larger India context", "Periyar", "Godavari", "Narmada"], answer: "Periyar is notable; longest interstate river is Godavari in larger India context" },
+  { question: "Which river is central to the development of Baghdad and ancient Mesopotamia along with the Euphrates?", options: ["Tigris", "Nile", "Jordan", "Khabur"], answer: "Tigris" },
+  { question: "Which Indonesian river is the longest on Sumatra and important for inland transport (Musim name examples)?", options: ["Batanghari", "Mahakam", "Kapuas", "Barito"], answer: "Batanghari" },
+  { question: "Which river in Turkey empties into the Black Sea and flows through Trabzon region (Çoruh is one)?", options: ["Çoruh", "Kızılırmak", "Sakarya", "Yesilırmak"], answer: "Çoruh" },
+  { question: "Which river forms the boundary between Argentina and Chile in part and includes tributaries with Andean sources?", options: ["Baker River (Chile) and other Andean rivers; more complex than one river", "Baker", "Bío Bío", "Maule"], answer: "Baker River (Chile) and other Andean rivers; more complex than one river" },
+  { question: "Which African river crosses the equator twice and is one of the world's great rivers (Congo basin)?", options: ["Congo (Zaire)", "Nile", "Niger", "Zambezi"], answer: "Congo (Zaire)" },
+  { question: "Which river flows through the US state capital of Sacramento?", options: ["Sacramento River", "San Joaquin River", "American River", "Feather River"], answer: "Sacramento River" },
+  { question: "Which Canadian river forms part of the border with the United States in the eastern provinces and flows through Montreal to the Atlantic?", options: ["St. Lawrence River", "Ottawa River", "Saguenay River", "Fraser River"], answer: "St. Lawrence River" },
+  { question: "Which river drains the Tibetan Plateau and becomes the Mekong in Southeast Asia?", options: ["Yarlung Tsangpo (becomes Brahmaputra) vs. Mekong has different Tibetan sources; correct: Mekong originates on the Tibetan Plateau as Lancang", "Lancang (Mekong)", "Yarlung Tsangpo", "Indus"], answer: "Lancang (Mekong)" },
+  { question: "Which river is the primary river of Hungary and splits Buda and Pest in Budapest?", options: ["Danube", "Tisza", "Sava", "Drava"], answer: "Danube" },
+  { question: "Which river in Germany flows through the city of Frankfurt and is a major tributary of the Rhine (Main)?", options: ["Main", "Moselle", "Weser", "Elbe"], answer: "Main" },
+  { question: "Which river flows through the capital city of Ukraine, Kyiv?", options: ["Dnieper", "Don", "Dniestr", "Danube"], answer: "Dnieper" },
+  { question: "Which river forms the northern frontier of the Indian state of Assam and flows through the plains of that state (major river)?", options: ["Brahmaputra", "Ganges", "Teesta", "Manas"], answer: "Brahmaputra" },
+  { question: "Which river is the major east coast river of India (Godavari flows to Bay of Bengal)?", options: ["Godavari", "Ganges", "Narmada", "Mahanadi"], answer: "Godavari" },
+  { question: "Which river is Japan’s second longest and flows through Nagoya (Kiso system)?", options: ["Kiso River", "Shinano", "Tone", "Yodo"], answer: "Kiso River" },
+  { question: "Which African river's mouth hosts the famous city of Lagos nearby in the coastal lagoon system (Lagos Lagoon)?", options: ["Lagos Lagoon rather than a single major river; Niger is the major regional river", "Niger", "Benue", "Oguta"], answer: "Lagos Lagoon rather than a single major river; Niger is the major regional river" },
+  { question: "Which river is the longest in Pakistan's Punjab region that also flows into the Arabian Sea via the Indus?", options: ["Indus", "Ravi", "Chenab", "Sutlej"], answer: "Indus" },
+  { question: "Which river flows through the city of Toulouse and joins the Garonne to form an estuary?", options: ["Garonne", "Loire", "Seine", "Dordogne"], answer: "Garonne" },
+  { question: "Which river flows across the Indian state of Maharashtra and into the Arabian Sea near Mumbai (main city rivers)?", options: ["Mula-Mutha and Ulhas/Thane Creek systems; major is Ulhas/Thane", "Ulhas", "Godavari", "Narmada"], answer: "Ulhas" },
+  { question: "Which river flows through the Bolivian city of La Paz region and into Amazon tributaries (Beni or Mamoré systems)?", options: ["Beni River", "Mamoré", "Mamore–Iténez", "Beni"], answer: "Beni River" },
+  { question: "Which river in West Africa flows through Bamako and then continues to the Niger Delta?", options: ["Niger", "Senegal", "Volta", "Gambia"], answer: "Niger" },
+  { question: "Which river flows along the southern shore of England and passes through Winchester (River Itchen is one)?", options: ["Itchen", "Thames", "Severn", "Hamble"], answer: "Itchen" },
+  { question: "Which river is traditionally a dividing line between northern and southern Vietnam (historically significant river is the Red River area)?", options: ["Red River (Hong)", "Mekong", "Perfume River", "Song Nguon"], answer: "Red River (Hong)" }
+];
+
+    let shuffledQuestions, currentQuestionIndex, score, timer, timeLeft;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const restartBtn = document.getElementById("restart-btn");
+    const scoreEl = document.getElementById("score");
+    const timerEl = document.getElementById("timer");
+    const quizContainer = document.getElementById("quiz");
+    const autoNext = document.getElementById("autoNext");
+    const autoNextContainer = document.getElementById("autoNextContainer");
+
+    function startQuiz() {
+      shuffledQuestions = questionsDB.sort(() => 0.5 - Math.random()).slice(0, 20);
+      currentQuestionIndex = 0;
+      score = 0;
+      scoreEl.textContent = "";
+      restartBtn.style.display = "none";
+      nextBtn.style.display = "inline-block";
+      autoNextContainer.style.display = "block";
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      resetState();
+      const currentQuestion = shuffledQuestions[currentQuestionIndex];
+      questionEl.textContent = currentQuestion.question;
+      currentQuestion.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.classList.add("option-btn");
+        btn.onclick = () => selectAnswer(btn, currentQuestion.answer);
+        optionsEl.appendChild(btn);
+      });
+      startTimer();
+    }
+
+    function resetState() {
+      clearInterval(timer);
+      timeLeft = 10;
+      timerEl.textContent = `Time left: ${timeLeft}s`;
+      optionsEl.innerHTML = "";
+      quizContainer.style.borderColor = "#ddd";
+    }
+
+    function startTimer() {
+      timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          quizContainer.style.borderColor = "red";
+          if (autoNext.checked) {
+            setTimeout(nextQuestion, 500);
+          }
+        }
+      }, 1000);
+    }
+
+    function selectAnswer(btn, correctAnswer) {
+      clearInterval(timer);
+      if (btn.textContent === correctAnswer) {
+        score++;
+        quizContainer.style.borderColor = "green";
+      } else {
+        quizContainer.style.borderColor = "red";
+      }
+      if (autoNext.checked) {
+        setTimeout(nextQuestion, 500);
+      }
+    }
+
+    nextBtn.addEventListener("click", () => {
+      const selected = document.querySelector(".option-btn.selected");
+      if (!selected) {
+        quizContainer.style.borderColor = "red"; // glow red when skipped
+        setTimeout(nextQuestion, 500);
+      } else {
+        nextQuestion();
+      }
+    });
+
+    optionsEl.addEventListener("click", e => {
+      if (e.target.classList.contains("option-btn")) {
+        document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
+        e.target.classList.add("selected");
+      }
+    });
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < shuffledQuestions.length) {
+        loadQuestion();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+      clearInterval(timer);
+      questionEl.textContent = "Quiz Completed!";
+      optionsEl.innerHTML = "";
+      timerEl.textContent = "";
+      scoreEl.textContent = `Your score: ${score} / ${shuffledQuestions.length}`;
+      nextBtn.style.display = "none";
+      restartBtn.style.display = "inline-block";
+      autoNextContainer.style.display = "none";
+    }
+
+    restartBtn.addEventListener("click", startQuiz);
+
+    startQuiz();
+  </script>
+</body>
+</html>
