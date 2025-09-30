@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Seas and Lakes of the World Quiz</title>
+  <style>
+    :root{
+      --primary: #007bff;
+      --btn-bg: #007bff;
+      --btn-bg-hover: #0056b3;
+      --ok: #28a745;
+      --bad: #dc3545;
+      --white: #ffffff;
+      --black: #111;
+    }
+    body{
+      margin:0;
+      padding:12px;
+      font-family:"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--white);
+      color:var(--black);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      min-height:100vh;
+    }
+    .quiz-container{
+      width:100%;
+      max-width:520px;
+      background:var(--white);
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      padding:16px;
+      border:4px solid transparent;
+      transition:border-color .2s ease,transform .12s ease;
+      text-align:center;
+    }
+    .quiz-container.correct{border-color:var(--ok);}
+    .quiz-container.wrong{border-color:var(--bad);}
+    h2#question{
+      margin:0 0 12px 0;
+      font-size:20px;
+      line-height:1.3;
+      color:var(--black);
+    }
+    .options{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin:12px 0;
+    }
+    .option-btn{
+      background:var(--btn-bg);
+      color:var(--white);
+      border:0;
+      padding:12px 10px;
+      font-size:15px;
+      border-radius:8px;
+      cursor:pointer;
+      transition:transform .1s ease,background .12s ease,opacity .12s ease;
+    }
+    .option-btn:active{transform:translateY(1px);}
+    .option-btn:hover{background:var(--btn-bg-hover);}
+    .option-btn[disabled]{opacity:.7;cursor:default;}
+    .timer{
+      margin:10px 0;
+      font-weight:700;
+      font-size:16px;
+      color:var(--black);
+    }
+    .auto-next{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+      margin-bottom:8px;
+      color:var(--black);
+      font-size:14px;
+    }
+    .controls{
+      display:flex;
+      gap:8px;
+      flex-direction:column;
+      margin-top:6px;
+    }
+    .next-btn,.restart-btn{
+      background:var(--ok);
+      color:var(--white);
+      border:0;
+      padding:12px;
+      border-radius:8px;
+      font-size:15px;
+      cursor:pointer;
+    }
+    .score{
+      margin-top:12px;
+      font-weight:700;
+      font-size:16px;
+      color:var(--black);
+    }
+    @media(max-width:420px){
+      .options{grid-template-columns:1fr;}
+      h2#question{font-size:18px;}
+      .option-btn{padding:14px;font-size:16px;}
+      .timer{font-size:15px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox">
+    <h2 id="question">Loading question...</h2>
+    <div class="options" id="options"></div>
+    <div class="timer" id="timer">Time: 10s</div>
+    <div class="auto-next">
+      <input type="checkbox" id="autoNext" />
+      <label for="autoNext">Auto Next</label>
+    </div>
+    <div class="controls">
+      <button id="nextBtn" class="next-btn">Next</button>
+      <button id="restartBtn" class="restart-btn" style="display:none;">Restart Quiz</button>
+    </div>
+    <div id="scoreBox" class="score"></div>
+  </div>
+
+  <script>
+    /******** Database ********/
+   const questionsDB = [
+  { question: "Which is the largest sea by surface area?", options: ["Caribbean Sea","Philippine Sea","Mediterranean Sea","Coral Sea"], answer: "Philippine Sea" },
+  { question: "Which is the deepest lake in the world?", options: ["Lake Tanganyika","Lake Baikal","Lake Superior","Lake Malawi"], answer: "Lake Baikal" },
+  { question: "Which is the world's largest freshwater lake by surface area?", options: ["Lake Victoria","Lake Superior","Lake Huron","Lake Michigan"], answer: "Lake Superior" },
+  { question: "Which is the largest inland body of water on Earth?", options: ["Aral Sea","Caspian Sea","Lake Baikal","Lake Victoria"], answer: "Caspian Sea" },
+  { question: "Which lake is shared by Uganda, Kenya and Tanzania?", options: ["Lake Tanganyika","Lake Victoria","Lake Turkana","Lake Malawi"], answer: "Lake Victoria" },
+  { question: "Which sea separates Europe from Africa?", options: ["Adriatic Sea","Mediterranean Sea","Black Sea","Baltic Sea"], answer: "Mediterranean Sea" },
+  { question: "Which sea lies between Turkey and Ukraine?", options: ["Aegean Sea","Caspian Sea","Black Sea","Adriatic Sea"], answer: "Black Sea" },
+  { question: "Which sea is north of Australia and west of New Guinea?", options: ["Arafura Sea","Coral Sea","Tasman Sea","Timor Sea"], answer: "Arafura Sea" },
+  { question: "Which lake is highest major navigable lake in the world?", options: ["Lake Titicaca","Lake Tahoe","Lake Baikal","Lake Toba"], answer: "Lake Titicaca" },
+  { question: "Which is the longest freshwater lake in the world?", options: ["Lake Baikal","Lake Tanganyika","Lake Superior","Lake Victoria"], answer: "Lake Tanganyika" },
+  { question: "Which sea lies off the east coast of the Philippines?", options: ["South China Sea","Philippine Sea","Celebes Sea","Sulu Sea"], answer: "Philippine Sea" },
+  { question: "Which sea lies between India and Sri Lanka and is part of the Indian Ocean?", options: ["Andaman Sea","Bay of Bengal","Laccadive Sea","Arabian Sea"], answer: "Bay of Bengal" },
+  { question: "Which Great Lake is entirely within the United States?", options: ["Lake Superior","Lake Michigan","Lake Ontario","Lake Erie"], answer: "Lake Michigan" },
+  { question: "Which lake is the deepest in Africa?", options: ["Lake Malawi","Lake Victoria","Lake Tanganyika","Lake Turkana"], answer: "Lake Tanganyika" },
+  { question: "Which sea connects to the Mediterranean Sea through the Strait of Gibraltar?", options: ["Black Sea","North Sea","Mediterranean Sea","Atlantic Ocean"], answer: "Mediterranean Sea" },
+  { question: "Which inland sea is actually a large salt lake in Central Asia?", options: ["Aral Sea","Dead Sea","Caspian Sea","Sea of Azov"], answer: "Aral Sea" },
+  { question: "Which lake is known for having the largest single-volume of freshwater on Earth (by volume)?", options: ["Lake Superior","Lake Tanganyika","Lake Baikal","Lake Victoria"], answer: "Lake Baikal" },
+  { question: "Which sea lies to the east of the Arabian Peninsula?", options: ["Red Sea","Arabian Sea","Persian Gulf","Gulf of Aden"], answer: "Arabian Sea" },
+  { question: "Which lake is shared by Russia and Kazakhstan and is the world's largest enclosed inland body of water?", options: ["Lake Balkhash","Aral Sea","Caspian Sea","Lake Baikal"], answer: "Caspian Sea" },
+  { question: "Which European inland sea is bordered by Sweden and Finland and by the Baltic states?", options: ["North Sea","Baltic Sea","Black Sea","Adriatic Sea"], answer: "Baltic Sea" },
+  { question: "Which sea borders the west coast of India?", options: ["Bay of Bengal","Arabian Sea","Laccadive Sea","Andaman Sea"], answer: "Arabian Sea" },
+  { question: "Which lake contains Manitoulin Island, the world's largest island in a freshwater lake?", options: ["Lake Huron","Lake Superior","Lake Ontario","Lake Erie"], answer: "Lake Huron" },
+  { question: "Which sea lies between Japan and the Korean Peninsula?", options: ["Sea of Japan","East China Sea","Yellow Sea","Philippine Sea"], answer: "Sea of Japan" },
+  { question: "Which sea is bounded to the north by Russia and to the south by Japan (off Hokkaido)?", options: ["Sea of Okhotsk","Sea of Japan","East China Sea","Yellow Sea"], answer: "Sea of Okhotsk" },
+  { question: "Which African lake is famous for the Nile River originating from it?", options: ["Lake Tanganyika","Lake Victoria","Lake Malawi","Lake Chad"], answer: "Lake Victoria" },
+  { question: "Which sea is between Italy and the Balkan Peninsula?", options: ["Tyrrhenian Sea","Adriatic Sea","Ionian Sea","Aegean Sea"], answer: "Adriatic Sea" },
+  { question: "Which sea is northeast of the United Kingdom and west of Norway?", options: ["North Sea","Norwegian Sea","Baltic Sea","Celtic Sea"], answer: "North Sea" },
+  { question: "Which lake in South America is shared by Peru and Bolivia?", options: ["Lake Titicaca","Lake Maracaibo","Lake Poopó","Lake Junín"], answer: "Lake Titicaca" },
+  { question: "Which sea is almost completely enclosed by land and borders Spain, France, Italy, Greece and North Africa?", options: ["Black Sea","Baltic Sea","Mediterranean Sea","Adriatic Sea"], answer: "Mediterranean Sea" },
+  { question: "Which sea lies off the northeastern coast of Australia and contains the Great Barrier Reef?", options: ["Coral Sea","Arafura Sea","Tasman Sea","Timor Sea"], answer: "Coral Sea" },
+  { question: "Which lake is located primarily in the Russian region of Siberia and famous for its endemic seals?", options: ["Lake Onega","Lake Ladoga","Lake Baikal","Lake Balkhash"], answer: "Lake Baikal" },
+  { question: "Which gulf lies between Iran and the Arabian Peninsula?", options: ["Persian Gulf","Gulf of Aden","Gulf of Oman","Red Sea"], answer: "Persian Gulf" },
+  { question: "Which sea is between the Arabian Peninsula and northeastern Africa?", options: ["Red Sea","Arabian Sea","Gulf of Aden","Persian Gulf"], answer: "Red Sea" },
+  { question: "Which African lake’s basin is shared by Tanzania, Democratic Republic of Congo, Zambia, and Burundi?", options: ["Lake Victoria","Lake Tanganyika","Lake Malawi","Lake Victoria"], answer: "Lake Tanganyika" },
+  { question: "Which sea is found to the west of the Iberian Peninsula and north of Africa (part of Atlantic)?", options: ["Mediterranean Sea","Bay of Biscay","Sargasso Sea","Alboran Sea"], answer: "Alboran Sea" },
+  { question: "Which sea borders the eastern shores of China and Taiwan?", options: ["Yellow Sea","East China Sea","South China Sea","Sea of Japan"], answer: "East China Sea" },
+  { question: "Which lake is the largest in area in Africa?", options: ["Lake Tanganyika","Lake Victoria","Lake Malawi","Lake Chad"], answer: "Lake Victoria" },
+  { question: "Which sea separates Australia from New Zealand (Tasman Sea) lies between which two landmasses?", options: ["Australia and New Zealand","Australia and Papua New Guinea","New Zealand and Fiji","Australia and Tasmania"], answer: "Australia and New Zealand" },
+  { question: "Which sea is located between the Philippines, Taiwan and Japan?", options: ["Philippine Sea","South China Sea","East China Sea","Sea of Japan"], answer: "Philippine Sea" },
+  { question: "Which lake in North America is the largest by surface area?", options: ["Lake Superior","Lake Michigan","Lake Huron","Lake Ontario"], answer: "Lake Superior" },
+  { question: "Which sea is known as the shallow inland sea north of the Black Sea in Eastern Europe?", options: ["Sea of Azov","Baltic Sea","Adriatic Sea","Aegean Sea"], answer: "Sea of Azov" },
+  { question: "Which lake once was connected to the ocean and is located in Venezuela and is sometimes called a 'lake' though it is tidal?", options: ["Lake Titicaca","Lake Maracaibo","Lake Poopó","Lake Nicaragua"], answer: "Lake Maracaibo" },
+  { question: "Which sea is marginal to the northwest Pacific and borders China, Korea and Japan (Yellow Sea)?", options: ["East China Sea","Yellow Sea","Sea of Japan","Bering Sea"], answer: "Yellow Sea" },
+  { question: "Which inland salt lake in the United States is well-known and shares its name with the state of Utah?", options: ["Great Salt Lake","Salton Sea","Lake Okeechobee","Mono Lake"], answer: "Great Salt Lake" },
+  { question: "Which sea is located off the southeastern coast of India and western coast of Thailand and Myanmar?", options: ["Bay of Bengal","Andaman Sea","Arabian Sea","Gulf of Thailand"], answer: "Andaman Sea" },
+  { question: "Which lake is shared by Russia, Kazakhstan and is the world's largest enclosed inland water body by area?", options: ["Lake Urmia","Caspian Sea","Lake Balkhash","Aral Sea"], answer: "Caspian Sea" },
+  { question: "Which sea lies between the Indian subcontinent and the Malay Peninsula?", options: ["Andaman Sea","Bay of Bengal","South China Sea","Arabian Sea"], answer: "Bay of Bengal" },
+  { question: "Which sea is east of the Korean peninsula and west of Japan’s main islands?", options: ["East China Sea","Sea of Japan","Philippine Sea","Yellow Sea"], answer: "Sea of Japan" },
+  { question: "Which lake is famous for having the largest number of freshwater fish species in Africa (including cichlids)?", options: ["Lake Victoria","Lake Tanganyika","Lake Malawi","Lake Chad"], answer: "Lake Malawi" },
+  { question: "Which sea is between Italy’s east coast and the Balkan Peninsula?", options: ["Adriatic Sea","Ionian Sea","Tyrrhenian Sea","Aegean Sea"], answer: "Adriatic Sea" },
+  { question: "Which sea lies to the southwest of India and east of the Arabian Peninsula?", options: ["Arabian Sea","Red Sea","Laccadive Sea","Bay of Bengal"], answer: "Arabian Sea" },
+  { question: "Which lake in East Africa is known for being the second largest freshwater lake by volume and first by depth?", options: ["Lake Victoria","Lake Tanganyika","Lake Malawi","Lake Turkana"], answer: "Lake Tanganyika" },
+  { question: "Which sea is bordered by Spain to the north and Morocco to the south (westernmost part of the Med)?", options: ["Alboran Sea","Tyrrhenian Sea","Liguran Sea","Balearic Sea"], answer: "Alboran Sea" },
+  { question: "Which lake is the deepest and oldest freshwater lake and holds about 20% of the world's unfrozen freshwater?", options: ["Lake Baikal","Lake Tanganyika","Lake Superior","Lake Victoria"], answer: "Lake Baikal" },
+  { question: "Which sea separates the Korean Peninsula and Japan?", options: ["Sea of Japan","East China Sea","Yellow Sea","Bering Sea"], answer: "Sea of Japan" },
+  { question: "Which lake is bordered by Canada and the United States and is the world's largest freshwater island area (Manitoulin is located in it)?", options: ["Lake Erie","Lake Superior","Lake Huron","Lake Ontario"], answer: "Lake Huron" },
+  { question: "Which sea is located to the northwest of Turkey and connects to the Aegean Sea?", options: ["Sea of Marmara","Mediterranean Sea","Black Sea","Ionian Sea"], answer: "Sea of Marmara" },
+  { question: "Which sea is bounded by East Africa to the west and the Arabian Peninsula to the east?", options: ["Red Sea","Gulf of Aden","Arabian Sea","Indian Ocean"], answer: "Gulf of Aden" },
+  { question: "Which lake is the largest in area in Canada?", options: ["Great Bear Lake","Lake Winnipeg","Great Slave Lake","Lake Superior"], answer: "Lake Winnipeg" },
+  { question: "Which sea is north of Scotland and south of Norway (rich fishing grounds)?", options: ["North Sea","Norwegian Sea","Barents Sea","Baltic Sea"], answer: "North Sea" },
+  { question: "Which African lake is also known as Lake Nyasa?", options: ["Lake Victoria","Lake Malawi","Lake Tanganyika","Lake Turkana"], answer: "Lake Malawi" },
+  { question: "Which sea lies between the Indonesian islands and the Philippines?", options: ["Celebes Sea","South China Sea","Java Sea","Sulu Sea"], answer: "Celebes Sea" },
+  { question: "Which large saline lake is located in the Middle East and is the lowest terrestrial point on Earth?", options: ["Caspian Sea","Dead Sea","Lake Urmia","Lake Van"], answer: "Dead Sea" },
+  { question: "Which lake once covered a vast area of Central Asia and has drastically shrunk in the 20th century?", options: ["Caspian Sea","Lake Balkhash","Aral Sea","Lake Urmia"], answer: "Aral Sea" },
+  { question: "Which sea lies between the eastern Mediterranean countries and the western coast of the Arabian Peninsula?", options: ["Red Sea","Mediterranean Sea","Arabian Sea","Gulf of Oman"], answer: "Red Sea" },
+  { question: "Which sea borders the eastern coast of Somalia and western India (large ocean region)?", options: ["Indian Ocean","Arabian Sea","Gulf of Aden","Bay of Bengal"], answer: "Indian Ocean" },
+  { question: "Which sea lies to the east of the Philippines and south of Japan?", options: ["Philippine Sea","Sea of Japan","East China Sea","South China Sea"], answer: "Philippine Sea" },
+  { question: "Which lake is known for its unique endemic seal population and is the deepest lake in the world?", options: ["Lake Baikal","Lake Superior","Lake Malawi","Lake Tanganyika"], answer: "Lake Baikal" },
+  { question: "Which sea is bounded by the Scandinavian peninsula and Russia?", options: ["Norwegian Sea","Baltic Sea","Barents Sea","North Sea"], answer: "Barents Sea" },
+  { question: "Which lake is famous for the large freshwater whale-like animal misconception — but actually home to many endemic species (Siberian lake)?", options: ["Lake Superior","Lake Baikal","Lake Victoria","Lake Tanganyika"], answer: "Lake Baikal" },
+  { question: "Which sea lies between the Gulf of Mexico and the Caribbean islands (region)?", options: ["Caribbean Sea","Sargasso Sea","Gulf of Mexico","Western Caribbean Sea"], answer: "Caribbean Sea" },
+  { question: "Which sea connects to the Atlantic Ocean through the Suez Canal indirectly via the Mediterranean?", options: ["Red Sea","Black Sea","Baltic Sea","North Sea"], answer: "Red Sea" },
+  { question: "Which sea forms the northern boundary of the Mediterranean and is connected to the Atlantic via the Strait of Gibraltar?", options: ["Mediterranean Sea","Black Sea","Baltic Sea","Adriatic Sea"], answer: "Mediterranean Sea" },
+  { question: "Which lake in Africa straddles Tanzania, Zambia, the Democratic Republic of Congo and Burundi?", options: ["Lake Victoria","Lake Tanganyika","Lake Malawi","Lake Turkana"], answer: "Lake Tanganyika" },
+  { question: "Which lake lies predominantly in Tibet and is one of the largest saline lakes on the Tibetan Plateau?", options: ["Lake Qinghai","Lake Namtso","Lake Yamdrok","Lake Manasarovar"], answer: "Lake Qinghai" },
+  { question: "Which sea lies to the north of Siberia and is part of the Arctic Ocean?", options: ["Laptev Sea","Barents Sea","Kara Sea","Chukchi Sea"], answer: "Laptev Sea" },
+  { question: "Which lake forms part of the border between the United States and Mexico?", options: ["Lake Tahoe","Salton Sea","Lake Texcoco","None of the above"], answer: "None of the above" },
+  { question: "Which sea is directly east of the Philippines and west of the Mariana Islands?", options: ["Philippine Sea","Coral Sea","Celebes Sea","Sulu Sea"], answer: "Philippine Sea" },
+  { question: "Which sea lies between the Arabian Peninsula and India and includes the Gulf of Oman and Persian Gulf branches?", options: ["Arabian Sea","Red Sea","Bay of Bengal","Andaman Sea"], answer: "Arabian Sea" },
+  { question: "Which lake is the largest in volume in North America?", options: ["Lake Superior","Great Slave Lake","Lake Michigan","Lake Ontario"], answer: "Great Slave Lake" },
+  { question: "Which sea borders the eastern coast of Spain and the Balearic Islands?", options: ["Mediterranean Sea","Alboran Sea","Balearic Sea","Tyrrhenian Sea"], answer: "Balearic Sea" },
+  { question: "Which sea is between the Philippines and Borneo?", options: ["Celebes Sea","Sulu Sea","South China Sea","Java Sea"], answer: "Sulu Sea" },
+  { question: "Which sea lies to the northeast of Madagascar and is part of the western Indian Ocean?", options: ["Mozambique Channel","Arabian Sea","Andaman Sea","Bay of Bengal"], answer: "Mozambique Channel" },
+  { question: "Which lake is famous for Europe's largest freshwater island, Olkhon, located within it?", options: ["Lake Ladoga","Lake Onega","Lake Constance","Lake Baikal"], answer: "Lake Baikal" },
+  { question: "Which sea lies south of Alaska and north of the Pacific Ocean, known for the Alaska Current?", options: ["Gulf of Alaska","Bering Sea","Chukchi Sea","Beaufort Sea"], answer: "Gulf of Alaska" },
+  { question: "Which sea borders Japan’s southern islands including Okinawa?", options: ["East China Sea","Sea of Japan","Philippine Sea","Yellow Sea"], answer: "East China Sea" },
+  { question: "Which lake in Africa is known for the unique fish diversity and is located in the East African Rift?", options: ["Lake Victoria","Lake Kariba","Lake Malawi","Lake Chad"], answer: "Lake Malawi" },
+  { question: "Which sea lies between Italy’s west coast and the islands of Sardinia and Corsica (Tyrrhenian area)?", options: ["Tyrrhenian Sea","Adriatic Sea","Ionian Sea","Ligurian Sea"], answer: "Tyrrhenian Sea" },
+  { question: "Which sea is north of Scotland and is known for oil and gas fields?", options: ["North Sea","Norwegian Sea","Barents Sea","Celtic Sea"], answer: "North Sea" },
+  { question: "Which lake is the largest by surface area in South America?", options: ["Lake Poopó","Lake Titicaca","Lake Maracaibo","Lake Potosí"], answer: "Lake Titicaca" },
+  { question: "Which sea is a marginal sea of the Indian Ocean lying off the east coast of Africa?", options: ["Mozambique Channel","Red Sea","Gulf of Aden","Arabian Sea"], answer: "Mozambique Channel" },
+  { question: "Which lake is famous for its salt flats adjacent to it in Bolivia (Salar de Uyuni region)?", options: ["Lake Poopó","Lake Titicaca","Salar de Uyuni is not a lake","Lake Uru Uru"], answer: "Salar de Uyuni is not a lake" },
+  { question: "Which sea forms the strait between Australia and New Zealand (Tasman Sea)?", options: ["Tasman Sea","Coral Sea","Arafura Sea","Laccadive Sea"], answer: "Tasman Sea" },
+  { question: "Which sea is located in the western Pacific and borders the Philippines, Taiwan and Japan (Philippine Sea)?", options: ["South China Sea","Philippine Sea","East China Sea","Bering Sea"], answer: "Philippine Sea" },
+  { question: "Which lake is known as the largest freshwater lake by area in Africa?", options: ["Lake Tanganyika","Lake Malawi","Lake Victoria","Lake Turkana"], answer: "Lake Victoria" },
+  { question: "Which sea lies between the UK and Scandinavia and is known for shipping lanes (North Sea)?", options: ["Baltic Sea","North Sea","Norwegian Sea","Barents Sea"], answer: "North Sea" },
+  { question: "Which inland sea is the world's largest lake by volume and is located in Asia (Caspian Sea)?", options: ["Lake Baikal","Caspian Sea","Aral Sea","Lake Urmia"], answer: "Caspian Sea" },
+  { question: "Which sea is located south of India and west of the Malay Peninsula (Laccadive, Indian Ocean region)?", options: ["Laccadive Sea","Bay of Bengal","Andaman Sea","Gulf of Mannar"], answer: "Laccadive Sea" },
+  { question: "Which lake in Africa was formerly called Lake Nyasa?", options: ["Lake Malawi","Lake Tanganyika","Lake Victoria","Lake Turkana"], answer: "Lake Malawi" },
+  { question: "Which sea is located off the east coast of China and west of Japan (East China Sea)?", options: ["South China Sea","East China Sea","Yellow Sea","Sea of Japan"], answer: "East China Sea" },
+  { question: "Which sea separates the Malay Peninsula from the island of Sumatra?", options: ["Andaman Sea","Strait of Malacca","South China Sea","Java Sea"], answer: "Strait of Malacca" },
+  { question: "Which lake is located in the Rift Valley and is an important source of freshwater in East Africa (Lake Turkana is large and shallow)?", options: ["Lake Victoria","Lake Turkana","Lake Malawi","Lake Tanganyika"], answer: "Lake Turkana" },
+  { question: "Which sea lies to the west of India and east of the Arabian Peninsula?", options: ["Arabian Sea","Red Sea","Bay of Bengal","Gulf of Oman"], answer: "Arabian Sea" },
+  { question: "Which lake is the largest by area entirely within Russia (by surface area)?", options: ["Lake Baikal","Lake Ladoga","Lake Onega","Lake Balkhash"], answer: "Lake Ladoga" },
+  { question: "Which sea is a marginal sea of the Arctic Ocean north of Norway and Russia?", options: ["Barents Sea","Norwegian Sea","Kara Sea","Laptev Sea"], answer: "Barents Sea" },
+  { question: "Which sea borders the western coast of Africa and includes the Gulf of Guinea?", options: ["South Atlantic Ocean region","Gulf of Guinea","Mediterranean Sea","Indian Ocean"], answer: "Gulf of Guinea" },
+  { question: "Which lake is known for its annually fluctuating water level and is part of the Nile basin (Lake Tana)?", options: ["Lake Tana","Lake Albert","Lake Victoria","Lake Turkana"], answer: "Lake Tana" },
+  { question: "Which sea lies between India and the island of Sri Lanka (Palk Strait/region)?", options: ["Bay of Bengal","Palk Bay region","Laccadive Sea","Andaman Sea"], answer: "Palk Bay region" },
+  { question: "Which lake is the shallowest of the Great Lakes by average depth?", options: ["Lake Erie","Lake Ontario","Lake Huron","Lake Michigan"], answer: "Lake Erie" },
+  { question: "Which sea is off the northwest coast of Australia and known for Timor and the Timor Sea?", options: ["Timor Sea","Arafura Sea","Coral Sea","Indian Ocean"], answer: "Timor Sea" },
+  { question: "Which lake lies between Russia and Mongolia and is world-famous for its biodiversity and depth? (trick: which one fits?)", options: ["Lake Baikal","Lake Balkhash","Lake Onega","Lake Ladoga"], answer: "Lake Baikal" },
+  { question: "Which sea is located to the southeast of China and west of the Philippines and Borneo?", options: ["South China Sea","Philippine Sea","East China Sea","Java Sea"], answer: "South China Sea" },
+  { question: "Which lake is the largest in area in the United Kingdom?", options: ["Loch Ness","Lough Neagh","Loch Lomond","Lough Neagh"], answer: "Lough Neagh" },
+  { question: "Which sea is bounded by the Arabian Peninsula, the Horn of Africa and the Arabian Sea (Gulf of Aden connects to the Arabian Sea)?", options: ["Gulf of Oman","Gulf of Aden","Red Sea","Persian Gulf"], answer: "Gulf of Aden" },
+  { question: "Which lake is known as a large saline lake in Iran that has been impacted by drought and diversion (Lake Urmia)?", options: ["Lake Urmia","Caspian Sea","Lake Van","Lake Vanern"], answer: "Lake Urmia" },
+  { question: "Which sea lies between Cuba and the Yucatán Peninsula and is part of the Atlantic region?", options: ["Caribbean Sea","Gulf of Mexico","Sargasso Sea","Lesser Antilles"], answer: "Caribbean Sea" },
+  { question: "Which lake is the largest by surface area in Italy (popular vacation lake)?", options: ["Lake Como","Lake Garda","Lake Maggiore","Lake Garda"], answer: "Lake Garda" },
+  { question: "Which sea lies to the north of Russia and is part of the Arctic Ocean (Karasea region)?", options: ["Kara Sea","Barents Sea","Laptev Sea","Chukchi Sea"], answer: "Kara Sea" },
+  { question: "Which lake is famous for its floating islands made of reeds inhabited by indigenous people (Uros Islands)?", options: ["Lake Titicaca","Lake Titicaca","Lake Puno","Lake Poopó"], answer: "Lake Titicaca" },
+  { question: "Which sea borders eastern Africa from Somalia down to Mozambique (western part of Indian Ocean)?", options: ["Arabian Sea","Mozambique Channel","Red Sea","Gulf of Aden"], answer: "Mozambique Channel" },
+  { question: "Which lake is in Central Asia and shares its name with a sea that has mostly dried up (Aral Sea)?", options: ["Aral Sea","Caspian Sea","Lake Balkhash","Lake Issyk-Kul"], answer: "Aral Sea" },
+  { question: "Which sea off the east coast of the United States is known for the Gulf Stream influence and the area called the Sargasso Sea?", options: ["Sargasso Sea","Gulf of Mexico","Caribbean Sea","North Atlantic"], answer: "Sargasso Sea" },
+  { question: "Which lake is known as Europe's largest freshwater lake by area (Lake Ladoga)?", options: ["Lake Onega","Lake Baikal","Lake Ladoga","Lake Geneva"], answer: "Lake Ladoga" },
+  { question: "Which sea is located south of the Korean Peninsula and west of Japan’s Kyushu island (East China Sea region)?", options: ["Yellow Sea","East China Sea","Sea of Japan","Philippine Sea"], answer: "East China Sea" },
+  { question: "Which inland lake is the largest in Australia by area when filled (Lake Eyre / Kati Thanda–Lake Eyre)?", options: ["Lake Eyre","Lake Argyle","Lake Torrens","Lake Mackay"], answer: "Lake Eyre" },
+  { question: "Which sea is known for the Strait of Hormuz connecting it to the Arabian Sea (Persian Gulf)?", options: ["Gulf of Aden","Persian Gulf","Red Sea","Arabian Sea"], answer: "Persian Gulf" },
+  { question: "Which African lake is a large shallow lake in the Sahel and has dramatically varied in size seasonally and historically (Lake Chad)?", options: ["Lake Chad","Lake Victoria","Lake Tanganyika","Lake Turkana"], answer: "Lake Chad" },
+  { question: "Which European inland sea is bounded by Estonia, Latvia, Lithuania and Scandinavia (Baltic region)?", options: ["North Sea","Baltic Sea","Black Sea","Adriatic Sea"], answer: "Baltic Sea" },
+  { question: "Which sea is between the islands of Borneo, Sulawesi and the Philippines (Celebes Sea)?", options: ["Sulu Sea","Celebes Sea","South China Sea","Java Sea"], answer: "Celebes Sea" },
+  { question: "Which lake is the largest in New Zealand by surface area (Lake Taupo)?", options: ["Lake Wakatipu","Lake Taupo","Lake Rotorua","Lake Te Anau"], answer: "Lake Taupo" },
+  { question: "Which sea is to the west of the Iberian Peninsula and includes the Bay of Biscay to the north?", options: ["Alboran Sea","Bay of Biscay","Atlantic Ocean","Mediterranean Sea"], answer: "Bay of Biscay" },
+  { question: "Which lake in Africa is located mainly in Tanzania and is famous for its biodiversity and hippos (Lake Manyara/Ngorongoro region)?", options: ["Lake Manyara","Lake Nyasa","Lake Victoria","Lake Tanganyika"], answer: "Lake Manyara" },
+  { question: "Which sea lies between the eastern Philippines and Palau (western Pacific)?", options: ["Philippine Sea","Celebes Sea","Bering Sea","Coral Sea"], answer: "Philippine Sea" },
+  { question: "Which lake is known as the largest estuarine lake in the world and is connected to the Caribbean in Venezuela (Lake Maracaibo)?", options: ["Lake Titicaca","Lake Maracaibo","Lake Poopó","Lake Mar Menor"], answer: "Lake Maracaibo" },
+  { question: "Which sea lies to the east of Sicily and between Greece and Turkey (Ionian/Aegean region)?", options: ["Ionian Sea","Tyrrhenian Sea","Aegean Sea","Adriatic Sea"], answer: "Ionian Sea" }
+];
+
+
+    /******** Config ********/
+    const MAX_QUESTIONS = 20;
+    let questions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let timerInterval = null;
+    let autoAdvanceTimeout = null;
+    let timeLeft = 10;
+
+    /******** DOM ********/
+    const quizBox = document.getElementById('quizBox');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const timerEl = document.getElementById('timer');
+    const scoreBox = document.getElementById('scoreBox');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+
+    /******** Helpers ********/
+    function shuffleArray(arr){
+      return arr.map(v=>({v,sort:Math.random()})).sort((a,b)=>a.sort-b.sort).map(o=>o.v);
+    }
+    function clearTimers(){
+      if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+      if(autoAdvanceTimeout){clearTimeout(autoAdvanceTimeout);autoAdvanceTimeout=null;}
+    }
+
+    /******** Quiz ********/
+    function startQuiz(){
+      questions = shuffleArray(questionsDB).slice(0, Math.min(MAX_QUESTIONS, questionsDB.length));
+      currentIndex = 0;
+      score = 0;
+      answered = false;
+      scoreBox.textContent = '';
+      restartBtn.style.display = 'none';
+      nextBtn.style.display = 'inline-block';  // ✅ Fix: show Next again
+      loadQuestion();
+    }
+    function loadQuestion(){
+      clearTimers();
+      quizBox.classList.remove('correct','wrong');
+      answered = false;
+      if(currentIndex>=questions.length){return endQuiz();}
+      const q=questions[currentIndex];
+      questionEl.textContent=q.question;
+      const opts=shuffleArray([...q.options]);
+      optionsEl.innerHTML='';
+      opts.forEach(opt=>{
+        const btn=document.createElement('button');
+        btn.type='button';
+        btn.className='option-btn';
+        btn.textContent=opt;
+        btn.onclick=()=>onSelect(opt,btn);
+        optionsEl.appendChild(btn);
+      });
+      timeLeft=10;
+      timerEl.textContent=`Time: ${timeLeft}s`;
+      timerInterval=setInterval(()=>{
+        timeLeft--;
+        timerEl.textContent=`Time: ${timeLeft}s`;
+        if(timeLeft<=0){
+          clearTimers();
+          quizBox.classList.add('wrong');
+          if(document.getElementById('autoNext').checked){
+            autoAdvanceTimeout=setTimeout(()=>nextQuestion(),700);
+          }
+        }
+      },1000);
+    }
+    function onSelect(opt,btn){
+      if(answered)return;
+      answered=true;
+      Array.from(optionsEl.children).forEach(b=>b.disabled=true);
+      clearTimers();
+      const q=questions[currentIndex];
+      if(opt===q.answer){
+        quizBox.classList.add('correct');
+        score++;
+      } else {
+        quizBox.classList.add('wrong');
+      }
+      if(document.getElementById('autoNext').checked){
+        autoAdvanceTimeout=setTimeout(()=>nextQuestion(),700);
+      }
+    }
+    function nextQuestion(){
+      clearTimers();
+      if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
+        quizBox.classList.add('wrong');
+        setTimeout(()=>{currentIndex++;loadQuestion();},700);
+      } else {
+        setTimeout(()=>{currentIndex++;loadQuestion();},200);
+      }
+    }
+    function endQuiz(){
+      clearTimers();
+      questionEl.textContent='Quiz Completed!';
+      optionsEl.innerHTML='';
+      nextBtn.style.display='none';
+      restartBtn.style.display='inline-block';
+      timerEl.textContent='';
+      document.querySelector('.auto-next').style.display='none';
+      scoreBox.textContent=`Your Score: ${score} / ${questions.length}`;
+    }
+    function restartQuiz(){
+      document.querySelector('.auto-next').style.display='flex';
+      startQuiz();
+    }
+
+    /******** Events ********/
+    nextBtn.addEventListener('click',nextQuestion);
+    restartBtn.addEventListener('click',restartQuiz);
+
+    /******** Kickoff ********/
+    startQuiz();
+  </script>
+</body>
+</html>
