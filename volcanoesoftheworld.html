@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --blue: #007bff;
+    --blue-hover: #0056b3;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --white: #ffffff;
+    --black: #111;
+  }
+
+  body{
+    margin:0;
+    padding:12px;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background:var(--white);
+    color:var(--black);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    min-height:100vh;
+  }
+
+  .quiz-container{
+    width:100%;
+    max-width:540px;
+    background:var(--white);
+    border-radius:12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    padding:18px;
+    box-sizing:border-box;
+    border:5px solid transparent;
+    transition:border-color .18s ease, transform .12s ease;
+    text-align:center;
+  }
+  .quiz-container.correct{ border-color: var(--green); }
+  .quiz-container.wrong{ border-color: var(--red); }
+
+  #title {
+    margin:0 0 8px 0;
+    font-size:20px;
+    font-weight:700;
+  }
+
+  #question {
+    margin: 10px 0 14px 0;
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--black);
+    text-align: center;
+    min-height:56px;
+  }
+
+  .options{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:12px 0;
+  }
+
+  .option-btn{
+    background:var(--blue);
+    color:var(--white);
+    border:0;
+    padding:12px 10px;
+    font-size:15px;
+    border-radius:8px;
+    cursor:pointer;
+    width:100%;
+    word-break:break-word;
+    transition: transform .10s ease, background .12s ease, opacity .12s ease;
+  }
+  .option-btn:active{ transform: translateY(1px); }
+  .option-btn:hover{ background:var(--blue-hover); }
+  .option-btn[disabled]{ opacity: .7; cursor: default; }
+
+  .timer{
+    margin:10px 0;
+    font-weight:700;
+    color:var(--black);
+    font-size:16px;
+    text-align:center;
+  }
+
+  .auto-next {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+    color:var(--black);
+    font-size:14px;
+  }
+
+  .controls {
+    display:flex;
+    gap:8px;
+    flex-direction:column;
+    align-items:stretch;
+    margin-top:6px;
+  }
+
+  .next-btn, .restart-btn {
+    background:var(--green);
+    color:var(--white);
+    border:0;
+    padding:12px;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+    width:100%;
+  }
+  .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
+
+  .restart-btn { background:#ff5722; display:none; }
+
+  .score {
+    margin-top:12px;
+    text-align:center;
+    font-weight:700;
+    color:var(--black);
+    font-size:18px;
+  }
+
+  @media (max-width:420px){
+    .options{ grid-template-columns:1fr; }
+    #question{ font-size:17px; }
+    .option-btn{ padding:14px; font-size:16px; }
+    .timer{ font-size:15px; }
+  }
+</style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox" role="application" aria-labelledby="question">
+ 
+
+    <div id="question">Loading question...</div>
+
+    <div class="options" id="options" aria-live="polite"></div>
+
+    <div class="timer" id="timer">Time: 10s</div>
+
+    <div class="auto-next" id="autoNextWrap">
+      <input type="checkbox" id="autoNext" />
+      <label for="autoNext">Auto Next</label>
+    </div>
+
+    <div class="controls">
+      <button id="nextBtn" class="next-btn" type="button">Next</button>
+      <button id="restartBtn" class="restart-btn" type="button">Restart Quiz</button>
+    </div>
+
+    <div id="scoreBox" class="score" aria-live="polite"></div>
+  </div>
+
+<script>
+const questionsDB = [
+  { question: "Which is the largest active volcano in the world?", options: ["Mauna Loa", "Mount Vesuvius", "Mount Fuji", "Krakatoa"], answer: "Mauna Loa" },
+  { question: "Which volcano erupted in 79 AD burying the cities of Pompeii and Herculaneum?", options: ["Mount Etna", "Mount Vesuvius", "Krakatoa", "Mount St. Helens"], answer: "Mount Vesuvius" },
+  { question: "Which volcano is known as the 'Fire Mountain' in Japan?", options: ["Mount Fuji", "Mount Aso", "Mount Unzen", "Mount Sakurajima"], answer: "Mount Fuji" },
+  { question: "Which volcano caused the 1883 catastrophic eruption that destroyed a large part of its island?", options: ["Mount Vesuvius", "Krakatoa", "Mount Tambora", "Mount Pinatubo"], answer: "Krakatoa" },
+  { question: "Which is the most active volcano in the world?", options: ["Mount Etna", "Kilauea", "Mount Merapi", "Mount Stromboli"], answer: "Kilauea" },
+  { question: "Which volcano's eruption in 1815 caused the 'Year Without a Summer'?", options: ["Mount Tambora", "Mount Vesuvius", "Krakatoa", "Mount St. Helens"], answer: "Mount Tambora" },
+  { question: "Which volcano erupted in 1980 causing massive destruction in Washington, USA?", options: ["Mount Rainier", "Mount St. Helens", "Mount Hood", "Mount Shasta"], answer: "Mount St. Helens" },
+  { question: "Which volcano is located on the island of Java, Indonesia?", options: ["Mount Merapi", "Mount Fuji", "Mount Pinatubo", "Mount Etna"], answer: "Mount Merapi" },
+  { question: "Which volcano erupted in 1991 causing a major eruption in the Philippines?", options: ["Mount Pinatubo", "Mount Mayon", "Mount Taal", "Mount Agung"], answer: "Mount Pinatubo" },
+  { question: "Which volcano is famous for its continuous mild eruptions, known as 'Strombolian'?", options: ["Mount Stromboli", "Mount Etna", "Mount Vesuvius", "Kilauea"], answer: "Mount Stromboli" },
+  { question: "Which volcano is the highest in Japan?", options: ["Mount Aso", "Mount Fuji", "Mount Unzen", "Mount Sakurajima"], answer: "Mount Fuji" },
+  { question: "Which volcano lies on the Pacific Ring of Fire and is located in Indonesia?", options: ["Mount St. Helens", "Mount Pinatubo", "Mount Krakatoa", "Mount Etna"], answer: "Mount Krakatoa" },
+  { question: "Which volcano erupted in 1902, causing one of the deadliest eruptions in history in Martinique?", options: ["Mount Pelee", "Mount Vesuvius", "Mount Etna", "Mount Mayon"], answer: "Mount Pelee" },
+  { question: "Which is the only volcano that erupted in Iceland causing massive ash clouds in 2010?", options: ["Eyjafjallajökull", "Hekla", "Krafla", "Askja"], answer: "Eyjafjallajökull" },
+  { question: "Which type of volcano is Mount Fuji?", options: ["Shield Volcano", "Stratovolcano", "Cinder Cone", "Lava Dome"], answer: "Stratovolcano" },
+  { question: "Which volcano is part of the Hawaiian Islands?", options: ["Kilauea", "Mount Vesuvius", "Mount Etna", "Mount Merapi"], answer: "Kilauea" },
+  { question: "Which volcano is located in Sicily, Italy?", options: ["Mount Etna", "Mount Vesuvius", "Stromboli", "Mount Stromboli"], answer: "Mount Etna" },
+  { question: "Which volcano erupted in 79 AD alongside Mount Vesuvius?", options: ["Mount Etna", "Mount Stromboli", "Mount Hekla", "No other volcano erupted"], answer: "No other volcano erupted" },
+  { question: "Which volcano in Indonesia is known as 'The Mountain of Fire'?", options: ["Mount Merapi", "Mount Semeru", "Mount Bromo", "Mount Agung"], answer: "Mount Merapi" },
+  { question: "Which volcano erupted in 2018 causing evacuation in Guatemala?", options: ["Volcán de Fuego", "Mount Pinatubo", "Mount St. Helens", "Mount Vesuvius"], answer: "Volcán de Fuego" },
+  { question: "Which volcano is the largest in Indonesia?", options: ["Mount Semeru", "Mount Tambora", "Mount Merapi", "Mount Rinjani"], answer: "Mount Tambora" },
+  { question: "Which volcano erupted in 1886 in New Zealand?", options: ["Mount Ruapehu", "Mount Tarawera", "Mount Taranaki", "White Island"], answer: "Mount Tarawera" },
+  { question: "Which volcano caused the deadliest eruption in recorded history with 92,000 deaths?", options: ["Mount Tambora", "Mount Vesuvius", "Mount Pelee", "Krakatoa"], answer: "Mount Tambora" },
+  { question: "Which volcano erupted in the Philippines in 2020?", options: ["Taal Volcano", "Mayon Volcano", "Pinatubo", "Bulusan Volcano"], answer: "Taal Volcano" },
+  { question: "Which volcano is located in the Pacific Northwest of the USA?", options: ["Mount St. Helens", "Mount Hood", "Mount Rainier", "All of the above"], answer: "All of the above" },
+  { question: "Which volcano in Japan erupted violently in 1792 causing a tsunami?", options: ["Mount Unzen", "Mount Fuji", "Mount Aso", "Mount Sakurajima"], answer: "Mount Unzen" },
+  { question: "Which volcano is located in Iceland and has frequent eruptions since the last 1000 years?", options: ["Hekla", "Eyjafjallajökull", "Askja", "Krafla"], answer: "Hekla" },
+  { question: "Which volcano erupted in 1963 in Bali, Indonesia?", options: ["Mount Agung", "Mount Bromo", "Mount Merapi", "Mount Semeru"], answer: "Mount Agung" },
+  { question: "Which volcano in Chile erupted in 2015?", options: ["Calbuco", "Villarrica", "Llaima", "Chaitén"], answer: "Calbuco" },
+  { question: "Which volcano is located in the Caribbean?", options: ["Soufrière Hills", "Mount Pelee", "Mount Vesuvius", "Mount Etna"], answer: "Soufrière Hills" },
+  { question: "Which type of volcano is Kilauea?", options: ["Shield Volcano", "Stratovolcano", "Cinder Cone", "Lava Dome"], answer: "Shield Volcano" },
+  { question: "Which volcano's eruption formed the caldera of Krakatoa?", options: ["Mount Krakatoa", "Mount Pinatubo", "Mount Tambora", "Mount Merapi"], answer: "Mount Krakatoa" },
+  { question: "Which volcano is known for its persistent lava lake in Africa?", options: ["Nyiragongo", "Mount Kenya", "Mount Kilimanjaro", "Ol Doinyo Lengai"], answer: "Nyiragongo" },
+  { question: "Which volcano is located on the border of Italy and Switzerland?", options: ["Mount Vesuvius", "Mount Etna", "Monte San Giorgio", "Mount Stromboli"], answer: "Monte San Giorgio" },
+  { question: "Which volcano erupted in 1994 causing evacuation in Japan?", options: ["Mount Sakurajima", "Mount Fuji", "Mount Unzen", "Mount Aso"], answer: "Mount Sakurajima" },
+  { question: "Which volcano is considered dormant but could erupt again in the future?", options: ["Mount Fuji", "Mount St. Helens", "Mount Pinatubo", "Mount Vesuvius"], answer: "Mount Fuji" },
+  { question: "Which volcano is located in Russia’s Kamchatka Peninsula?", options: ["Klyuchevskaya Sopka", "Mount Elbrus", "Mount Etna", "Krakatoa"], answer: "Klyuchevskaya Sopka" },
+  { question: "Which volcano is known for the 1982 eruption in the Galapagos Islands?", options: ["Sierra Negra", "Wolf Volcano", "Cerro Azul", "Fernandina"], answer: "Sierra Negra" },
+  { question: "Which volcano in Italy is still highly active?", options: ["Mount Vesuvius", "Mount Etna", "Stromboli", "All of the above"], answer: "All of the above" },
+  { question: "Which volcano erupted in 1997 in Indonesia?", options: ["Mount Semeru", "Mount Merapi", "Mount Kerinci", "Mount Bromo"], answer: "Mount Kerinci" },
+  { question: "Which volcano is located in the Canary Islands?", options: ["Teide", "Mount Etna", "Mount Vesuvius", "Stromboli"], answer: "Teide" },
+  { question: "Which volcano erupted in Alaska in 2008?", options: ["Mount Redoubt", "Mount St. Helens", "Mount Spurr", "Mount Pavlof"], answer: "Mount Redoubt" },
+  { question: "Which volcano erupted in Guatemala in 2018?", options: ["Fuego", "Pacaya", "Santa Maria", "Santiaguito"], answer: "Fuego" },
+  { question: "Which volcano is famous for its lava fountains called 'fireworks'?", options: ["Stromboli", "Etna", "Kilauea", "Mount Vesuvius"], answer: "Stromboli" },
+  { question: "Which volcano erupted in the Philippines in 1754 and is one of the most active there?", options: ["Mayon", "Pinatubo", "Taal", "Bulusan"], answer: "Mayon" },
+  { question: "Which volcano erupted in Chile in 2011?", options: ["Puyehue-Cordón Caulle", "Villarrica", "Llaima", "Calbuco"], answer: "Puyehue-Cordón Caulle" }
+];
+
+
+const MAX_QUESTIONS = 20;
+let questions = [];            // shuffled set for this run
+let currentIndex = 0;
+let score = 0;
+let answered = false;          // whether current question resolved (answered/skipped/timed out)
+let timerInterval = null;
+let autoAdvanceTimeout = null;
+let timeLeft = 10;
+
+/* DOM refs */
+const quizBox = document.getElementById('quizBox');
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const timerEl = document.getElementById('timer');
+const scoreBox = document.getElementById('scoreBox');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const autoNextWrap = document.getElementById('autoNextWrap');
+const autoNextChk = document.getElementById('autoNext');
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i = a.length -1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function clearTimers(){
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+}
+
+function startQuiz(){
+  questions = shuffleArray(questionsDB).slice(0, Math.min(MAX_QUESTIONS, questionsDB.length));
+  currentIndex = 0;
+  score = 0;
+  answered = false;
+  scoreBox.textContent = '';
+  restartBtn.style.display = 'none';
+  nextBtn.style.display = 'block';
+  autoNextWrap.style.display = 'flex';
+  timerEl.style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  clearTimers();
+  quizBox.classList.remove('correct','wrong');
+  answered = false;
+
+  if(currentIndex >= questions.length){
+    endQuiz();
+    return;
+  }
+
+  const q = questions[currentIndex];
+  questionEl.textContent = q.question;
+
+  // render options (shuffled)
+  const opts = shuffleArray(q.options);
+  optionsEl.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.disabled = false;
+    btn.addEventListener('click', () => onSelectOption(btn, opt));
+    optionsEl.appendChild(btn);
+  });
+
+  // start timer
+  timeLeft = 10;
+  timerEl.textContent = `Time: ${timeLeft}s`;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = `Time: ${timeLeft}s`;
+    if(timeLeft <= 0){
+      clearTimers();
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function onSelectOption(btn, opt){
+  if(answered) return;
+  answered = true;
+  clearTimers();
+
+  // disable all buttons to prevent further clicks
+  Array.from(optionsEl.children).forEach(b => b.disabled = true);
+
+  const correct = questions[currentIndex].answer;
+  if(opt === correct){
+    // correct
+    quizBox.classList.add('correct');
+    score++;
+  } else {
+    // wrong
+    quizBox.classList.add('wrong');
+  }
+
+  // If auto-next enabled, schedule advance so user can see glow
+  if(autoNextChk.checked){
+    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
+  }
+  // If auto-next is off, user must press Next to advance
+}
+
+function handleTimeout(){
+  // time expired -> mark as wrong (skipped)
+  answered = true;
+  Array.from(optionsEl.children).forEach(b => b.disabled = true);
+  quizBox.classList.add('wrong');
+
+  if(autoNextChk.checked){
+    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
+  }
+  // else wait for Next button
+}
+
+function onNextClick(){
+  // manual Next click
+  // Cancel any pending auto advance
+  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+
+  if(!answered){
+    // No answer selected -> treat as wrong, show red, and advance after delay
+    answered = true; // count as attempted (wrong)
+    Array.from(optionsEl.children).forEach(b => b.disabled = true);
+    quizBox.classList.add('wrong');
+    setTimeout(() => {
+      advanceToNext();
+    }, 700);
+  } else {
+    // already answered -> advance immediately
+    setTimeout(() => advanceToNext(), 120);
+  }
+}
+
+function advanceToNext(){
+  clearTimers();
+  currentIndex++;
+  if(currentIndex >= questions.length){
+    endQuiz();
+  } else {
+    loadQuestion();
+  }
+}
+
+function endQuiz(){
+  clearTimers();
+  questionEl.textContent = '🎉 Quiz Completed!';
+  optionsEl.innerHTML = '';
+  nextBtn.style.display = 'none';
+  restartBtn.style.display = 'block';
+  timerEl.style.display = 'none';
+  autoNextWrap.style.display = 'none';
+  const outOf = Math.min(MAX_QUESTIONS, questionsDB.length);
+  scoreBox.textContent = `Your Score: ${score} / ${outOf}`;
+}
+
+function restartQuiz(){
+  clearTimers();
+  quizBox.classList.remove('correct','wrong');
+  scoreBox.textContent = '';
+  startQuiz();
+}
+
+/* Wire UI */
+nextBtn.addEventListener('click', onNextClick);
+restartBtn.addEventListener('click', restartQuiz);
+
+/* Start */
+if(questionsDB.length < MAX_QUESTIONS){
+  console.warn(`DB contains only ${questionsDB.length} items; quiz will run ${questionsDB.length} questions.`);
+}
+startQuiz();
+
+</script>
+</body>
+</html>
