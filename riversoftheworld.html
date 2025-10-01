@@ -1,113 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rivers of the World Quiz</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #dff6ff, #9adcff);
-      margin: 0;
-    }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 600px;
-      width: 100%;
-      border: 5px solid transparent;
-    }
-    h1 {
-      margin-bottom: 20px;
-      color: #004d66;
-    }
-    .question {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-    .options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .option {
-      padding: 10px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-    }
-    .option:hover {
-      transform: scale(1.05);
-      background: #0056b3;
-    }
-    .controls {
-      margin-top: 15px;
-    }
-    .next-btn, .restart-btn {
-      padding: 10px 20px;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-      transition: background 0.3s;
-    }
-    .next-btn:hover, .restart-btn:hover {
-      background: #1e7e34;
-    }
-    .auto-next {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-    }
-    .timer {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      color: black;
-    }
-    .correct {
-      border-color: green !important;
-    }
-    .wrong {
-      border-color: red !important;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Rivers of the World — Quiz</title>
+<style>
+  :root{
+    --blue: #007bff;
+    --blue-hover: #0056b3;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --white: #ffffff;
+    --black: #111;
+  }
+
+  body{
+    margin:0;
+    padding:12px;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background:var(--white);
+    color:var(--black);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    min-height:100vh;
+  }
+
+  .quiz-container{
+    width:100%;
+    max-width:540px;
+    background:var(--white);
+    border-radius:12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    padding:18px;
+    box-sizing:border-box;
+    border:5px solid transparent;
+    transition:border-color .18s ease, transform .12s ease;
+    text-align:center;
+  }
+  .quiz-container.correct{ border-color: var(--green); }
+  .quiz-container.wrong{ border-color: var(--red); }
+
+  #title {
+    margin:0 0 8px 0;
+    font-size:20px;
+    font-weight:700;
+  }
+
+  #question {
+    margin: 10px 0 14px 0;
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--black);
+    text-align: center;
+    min-height:56px;
+  }
+
+  .options{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:12px 0;
+  }
+
+  .option-btn{
+    background:var(--blue);
+    color:var(--white);
+    border:0;
+    padding:12px 10px;
+    font-size:15px;
+    border-radius:8px;
+    cursor:pointer;
+    width:100%;
+    word-break:break-word;
+    transition: transform .10s ease, background .12s ease, opacity .12s ease;
+  }
+  .option-btn:active{ transform: translateY(1px); }
+  .option-btn:hover{ background:var(--blue-hover); }
+  .option-btn[disabled]{ opacity: .7; cursor: default; }
+
+  .timer{
+    margin:10px 0;
+    font-weight:700;
+    color:var(--black);
+    font-size:16px;
+    text-align:center;
+  }
+
+  .auto-next {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+    color:var(--black);
+    font-size:14px;
+  }
+
+  .controls {
+    display:flex;
+    gap:8px;
+    flex-direction:column;
+    align-items:stretch;
+    margin-top:6px;
+  }
+
+  .next-btn, .restart-btn {
+    background:var(--green);
+    color:var(--white);
+    border:0;
+    padding:12px;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+    width:100%;
+  }
+  .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
+
+  .restart-btn { background:#ff5722; display:none; }
+
+  .score {
+    margin-top:12px;
+    text-align:center;
+    font-weight:700;
+    color:var(--black);
+    font-size:18px;
+  }
+
+  @media (max-width:420px){
+    .options{ grid-template-columns:1fr; }
+    #question{ font-size:17px; }
+    .option-btn{ padding:14px; font-size:16px; }
+    .timer{ font-size:15px; }
+  }
+</style>
 </head>
 <body>
-  <div class="container" id="quizContainer">
-    <h1>Rivers of the World Quiz</h1>
-    <div class="timer" id="timer">Time left: 10s</div>
-    <div class="question" id="question">Question text</div>
-    <div class="options" id="options"></div>
-    <div class="controls">
-      <div class="auto-next">
-        <input type="checkbox" id="autoNext">
-        <label for="autoNext">Auto-Next</label>
-      </div>
-      <button class="next-btn" id="nextBtn">Next</button>
-      <button class="restart-btn" id="restartBtn" style="display:none;">Restart</button>
+  <div class="quiz-container" id="quizBox" role="application" aria-labelledby="question">
+    <h2 id="title">🌊 Rivers of the World</h2>
+
+    <div id="question">Loading question...</div>
+
+    <div class="options" id="options" aria-live="polite"></div>
+
+    <div class="timer" id="timer">Time: 10s</div>
+
+    <div class="auto-next" id="autoNextWrap">
+      <input type="checkbox" id="autoNext" />
+      <label for="autoNext">Auto Next</label>
     </div>
+
+    <div class="controls">
+      <button id="nextBtn" class="next-btn" type="button">Next</button>
+      <button id="restartBtn" class="restart-btn" type="button">Restart Quiz</button>
+    </div>
+
+    <div id="scoreBox" class="score" aria-live="polite"></div>
   </div>
 
-  <script>
-    const questionsDB = [
+<script>
+  const questionsDB = [
   { question: "Which river is traditionally considered the longest in the world?", options: ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"], answer: "Nile River" },
   { question: "Which river discharges the greatest volume of water on Earth?", options: ["Nile River", "Amazon River", "Yangtze River", "Congo River"], answer: "Amazon River" },
   { question: "Which river flows through Cairo, Egypt?", options: ["Nile River", "Tigris River", "Euphrates River", "Jordan River"], answer: "Nile River" },
@@ -297,120 +349,188 @@
   { question: "Which river flows along the southern shore of England and passes through Winchester (River Itchen is one)?", options: ["Itchen", "Thames", "Severn", "Hamble"], answer: "Itchen" },
   { question: "Which river is traditionally a dividing line between northern and southern Vietnam (historically significant river is the Red River area)?", options: ["Red River (Hong)", "Mekong", "Perfume River", "Song Nguon"], answer: "Red River (Hong)" }
 ];
+const MAX_QUESTIONS = 20;
+let questions = [];            // shuffled set for this run
+let currentIndex = 0;
+let score = 0;
+let answered = false;          // whether current question resolved (answered/skipped/timed out)
+let timerInterval = null;
+let autoAdvanceTimeout = null;
+let timeLeft = 10;
 
-    const container = document.getElementById("quizContainer");
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const nextBtn = document.getElementById("nextBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const timerEl = document.getElementById("timer");
-    const autoNext = document.getElementById("autoNext");
+/* DOM refs */
+const quizBox = document.getElementById('quizBox');
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const timerEl = document.getElementById('timer');
+const scoreBox = document.getElementById('scoreBox');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const autoNextWrap = document.getElementById('autoNextWrap');
+const autoNextChk = document.getElementById('autoNext');
 
-    let shuffled, index, score, timer, timeLeft;
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i = a.length -1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-    function startQuiz() {
-      shuffled = [...questionsDB].sort(() => Math.random() - 0.5).slice(0, 20);
-      index = 0;
-      score = 0;
-      restartBtn.style.display = "none";
-      nextBtn.style.display = "inline-block";
-      autoNext.parentElement.style.display = "flex";
-      loadQuestion();
+function clearTimers(){
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+}
+
+function startQuiz(){
+  questions = shuffleArray(questionsDB).slice(0, Math.min(MAX_QUESTIONS, questionsDB.length));
+  currentIndex = 0;
+  score = 0;
+  answered = false;
+  scoreBox.textContent = '';
+  restartBtn.style.display = 'none';
+  nextBtn.style.display = 'block';
+  autoNextWrap.style.display = 'flex';
+  timerEl.style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  clearTimers();
+  quizBox.classList.remove('correct','wrong');
+  answered = false;
+
+  if(currentIndex >= questions.length){
+    endQuiz();
+    return;
+  }
+
+  const q = questions[currentIndex];
+  questionEl.textContent = q.question;
+
+  // render options (shuffled)
+  const opts = shuffleArray(q.options);
+  optionsEl.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.disabled = false;
+    btn.addEventListener('click', () => onSelectOption(btn, opt));
+    optionsEl.appendChild(btn);
+  });
+
+  // start timer
+  timeLeft = 10;
+  timerEl.textContent = `Time: ${timeLeft}s`;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = `Time: ${timeLeft}s`;
+    if(timeLeft <= 0){
+      clearTimers();
+      handleTimeout();
     }
+  }, 1000);
+}
 
-    function loadQuestion() {
-      resetState();
-      const current = shuffled[index];
-      questionEl.textContent = current.question;
-      current.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "option";
-        btn.textContent = opt;
-        btn.onclick = () => selectAnswer(opt, btn, current.answer);
-        optionsEl.appendChild(btn);
-      });
-      startTimer();
-    }
+function onSelectOption(btn, opt){
+  if(answered) return;
+  answered = true;
+  clearTimers();
 
-    function resetState() {
-      container.classList.remove("correct", "wrong");
-      clearInterval(timer);
-      timeLeft = 10;
-      timerEl.textContent = `Time left: ${timeLeft}s`;
-      optionsEl.innerHTML = "";
-    }
+  // disable all buttons to prevent further clicks
+  Array.from(optionsEl.children).forEach(b => b.disabled = true);
 
-    function startTimer() {
-      timer = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = `Time left: ${timeLeft}s`;
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          markAnswer(null);
-          if (autoNext.checked) {
-            setTimeout(nextQuestion, 1000);
-          }
-        }
-      }, 1000);
-    }
+  const correct = questions[currentIndex].answer;
+  if(opt === correct){
+    // correct
+    quizBox.classList.add('correct');
+    score++;
+  } else {
+    // wrong
+    quizBox.classList.add('wrong');
+  }
 
-    function selectAnswer(selected, btn, correct) {
-      clearInterval(timer);
-      if (selected === correct) {
-        container.classList.add("correct");
-        score++;
-      } else {
-        container.classList.add("wrong");
-      }
-      Array.from(optionsEl.children).forEach(b => b.disabled = true);
-      if (autoNext.checked) {
-        setTimeout(nextQuestion, 1000);
-      }
-    }
+  // If auto-next enabled, schedule advance so user can see glow
+  if(autoNextChk.checked){
+    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
+  }
+  // If auto-next is off, user must press Next to advance
+}
 
-    function markAnswer(selected) {
-      const correct = shuffled[index].answer;
-      if (selected === correct) {
-        container.classList.add("correct");
-        score++;
-      } else {
-        container.classList.add("wrong");
-      }
-      Array.from(optionsEl.children).forEach(b => b.disabled = true);
-    }
+function handleTimeout(){
+  // time expired -> mark as wrong (skipped)
+  answered = true;
+  Array.from(optionsEl.children).forEach(b => b.disabled = true);
+  quizBox.classList.add('wrong');
 
-    function nextQuestion() {
-      if (!container.classList.contains("correct") && !container.classList.contains("wrong")) {
-        // No selection → count wrong
-        markAnswer(null);
-        return setTimeout(nextQuestion, 1000);
-      }
-      index++;
-      if (index < shuffled.length) {
-        loadQuestion();
-      } else {
-        endQuiz();
-      }
-    }
+  if(autoNextChk.checked){
+    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
+  }
+  // else wait for Next button
+}
 
-    function endQuiz() {
-      clearInterval(timer);
-      questionEl.textContent = `Quiz finished! Your score: ${score}/${shuffled.length}`;
-      optionsEl.innerHTML = "";
-      nextBtn.style.display = "none";
-      autoNext.parentElement.style.display = "none";
-      timerEl.style.display = "none";
-      restartBtn.style.display = "inline-block";
-    }
+function onNextClick(){
+  // manual Next click
+  // Cancel any pending auto advance
+  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
 
-    nextBtn.onclick = nextQuestion;
-    restartBtn.onclick = () => {
-      timerEl.style.display = "block";
-      autoNext.parentElement.style.display = "flex";
-      startQuiz();
-    };
+  if(!answered){
+    // No answer selected -> treat as wrong, show red, and advance after delay
+    answered = true; // count as attempted (wrong)
+    Array.from(optionsEl.children).forEach(b => b.disabled = true);
+    quizBox.classList.add('wrong');
+    setTimeout(() => {
+      advanceToNext();
+    }, 700);
+  } else {
+    // already answered -> advance immediately
+    setTimeout(() => advanceToNext(), 120);
+  }
+}
 
-    startQuiz();
-  </script>
+function advanceToNext(){
+  clearTimers();
+  currentIndex++;
+  if(currentIndex >= questions.length){
+    endQuiz();
+  } else {
+    loadQuestion();
+  }
+}
+
+function endQuiz(){
+  clearTimers();
+  questionEl.textContent = '🎉 Quiz Completed!';
+  optionsEl.innerHTML = '';
+  nextBtn.style.display = 'none';
+  restartBtn.style.display = 'block';
+  timerEl.style.display = 'none';
+  autoNextWrap.style.display = 'none';
+  const outOf = Math.min(MAX_QUESTIONS, questionsDB.length);
+  scoreBox.textContent = `Your Score: ${score} / ${outOf}`;
+}
+
+function restartQuiz(){
+  clearTimers();
+  quizBox.classList.remove('correct','wrong');
+  scoreBox.textContent = '';
+  startQuiz();
+}
+
+/* Wire UI */
+nextBtn.addEventListener('click', onNextClick);
+restartBtn.addEventListener('click', restartQuiz);
+
+/* Start */
+if(questionsDB.length < MAX_QUESTIONS){
+  console.warn(`DB contains only ${questionsDB.length} items; quiz will run ${questionsDB.length} questions.`);
+}
+startQuiz();
+
+</script>
 </body>
 </html>
