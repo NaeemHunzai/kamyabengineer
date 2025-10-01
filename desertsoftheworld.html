@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --blue: #007bff;
+    --blue-hover: #0056b3;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --white: #ffffff;
+    --black: #111;
+  }
+
+  body{
+    margin:0;
+    padding:12px;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background:var(--white);
+    color:var(--black);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    min-height:100vh;
+  }
+
+  .quiz-container{
+    width:100%;
+    max-width:540px;
+    background:var(--white);
+    border-radius:12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    padding:18px;
+    box-sizing:border-box;
+    border:5px solid transparent;
+    transition:border-color .18s ease, transform .12s ease;
+    text-align:center;
+  }
+  .quiz-container.correct{ border-color: var(--green); }
+  .quiz-container.wrong{ border-color: var(--red); }
+
+  #title {
+    margin:0 0 8px 0;
+    font-size:20px;
+    font-weight:700;
+  }
+
+  #question {
+    margin: 10px 0 14px 0;
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--black);
+    text-align: center;
+    min-height:56px;
+  }
+
+  .options{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:12px 0;
+  }
+
+  .option-btn{
+    background:var(--blue);
+    color:var(--white);
+    border:0;
+    padding:12px 10px;
+    font-size:15px;
+    border-radius:8px;
+    cursor:pointer;
+    width:100%;
+    word-break:break-word;
+    transition: transform .10s ease, background .12s ease, opacity .12s ease;
+  }
+  .option-btn:active{ transform: translateY(1px); }
+  .option-btn:hover{ background:var(--blue-hover); }
+  .option-btn[disabled]{ opacity: .7; cursor: default; }
+
+  .timer{
+    margin:10px 0;
+    font-weight:700;
+    color:var(--black);
+    font-size:16px;
+    text-align:center;
+  }
+
+  .auto-next {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+    color:var(--black);
+    font-size:14px;
+  }
+
+  .controls {
+    display:flex;
+    gap:8px;
+    flex-direction:column;
+    align-items:stretch;
+    margin-top:6px;
+  }
+
+  .next-btn, .restart-btn {
+    background:var(--green);
+    color:var(--white);
+    border:0;
+    padding:12px;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+    width:100%;
+  }
+  .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
+
+  .restart-btn { background:#ff5722; display:none; }
+
+  .score {
+    margin-top:12px;
+    text-align:center;
+    font-weight:700;
+    color:var(--black);
+    font-size:18px;
+  }
+
+  @media (max-width:420px){
+    .options{ grid-template-columns:1fr; }
+    #question{ font-size:17px; }
+    .option-btn{ padding:14px; font-size:16px; }
+    .timer{ font-size:15px; }
+  }
+</style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox" role="application" aria-labelledby="question">
+ 
+
+    <div id="question">Loading question...</div>
+
+    <div class="options" id="options" aria-live="polite"></div>
+
+    <div class="timer" id="timer">Time: 10s</div>
+
+    <div class="auto-next" id="autoNextWrap">
+      <input type="checkbox" id="autoNext" />
+      <label for="autoNext">Auto Next</label>
+    </div>
+
+    <div class="controls">
+      <button id="nextBtn" class="next-btn" type="button">Next</button>
+      <button id="restartBtn" class="restart-btn" type="button">Restart Quiz</button>
+    </div>
+
+    <div id="scoreBox" class="score" aria-live="polite"></div>
+  </div>
+
+<script>
+  const questionsDB = [
+  { question: "Which is the largest hot desert in the world?", options: ["Sahara Desert", "Gobi Desert", "Kalahari Desert", "Arabian Desert"], answer: "Sahara Desert" },
+  { question: "Which desert is known as the 'Great Indian Desert'?", options: ["Thar Desert", "Karakum Desert", "Sonoran Desert", "Atacama Desert"], answer: "Thar Desert" },
+  { question: "The Gobi Desert is located in which countries?", options: ["China and Mongolia", "India and Pakistan", "Egypt and Libya", "USA and Mexico"], answer: "China and Mongolia" },
+  { question: "Which desert is the driest place on Earth?", options: ["Atacama Desert", "Sahara Desert", "Karakum Desert", "Great Victoria Desert"], answer: "Atacama Desert" },
+  { question: "Which desert is the largest cold desert in the world?", options: ["Gobi Desert", "Great Basin Desert", "Patagonian Desert", "Karakum Desert"], answer: "Gobi Desert" },
+  { question: "The Rub' al Khali, also known as the 'Empty Quarter', is located in which desert?", options: ["Arabian Desert", "Sahara Desert", "Karakum Desert", "Kyzylkum Desert"], answer: "Arabian Desert" },
+  { question: "Which desert is known for its unique wildlife, including the meerkat and the oryx?", options: ["Namib Desert", "Kalahari Desert", "Sahara Desert", "Sonoran Desert"], answer: "Namib Desert" },
+  { question: "Which desert is located in northern Chile and is known for its salt flats?", options: ["Atacama Desert", "Gobi Desert", "Karakum Desert", "Great Victoria Desert"], answer: "Atacama Desert" },
+  { question: "Which desert is located in the southwestern United States and is known for its iconic saguaro cactus?", options: ["Sonoran Desert", "Mojave Desert", "Great Basin Desert", "Chihuahuan Desert"], answer: "Sonoran Desert" },
+  { question: "Which desert is located in Australia and is known for its red sand dunes?", options: ["Simpson Desert", "Great Victoria Desert", "Great Sandy Desert", "Karakum Desert"], answer: "Simpson Desert" },
+  { question: "Which desert is located in Africa and is known for its vast sand dunes and high temperatures?", options: ["Sahara Desert", "Kalahari Desert", "Namib Desert", "Sonoran Desert"], answer: "Sahara Desert" },
+  { question: "Which desert is located in Central Asia and is known for its harsh climate and sand dunes?", options: ["Karakum Desert", "Kyzylkum Desert", "Gobi Desert", "Taklamakan Desert"], answer: "Karakum Desert" },
+  { question: "Which desert is located in the United States and is known for its Joshua trees?", options: ["Mojave Desert", "Sonoran Desert", "Great Basin Desert", "Chihuahuan Desert"], answer: "Mojave Desert" },
+  { question: "Which desert is located in Argentina and is known for its salt flats?", options: ["Patagonian Desert", "Karakum Desert", "Great Victoria Desert", "Great Basin Desert"], answer: "Patagonian Desert" },
+  { question: "Which desert is located in the Middle East and is known for its vast sand dunes?", options: ["Rub' al Khali", "Sahara Desert", "Kyzylkum Desert", "Taklamakan Desert"], answer: "Rub' al Khali" },
+  { question: "Which desert is located in China and is known for its high temperatures and sand dunes?", options: ["Taklamakan Desert", "Gobi Desert", "Karakum Desert", "Kyzylkum Desert"], answer: "Taklamakan Desert" },
+  { question: "Which desert is located in the United States and is known for its unique rock formations?", options: ["Great Basin Desert", "Mojave Desert", "Sonoran Desert", "Chihuahuan Desert"], answer: "Great Basin Desert" },
+  { question: "Which desert is located in India and is known for its sand dunes and camel rides?", options: ["Thar Desert", "Karakum Desert", "Sonoran Desert", "Atacama Desert"], answer: "Thar Desert" },
+  { question: "Which desert is located in Australia and is known for its unique wildlife, including the red kangaroo?", options: ["Great Victoria Desert", "Great Sandy Desert", "Simpson Desert", "Karakum Desert"], answer: "Great Victoria Desert" },
+  { question: "Which desert is located in Africa and is known for its unique wildlife, including the meerkat and the oryx?", options: ["Namib Desert", "Kalahari Desert", "Sahara Desert", "Sonoran Desert"], answer: "Namib Desert" },
+  { question: "Which desert is called the 'Frozen Desert' because of its icy conditions?", options: ["Antarctic Desert", "Gobi Desert", "Karakum Desert", "Sahara Desert"], answer: "Antarctic Desert" },
+  { question: "Which desert covers much of northern Africa?", options: ["Sahara Desert", "Kalahari Desert", "Namib Desert", "Arabian Desert"], answer: "Sahara Desert" },
+  { question: "Which desert has the famous Dune 45?", options: ["Namib Desert", "Sahara Desert", "Kalahari Desert", "Arabian Desert"], answer: "Namib Desert" },
+  { question: "Which desert is famous for the sand seas known as 'ergs'?", options: ["Sahara Desert", "Gobi Desert", "Karakum Desert", "Great Victoria Desert"], answer: "Sahara Desert" },
+  { question: "Which desert is located in Mongolia and northern China?", options: ["Gobi Desert", "Taklamakan Desert", "Kyzylkum Desert", "Karakum Desert"], answer: "Gobi Desert" },
+  { question: "Which desert is famous for its unique red sand dunes and the Namib-Naukluft National Park?", options: ["Namib Desert", "Sahara Desert", "Kalahari Desert", "Simpson Desert"], answer: "Namib Desert" },
+  { question: "Which desert is located in Turkmenistan?", options: ["Karakum Desert", "Gobi Desert", "Kyzylkum Desert", "Thar Desert"], answer: "Karakum Desert" },
+  { question: "Which desert is located in Uzbekistan and Kazakhstan?", options: ["Kyzylkum Desert", "Karakum Desert", "Gobi Desert", "Thar Desert"], answer: "Kyzylkum Desert" },
+  { question: "Which desert in Australia is known as the largest in terms of area?", options: ["Great Victoria Desert", "Simpson Desert", "Great Sandy Desert", "Tanami Desert"], answer: "Great Victoria Desert" },
+  { question: "Which desert has the famous salt flat Salar de Uyuni nearby?", options: ["Atacama Desert", "Patagonian Desert", "Thar Desert", "Mojave Desert"], answer: "Atacama Desert" },
+  { question: "Which desert in North America stretches across parts of Arizona and Mexico?", options: ["Sonoran Desert", "Mojave Desert", "Chihuahuan Desert", "Great Basin Desert"], answer: "Sonoran Desert" },
+  { question: "Which desert is known for the highest sand dunes in the world?", options: ["Sahara Desert", "Namib Desert", "Rub' al Khali", "Simpson Desert"], answer: "Namib Desert" },
+  { question: "Which desert is located in Patagonia, Argentina?", options: ["Patagonian Desert", "Atacama Desert", "Karakum Desert", "Great Victoria Desert"], answer: "Patagonian Desert" },
+  { question: "Which desert is known as the 'Empty Quarter'?", options: ["Rub' al Khali", "Sahara Desert", "Gobi Desert", "Kalahari Desert"], answer: "Rub' al Khali" },
+  { question: "Which desert is part of the Arabian Peninsula?", options: ["Arabian Desert", "Sahara Desert", "Karakum Desert", "Thar Desert"], answer: "Arabian Desert" },
+  { question: "Which desert is famous for its extreme cold temperatures and ice-covered landscapes?", options: ["Antarctic Desert", "Gobi Desert", "Karakum Desert", "Patagonian Desert"], answer: "Antarctic Desert" },
+  { question: "Which desert in the USA is home to the Saguaro National Park?", options: ["Sonoran Desert", "Mojave Desert", "Great Basin Desert", "Chihuahuan Desert"], answer: "Sonoran Desert" },
+  { question: "Which desert in Africa is known for its dense fog caused by the Atlantic Ocean?", options: ["Namib Desert", "Sahara Desert", "Kalahari Desert", "Rub' al Khali"], answer: "Namib Desert" },
+  { question: "Which desert is located in northern Africa and is expanding due to desertification?", options: ["Sahara Desert", "Kalahari Desert", "Namib Desert", "Arabian Desert"], answer: "Sahara Desert" },
+  { question: "Which desert is in western Australia and is known for sand dunes and sparse vegetation?", options: ["Great Sandy Desert", "Great Victoria Desert", "Simpson Desert", "Tanami Desert"], answer: "Great Sandy Desert" },
+  { question: "Which desert lies between the Red Sea and the Persian Gulf?", options: ["Arabian Desert", "Sahara Desert", "Karakum Desert", "Thar Desert"], answer: "Arabian Desert" },
+  { question: "Which desert is known for the 'Oasis of Huacachina'?", options: ["Atacama Desert", "Thar Desert", "Mojave Desert", "Karakum Desert"], answer: "Atacama Desert" },
+  { question: "Which desert is located in central Iran and has salt marshes?", options: ["Dasht-e Kavir", "Dasht-e Lut", "Thar Desert", "Kyzylkum Desert"], answer: "Dasht-e Kavir" },
+  { question: "Which desert is also called 'Lut Desert' in Iran and is one of the hottest places on Earth?", options: ["Dasht-e Lut", "Dasht-e Kavir", "Karakum Desert", "Taklamakan Desert"], answer: "Dasht-e Lut" },
+  { question: "Which desert is located in northwestern China and is also called the 'Sea of Death'?", options: ["Taklamakan Desert", "Gobi Desert", "Karakum Desert", "Kyzylkum Desert"], answer: "Taklamakan Desert" },
+  { question: "Which desert in Africa spans across Botswana, Namibia, and South Africa?", options: ["Kalahari Desert", "Sahara Desert", "Namib Desert", "Karakum Desert"], answer: "Kalahari Desert" },
+  { question: "Which desert is the largest in South America?", options: ["Atacama Desert", "Patagonian Desert", "Chaco Desert", "Monte Desert"], answer: "Patagonian Desert" },
+  { question: "Which desert is famous for the desert-adapted elephants?", options: ["Namib Desert", "Sahara Desert", "Kalahari Desert", "Gobi Desert"], answer: "Namib Desert" },
+  { question: "Which desert is located in northern China and southern Mongolia?", options: ["Gobi Desert", "Taklamakan Desert", "Kyzylkum Desert", "Karakum Desert"], answer: "Gobi Desert" },
+  { question: "Which desert is famous for the sand seas called 'ergs' in Algeria?", options: ["Sahara Desert", "Kalahari Desert", "Namib Desert", "Arabian Desert"], answer: "Sahara Desert" },
+  { question: "Which desert in Africa is known for the Namib-Naukluft National Park?", options: ["Namib Desert", "Kalahari Desert", "Sahara Desert", "Karakum Desert"], answer: "Namib Desert" },
+  { question: "Which desert in Australia is famous for Uluru/Ayers Rock?", options: ["Great Sandy Desert", "Simpson Desert", "Great Victoria Desert", "Tanami Desert"], answer: "Great Sandy Desert" },
+  { question: "Which desert is located in the Middle East and is known for oil reserves?", options: ["Arabian Desert", "Rub' al Khali", "Sahara Desert", "Karakum Desert"], answer: "Arabian Desert" }
+];
+
+const MAX_QUESTIONS = 20;
+let questions = [];            // shuffled set for this run
+let currentIndex = 0;
+let score = 0;
+let answered = false;          // whether current question resolved (answered/skipped/timed out)
+let timerInterval = null;
+let autoAdvanceTimeout = null;
+let timeLeft = 10;
+
+/* DOM refs */
+const quizBox = document.getElementById('quizBox');
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const timerEl = document.getElementById('timer');
+const scoreBox = document.getElementById('scoreBox');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const autoNextWrap = document.getElementById('autoNextWrap');
+const autoNextChk = document.getElementById('autoNext');
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i = a.length -1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function clearTimers(){
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+}
+
+function startQuiz(){
+  questions = shuffleArray(questionsDB).slice(0, Math.min(MAX_QUESTIONS, questionsDB.length));
+  currentIndex = 0;
+  score = 0;
+  answered = false;
+  scoreBox.textContent = '';
+  restartBtn.style.display = 'none';
+  nextBtn.style.display = 'block';
+  autoNextWrap.style.display = 'flex';
+  timerEl.style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  clearTimers();
+  quizBox.classList.remove('correct','wrong');
+  answered = false;
+
+  if(currentIndex >= questions.length){
+    endQuiz();
+    return;
+  }
+
+  const q = questions[currentIndex];
+  questionEl.textContent = q.question;
+
+  // render options (shuffled)
+  const opts = shuffleArray(q.options);
+  optionsEl.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.disabled = false;
+    btn.addEventListener('click', () => onSelectOption(btn, opt));
+    optionsEl.appendChild(btn);
+  });
+
+  // start timer
+  timeLeft = 10;
+  timerEl.textContent = `Time: ${timeLeft}s`;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = `Time: ${timeLeft}s`;
+    if(timeLeft <= 0){
+      clearTimers();
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function onSelectOption(btn, opt){
+  if(answered) return;
+  answered = true;
+  clearTimers();
+
+  // disable all buttons to prevent further clicks
+  Array.from(optionsEl.children).forEach(b => b.disabled = true);
+
+  const correct = questions[currentIndex].answer;
+  if(opt === correct){
+    // correct
+    quizBox.classList.add('correct');
+    score++;
+  } else {
+    // wrong
+    quizBox.classList.add('wrong');
+  }
+
+  // If auto-next enabled, schedule advance so user can see glow
+  if(autoNextChk.checked){
+    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
+  }
+  // If auto-next is off, user must press Next to advance
+}
+
+function handleTimeout(){
+  // time expired -> mark as wrong (skipped)
+  answered = true;
+  Array.from(optionsEl.children).forEach(b => b.disabled = true);
+  quizBox.classList.add('wrong');
+
+  if(autoNextChk.checked){
+    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
+  }
+  // else wait for Next button
+}
+
+function onNextClick(){
+  // manual Next click
+  // Cancel any pending auto advance
+  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+
+  if(!answered){
+    // No answer selected -> treat as wrong, show red, and advance after delay
+    answered = true; // count as attempted (wrong)
+    Array.from(optionsEl.children).forEach(b => b.disabled = true);
+    quizBox.classList.add('wrong');
+    setTimeout(() => {
+      advanceToNext();
+    }, 700);
+  } else {
+    // already answered -> advance immediately
+    setTimeout(() => advanceToNext(), 120);
+  }
+}
+
+function advanceToNext(){
+  clearTimers();
+  currentIndex++;
+  if(currentIndex >= questions.length){
+    endQuiz();
+  } else {
+    loadQuestion();
+  }
+}
+
+function endQuiz(){
+  clearTimers();
+  questionEl.textContent = '🎉 Quiz Completed!';
+  optionsEl.innerHTML = '';
+  nextBtn.style.display = 'none';
+  restartBtn.style.display = 'block';
+  timerEl.style.display = 'none';
+  autoNextWrap.style.display = 'none';
+  const outOf = Math.min(MAX_QUESTIONS, questionsDB.length);
+  scoreBox.textContent = `Your Score: ${score} / ${outOf}`;
+}
+
+function restartQuiz(){
+  clearTimers();
+  quizBox.classList.remove('correct','wrong');
+  scoreBox.textContent = '';
+  startQuiz();
+}
+
+/* Wire UI */
+nextBtn.addEventListener('click', onNextClick);
+restartBtn.addEventListener('click', restartQuiz);
+
+/* Start */
+if(questionsDB.length < MAX_QUESTIONS){
+  console.warn(`DB contains only ${questionsDB.length} items; quiz will run ${questionsDB.length} questions.`);
+}
+startQuiz();
+
+</script>
+</body>
+</html>
