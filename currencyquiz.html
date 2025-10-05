@@ -302,6 +302,21 @@
       if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
     }
 
+      /*********** Helper: Show correct answer ***********/
+function showCorrectAnswer() {
+  const q = questions[currentIndex];
+  Array.from(optionsEl.children).forEach(btn => {
+    // highlight correct one
+    if (btn.dataset.opt === q.currency) {
+      btn.style.background = '#28a745'; // green
+      btn.style.boxShadow = '0 0 12px #28a745'; // glowing effect
+    }
+    // disable all option buttons to prevent further clicks
+    btn.disabled = true;
+  });
+}
+    
+    
     /*********** Start / Restart ***********/
     function startQuiz(){
       // choose QUESTIONS_PER_QUIZ random items
@@ -317,114 +332,122 @@
     }
 
     /*********** Load question ***********/
-    function loadQuestion(){
-      clearTimers();
-      quizBox.classList.remove('correct','wrong');
-      answered = false;
+  function loadQuestion(){
+    clearTimers();
+    quizBox.classList.remove('correct','wrong');
+    answered = false;
 
-      if(currentIndex >= questions.length) return endQuiz();
+    if(currentIndex >= questions.length) return endQuiz();
 
-      const q = questions[currentIndex];
+    const q = questions[currentIndex];
 
-      // show question centered
-      questionEl.textContent = `What is the currency of ${q.country}?`;
+    // show question centered
+    questionEl.textContent = `What is the currency of ${q.country}?`;
 
-      // prepare 4 options (1 correct + 3 random wrong)
-      const wrongPool = shuffleArray(database.filter(it => it.currency !== q.currency)).slice(0,3).map(it => it.currency);
-      const opts = shuffleArray([ q.currency, ...wrongPool ]);
+    // prepare 4 options (1 correct + 3 random wrong)
+    const wrongPool = shuffleArray(database.filter(it => it.currency !== q.currency)).slice(0,3).map(it => it.currency);
+    const opts = shuffleArray([ q.currency, ...wrongPool ]);
 
-      // render options
-      optionsEl.innerHTML = '';
-      opts.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'option-btn';
-        btn.textContent = opt;
-        btn.dataset.opt = opt;
-        btn.disabled = false;
-        btn.addEventListener('click', () => onSelectOption(opt, btn));
-        optionsEl.appendChild(btn);
-      });
+    // render options
+    optionsEl.innerHTML = '';
+    opts.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.dataset.opt = opt;
+      btn.disabled = false;
+      btn.addEventListener('click', () => onSelectOption(opt, btn));
+      optionsEl.appendChild(btn);
+    });
 
-      // start countdown
-      timeLeft = 10;
+    // start countdown
+    timeLeft = 10;
+    timerEl.textContent = `Time: ${timeLeft}s`;
+    timerInterval = setInterval(() => {
+      timeLeft--;
       timerEl.textContent = `Time: ${timeLeft}s`;
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = `Time: ${timeLeft}s`;
-        if(timeLeft <= 0){
-          clearTimers();
-          // mark skipped as wrong
-          quizBox.classList.add('wrong');
-          answered = false; // remains unanswered
-          if(document.getElementById('autoNext').checked){
-            // schedule auto advance so user sees the red glow briefly
-            autoAdvanceTimeout = setTimeout(() => {
-              advanceToNext();
-            }, 700);
-          }
-        }
-      }, 1000);
-    }
+    if (timeLeft <= 0) {
+  clearTimers();
+  quizBox.classList.add('wrong');
+  showCorrectAnswer(); // show and disable options
+  answered = true;     // mark as handled so clicks won't interfere
+  if (document.getElementById('autoNext').checked) {
+    autoAdvanceTimeout = setTimeout(() => {
+      advanceToNext();
+    }, 700);
+  }
+}
+
+    }, 1000);
+  }
+    
 
     /*********** Option selection handler ***********/
-    function onSelectOption(optionText, btn){
-      if(answered) return; // prevent double answers
-      answered = true;
+   /*********** Option selection handler ***********/
+  function onSelectOption(optionText, btn){
+    if(answered) return;
+    answered = true;
 
-      // disable options
-      Array.from(optionsEl.children).forEach(b => b.disabled = true);
+    // disable options
+    Array.from(optionsEl.children).forEach(b => b.disabled = true);
 
-      // stop timer
-      clearTimers();
+    clearTimers();
 
-      const q = questions[currentIndex];
-      const isCorrect = optionText === q.currency;
+    const q = questions[currentIndex];
+    const isCorrect = optionText === q.currency;
 
-      if(isCorrect){
-        quizBox.classList.add('correct');
-        score++;
-      } else {
-        quizBox.classList.add('wrong');
-      }
-
-      // if auto-next enabled, schedule advance
-      if(document.getElementById('autoNext').checked){
-        autoAdvanceTimeout = setTimeout(() => {
-          advanceToNext();
-        }, 700);
-      }
+    if(isCorrect){
+      quizBox.classList.add('correct');
+      score++;
+    } else {
+      quizBox.classList.add('wrong');
+      showCorrectAnswer(); // ✅ highlight correct when wrong
     }
+
+    if(document.getElementById('autoNext').checked){
+      autoAdvanceTimeout = setTimeout(() => {
+        advanceToNext();
+      }, 700);
+    }
+  }
 
     /*********** Manual Next button ***********/
-    function nextQuestion(){
-      // If an autoAdvance is pending, clear it (user clicked Next manually)
-      if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+ function nextQuestion() {
+  // cancel any pending autoAdvance
+  if (autoAdvanceTimeout) { clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
 
-      // stop timer
-      if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  // stop timer
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 
-      // if user didn't answer, show red glow briefly
-      if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
-        quizBox.classList.add('wrong');
-        // mark as skipped (no score change)
-        // still wait a bit for user to perceive the red border
-        setTimeout(() => {
-          advanceToNext();
-        }, 700);
-      } else {
-        // already answered: advance immediately (short delay to keep UX consistent)
-        setTimeout(() => {
-          advanceToNext();
-        }, 200);
-      }
-    }
+  // if user didn't answer (skipped)
+  if (!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')) {
+    quizBox.classList.add('wrong');
+    showCorrectAnswer(); // show correct before moving on
+    answered = true;
+    setTimeout(() => {
+      advanceToNext();
+    }, 1500); // allow time to perceive the highlight
+  } else {
+    // already answered: advance quickly but smoothly
+    setTimeout(() => {
+      advanceToNext();
+    }, 200);
+  }
+}
 
-    function advanceToNext(){
-      clearTimers();
-      currentIndex++;
-      loadQuestion();
-    }
+function advanceToNext() {
+  clearTimers();
+  // move to next index
+  currentIndex++;
+  // clear status classes (will be set again in loadQuestion if needed)
+  quizBox.classList.remove('correct', 'wrong');
+  if (currentIndex >= questions.length) {
+    endQuiz();
+  } else {
+    loadQuestion();
+  }
+}
 
     /*********** End and Restart ***********/
     function endQuiz(){
