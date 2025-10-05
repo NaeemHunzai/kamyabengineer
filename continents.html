@@ -39,8 +39,15 @@
       transition:border-color .20s ease, transform .12s ease;
       text-align:center;
     }
-    .quiz-container.correct{ border-color: var(--ok); }
-    .quiz-container.wrong{ border-color: var(--bad); }
+    /* keep these as in your original code but add glow */
+    .quiz-container.correct{
+      border-color: var(--ok);
+      box-shadow: 0 0 18px rgba(40,167,69,0.18);
+    }
+    .quiz-container.wrong{
+      border-color: var(--bad);
+      box-shadow: 0 0 18px rgba(220,53,69,0.18);
+    }
 
     #question {
       margin: 0 0 12px 0;
@@ -66,11 +73,23 @@
       cursor:pointer;
       width:100%;
       word-break:break-word;
-      transition: transform .10s ease, background .12s ease, opacity .12s ease;
+      transition: transform .10s ease, background .12s ease, opacity .12s ease, box-shadow .18s ease;
     }
     .option-btn:active{ transform: translateY(1px); }
     .option-btn:hover{ background:var(--btn-bg-hover); }
-    .option-btn[disabled]{ opacity: .7; cursor: default; }
+    .option-btn[disabled]{ opacity: .85; cursor: default; }
+
+    /* NEW: styles for correct / wrong option buttons (glow + full color) */
+    .option-btn.correct {
+      background: var(--ok) !important;
+      color: var(--white);
+      box-shadow: 0 0 20px 6px rgba(40,167,69,0.95);
+    }
+    .option-btn.wrong {
+      background: var(--bad) !important;
+      color: var(--white);
+      box-shadow: 0 0 20px 6px rgba(220,53,69,0.95);
+    }
 
     .timer{
       margin:10px 0;
@@ -141,7 +160,7 @@
 
   <script>
     /*********** Provided Question Database ***********/
-   const questions = [
+  const questions = [
   { question: "Which continent is the largest by land area?", options: ["Africa","Asia","North America","Europe"], answer: "Asia" },
   { question: "Which continent has the most countries?", options: ["Africa","Europe","Asia","South America"], answer: "Africa" },
   { question: "Which continent is known as the 'Frozen Continent'?", options: ["North America","Antarctica","Europe","Australia"], answer: "Antarctica" },
@@ -261,6 +280,16 @@
       loadQuestion();
     }
 
+    /* helper: highlight correct option and disable all options */
+    function highlightCorrectOption(correctAnswer){
+      Array.from(optionsEl.children).forEach(btn => {
+        btn.disabled = true;
+        if(btn.textContent === correctAnswer){
+          btn.classList.add('correct');
+        }
+      });
+    }
+
     function loadQuestion(){
       clearTimers();
       quizBox.classList.remove('correct','wrong');
@@ -292,6 +321,8 @@
         if(timeLeft <= 0){
           clearTimers();
           quizBox.classList.add('wrong');
+          // show correct answer when timed out (skip)
+          highlightCorrectOption(q.answer);
           answered = false;
           if(document.getElementById('autoNext').checked){
             autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
@@ -310,9 +341,23 @@
 
       if(isCorrect){
         quizBox.classList.add('correct');
+        // mark selected button green
+        Array.from(optionsEl.children).forEach(b => {
+          if(b.textContent === optionText){
+            b.classList.add('correct');
+          }
+        });
         score++;
       } else {
         quizBox.classList.add('wrong');
+        // mark selected button red
+        Array.from(optionsEl.children).forEach(b => {
+          if(b.textContent === optionText){
+            b.classList.add('wrong');
+          }
+        });
+        // show correct option green
+        highlightCorrectOption(correctAnswer);
       }
 
       if(document.getElementById('autoNext').checked){
@@ -322,8 +367,11 @@
 
     function nextQuestion(){
       clearTimers();
+      // If user didn't answer: show correct and then advance
       if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
         quizBox.classList.add('wrong');
+        const q = shuffledQuestions[currentIndex];
+        highlightCorrectOption(q.answer); // show correct when skipped manually
         setTimeout(() => { advanceToNext(); }, 700);
       } else {
         setTimeout(() => { advanceToNext(); }, 200);
