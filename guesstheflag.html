@@ -574,32 +574,48 @@
     }
 
     /* Handle answer -> show green/red border and update score; if autoNext false, enable Next */
-    function handleAnswer(answer, btn = null) {
-      if (answered) return;
-      answered = true;
-
-      clearInterval(timer);
-      if (answer === currentCountry?.name) {
-        score++;
-        scoreDiv.textContent = `Score: ${score}`;
-        gameContainer.classList.add('correct');
-        // If a button is provided, highlight it green
-        if (btn) btn.style.background = '#28a745';
-      } else {
-        gameContainer.classList.add('wrong');
-        if (btn) btn.style.background = '#dc3545';
+ /* === Helper function: show correct answer === */
+  function showCorrectAnswer() {
+    const buttons = optionsDiv.querySelectorAll('button');
+    buttons.forEach(btn => {
+      if (btn.textContent === currentCountry.name) {
+        btn.style.background = '#28a745'; // green
+        btn.style.boxShadow = '0 0 15px #28a745'; // glowing effect
       }
+    });
+  }
 
-      // If autoNext is on, continue after short delay
-      if (autoNext) {
-        setTimeout(() => {
-          loadQuestion();
-        }, 1000);
-      } else {
-        // enable Next for manual progression
-        nextBtn.classList.add('enabled');
-      }
+  /* Handle answer -> show green/red border and update score; if autoNext false, enable Next */
+  function handleAnswer(answer, btn = null) {
+    if (answered) return;
+    answered = true;
+
+    clearInterval(timer);
+    if (answer === currentCountry?.name) {
+      score++;
+      scoreDiv.textContent = `Score: ${score}`;
+      gameContainer.classList.add('correct');
+      if (btn) btn.style.background = '#28a745';
+    } else {
+      gameContainer.classList.add('wrong');
+      if (btn) btn.style.background = '#dc3545';
+      showCorrectAnswer(); // ✅ highlight correct when wrong
     }
+
+    // ✅ If question skipped (answer === null), also show correct
+    if (answer === null) {
+      showCorrectAnswer();
+    }
+
+    // If autoNext is on, continue after short delay
+    if (autoNext) {
+      setTimeout(() => {
+        loadQuestion();
+      }, 1200);
+    } else {
+      nextBtn.classList.add('enabled');
+    }
+  }
 
     function endGame() {
       flagImg.style.display = 'none';
