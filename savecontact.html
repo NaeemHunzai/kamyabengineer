@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Save contact</title>
+<style>
+  :root{--bg:#f7f9fc;--card:#fff;--accent:#0b67ff;--muted:#666}
+  body{font-family:system-ui,Arial,sans-serif;background:var(--bg);margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+  .card{width:100%;max-width:640px;background:var(--card);border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(2,6,23,.06)}
+  h1{margin:0 0 10px;font-size:18px}
+  p.lead{margin:0 0 14px;color:var(--muted)}
+  pre{background:#f2f6ff;padding:12px;border-radius:8px;overflow:auto;white-space:pre-wrap;font-size:13px}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:8px;font-size:15px;cursor:pointer}
+  button.ghost{background:#eef2ff;color:var(--accent);border:1px solid rgba(11,103,255,.12)}
+  label{display:block;margin-top:12px;font-size:13px;color:var(--muted)}
+  textarea{width:100%;min-height:88px;padding:10px;border-radius:8px;border:1px solid #e6eefc;font-family:inherit;resize:vertical}
+  .small{font-size:13px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+  <div class="card" role="main">
+    <h1>Save contact</h1>
+    <p class="lead">If the page received a MECARD in the `data` parameter it will be parsed and a .vcf offered for download/opening.</p>
+
+    <div id="resultArea" style="display:none">
+      <div><strong>Preview (.vcf)</strong></div>
+      <pre id="vcfPreview" aria-live="polite"></pre>
+      <div class="controls">
+        <button id="downloadBtn">Download .vcf</button>
+        <button id="openBtn" class="ghost">Open (same tab)</button>
+        <button id="copyBtn" class="ghost">Copy vCard text</button>
+      </div>
+      <div class="small">If the browser blocks auto-download, tap <strong>Download .vcf</strong>. On Android the Contacts app should be offered as an option to open the file.</div>
+    </div>
+
+    <div id="manualArea" style="margin-top:14px">
+      <label for="inputMecard">Paste MECARD here (or open this page with <code>?data=...encoded MECARD</code>):</label>
+      <textarea id="inputMecard" placeholder="MECARD:N:John Doe;TEL:+123456789;EMAIL:john@example.com;ORG:Company;ADR:123 Road,City;URL:https://example.com;;"></textarea>
+      <div class="controls">
+        <button id="parseBtn">Parse & Create .vcf</button>
+        <button id="clearBtn" class="ghost">Clear</button>
+      </div>
+    </div>
+
+    <div id="msg" class="small" style="margin-top:12px;color:var(--muted)"></div>
+  </div>
+
+<script>
+/* Utility: read `data` param (if present) */
+function getQueryParam(name){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name) || '';
+  }catch(e){ return ''; }
+}
+
+/* Parse MECARD - supports multiple TEL/EMAIL/URL tokens */
+function parseMecard(raw){
+  const out = {N:'', FN:'', TEL:[], EMAIL:[], ORG:'', ADR:'', URL:[]};
+  const body = raw.replace(/^MECARD:/i, '').replace(/;;$/,'');
+  // match KEY:VALUE (VALUE may be empty)
+  const re = /([A-Z]+):([^;]*)/ig;
+  let m;
+  while((m = re.exec(body)) !== null){
+    const k = m[1].toUpperCase();
+    const v = m[2] || '';
+    if(k === 'N') { out.N = v; out.FN = v; }
+    else if(k === 'TEL') out.TEL.push(v);
+    else if(k === 'EMAIL') out.EMAIL.push(v);
+    else if(k === 'ORG') out.ORG = v;
+    else if(k === 'ADR') out.ADR = v;
+    else if(k === 'URL') out.URL.push(v);
+    else if(k === 'FN') { out.FN = v; if(!out.N) out.N = v; }
+    // ignore other token types for now
+  }
+  return out;
+}
+
+/* basic escape for vCard fields */
+function escV(s){
+  if(!s) return '';
+  return String(s).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+}
+
+/* Build a vCard 3.0 string from parsed fields */
+function buildVCard(fields){
+  const CRLF = "\r\n";
+  let v = "BEGIN:VCARD" + CRLF + "VERSION:3.0" + CRLF;
+  if(fields.FN) v += "FN:" + escV(fields.FN) + CRLF;
+  // Put N as single full name (some importers expect Family;Given;...), but FN is enough for most phones
+  if(fields.N) v += "N:" + escV(fields.N) + CRLF;
+  if(fields.ORG) v += "ORG:" + escV(fields.ORG) + CRLF;
+  (fields.TEL || []).forEach(t => { if(t) v += "TEL;TYPE=CELL:" + escV(t) + CRLF; });
+  (fields.EMAIL || []).forEach(e => { if(e) v += "EMAIL;TYPE=INTERNET:" + escV(e) + CRLF; });
+  if(fields.ADR) {
+    // put single-line ADR into vCard ADR (simple form)
+    // ADR;TYPE=HOME:;;street;city;region;postal;country
+    v += "ADR;TYPE=HOME:;;" + escV(fields.ADR) + CRLF;
+  }
+  (fields.URL || []).forEach(u => { if(u) v += "URL:" + escV(u) + CRLF; });
+  v += "END:VCARD" + CRLF;
+  return v;
+}
+
+/* Create Blob URL for vCard and trigger download (auto click may be blocked) */
+function createVCFAndOffer(name, vcardText){
+  const blob = new Blob([vcardText], { type: 'text/vcard;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const filename = (name ? name.replace(/\s+/g,'_') : 'contact') + '.vcf';
+  return { url, filename, blob };
+}
+
+/* UI wiring */
+const inputEl = document.getElementById('inputMecard');
+const parseBtn = document.getElementById('parseBtn');
+const msgEl = document.getElementById('msg');
+const resultArea = document.getElementById('resultArea');
+const vcfPreview = document.getElementById('vcfPreview');
+const downloadBtn = document.getElementById('downloadBtn');
+const openBtn = document.getElementById('openBtn');
+const copyBtn = document.getElementById('copyBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+let currentBlobUrl = null;
+let currentFilename = 'contact.vcf';
+let currentVCardText = '';
+
+function showMessage(s){ msgEl.textContent = s || ''; }
+
+function handleMecardInput(raw){
+  showMessage('');
+  if(!raw) { showMessage('Empty input'); return; }
+  // accept if prefixed with MECARD or if looks like vcard begin
+  if(!/^MECARD:/i.test(raw) && !/BEGIN:VCARD/i.test(raw)){
+    showMessage('Input does not look like MECARD/vCard. Paste a valid MECARD starting with "MECARD:"');
+    return;
+  }
+
+  // If it's vCard already, try to parse minimal data from vCard lines
+  let parsed;
+  if(/^MECARD:/i.test(raw)){
+    parsed = parseMecard(raw);
+  } else {
+    // simple vCard parse - look for FN, N, TEL, EMAIL, ORG, ADR, URL
+    parsed = { N:'', FN:'', TEL:[], EMAIL:[], ORG:'', ADR:'', URL:[] };
+    const lines = raw.split(/\r?\n/);
+    lines.forEach(line=>{
+      const m = line.match(/^FN:(.*)$/i); if(m) parsed.FN = m[1].trim();
+      const n = line.match(/^N:(.*)$/i); if(n) parsed.N = n[1].trim();
+      const t = line.match(/^TEL(?:;[^:]*)?:(.*)$/i); if(t) parsed.TEL.push(t[1].trim());
+      const e = line.match(/^EMAIL(?:;[^:]*)?:(.*)$/i); if(e) parsed.EMAIL.push(e[1].trim());
+      const o = line.match(/^ORG:(.*)$/i); if(o) parsed.ORG = o[1].trim();
+      const a = line.match(/^ADR(?:;[^:]*)?:(.*)$/i); if(a) parsed.ADR = a[1].trim().replace(/;;/,'');
+      const u = line.match(/^URL:(.*)$/i); if(u) parsed.URL.push(u[1].trim());
+    });
+    if(!parsed.FN && parsed.N) parsed.FN = parsed.N;
+  }
+
+  const vcard = buildVCard(parsed);
+  currentVCardText = vcard;
+  const res = createVCFAndOffer(parsed.FN || parsed.N || 'contact', vcard);
+  currentBlobUrl = res.url;
+  currentFilename = res.filename;
+  vcfPreview.textContent = vcard;
+  resultArea.style.display = 'block';
+  // try automatic download (may be blocked)
+  try {
+    const a = document.createElement('a');
+    a.href = currentBlobUrl;
+    a.download = currentFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showMessage('If your browser allowed it, the .vcf has been downloaded or opened by the system. Otherwise tap Download.');
+  } catch(e){
+    showMessage('Tap Download to save the contact file.');
+  }
+}
+
+/* Buttons */
+parseBtn.onclick = ()=> {
+  handleMecardInput(inputEl.value.trim());
+};
+
+downloadBtn.onclick = ()=> {
+  if(!currentBlobUrl) return showMessage('Nothing to download yet');
+  const a = document.createElement('a');
+  a.href = currentBlobUrl;
+  a.download = currentFilename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showMessage('Download started. Use "Open" to open the downloaded file with Contacts if your browser did not show the prompt automatically.');
+};
+
+openBtn.onclick = ()=> {
+  if(!currentBlobUrl) return showMessage('Nothing to open yet');
+  // open same tab to increase chance browser offers "Open with" prompt
+  window.location.href = currentBlobUrl;
+};
+
+copyBtn.onclick = async ()=> {
+  if(!currentVCardText) return showMessage('Nothing to copy yet');
+  try {
+    await navigator.clipboard.writeText(currentVCardText);
+    showMessage('vCard text copied to clipboard');
+  } catch(e){
+    showMessage('Copy failed — your browser may block clipboard access. Use Download instead.');
+  }
+};
+
+clearBtn.onclick = ()=> { inputEl.value=''; resultArea.style.display='none'; vcfPreview.textContent=''; showMessage('Cleared'); };
+
+/* If page loaded with data param, auto populate and parse */
+(function initFromQuery(){
+  const raw = getQueryParam('data') || '';
+  if(!raw) return;
+  // decode; some encoders might double-encode or use + for spaces — use decodeURIComponent safely
+  let decoded = raw;
+  try { decoded = decodeURIComponent(raw); } catch(e){ decoded = raw; }
+  // If it was passed by kodular WebViewer, it might already be plain text. Trim.
+  inputEl.value = decoded;
+  // auto-parse after short delay to allow UI show
+  setTimeout(()=> { handleMecardInput(decoded); }, 200);
+})();
+</script>
+</body>
+</html>
