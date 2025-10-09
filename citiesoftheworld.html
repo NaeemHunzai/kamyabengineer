@@ -3,443 +3,373 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cities of the World — Quiz</title>
+<title>Rivers Quiz</title>
 <style>
-  :root{
-    --btn-blue: #007bff;
-    --btn-blue-hover: #0056b3;
-    --ok: #2ecc71;
-    --bad: #e74c3c;
-    --white: #ffffff;
-    --black: #111;
-  }
-
-  body{
-    margin:0;
-    padding:12px;
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    background:var(--white);
-    color:var(--black);
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-  }
-
-  .quiz-container{
-    width:100%;
-    max-width:520px;
-    background:var(--white);
-    border-radius:12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    padding:16px;
-    box-sizing:border-box;
-    border:4px solid transparent;
-    transition:border-color .20s ease, transform .12s ease;
-    text-align:center;
-  }
-  .quiz-container.correct{ border-color: var(--ok); }
-  .quiz-container.wrong{ border-color: var(--bad); }
-
-  h2#title {
-    margin:0 0 12px 0;
-    font-size:20px;
-  }
-
-  #question {
-    margin: 6px 0 12px 0;
-    font-size: 18px;
-    line-height: 1.3;
-    color: var(--black);
-    text-align: center;
-    min-height:48px;
-  }
-
-  .options{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    margin:12px 0;
-  }
-
-  .option-btn{
-    background:var(--btn-blue);
-    color:var(--white);
-    border:0;
-    padding:12px 10px;
-    font-size:15px;
-    border-radius:8px;
-    cursor:pointer;
-    width:100%;
-    word-break:break-word;
-    transition: transform .10s ease, background .12s ease, opacity .12s ease;
-  }
-  .option-btn:active{ transform: translateY(1px); }
-  .option-btn:hover{ background:var(--btn-blue-hover); }
-  .option-btn[disabled]{ opacity: .7; cursor: default; }
-
-  .timer{
-    margin:10px 0;
-    font-weight:700;
-    color:var(--black);
-    font-size:16px;
-    text-align:center;
-  }
-
-  .auto-next {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    margin-bottom:8px;
-    color:var(--black);
-    font-size:14px;
-  }
-
-  .controls {
-    display:flex;
-    gap:8px;
-    flex-direction:column;
-    align-items:stretch;
-    margin-top:6px;
-  }
-
-  .next-btn, .restart-btn {
-    background:var(--ok);
-    color:var(--white);
-    border:0;
-    padding:12px;
-    border-radius:8px;
-    font-size:15px;
-    cursor:pointer;
-    width:100%;
-  }
-  .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
-
-  .restart-btn { background:#ff5722; display:none; }
-
-  .score {
-    margin-top:12px;
-    text-align:center;
-    font-weight:700;
-    color:var(--black);
-    font-size:18px;
-  }
-
-  @media (max-width:420px){
-    .options{ grid-template-columns:1fr; }
-    #question{ font-size:17px; }
-    .option-btn{ padding:14px; font-size:16px; }
-    .timer{ font-size:15px; }
-  }
+:root {
+  --primary:#007bff;
+  --btn-bg:#007bff;
+  --btn-bg-hover:#0056b3;
+  --ok:#28a745;
+  --bad:#dc3545;
+  --white:#ffffff;
+  --black:#111;
+}
+body {
+  margin:0;
+  padding:12px;
+  font-family:"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--white);
+  color:var(--black);
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  min-height:100vh;
+}
+.quiz-container {
+  width:100%;
+  max-width:520px;
+  background:var(--white);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  padding:16px;
+  box-sizing:border-box;
+  border:4px solid transparent;
+  transition:border-color .3s ease, box-shadow .3s ease;
+  text-align:center;
+}
+.quiz-container.correct {
+  border-color:var(--ok);
+  box-shadow:0 0 10px var(--ok);
+}
+.quiz-container.wrong {
+  border-color:var(--bad);
+  box-shadow:0 0 10px var(--bad);
+}
+#question {
+  margin:0 0 12px 0;
+  font-size:20px;
+  line-height:1.2;
+  text-align:center;
+}
+.options {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin:12px 0;
+}
+.option-btn {
+  background:var(--btn-bg);
+  color:var(--white);
+  border:0;
+  padding:12px 10px;
+  font-size:15px;
+  border-radius:8px;
+  cursor:pointer;
+  width:100%;
+  transition:transform .1s ease, background .12s ease, opacity .12s ease;
+}
+.option-btn:active { transform:translateY(1px); }
+.option-btn:hover { background:var(--btn-bg-hover); }
+.option-btn[disabled] { opacity:.7; cursor:default; }
+.option-btn.correct {
+  background:var(--ok)!important;
+  box-shadow:0 0 10px var(--ok);
+}
+.option-btn.wrong {
+  background:var(--bad)!important;
+  box-shadow:0 0 10px var(--bad);
+}
+.timer {
+  margin:10px 0;
+  font-weight:700;
+  font-size:16px;
+}
+.auto-next {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+  font-size:14px;
+}
+.controls {
+  display:flex;
+  gap:8px;
+  flex-direction:column;
+  align-items:stretch;
+  margin-top:6px;
+}
+.next-btn,.restart-btn {
+  background:var(--ok);
+  color:var(--white);
+  border:0;
+  padding:12px;
+  border-radius:8px;
+  font-size:15px;
+  cursor:pointer;
+  width:100%;
+}
+.next-btn:hover,.restart-btn:hover {
+  filter:brightness(.95);
+}
+.score {
+  margin-top:12px;
+  text-align:center;
+  font-weight:700;
+  font-size:16px;
+}
+@media (max-width:420px){
+  .options{grid-template-columns:1fr;}
+  #question{font-size:18px;}
+  .option-btn{padding:14px;font-size:16px;}
+  .timer{font-size:15px;}
+}
 </style>
 </head>
 <body>
-  <div class="quiz-container" id="quizBox" role="application" aria-labelledby="question">
-    <h2 id="title">🌍 Cities of the World</h2>
-
-    <div id="question">Loading question...</div>
-
-    <div class="options" id="options" aria-live="polite"></div>
-
-    <div class="timer" id="timer">Time: 10s</div>
-
-    <div class="auto-next" id="autoNextWrap">
-      <input type="checkbox" id="autoNext" />
-      <label for="autoNext">Auto Next</label>
-    </div>
-
-    <div class="controls">
-      <button id="nextBtn" class="next-btn" type="button">Next</button>
-      <button id="restartBtn" class="restart-btn" type="button">Restart Quiz</button>
-    </div>
-
-    <div id="scoreBox" class="score" aria-live="polite"></div>
+<div class="quiz-container" id="quizBox">
+  <h2 id="question">Loading question...</h2>
+  <div class="options" id="options"></div>
+  <div class="timer" id="timer">Time: 10s</div>
+  <div class="auto-next">
+    <input type="checkbox" id="autoNext">
+    <label for="autoNext">Auto Next</label>
   </div>
+  <div class="controls">
+    <button id="nextBtn" class="next-btn" type="button">Next</button>
+    <button id="restartBtn" class="restart-btn" type="button" style="display:none;">Restart Quiz</button>
+  </div>
+  <div id="scoreBox" class="score"></div>
+</div>
 
 <script>
-/* ---------------------- DATABASE (from your list) ---------------------- */
-const database = [
-  { q: "Which city is famous for the Eiffel Tower?", options: ["Paris","Berlin","Barcelona","Vienna"], answer: "Paris" },
-  { q: "Which city is known for the Golden Gate Bridge?", options: ["San Francisco","Los Angeles","Seattle","San Diego"], answer: "San Francisco" },
-  { q: "Which city is famous for its Carnival and Samba parades?", options: ["Buenos Aires","Rio de Janeiro","Havana","Lisbon"], answer: "Rio de Janeiro" },
-  { q: "Which city is home to the Burj Khalifa, the tallest building in the world?", options: ["Dubai","Doha","Riyadh","Abu Dhabi"], answer: "Dubai" },
-  { q: "Which city is known for Broadway theatres and Times Square?", options: ["Los Angeles","Chicago","New York","Boston"], answer: "New York" },
-  { q: "Which city is famous for the Sydney Opera House?", options: ["Melbourne","Sydney","Auckland","Perth"], answer: "Sydney" },
-  { q: "Which city is noted for its canals and gondolas?", options: ["Venice","Amsterdam","Bruges","Stockholm"], answer: "Venice" },
-  { q: "Which city hosts the annual Oktoberfest beer festival?", options: ["Berlin","Munich","Frankfurt","Hamburg"], answer: "Munich" },
-  { q: "Which city is famous for the Colosseum and Roman ruins?", options: ["Athens","Istanbul","Rome","Naples"], answer: "Rome" },
-  { q: "Which city is home to the Forbidden City and Tiananmen Square?", options: ["Shanghai","Beijing","Xi'an","Guangzhou"], answer: "Beijing" },
-  { q: "Which city has the world-famous Shibuya Crossing?", options: ["Seoul","Tokyo","Osaka","Kyoto"], answer: "Tokyo" },
-  { q: "Which city is famous for the Acropolis and Parthenon?", options: ["Athens","Rome","Istanbul","Cairo"], answer: "Athens" },
-  { q: "Which city is known as 'The Big Apple'?", options: ["Chicago","New York","San Francisco","Detroit"], answer: "New York" },
-  { q: "Which city is famous for its film industry nicknamed 'Bollywood'?", options: ["Karachi","Mumbai","Delhi","Hyderabad"], answer: "Mumbai" },
-  { q: "Which city is famous for the statue Christ the Redeemer overlooking it?", options: ["Salvador","Santiago","Rio de Janeiro","Lima"], answer: "Rio de Janeiro" },
-  { q: "Which city is renowned for its cherry blossoms, especially in Ueno and Meguro parks?", options: ["Seoul","Tokyo","Kyoto","Osaka"], answer: "Tokyo" },
-  { q: "Which city is famous for the Palace of Westminster and Big Ben (clock tower)?", options: ["Edinburgh","London","Dublin","Cardiff"], answer: "London" },
-  { q: "Which city is known for the historic Alhambra palace complex?", options: ["Granada","Seville","Cordoba","Valencia"], answer: "Granada" },
-  { q: "Which city is famous for its canals in the Jordaan district and Anne Frank House?", options: ["Bruges","Venice","Amsterdam","Ghent"], answer: "Amsterdam" },
-  { q: "Which city is known for the Harbor Bridge and Opera House pair?", options: ["Melbourne","Sydney","Auckland","Perth"], answer: "Sydney" },
-  { q: "Which city hosts the Wired-influential tech cluster 'Silicon Roundabout' within its urban tech scene?", options: ["San Francisco","Bangalore","London","Tel Aviv"], answer: "London" },
-  { q: "Which city is famous for the medieval Astronomical Clock (Orloj) in its Old Town?", options: ["Krakow","Prague","Vienna","Budapest"], answer: "Prague" },
-  { q: "Which city is associated with the famous Prado Museum and its art collection?", options: ["Barcelona","Madrid","Seville","Valencia"], answer: "Madrid" },
-  { q: "Which city is well known for the Blue Mosque and Hagia Sophia nearby?", options: ["Istanbul","Athens","Cairo","Damascus"], answer: "Istanbul" },
-  { q: "Which city is known for the Guggenheim Museum designed by Frank Gehry?", options: ["Bilbao","Barcelona","Madrid","Valencia"], answer: "Bilbao" },
-  { q: "Which city is famous for the Champs-Élysées and Arc de Triomphe?", options: ["Paris","Brussels","Vienna","Madrid"], answer: "Paris" },
-  { q: "Which city is home to the historic Forbidden City treasure houses and imperial gardens?", options: ["Beijing","Kyoto","Seoul","Shanghai"], answer: "Beijing" },
-  { q: "Which city is famed for the Great Wall access points (Badaling) nearby and tourist services?", options: ["Beijing","Shanhaiguan","Xi'an","Datong"], answer: "Beijing" },
-  { q: "Which city is known for the bustling Grand Bazaar market and spice markets?", options: ["Cairo","Istanbul","Beirut","Damascus"], answer: "Istanbul" },
-  { q: "Which city is famous for hosting the Cannes Film Festival nearby (in the region)?", options: ["Nice","Cannes","Monaco","Marseille"], answer: "Cannes" },
-  { q: "Which city is iconic for its skyline with Marina Bay Sands resort and Supertree Grove?", options: ["Singapore","Kuala Lumpur","Hong Kong","Bangkok"], answer: "Singapore" },
-  { q: "Which city is famous for the historic Forbidden City and Summer Palace (both imperial sites)?", options: ["Beijing","Nanjing","Xi'an","Hangzhou"], answer: "Beijing" },
-  { q: "Which city is famous for gondola festivals and the Carnival masked parades in lagoon palaces?", options: ["Venice","Venice Beach","Amsterdam","Bruges"], answer: "Venice" },
-  { q: "Which city is noted for its massive urban park, Central Park, in its heart?", options: ["London","Chicago","New York","Toronto"], answer: "New York" },
-  { q: "Which city is known for the ancient Forbidden Township near its historical temples (Angkor Wat tourism base)?", options: ["Phnom Penh","Siem Reap","Battambang","Sihanoukville"], answer: "Siem Reap" },
-  { q: "Which city is famous for the historic site of the Alamo and the River Walk tourist area?", options: ["San Antonio","Houston","Dallas","Austin"], answer: "San Antonio" },
-  { q: "Which city is known for hosting the international film festival at TIFF Bell Lightbox and Yorkville galleries?", options: ["Vancouver","Toronto","Montreal","Ottawa"], answer: "Toronto" },
-  { q: "Which city is celebrated for its red-light district and the historic Rijksmuseum?", options: ["Copenhagen","Amsterdam","Brussels","Hamburg"], answer: "Amsterdam" },
-  { q: "Which city is known for its iconic skyline with Victoria Harbour and Peak tram?", options: ["Shanghai","Hong Kong","Singapore","Taipei"], answer: "Hong Kong" },
-  { q: "Which city is famous for Lake Geneva's waterfront and Jet d’Eau fountain?", options: ["Zurich","Geneva","Lausanne","Bern"], answer: "Geneva" },
-  { q: "Which city is renowned for the Golden Pavilion (Kinkaku-ji) and many classical temples?", options: ["Kyoto","Tokyo","Nara","Osaka"], answer: "Kyoto" },
-  { q: "Which city is famous for the annual running 'Boston Marathon' event?", options: ["New York","Boston","Chicago","London"], answer: "Boston" },
-  { q: "Which city is known for the historic arrival point of Ellis Island and Statue of Liberty access?", options: ["Boston","New York","Philadelphia","Baltimore"], answer: "New York" },
-  { q: "Which city is associated with Fiordland and Milford Sound region tours nearby?", options: ["Dunedin","Queenstown","Auckland","Christchurch"], answer: "Queenstown" },
-  { q: "Which city hosts the River Thames and famous Platform 9¾ at its stations (fictional reference)?", options: ["Oxford","Cambridge","London","York"], answer: "London" },
-  { q: "Which city is known for its historic bridges including Ponte Vecchio over the Arno River?", options: ["Rome","Florence","Venice","Milan"], answer: "Florence" },
-  { q: "Which city is famous for the ancient Inca citadel of Machu Picchu nearby and Inca trail access?", options: ["Lima","Cusco","Arequipa","Quito"], answer: "Cusco" },
-  { q: "Which city is celebrated for its ancient Mayan ruins in the surrounding Yucatan region (Chichén Itzá access)?", options: ["Campeche","Mérida","Cancún","Playa del Carmen"], answer: "Mérida" },
-  { q: "Which city is home to the historic Plaza de Mayo and colorful La Boca district famed for tango?", options: ["Montevideo","Buenos Aires","Santiago","Lima"], answer: "Buenos Aires" },
-  { q: "Which city is known for its Grand Bazaar and historic Galata Tower views?", options: ["Istanbul","Athens","Cairo","Beirut"], answer: "Istanbul" },
-  { q: "Which city is famous for the Museum of Islamic Art and skyline across Doha Bay?", options: ["Doha","Dubai","Abu Dhabi","Manama"], answer: "Doha" },
-  { q: "Which city is noted for huge reclaimed land projects like Palm Jumeirah?", options: ["Abu Dhabi","Dubai","Doha","Manama"], answer: "Dubai" },
-  { q: "Which city is known for the historic Forbidden City’s imperial treasures and hutong neighborhoods?", options: ["Beijing","Xi'an","Luoyang","Nanjing"], answer: "Beijing" },
-  { q: "Which city is famous for Oktoberfest’s beer tents and Lederhosen culture?", options: ["Munich","Frankfurt","Stuttgart","Nuremberg"], answer: "Munich" },
-  { q: "Which city is world-famous for its film festival in Sundance-type indie circuits (Sundance is in Park City near which major city?)", options: ["Salt Lake City","Los Angeles","Park City area near Salt Lake City","Denver"], answer: "Park City area near Salt Lake City" },
-  { q: "Which city’s old town is a UNESCO site with fortified walls at Dubrovnik?", options: ["Split","Zadar","Dubrovnik","Trogir"], answer: "Dubrovnik" },
-  { q: "Which city is known for the 'Blue Mosque' and historic Byzantine-to-Ottoman architecture?", options: ["Istanbul","Ankara","Izmir","Antalya"], answer: "Istanbul" },
-  { q: "Which city is famed for the Louvre Museum and Mona Lisa display?", options: ["Paris","London","Madrid","Amsterdam"], answer: "Paris" },
-  { q: "Which city is famous for the CN Tower and waterfront harbourfront attractions?", options: ["Montreal","Toronto","Vancouver","Ottawa"], answer: "Toronto" },
-  { q: "Which city is known for its medieval Old Town and Charles Bridge scenery?", options: ["Prague","Krakow","Budapest","Vienna"], answer: "Prague" },
-  { q: "Which city is famous for the historic walled city and Great Wall access near it (mutianyu/badaling)?", options: ["Beijing","Tianjin","Shenyang","Datong"], answer: "Beijing" },
-  { q: "Which city is celebrated for its canals and the annual King's Day celebrations on boats?", options: ["Venice","Amsterdam","Stockholm","Copenhagen"], answer: "Amsterdam" },
-  { q: "Which city is famous for its Wall Street financial district and NYSE?", options: ["Chicago","New York","London","Hong Kong"], answer: "New York" },
-  { q: "Which city is renowned for its coffee culture and historic cafés on La Rambla and Gothic Quarter? (Barcelona is famed for architecture – which city's La Rambla?)", options: ["Barcelona","Valencia","Madrid","Seville"], answer: "Barcelona" },
-  { q: "Which city hosts the Sydney Mardi Gras LGBTQ+ festival and major arts scene?", options: ["Melbourne","Sydney","Brisbane","Perth"], answer: "Sydney" },
-  { q: "Which city is famous for the historic salt pans and colorful colonial center at Valparaíso near which capital? (Valparaíso is near which big city?)", options: ["Santiago","Lima","Buenos Aires","Montevideo"], answer: "Santiago" },
-  { q: "Which city has the famous Blue Lagoon geothermal spa nearby (in Iceland)?", options: ["Reykjavík","Akureyri","Hafnarfjörður","Egilsstaðir"], answer: "Reykjavík" },
-  { q: "Which city is known for the ultramodern skyline of the Marina Bay area and the Merlion statue?", options: ["Hong Kong","Singapore","Kuala Lumpur","Manila"], answer: "Singapore" },
-  { q: "Which city is famous for the Palace Museum (Forbidden City) and Temple of Heaven compositions?", options: ["Beijing","Nanjing","Xi'an","Hangzhou"], answer: "Beijing" },
-  { q: "Which city is famed for the annual Rio Carnival, samba schools, and Copacabana beach parties?", options: ["Sao Paulo","Rio de Janeiro","Brasília","Salvador"], answer: "Rio de Janeiro" },
-  { q: "Which city is known for its historic Imperial Palace and Tokyo’s Shibuya and Shinjuku nightlife districts?", options: ["Tokyo","Osaka","Yokohama","Nagoya"], answer: "Tokyo" },
-  { q: "Which city is famous for the Spice Bazaar and historic Ottoman marketplaces?", options: ["Istanbul","Cairo","Marrakech","Fez"], answer: "Istanbul" },
-  { q: "Which city is known for Venice-like canals and the Royal Palace nearby (Stockholm’s old town Gamla Stan)?", options: ["Stockholm","Venice","Copenhagen","Helsinki"], answer: "Stockholm" },
-  { q: "Which city is known for the famous Louvre pyramid and Seine riverbank promenades?", options: ["Paris","Lyon","Marseille","Nice"], answer: "Paris" },
-  { q: "Which city has the iconic 'Hollywood' sign and a famous film & entertainment industry?", options: ["Los Angeles","San Francisco","San Diego","Las Vegas"], answer: "Los Angeles" },
-  { q: "Which city is famous for the Ganges ghats and pilgrimage rituals along the river (Varanasi region)?", options: ["Varanasi","Allahabad","Patna","Kolkata"], answer: "Varanasi" },
-  { q: "Which city is known for its spectacular Angkor Wat temple complex access?", options: ["Phnom Penh","Siem Reap","Battambang","Sihanoukville"], answer: "Siem Reap" },
-  { q: "Which city is celebrated for its temples and geisha districts at Gion and historic shrines?", options: ["Tokyo","Kyoto","Nara","Osaka"], answer: "Kyoto" },
-  { q: "Which city is celebrated for the Edinburgh Festival Fringe and Royal Mile?", options: ["Glasgow","Edinburgh","Aberdeen","Inverness"], answer: "Edinburgh" },
-  { q: "Which city is famous for the High Line park and Meatpacking District revitalization?", options: ["Los Angeles","New York","Chicago","San Francisco"], answer: "New York" },
-  { q: "Which city is known for the Gateway Arch and its role in westward expansion tours?", options: ["St. Louis","Kansas City","Chicago","Memphis"], answer: "St. Louis" },
-  { q: "Which city is famous for the medieval Alhambra complex and Generalife gardens?", options: ["Seville","Granada","Cordoba","Toledo"], answer: "Granada" },
-  { q: "Which city is famed for its UNESCO-listed old port and historic medina (Morocco)?", options: ["Marrakech","Casablanca","Tangier","Essaouira"], answer: "Essaouira" },
-  { q: "Which city hosts the historic city of Petra access and Wadi Rum tours nearby (Jordanian tourism hub)?", options: ["Amman","Aqaba","Wadi Musa","Zarqa"], answer: "Wadi Musa" },
-  { q: "Which city is known for its automotive museums and the Mercedes-Benz Museum (Germany)?", options: ["Munich","Stuttgart","Dortmund","Dresden"], answer: "Stuttgart" },
-  { q: "Which city is famous for the annual Carnival in Venice with historic masks and lagoon pageantry?", options: ["Venice","Rovinj","Trieste","Padua"], answer: "Venice" },
-  { q: "Which city is renowned for culinary markets like La Boqueria on La Rambla?", options: ["Madrid","Barcelona","Valencia","Seville"], answer: "Barcelona" },
-  { q: "Which city is known for the Tate Modern and Thames riverside arts trail?", options: ["Manchester","London","Liverpool","Bristol"], answer: "London" },
-  { q: "Which city is celebrated for its glass-and-steel skyline anchored by the Petronas Twin Towers?", options: ["Singapore","Kuala Lumpur","Manila","Bangkok"], answer: "Kuala Lumpur" },
-  { q: "Which city is famous for the Old Havana historic district and classic cars sightings?", options: ["Havana","Santo Domingo","San Juan","Port-au-Prince"], answer: "Havana" },
-  { q: "Which city is famed for its 'ring road' and historic Gyeongbokgung Palace (Korean old palaces)?", options: ["Busan","Seoul","Daegu","Incheon"], answer: "Seoul" },
-  { q: "Which city is renowned for the Blue Mosque and sunrise over the Bosphorus?", options: ["Istanbul","Izmir","Ankara","Trabzon"], answer: "Istanbul" },
-  { q: "Which city is famous for the Hermitage Museum and the Winter Palace?", options: ["Moscow","St. Petersburg","Novgorod","Kazan"], answer: "St. Petersburg" },
-  { q: "Which city is known for the Sahara-edge oasis town and historic ksars in southern Morocco?", options: ["Ouarzazate","Marrakech","Chefchaouen","Essaouira"], answer: "Ouarzazate" }
+  /******** Database ********/
+  const questions = [
+  { question: "Which city is famous for the Eiffel Tower?", options: ["Paris","Berlin","Barcelona","Vienna"], answer: "Paris" },
+  { question: "Which city is known for the Golden Gate Bridge?", options: ["San Francisco","Los Angeles","Seattle","San Diego"], answer: "San Francisco" },
+  { question: "Which city is famous for its Carnival and Samba parades?", options: ["Buenos Aires","Rio de Janeiro","Havana","Lisbon"], answer: "Rio de Janeiro" },
+  { question: "Which city is home to the Burj Khalifa, the tallest building in the world?", options: ["Dubai","Doha","Riyadh","Abu Dhabi"], answer: "Dubai" },
+  { question: "Which city is known for Broadway theatres and Times Square?", options: ["Los Angeles","Chicago","New York","Boston"], answer: "New York" },
+  { question: "Which city is famous for the Sydney Opera House?", options: ["Melbourne","Sydney","Auckland","Perth"], answer: "Sydney" },
+  { question: "Which city is noted for its canals and gondolas?", options: ["Venice","Amsterdam","Bruges","Stockholm"], answer: "Venice" },
+  { question: "Which city hosts the annual Oktoberfest beer festival?", options: ["Berlin","Munich","Frankfurt","Hamburg"], answer: "Munich" },
+  { question: "Which city is famous for the Colosseum and Roman ruins?", options: ["Athens","Istanbul","Rome","Naples"], answer: "Rome" },
+  { question: "Which city is home to the Forbidden City and Tiananmen Square?", options: ["Shanghai","Beijing","Xi'an","Guangzhou"], answer: "Beijing" },
+  { question: "Which city has the world-famous Shibuya Crossing?", options: ["Seoul","Tokyo","Osaka","Kyoto"], answer: "Tokyo" },
+  { question: "Which city is famous for the Acropolis and Parthenon?", options: ["Athens","Rome","Istanbul","Cairo"], answer: "Athens" },
+  { question: "Which city is known as 'The Big Apple'?", options: ["Chicago","New York","San Francisco","Detroit"], answer: "New York" },
+  { question: "Which city is famous for its film industry nicknamed 'Bollywood'?", options: ["Karachi","Mumbai","Delhi","Hyderabad"], answer: "Mumbai" },
+  { question: "Which city is famous for the statue Christ the Redeemer overlooking it?", options: ["Salvador","Santiago","Rio de Janeiro","Lima"], answer: "Rio de Janeiro" },
+  { question: "Which city is renowned for its cherry blossoms, especially in Ueno and Meguro parks?", options: ["Seoul","Tokyo","Kyoto","Osaka"], answer: "Tokyo" },
+  { question: "Which city is famous for the Palace of Westminster and Big Ben (clock tower)?", options: ["Edinburgh","London","Dublin","Cardiff"], answer: "London" },
+  { question: "Which city is known for the historic Alhambra palace complex?", options: ["Granada","Seville","Cordoba","Valencia"], answer: "Granada" },
+  { question: "Which city is famous for its canals in the Jordaan district and Anne Frank House?", options: ["Bruges","Venice","Amsterdam","Ghent"], answer: "Amsterdam" },
+  { question: "Which city is known for the Harbor Bridge and Opera House pair?", options: ["Melbourne","Sydney","Auckland","Perth"], answer: "Sydney" },
+  { question: "Which city hosts the Wired-influential tech cluster 'Silicon Roundabout' within its urban tech scene?", options: ["San Francisco","Bangalore","London","Tel Aviv"], answer: "London" },
+  { question: "Which city is famous for the medieval Astronomical Clock (Orloj) in its Old Town?", options: ["Krakow","Prague","Vienna","Budapest"], answer: "Prague" },
+  { question: "Which city is associated with the famous Prado Museum and its art collection?", options: ["Barcelona","Madrid","Seville","Valencia"], answer: "Madrid" },
+  { question: "Which city is well known for the Blue Mosque and Hagia Sophia nearby?", options: ["Istanbul","Athens","Cairo","Damascus"], answer: "Istanbul" },
+  { question: "Which city is known for the Guggenheim Museum designed by Frank Gehry?", options: ["Bilbao","Barcelona","Madrid","Valencia"], answer: "Bilbao" },
+  { question: "Which city is famous for the Champs-Élysées and Arc de Triomphe?", options: ["Paris","Brussels","Vienna","Madrid"], answer: "Paris" },
+  { question: "Which city is home to the historic Forbidden City treasure houses and imperial gardens?", options: ["Beijing","Kyoto","Seoul","Shanghai"], answer: "Beijing" },
+  { question: "Which city is famed for the Great Wall access points (Badaling) nearby and tourist services?", options: ["Beijing","Shanhaiguan","Xi'an","Datong"], answer: "Beijing" },
+  { question: "Which city is known for the bustling Grand Bazaar market and spice markets?", options: ["Cairo","Istanbul","Beirut","Damascus"], answer: "Istanbul" },
+  { question: "Which city is famous for hosting the Cannes Film Festival nearby (in the region)?", options: ["Nice","Cannes","Monaco","Marseille"], answer: "Cannes" },
+  { question: "Which city is iconic for its skyline with Marina Bay Sands resort and Supertree Grove?", options: ["Singapore","Kuala Lumpur","Hong Kong","Bangkok"], answer: "Singapore" },
+  { question: "Which city is famous for the historic Forbidden City and Summer Palace (both imperial sites)?", options: ["Beijing","Nanjing","Xi'an","Hangzhou"], answer: "Beijing" },
+  { question: "Which city is famous for gondola festivals and the Carnival masked parades in lagoon palaces?", options: ["Venice","Venice Beach","Amsterdam","Bruges"], answer: "Venice" },
+  { question: "Which city is noted for its massive urban park, Central Park, in its heart?", options: ["London","Chicago","New York","Toronto"], answer: "New York" },
+  { question: "Which city is known for the ancient Forbidden Township near its historical temples (Angkor Wat tourism base)?", options: ["Phnom Penh","Siem Reap","Battambang","Sihanoukville"], answer: "Siem Reap" },
+  { question: "Which city is famous for the historic site of the Alamo and the River Walk tourist area?", options: ["San Antonio","Houston","Dallas","Austin"], answer: "San Antonio" },
+  { question: "Which city is known for hosting the international film festival at TIFF Bell Lightbox and Yorkville galleries?", options: ["Vancouver","Toronto","Montreal","Ottawa"], answer: "Toronto" },
+  { question: "Which city is celebrated for its red-light district and the historic Rijksmuseum?", options: ["Copenhagen","Amsterdam","Brussels","Hamburg"], answer: "Amsterdam" },
+  { question: "Which city is known for its iconic skyline with Victoria Harbour and Peak tram?", options: ["Shanghai","Hong Kong","Singapore","Taipei"], answer: "Hong Kong" },
+  { question: "Which city is famous for Lake Geneva's waterfront and Jet d’Eau fountain?", options: ["Zurich","Geneva","Lausanne","Bern"], answer: "Geneva" },
+  { question: "Which city is renowned for the Golden Pavilion (Kinkaku-ji) and many classical temples?", options: ["Kyoto","Tokyo","Nara","Osaka"], answer: "Kyoto" },
+  { question: "Which city is famous for the annual running 'Boston Marathon' event?", options: ["New York","Boston","Chicago","London"], answer: "Boston" },
+  { question: "Which city is known for the historic arrival point of Ellis Island and Statue of Liberty access?", options: ["Boston","New York","Philadelphia","Baltimore"], answer: "New York" },
+  { question: "Which city is associated with Fiordland and Milford Sound region tours nearby?", options: ["Dunedin","Queenstown","Auckland","Christchurch"], answer: "Queenstown" },
+  { question: "Which city hosts the River Thames and famous Platform 9¾ at its stations (fictional reference)?", options: ["Oxford","Cambridge","London","York"], answer: "London" },
+  { question: "Which city is known for its historic bridges including Ponte Vecchio over the Arno River?", options: ["Rome","Florence","Venice","Milan"], answer: "Florence" },
+  { question: "Which city is famous for the ancient Inca citadel of Machu Picchu nearby and Inca trail access?", options: ["Lima","Cusco","Arequipa","Quito"], answer: "Cusco" },
+  { question: "Which city is celebrated for its ancient Mayan ruins in the surrounding Yucatan region (Chichén Itzá access)?", options: ["Campeche","Mérida","Cancún","Playa del Carmen"], answer: "Mérida" },
+  { question: "Which city is home to the historic Plaza de Mayo and colorful La Boca district famed for tango?", options: ["Montevideo","Buenos Aires","Santiago","Lima"], answer: "Buenos Aires" },
+  { question: "Which city is known for its Grand Bazaar and historic Galata Tower views?", options: ["Istanbul","Athens","Cairo","Beirut"], answer: "Istanbul" },
+  { question: "Which city is famous for the Museum of Islamic Art and skyline across Doha Bay?", options: ["Doha","Dubai","Abu Dhabi","Manama"], answer: "Doha" },
+  { question: "Which city is noted for huge reclaimed land projects like Palm Jumeirah?", options: ["Abu Dhabi","Dubai","Doha","Manama"], answer: "Dubai" },
+  { question: "Which city is known for the historic Forbidden City’s imperial treasures and hutong neighborhoods?", options: ["Beijing","Xi'an","Luoyang","Nanjing"], answer: "Beijing" },
+  { question: "Which city is famous for Oktoberfest’s beer tents and Lederhosen culture?", options: ["Munich","Frankfurt","Stuttgart","Nuremberg"], answer: "Munich" },
+  { question: "Which city is world-famous for its film festival in Sundance-type indie circuits (Sundance is in Park City near which major city?)", options: ["Salt Lake City","Los Angeles","Park City area near Salt Lake City","Denver"], answer: "Park City area near Salt Lake City" },
+  { question: "Which city’s old town is a UNESCO site with fortified walls at Dubrovnik?", options: ["Split","Zadar","Dubrovnik","Trogir"], answer: "Dubrovnik" },
+  { question: "Which city is known for the 'Blue Mosque' and historic Byzantine-to-Ottoman architecture?", options: ["Istanbul","Ankara","Izmir","Antalya"], answer: "Istanbul" },
+  { question: "Which city is famed for the Louvre Museum and Mona Lisa display?", options: ["Paris","London","Madrid","Amsterdam"], answer: "Paris" },
+  { question: "Which city is famous for the CN Tower and waterfront harbourfront attractions?", options: ["Montreal","Toronto","Vancouver","Ottawa"], answer: "Toronto" },
+  { question: "Which city is known for its medieval Old Town and Charles Bridge scenery?", options: ["Prague","Krakow","Budapest","Vienna"], answer: "Prague" },
+  { question: "Which city is famous for the historic walled city and Great Wall access near it (mutianyu/badaling)?", options: ["Beijing","Tianjin","Shenyang","Datong"], answer: "Beijing" },
+  { question: "Which city is celebrated for its canals and the annual King's Day celebrations on boats?", options: ["Venice","Amsterdam","Stockholm","Copenhagen"], answer: "Amsterdam" },
+  { question: "Which city is famous for its Wall Street financial district and NYSE?", options: ["Chicago","New York","London","Hong Kong"], answer: "New York" },
+  { question: "Which city is renowned for its coffee culture and historic cafés on La Rambla and Gothic Quarter? (Barcelona is famed for architecture – which city's La Rambla?)", options: ["Barcelona","Valencia","Madrid","Seville"], answer: "Barcelona" },
+  { question: "Which city hosts the Sydney Mardi Gras LGBTQ+ festival and major arts scene?", options: ["Melbourne","Sydney","Brisbane","Perth"], answer: "Sydney" },
+  { question: "Which city is famous for the historic salt pans and colorful colonial center at Valparaíso near which capital? (Valparaíso is near which big city?)", options: ["Santiago","Lima","Buenos Aires","Montevideo"], answer: "Santiago" },
+  { question: "Which city has the famous Blue Lagoon geothermal spa nearby (in Iceland)?", options: ["Reykjavík","Akureyri","Hafnarfjörður","Egilsstaðir"], answer: "Reykjavík" },
+  { question: "Which city is known for the ultramodern skyline of the Marina Bay area and the Merlion statue?", options: ["Hong Kong","Singapore","Kuala Lumpur","Manila"], answer: "Singapore" },
+  { question: "Which city is famous for the Palace Museum (Forbidden City) and Temple of Heaven compositions?", options: ["Beijing","Nanjing","Xi'an","Hangzhou"], answer: "Beijing" },
+  { question: "Which city is famed for the annual Rio Carnival, samba schools, and Copacabana beach parties?", options: ["Sao Paulo","Rio de Janeiro","Brasília","Salvador"], answer: "Rio de Janeiro" },
+  { question: "Which city is known for its historic Imperial Palace and Tokyo’s Shibuya and Shinjuku nightlife districts?", options: ["Tokyo","Osaka","Yokohama","Nagoya"], answer: "Tokyo" },
+  { question: "Which city is famous for the Spice Bazaar and historic Ottoman marketplaces?", options: ["Istanbul","Cairo","Marrakech","Fez"], answer: "Istanbul" },
+  { question: "Which city is known for Venice-like canals and the Royal Palace nearby (Stockholm’s old town Gamla Stan)?", options: ["Stockholm","Venice","Copenhagen","Helsinki"], answer: "Stockholm" },
+  { question: "Which city is known for the famous Louvre pyramid and Seine riverbank promenades?", options: ["Paris","Lyon","Marseille","Nice"], answer: "Paris" },
+  { question: "Which city has the iconic 'Hollywood' sign and a famous film & entertainment industry?", options: ["Los Angeles","San Francisco","San Diego","Las Vegas"], answer: "Los Angeles" },
+  { question: "Which city is famous for the Ganges ghats and pilgrimage rituals along the river (Varanasi region)?", options: ["Varanasi","Allahabad","Patna","Kolkata"], answer: "Varanasi" },
+  { question: "Which city is known for its spectacular Angkor Wat temple complex access?", options: ["Phnom Penh","Siem Reap","Battambang","Sihanoukville"], answer: "Siem Reap" },
+  { question: "Which city is celebrated for its temples and geisha districts at Gion and historic shrines?", options: ["Tokyo","Kyoto","Nara","Osaka"], answer: "Kyoto" },
+  { question: "Which city is celebrated for the Edinburgh Festival Fringe and Royal Mile?", options: ["Glasgow","Edinburgh","Aberdeen","Inverness"], answer: "Edinburgh" },
+  { question: "Which city is famous for the High Line park and Meatpacking District revitalization?", options: ["Los Angeles","New York","Chicago","San Francisco"], answer: "New York" },
+  { question: "Which city is known for the Gateway Arch and its role in westward expansion tours?", options: ["St. Louis","Kansas City","Chicago","Memphis"], answer: "St. Louis" },
+  { question: "Which city is famous for the medieval Alhambra complex and Generalife gardens?", options: ["Seville","Granada","Cordoba","Toledo"], answer: "Granada" },
+  { question: "Which city is famed for its UNESCO-listed old port and historic medina (Morocco)?", options: ["Marrakech","Casablanca","Tangier","Essaouira"], answer: "Essaouira" },
+  { question: "Which city hosts the historic city of Petra access and Wadi Rum tours nearby (Jordanian tourism hub)?", options: ["Amman","Aqaba","Wadi Musa","Zarqa"], answer: "Wadi Musa" },
+  { question: "Which city is known for its automotive museums and the Mercedes-Benz Museum (Germany)?", options: ["Munich","Stuttgart","Dortmund","Dresden"], answer: "Stuttgart" },
+  { question: "Which city is famous for the annual Carnival in Venice with historic masks and lagoon pageantry?", options: ["Venice","Rovinj","Trieste","Padua"], answer: "Venice" },
+  { question: "Which city is renowned for culinary markets like La Boqueria on La Rambla?", options: ["Madrid","Barcelona","Valencia","Seville"], answer: "Barcelona" },
+  { question: "Which city is known for the Tate Modern and Thames riverside arts trail?", options: ["Manchester","London","Liverpool","Bristol"], answer: "London" },
+  { question: "Which city is celebrated for its glass-and-steel skyline anchored by the Petronas Twin Towers?", options: ["Singapore","Kuala Lumpur","Manila","Bangkok"], answer: "Kuala Lumpur" },
+  { question: "Which city is famous for the Old Havana historic district and classic cars sightings?", options: ["Havana","Santo Domingo","San Juan","Port-au-Prince"], answer: "Havana" },
+  { question: "Which city is famed for its 'ring road' and historic Gyeongbokgung Palace (Korean old palaces)?", options: ["Busan","Seoul","Daegu","Incheon"], answer: "Seoul" },
+  { question: "Which city is renowned for the Blue Mosque and sunrise over the Bosphorus?", options: ["Istanbul","Izmir","Ankara","Trabzon"], answer: "Istanbul" },
+  { question: "Which city is famous for the Hermitage Museum and the Winter Palace?", options: ["Moscow","St. Petersburg","Novgorod","Kazan"], answer: "St. Petersburg" },
+  { question: "Which city is known for the Sahara-edge oasis town and historic ksars in southern Morocco?", options: ["Ouarzazate","Marrakech","Chefchaouen","Essaouira"], answer: "Ouarzazate" }
 ];
-/* ---------------------- END DATABASE ---------------------- */
 
-/* runtime state */
-const MAX_QUESTIONS = 20;
-let questions = [];
-let currentIndex = 0;
-let score = 0;
-let answered = false;            // whether user has answered current question
-let timerInterval = null;
-let autoAdvanceTimeout = null;
-let timeLeft = 10;
+let currentIndex=0, score=0, timer, timeLeft=10, answered=false;
+let shuffledQuestions=[]; // ✅ new array for randomized questions
 
-/* DOM refs */
-const quizBox = document.getElementById('quizBox');
-const questionEl = document.getElementById('question');
-const optionsEl = document.getElementById('options');
-const timerEl = document.getElementById('timer');
-const scoreBox = document.getElementById('scoreBox');
-const nextBtn = document.getElementById('nextBtn');
-const restartBtn = document.getElementById('restartBtn');
-const autoNextWrap = document.getElementById('autoNextWrap');
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+const timerEl=document.getElementById("timer");
+const scoreBox=document.getElementById("scoreBox");
+const nextBtn=document.getElementById("nextBtn");
+const restartBtn=document.getElementById("restartBtn");
+const quizBox=document.getElementById("quizBox");
+const autoNext=document.getElementById("autoNext");
 
-function shuffleArray(arr){
-  // Fisher-Yates
-  const a = arr.slice();
-  for(let i = a.length -1; i>0; i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i], a[j]] = [a[j], a[i]];
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
   }
-  return a;
-}
-
-function clearTimers(){
-  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+  return array;
 }
 
 function startQuiz(){
-  questions = shuffleArray(database).slice(0, Math.min(MAX_QUESTIONS, database.length));
   currentIndex = 0;
   score = 0;
-  answered = false;
-  scoreBox.textContent = '';
-  restartBtn.style.display = 'none';
-  nextBtn.style.display = 'block';
-  autoNextWrap.style.display = 'flex';
+  restartBtn.style.display = "none";
+  nextBtn.style.display = "block";
+  scoreBox.textContent = "";
+  autoNext.parentElement.style.display = "flex";
+
+  // ✅ Pick 10 random questions from full pool
+  shuffledQuestions = shuffle([...questions]).slice(0, 10);
+
   loadQuestion();
 }
 
+
 function loadQuestion(){
-  clearTimers();
-  quizBox.classList.remove('correct','wrong');
-  answered = false;
-
-  if(currentIndex >= questions.length){
-    endQuiz();
-    return;
-  }
-
-  const q = questions[currentIndex];
-  questionEl.textContent = q.q;
-
-  // render options (shuffled)
-  const opts = shuffleArray(q.options);
-  optionsEl.innerHTML = '';
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.disabled = false;
-    btn.addEventListener('click', () => onSelectOption(btn, opt));
+  clearInterval(timer);
+  quizBox.classList.remove("correct","wrong");
+  answered=false;
+  if(currentIndex>=shuffledQuestions.length){endQuiz();return;}
+  const q=shuffledQuestions[currentIndex];
+  
+  // ✅ Randomize options each time
+  const shuffledOptions = shuffle([...q.options]);
+  
+  questionEl.textContent=q.question;
+  optionsEl.innerHTML="";
+  shuffledOptions.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.className="option-btn";
+    btn.onclick=()=>selectOption(opt,q.answer,btn);
     optionsEl.appendChild(btn);
   });
-
-  // start countdown
-  timeLeft = 10;
-  timerEl.textContent = `Time: ${timeLeft}s`;
-  timerInterval = setInterval(() => {
+  timeLeft=10;
+  timerEl.textContent=`Time: ${timeLeft}s`;
+  timer=setInterval(()=>{
     timeLeft--;
-    timerEl.textContent = `Time: ${timeLeft}s`;
-    if(timeLeft <= 0){
-      clearTimers();
-      // mark wrong / skipped
-      markSkipped();
+    timerEl.textContent=`Time: ${timeLeft}s`;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      Array.from(optionsEl.children).forEach(b => b.disabled = true);
+      showCorrect(q.answer);
+      quizBox.classList.add("wrong");
+      answered = true;
+      if (autoNext.checked) {
+        setTimeout(()=> { nextQuestion(); }, 1000);
+      }
     }
-  }, 1000);
+  },1000);
 }
 
-function onSelectOption(btn, opt){
-  if(answered) return;
-  answered = true;
-  clearTimers();
-
-  // disable all options
-  Array.from(optionsEl.children).forEach(b => b.disabled = true);
-
-  const correct = questions[currentIndex].answer;
-  if(opt === correct){
-    quizBox.classList.add('correct');
+function selectOption(selected,correct,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const all=document.querySelectorAll(".option-btn");
+  all.forEach(b=>b.disabled=true);
+  if(selected===correct){
+    btn.classList.add("correct");
+    quizBox.classList.add("correct");
     score++;
   } else {
-    quizBox.classList.add('wrong');
+    btn.classList.add("wrong");
+    showCorrect(correct);
+    quizBox.classList.add("wrong");
   }
-
-  // if auto-next is checked, advance after a short delay so glow is visible
-  if(document.getElementById('autoNext').checked){
-    autoAdvanceTimeout = setTimeout(() => {
-      advanceToNext();
-    }, 700);
-  } else {
-    // keep the current screen until user clicks Next
-  }
+  if(autoNext.checked)setTimeout(()=>nextQuestion(),1000);
 }
 
-function markSkipped(){
-  // time expired — treat as wrong (skipped)
-  answered = false; // it's technically unanswered
-  Array.from(optionsEl.children).forEach(b => b.disabled = true);
-  quizBox.classList.add('wrong');
-
-  if(document.getElementById('autoNext').checked){
-    autoAdvanceTimeout = setTimeout(() => {
-      advanceToNext();
-    }, 700);
-  } else {
-    // wait for user to press Next
-  }
+function showCorrect(correct){
+  document.querySelectorAll(".option-btn").forEach(o=>{
+    if(o.textContent===correct)o.classList.add("correct");
+  });
 }
 
 function nextQuestion(){
-  // manual Next button pressed
-  // cancel any scheduled auto advance
-  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
-  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-
-  // If user didn't answer and not already marked wrong (i.e. no glow), show red glow briefly then advance
-  if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
-    quizBox.classList.add('wrong');
-    setTimeout(() => {
-      advanceToNext();
-    }, 700);
-  } else {
-    // already answered or timed-out: advance immediately (short delay keeps UX consistent)
-    setTimeout(advanceToNext, 200);
+  if(!answered){
+    clearInterval(timer);
+    const correct=shuffledQuestions[currentIndex].answer;
+    showCorrect(correct);
+    quizBox.classList.add("wrong");
+    answered=true;
+    setTimeout(()=>{
+      currentIndex++;
+      loadQuestion();
+    },1000);
+    return;
   }
-}
-
-function advanceToNext(){
-  clearTimers();
   currentIndex++;
   loadQuestion();
 }
 
 function endQuiz(){
-  clearTimers();
-  questionEl.textContent = '🎉 Quiz Completed!';
-  optionsEl.innerHTML = '';
-  nextBtn.style.display = 'none';
-  restartBtn.style.display = 'block';
-  timerEl.textContent = '';
-  autoNextWrap.style.display = 'none';
-
-  const outOf = Math.min(MAX_QUESTIONS, database.length);
-  scoreBox.textContent = `Your Score: ${score} / ${outOf}`;
+  clearInterval(timer);
+  questionEl.textContent="Quiz Completed!";
+  optionsEl.innerHTML="";
+  timerEl.textContent="";
+  nextBtn.style.display="none";
+  restartBtn.style.display="block";
+  scoreBox.textContent=`Your Score: ${score}/${shuffledQuestions.length}`;
+  quizBox.classList.remove("correct","wrong");
+  autoNext.parentElement.style.display="none"; // ✅ Hide auto-next
 }
 
-function restartQuiz(){
-  clearTimers();
-  quizBox.classList.remove('correct','wrong');
-  scoreBox.textContent = '';
-  startQuiz();
-}
+restartBtn.onclick=startQuiz;
+nextBtn.onclick=nextQuestion;
 
-/* wire UI */
-nextBtn.addEventListener('click', nextQuestion);
-restartBtn.addEventListener('click', restartQuiz);
-
-/* start */
-if(database.length < MAX_QUESTIONS){
-  console.warn(`Database contains only ${database.length} items; quiz will run ${database.length} questions.`);
-}
 startQuiz();
-
 </script>
 </body>
 </html>
