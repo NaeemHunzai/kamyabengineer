@@ -3,162 +3,148 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Deserts of the World Quiz</title>
 <style>
-  :root{
-    --blue: #007bff;
-    --blue-hover: #0056b3;
-    --green: #2ecc71;
-    --red: #e74c3c;
-    --white: #ffffff;
-    --black: #111;
-  }
-
-  body{
-    margin:0;
-    padding:12px;
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    background:var(--white);
-    color:var(--black);
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    min-height:100vh;
-  }
-
-  .quiz-container{
-    width:100%;
-    max-width:540px;
-    background:var(--white);
-    border-radius:12px;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.08);
-    padding:18px;
-    box-sizing:border-box;
-    border:5px solid transparent;
-    transition:border-color .18s ease, transform .12s ease;
-    text-align:center;
-  }
-  .quiz-container.correct{ border-color: var(--green); }
-  .quiz-container.wrong{ border-color: var(--red); }
-
-  #title {
-    margin:0 0 8px 0;
-    font-size:20px;
-    font-weight:700;
-  }
-
-  #question {
-    margin: 10px 0 14px 0;
-    font-size: 18px;
-    line-height: 1.3;
-    color: var(--black);
-    text-align: center;
-    min-height:56px;
-  }
-
-  .options{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    margin:12px 0;
-  }
-
-  .option-btn{
-    background:var(--blue);
-    color:var(--white);
-    border:0;
-    padding:12px 10px;
-    font-size:15px;
-    border-radius:8px;
-    cursor:pointer;
-    width:100%;
-    word-break:break-word;
-    transition: transform .10s ease, background .12s ease, opacity .12s ease;
-  }
-  .option-btn:active{ transform: translateY(1px); }
-  .option-btn:hover{ background:var(--blue-hover); }
-  .option-btn[disabled]{ opacity: .7; cursor: default; }
-
-  .timer{
-    margin:10px 0;
-    font-weight:700;
-    color:var(--black);
-    font-size:16px;
-    text-align:center;
-  }
-
-  .auto-next {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    margin-bottom:8px;
-    color:var(--black);
-    font-size:14px;
-  }
-
-  .controls {
-    display:flex;
-    gap:8px;
-    flex-direction:column;
-    align-items:stretch;
-    margin-top:6px;
-  }
-
-  .next-btn, .restart-btn {
-    background:var(--green);
-    color:var(--white);
-    border:0;
-    padding:12px;
-    border-radius:8px;
-    font-size:15px;
-    cursor:pointer;
-    width:100%;
-  }
-  .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
-
-  .restart-btn { background:#ff5722; display:none; }
-
-  .score {
-    margin-top:12px;
-    text-align:center;
-    font-weight:700;
-    color:var(--black);
-    font-size:18px;
-  }
-
-  @media (max-width:420px){
-    .options{ grid-template-columns:1fr; }
-    #question{ font-size:17px; }
-    .option-btn{ padding:14px; font-size:16px; }
-    .timer{ font-size:15px; }
-  }
+:root {
+  --primary:#007bff;
+  --btn-bg:#007bff;
+  --btn-bg-hover:#0056b3;
+  --ok:#28a745;
+  --bad:#dc3545;
+  --white:#ffffff;
+  --black:#111;
+}
+body {
+  margin:0;
+  padding:12px;
+  font-family:"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--white);
+  color:var(--black);
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  min-height:100vh;
+}
+.quiz-container {
+  width:100%;
+  max-width:520px;
+  background:var(--white);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  padding:16px;
+  box-sizing:border-box;
+  border:4px solid transparent;
+  transition:border-color .3s ease, box-shadow .3s ease;
+  text-align:center;
+}
+.quiz-container.correct {
+  border-color:var(--ok);
+  box-shadow:0 0 10px var(--ok);
+}
+.quiz-container.wrong {
+  border-color:var(--bad);
+  box-shadow:0 0 10px var(--bad);
+}
+#question {
+  margin:0 0 12px 0;
+  font-size:20px;
+  line-height:1.2;
+  text-align:center;
+}
+.options {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin:12px 0;
+}
+.option-btn {
+  background:var(--btn-bg);
+  color:var(--white);
+  border:0;
+  padding:12px 10px;
+  font-size:15px;
+  border-radius:8px;
+  cursor:pointer;
+  width:100%;
+  transition:transform .1s ease, background .12s ease, opacity .12s ease;
+}
+.option-btn:active { transform:translateY(1px); }
+.option-btn:hover { background:var(--btn-bg-hover); }
+.option-btn[disabled] { opacity:.7; cursor:default; }
+.option-btn.correct {
+  background:var(--ok)!important;
+  box-shadow:0 0 10px var(--ok);
+}
+.option-btn.wrong {
+  background:var(--bad)!important;
+  box-shadow:0 0 10px var(--bad);
+}
+.timer {
+  margin:10px 0;
+  font-weight:700;
+  font-size:16px;
+}
+.auto-next {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+  font-size:14px;
+}
+.controls {
+  display:flex;
+  gap:8px;
+  flex-direction:column;
+  align-items:stretch;
+  margin-top:6px;
+}
+.next-btn,.restart-btn {
+  background:var(--ok);
+  color:var(--white);
+  border:0;
+  padding:12px;
+  border-radius:8px;
+  font-size:15px;
+  cursor:pointer;
+  width:100%;
+}
+.next-btn:hover,.restart-btn:hover {
+  filter:brightness(.95);
+}
+.score {
+  margin-top:12px;
+  text-align:center;
+  font-weight:700;
+  font-size:16px;
+}
+@media (max-width:420px){
+  .options{grid-template-columns:1fr;}
+  #question{font-size:18px;}
+  .option-btn{padding:14px;font-size:16px;}
+  .timer{font-size:15px;}
+}
 </style>
 </head>
 <body>
-  <div class="quiz-container" id="quizBox" role="application" aria-labelledby="question">
- 
-
-    <div id="question">Loading question...</div>
-
-    <div class="options" id="options" aria-live="polite"></div>
-
-    <div class="timer" id="timer">Time: 10s</div>
-
-    <div class="auto-next" id="autoNextWrap">
-      <input type="checkbox" id="autoNext" />
-      <label for="autoNext">Auto Next</label>
-    </div>
-
-    <div class="controls">
-      <button id="nextBtn" class="next-btn" type="button">Next</button>
-      <button id="restartBtn" class="restart-btn" type="button">Restart Quiz</button>
-    </div>
-
-    <div id="scoreBox" class="score" aria-live="polite"></div>
+<div class="quiz-container" id="quizBox">
+  <h2 id="question">Loading question...</h2>
+  <div class="options" id="options"></div>
+  <div class="timer" id="timer">Time: 10s</div>
+  <div class="auto-next">
+    <input type="checkbox" id="autoNext">
+    <label for="autoNext">Auto Next</label>
   </div>
+  <div class="controls">
+    <button id="nextBtn" class="next-btn" type="button">Next</button>
+    <button id="restartBtn" class="restart-btn" type="button" style="display:none;">Restart Quiz</button>
+  </div>
+  <div id="scoreBox" class="score"></div>
+</div>
 
 <script>
-  const questionsDB = [
+  /******** Database ********/
+ const questions = [
   { question: "Which is the largest hot desert in the world?", options: ["Sahara Desert", "Gobi Desert", "Kalahari Desert", "Arabian Desert"], answer: "Sahara Desert" },
   { question: "Which desert is known as the 'Great Indian Desert'?", options: ["Thar Desert", "Karakum Desert", "Sonoran Desert", "Atacama Desert"], answer: "Thar Desert" },
   { question: "The Gobi Desert is located in which countries?", options: ["China and Mongolia", "India and Pakistan", "Egypt and Libya", "USA and Mexico"], answer: "China and Mongolia" },
@@ -214,188 +200,136 @@
   { question: "Which desert is located in the Middle East and is known for oil reserves?", options: ["Arabian Desert", "Rub' al Khali", "Sahara Desert", "Karakum Desert"], answer: "Arabian Desert" }
 ];
 
-const MAX_QUESTIONS = 20;
-let questions = [];            // shuffled set for this run
-let currentIndex = 0;
-let score = 0;
-let answered = false;          // whether current question resolved (answered/skipped/timed out)
-let timerInterval = null;
-let autoAdvanceTimeout = null;
-let timeLeft = 10;
 
-/* DOM refs */
-const quizBox = document.getElementById('quizBox');
-const questionEl = document.getElementById('question');
-const optionsEl = document.getElementById('options');
-const timerEl = document.getElementById('timer');
-const scoreBox = document.getElementById('scoreBox');
-const nextBtn = document.getElementById('nextBtn');
-const restartBtn = document.getElementById('restartBtn');
-const autoNextWrap = document.getElementById('autoNextWrap');
-const autoNextChk = document.getElementById('autoNext');
+let currentIndex=0, score=0, timer, timeLeft=10, answered=false;
+let shuffledQuestions=[]; // ✅ new array for randomized questions
 
-function shuffleArray(arr){
-  const a = arr.slice();
-  for(let i = a.length -1; i>0; i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i], a[j]] = [a[j], a[i]];
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+const timerEl=document.getElementById("timer");
+const scoreBox=document.getElementById("scoreBox");
+const nextBtn=document.getElementById("nextBtn");
+const restartBtn=document.getElementById("restartBtn");
+const quizBox=document.getElementById("quizBox");
+const autoNext=document.getElementById("autoNext");
+
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
   }
-  return a;
-}
-
-function clearTimers(){
-  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
+  return array;
 }
 
 function startQuiz(){
-  questions = shuffleArray(questionsDB).slice(0, Math.min(MAX_QUESTIONS, questionsDB.length));
   currentIndex = 0;
   score = 0;
-  answered = false;
-  scoreBox.textContent = '';
-  restartBtn.style.display = 'none';
-  nextBtn.style.display = 'block';
-  autoNextWrap.style.display = 'flex';
-  timerEl.style.display = 'block';
+  restartBtn.style.display = "none";
+  nextBtn.style.display = "block";
+  scoreBox.textContent = "";
+  autoNext.parentElement.style.display = "flex";
+
+  // ✅ Pick 10 random questions from full pool
+  shuffledQuestions = shuffle([...questions]).slice(0, 10);
+
   loadQuestion();
 }
 
+
 function loadQuestion(){
-  clearTimers();
-  quizBox.classList.remove('correct','wrong');
-  answered = false;
-
-  if(currentIndex >= questions.length){
-    endQuiz();
-    return;
-  }
-
-  const q = questions[currentIndex];
-  questionEl.textContent = q.question;
-
-  // render options (shuffled)
-  const opts = shuffleArray(q.options);
-  optionsEl.innerHTML = '';
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.disabled = false;
-    btn.addEventListener('click', () => onSelectOption(btn, opt));
+  clearInterval(timer);
+  quizBox.classList.remove("correct","wrong");
+  answered=false;
+  if(currentIndex>=shuffledQuestions.length){endQuiz();return;}
+  const q=shuffledQuestions[currentIndex];
+  
+  // ✅ Randomize options each time
+  const shuffledOptions = shuffle([...q.options]);
+  
+  questionEl.textContent=q.question;
+  optionsEl.innerHTML="";
+  shuffledOptions.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.className="option-btn";
+    btn.onclick=()=>selectOption(opt,q.answer,btn);
     optionsEl.appendChild(btn);
   });
-
-  // start timer
-  timeLeft = 10;
-  timerEl.textContent = `Time: ${timeLeft}s`;
-  timerInterval = setInterval(() => {
+  timeLeft=10;
+  timerEl.textContent=`Time: ${timeLeft}s`;
+  timer=setInterval(()=>{
     timeLeft--;
-    timerEl.textContent = `Time: ${timeLeft}s`;
-    if(timeLeft <= 0){
-      clearTimers();
-      handleTimeout();
+    timerEl.textContent=`Time: ${timeLeft}s`;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      Array.from(optionsEl.children).forEach(b => b.disabled = true);
+      showCorrect(q.answer);
+      quizBox.classList.add("wrong");
+      answered = true;
+      if (autoNext.checked) {
+        setTimeout(()=> { nextQuestion(); }, 1000);
+      }
     }
-  }, 1000);
+  },1000);
 }
 
-function onSelectOption(btn, opt){
-  if(answered) return;
-  answered = true;
-  clearTimers();
-
-  // disable all buttons to prevent further clicks
-  Array.from(optionsEl.children).forEach(b => b.disabled = true);
-
-  const correct = questions[currentIndex].answer;
-  if(opt === correct){
-    // correct
-    quizBox.classList.add('correct');
+function selectOption(selected,correct,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const all=document.querySelectorAll(".option-btn");
+  all.forEach(b=>b.disabled=true);
+  if(selected===correct){
+    btn.classList.add("correct");
+    quizBox.classList.add("correct");
     score++;
   } else {
-    // wrong
-    quizBox.classList.add('wrong');
+    btn.classList.add("wrong");
+    showCorrect(correct);
+    quizBox.classList.add("wrong");
   }
-
-  // If auto-next enabled, schedule advance so user can see glow
-  if(autoNextChk.checked){
-    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
-  }
-  // If auto-next is off, user must press Next to advance
+  if(autoNext.checked)setTimeout(()=>nextQuestion(),1000);
 }
 
-function handleTimeout(){
-  // time expired -> mark as wrong (skipped)
-  answered = true;
-  Array.from(optionsEl.children).forEach(b => b.disabled = true);
-  quizBox.classList.add('wrong');
-
-  if(autoNextChk.checked){
-    autoAdvanceTimeout = setTimeout(() => advanceToNext(), 700);
-  }
-  // else wait for Next button
+function showCorrect(correct){
+  document.querySelectorAll(".option-btn").forEach(o=>{
+    if(o.textContent===correct)o.classList.add("correct");
+  });
 }
 
-function onNextClick(){
-  // manual Next click
-  // Cancel any pending auto advance
-  if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
-  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-
+function nextQuestion(){
   if(!answered){
-    // No answer selected -> treat as wrong, show red, and advance after delay
-    answered = true; // count as attempted (wrong)
-    Array.from(optionsEl.children).forEach(b => b.disabled = true);
-    quizBox.classList.add('wrong');
-    setTimeout(() => {
-      advanceToNext();
-    }, 700);
-  } else {
-    // already answered -> advance immediately
-    setTimeout(() => advanceToNext(), 120);
+    clearInterval(timer);
+    const correct=shuffledQuestions[currentIndex].answer;
+    showCorrect(correct);
+    quizBox.classList.add("wrong");
+    answered=true;
+    setTimeout(()=>{
+      currentIndex++;
+      loadQuestion();
+    },1000);
+    return;
   }
-}
-
-function advanceToNext(){
-  clearTimers();
   currentIndex++;
-  if(currentIndex >= questions.length){
-    endQuiz();
-  } else {
-    loadQuestion();
-  }
+  loadQuestion();
 }
 
 function endQuiz(){
-  clearTimers();
-  questionEl.textContent = '🎉 Quiz Completed!';
-  optionsEl.innerHTML = '';
-  nextBtn.style.display = 'none';
-  restartBtn.style.display = 'block';
-  timerEl.style.display = 'none';
-  autoNextWrap.style.display = 'none';
-  const outOf = Math.min(MAX_QUESTIONS, questionsDB.length);
-  scoreBox.textContent = `Your Score: ${score} / ${outOf}`;
+  clearInterval(timer);
+  questionEl.textContent="Quiz Completed!";
+  optionsEl.innerHTML="";
+  timerEl.textContent="";
+  nextBtn.style.display="none";
+  restartBtn.style.display="block";
+  scoreBox.textContent=`Your Score: ${score}/${shuffledQuestions.length}`;
+  quizBox.classList.remove("correct","wrong");
+  autoNext.parentElement.style.display="none"; // ✅ Hide auto-next
 }
 
-function restartQuiz(){
-  clearTimers();
-  quizBox.classList.remove('correct','wrong');
-  scoreBox.textContent = '';
-  startQuiz();
-}
+restartBtn.onclick=startQuiz;
+nextBtn.onclick=nextQuestion;
 
-/* Wire UI */
-nextBtn.addEventListener('click', onNextClick);
-restartBtn.addEventListener('click', restartQuiz);
-
-/* Start */
-if(questionsDB.length < MAX_QUESTIONS){
-  console.warn(`DB contains only ${questionsDB.length} items; quiz will run ${questionsDB.length} questions.`);
-}
 startQuiz();
-
 </script>
 </body>
 </html>
