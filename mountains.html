@@ -1,154 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mountains & Peaks Quiz — Expanded</title>
-  <style>
-    :root{
-      --primary: #007bff;
-      --btn-bg: #007bff;
-      --btn-bg-hover: #0056b3;
-      --ok: #28a745;
-      --bad: #dc3545;
-      --white: #ffffff;
-      --black: #111;
-    }
-
-    body{
-      margin:0;
-      padding:12px;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background:var(--white);
-      color:var(--black);
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      min-height:100vh;
-    }
-
-    .quiz-container{
-      width:100%;
-      max-width:720px;
-      background:var(--white);
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.08);
-      padding:18px;
-      box-sizing:border-box;
-      border:4px solid transparent;
-      transition:border-color .20s ease, transform .12s ease;
-      text-align:center;
-    }
-    .quiz-container.correct{ border-color: var(--ok); }
-    .quiz-container.wrong{ border-color: var(--bad); }
-
-    #question {
-      margin: 0 0 12px 0;
-      font-size: 20px;
-      line-height: 1.3;
-      text-align: center;
-    }
-
-    .options{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      margin:12px 0;
-    }
-
-    .option-btn{
-      background:var(--btn-bg);
-      color:var(--white);
-      border:0;
-      padding:12px 10px;
-      font-size:15px;
-      border-radius:8px;
-      cursor:pointer;
-      width:100%;
-      word-break:break-word;
-      transition: transform .10s ease, background .12s ease, opacity .12s ease;
-    }
-    .option-btn:active{ transform: translateY(1px); }
-    .option-btn:hover{ background:var(--btn-bg-hover); }
-    .option-btn[disabled]{ opacity: .7; cursor: default; }
-
-    .timer{
-      margin:10px 0;
-      font-weight:700;
-      font-size:16px;
-      text-align:center;
-    }
-
-    .auto-next {
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:8px;
-      margin-bottom:8px;
-      font-size:14px;
-    }
-
-    .controls {
-      display:flex;
-      gap:8px;
-      flex-direction:column;
-      align-items:stretch;
-      margin-top:6px;
-    }
-
-    .next-btn, .restart-btn {
-      background:var(--ok);
-      color:var(--white);
-      border:0;
-      padding:12px;
-      border-radius:8px;
-      font-size:15px;
-      cursor:pointer;
-      width:100%;
-    }
-    .next-btn:hover, .restart-btn:hover{ filter:brightness(.95); }
-
-    .score {
-      margin-top:12px;
-      text-align:center;
-      font-weight:700;
-      font-size:16px;
-    }
-
-    @media (max-width:720px){
-      .quiz-container{ padding:12px; }
-    }
-    @media (max-width:520px){
-      .options{ grid-template-columns:1fr; }
-      #question{ font-size:18px; }
-      .option-btn{ padding:14px; font-size:16px; }
-      .timer{ font-size:15px; }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mountains and Peaks Quiz</title>
+<style>
+:root {
+  --primary:#007bff;
+  --btn-bg:#007bff;
+  --btn-bg-hover:#0056b3;
+  --ok:#28a745;
+  --bad:#dc3545;
+  --white:#ffffff;
+  --black:#111;
+}
+body {
+  margin:0;
+  padding:12px;
+  font-family:"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--white);
+  color:var(--black);
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  min-height:100vh;
+}
+.quiz-container {
+  width:100%;
+  max-width:520px;
+  background:var(--white);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  padding:16px;
+  box-sizing:border-box;
+  border:4px solid transparent;
+  transition:border-color .3s ease, box-shadow .3s ease;
+  text-align:center;
+}
+.quiz-container.correct {
+  border-color:var(--ok);
+  box-shadow:0 0 10px var(--ok);
+}
+.quiz-container.wrong {
+  border-color:var(--bad);
+  box-shadow:0 0 10px var(--bad);
+}
+#question {
+  margin:0 0 12px 0;
+  font-size:20px;
+  line-height:1.2;
+  text-align:center;
+}
+.options {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin:12px 0;
+}
+.option-btn {
+  background:var(--btn-bg);
+  color:var(--white);
+  border:0;
+  padding:12px 10px;
+  font-size:15px;
+  border-radius:8px;
+  cursor:pointer;
+  width:100%;
+  transition:transform .1s ease, background .12s ease, opacity .12s ease;
+}
+.option-btn:active { transform:translateY(1px); }
+.option-btn:hover { background:var(--btn-bg-hover); }
+.option-btn[disabled] { opacity:.7; cursor:default; }
+.option-btn.correct {
+  background:var(--ok)!important;
+  box-shadow:0 0 10px var(--ok);
+}
+.option-btn.wrong {
+  background:var(--bad)!important;
+  box-shadow:0 0 10px var(--bad);
+}
+.timer {
+  margin:10px 0;
+  font-weight:700;
+  font-size:16px;
+}
+.auto-next {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+  font-size:14px;
+}
+.controls {
+  display:flex;
+  gap:8px;
+  flex-direction:column;
+  align-items:stretch;
+  margin-top:6px;
+}
+.next-btn,.restart-btn {
+  background:var(--ok);
+  color:var(--white);
+  border:0;
+  padding:12px;
+  border-radius:8px;
+  font-size:15px;
+  cursor:pointer;
+  width:100%;
+}
+.next-btn:hover,.restart-btn:hover {
+  filter:brightness(.95);
+}
+.score {
+  margin-top:12px;
+  text-align:center;
+  font-weight:700;
+  font-size:16px;
+}
+@media (max-width:420px){
+  .options{grid-template-columns:1fr;}
+  #question{font-size:18px;}
+  .option-btn{padding:14px;font-size:16px;}
+  .timer{font-size:15px;}
+}
+</style>
 </head>
 <body>
-  <div class="quiz-container" id="quizBox">
-    <h2 id="question">Loading question...</h2>
-    <div class="options" id="options"></div>
-    <div class="timer" id="timer">Time: 12s</div>
-    <div class="auto-next" id="autoNextWrap">
-      <input type="checkbox" id="autoNext" />
-      <label for="autoNext">Auto Next</label>
-    </div>
-    <div class="controls">
-      <button id="nextBtn" class="next-btn" type="button">Next</button>
-      <button id="restartBtn" class="restart-btn" type="button" style="display:none;">Restart Quiz</button>
-    </div>
-    <div id="scoreBox" class="score"></div>
+<div class="quiz-container" id="quizBox">
+  <h2 id="question">Loading question...</h2>
+  <div class="options" id="options"></div>
+  <div class="timer" id="timer">Time: 10s</div>
+  <div class="auto-next">
+    <input type="checkbox" id="autoNext">
+    <label for="autoNext">Auto Next</label>
   </div>
+  <div class="controls">
+    <button id="nextBtn" class="next-btn" type="button">Next</button>
+    <button id="restartBtn" class="restart-btn" type="button" style="display:none;">Restart Quiz</button>
+  </div>
+  <div id="scoreBox" class="score"></div>
+</div>
 
-  <script>
-    /*********** Expanded Mountains & Peaks Database ***********
-     * Focus first on Pakistan, India, China, Nepal — then other ranges.
-     * Question types include: highest-in-country, elevation, range, border, nickname.
-     *******************************************************/
-
-    const questions = [
+<script>
+const questions = [
       // === PAKISTAN (major peaks & facts) ===
       { question: "Which is the highest mountain in Pakistan?", options: ["K2","Nanga Parbat","Broad Peak","Gasherbrum I"], answer: "K2" },
       { question: "K2 (Qogir/Ketu) is part of which mountain range?", options: ["Himalaya","Karakoram","Hindu Kush","Pamirs"], answer: "Karakoram" },
@@ -257,145 +252,135 @@
       { question: "Which is the highest peak of the Pamirs, previously named Peak Communism?", options: ["Ismoil Somoni Peak (formerly Peak Communism)","Kongur Tagh","Pobeda Peak","Lenin Peak"], answer: "Ismoil Somoni Peak (formerly Peak Communism)" },
       { question: "Which is the highest volcano in Europe (Mount Etna on Sicily is active) — which is taller in elevation?", options: ["Mount Etna","Mount Olympus (Greece)","Mount Elbrus","Mount Vesuvius"], answer: "Mount Elbrus" }
     ];
+let currentIndex=0, score=0, timer, timeLeft=10, answered=false;
+let shuffledQuestions=[]; // ✅ new array for randomized questions
 
-    const QUESTIONS_PER_QUIZ = 25; // number of random questions per session
-    let shuffledQuestions = [];
-    let currentIndex = 0;
-    let score = 0;
-    let answered = false;
-    let timerInterval = null;
-    let autoAdvanceTimeout = null;
-    let timeLeft = 12;
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+const timerEl=document.getElementById("timer");
+const scoreBox=document.getElementById("scoreBox");
+const nextBtn=document.getElementById("nextBtn");
+const restartBtn=document.getElementById("restartBtn");
+const quizBox=document.getElementById("quizBox");
+const autoNext=document.getElementById("autoNext");
 
-    const quizBox = document.getElementById('quizBox');
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('options');
-    const timerEl = document.getElementById('timer');
-    const scoreBox = document.getElementById('scoreBox');
-    const nextBtn = document.getElementById('nextBtn');
-    const restartBtn = document.getElementById('restartBtn');
-    const autoNextWrap = document.getElementById('autoNextWrap');
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+  return array;
+}
 
-    function shuffleArray(arr){
-      return arr.map(v => ({v, r: Math.random()}))
-                .sort((a,b)=> a.r - b.r)
-                .map(x => x.v);
-    }
+function startQuiz(){
+  currentIndex = 0;
+  score = 0;
+  restartBtn.style.display = "none";
+  nextBtn.style.display = "block";
+  scoreBox.textContent = "";
+  autoNext.parentElement.style.display = "flex";
 
-    function clearTimers(){
-      if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-      if(autoAdvanceTimeout){ clearTimeout(autoAdvanceTimeout); autoAdvanceTimeout = null; }
-    }
+  // ✅ Pick 10 random questions from full pool
+  shuffledQuestions = shuffle([...questions]).slice(0, 10);
 
-    function startQuiz(){
-      shuffledQuestions = shuffleArray(questions).slice(0, QUESTIONS_PER_QUIZ);
-      currentIndex = 0;
-      score = 0;
-      answered = false;
-      scoreBox.textContent = '';
-      restartBtn.style.display = 'none';
-      nextBtn.style.display = 'block';
-      autoNextWrap.style.display = 'flex';
-      loadQuestion();
-    }
+  loadQuestion();
+}
 
-    function loadQuestion(){
-      clearTimers();
-      quizBox.classList.remove('correct','wrong');
-      answered = false;
 
-      if(currentIndex >= shuffledQuestions.length) return endQuiz();
-
-      const q = shuffledQuestions[currentIndex];
-      questionEl.textContent = q.question;
-
-      const opts = shuffleArray(q.options);
-
-      optionsEl.innerHTML = '';
-      opts.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'option-btn';
-        btn.textContent = opt;
-        btn.disabled = false;
-        btn.addEventListener('click', () => onSelectOption(opt, q.answer));
-        optionsEl.appendChild(btn);
-      });
-
-      timeLeft = 12;
-      timerEl.textContent = `Time: ${timeLeft}s`;
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = `Time: ${timeLeft}s`;
-        if(timeLeft <= 0){
-          clearTimers();
-          quizBox.classList.add('wrong');
-          answered = false;
-          if(document.getElementById('autoNext').checked){
-            autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
-          }
-        }
-      }, 1000);
-    }
-
-    function onSelectOption(optionText, correctAnswer){
-      if(answered) return;
-      answered = true;
+function loadQuestion(){
+  clearInterval(timer);
+  quizBox.classList.remove("correct","wrong");
+  answered=false;
+  if(currentIndex>=shuffledQuestions.length){endQuiz();return;}
+  const q=shuffledQuestions[currentIndex];
+  
+  // ✅ Randomize options each time
+  const shuffledOptions = shuffle([...q.options]);
+  
+  questionEl.textContent=q.question;
+  optionsEl.innerHTML="";
+  shuffledOptions.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.className="option-btn";
+    btn.onclick=()=>selectOption(opt,q.answer,btn);
+    optionsEl.appendChild(btn);
+  });
+  timeLeft=10;
+  timerEl.textContent=`Time: ${timeLeft}s`;
+  timer=setInterval(()=>{
+    timeLeft--;
+    timerEl.textContent=`Time: ${timeLeft}s`;
+    if(timeLeft<=0){
+      clearInterval(timer);
       Array.from(optionsEl.children).forEach(b => b.disabled = true);
-      clearTimers();
-
-      const isCorrect = optionText === correctAnswer;
-
-      if(isCorrect){
-        quizBox.classList.add('correct');
-        score++;
-      } else {
-        quizBox.classList.add('wrong');
-      }
-
-      if(document.getElementById('autoNext').checked){
-        autoAdvanceTimeout = setTimeout(() => { advanceToNext(); }, 700);
+      showCorrect(q.answer);
+      quizBox.classList.add("wrong");
+      answered = true;
+      if (autoNext.checked) {
+        setTimeout(()=> { nextQuestion(); }, 1000);
       }
     }
+  },1000);
+}
 
-    function nextQuestion(){
-      clearTimers();
-      if(!quizBox.classList.contains('correct') && !quizBox.classList.contains('wrong')){
-        quizBox.classList.add('wrong');
-        setTimeout(() => { advanceToNext(); }, 700);
-      } else {
-        setTimeout(() => { advanceToNext(); }, 200);
-      }
-    }
+function selectOption(selected,correct,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const all=document.querySelectorAll(".option-btn");
+  all.forEach(b=>b.disabled=true);
+  if(selected===correct){
+    btn.classList.add("correct");
+    quizBox.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+    showCorrect(correct);
+    quizBox.classList.add("wrong");
+  }
+  if(autoNext.checked)setTimeout(()=>nextQuestion(),1000);
+}
 
-    function advanceToNext(){
-      clearTimers();
+function showCorrect(correct){
+  document.querySelectorAll(".option-btn").forEach(o=>{
+    if(o.textContent===correct)o.classList.add("correct");
+  });
+}
+
+function nextQuestion(){
+  if(!answered){
+    clearInterval(timer);
+    const correct=shuffledQuestions[currentIndex].answer;
+    showCorrect(correct);
+    quizBox.classList.add("wrong");
+    answered=true;
+    setTimeout(()=>{
       currentIndex++;
       loadQuestion();
-    }
+    },1000);
+    return;
+  }
+  currentIndex++;
+  loadQuestion();
+}
 
-    function endQuiz(){
-      clearTimers();
-      questionEl.textContent = 'Quiz Completed!';
-      optionsEl.innerHTML = '';
-      nextBtn.style.display = 'none';
-      restartBtn.style.display = 'block';
-      timerEl.textContent = '';
-      autoNextWrap.style.display = 'none';
-      scoreBox.textContent = `Your Score: ${score} / ${shuffledQuestions.length}`;
-    }
+function endQuiz(){
+  clearInterval(timer);
+  questionEl.textContent="Quiz Completed!";
+  optionsEl.innerHTML="";
+  timerEl.textContent="";
+  nextBtn.style.display="none";
+  restartBtn.style.display="block";
+  scoreBox.textContent=`Your Score: ${score}/${shuffledQuestions.length}`;
+  quizBox.classList.remove("correct","wrong");
+  autoNext.parentElement.style.display="none"; // ✅ Hide auto-next
+}
 
-    function restartQuiz(){
-      clearTimers();
-      quizBox.classList.remove('correct','wrong');
-      scoreBox.textContent = '';
-      startQuiz();
-    }
+restartBtn.onclick=startQuiz;
+nextBtn.onclick=nextQuestion;
 
-    nextBtn.addEventListener('click', nextQuestion);
-    restartBtn.addEventListener('click', restartQuiz);
-
-    startQuiz();
-  </script>
+startQuiz();
+</script>
 </body>
 </html>
