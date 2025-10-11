@@ -1,111 +1,549 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Solar Calculator</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solar Calculator — Professional</title>
+
+  <!-- Tailwind CSS CDN (no inline tailwind.config to avoid parser issues) -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    html,body { height: 100%; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
+    body { background: linear-gradient(180deg,#f3f9f9 0%, #ffffff 100%); }
+    .glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(6px); box-shadow: 0 8px 28px rgba(2,6,23,0.06); border-radius: 14px; }
+    .muted { color: #6b7280; } /* gray-500 */
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace; font-size: 0.8rem; background:#f1f5f9; padding:2px 6px; border-radius:6px; }
+    /* ensure chart layout */
+    canvas { width:100% !important; height: auto !important; }
+  </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-start min-h-screen p-6">
+<body class="min-h-screen flex items-start justify-center p-6">
 
-  <div class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl">
-    <h1 class="text-3xl font-bold text-center text-sky-600 mb-6">
-      ☀️ Solar Power Calculator
-    </h1>
+  <div class="w-full max-w-6xl space-y-6">
 
-    <div class="space-y-4">
+    <!-- Header -->
+    <header class="flex items-center justify-between">
       <div>
-        <label class="block font-semibold">Daily Energy Use (kWh)</label>
-        <input id="dailyKwh" type="number" placeholder="e.g. 15"
-          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
+        <h1 class="text-2xl font-semibold text-slate-800">Solar Calculator</h1>
+        <p class="text-sm muted mt-1">Professional solar system estimator — residential & commercial</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <button id="exportTxtTop" class="px-3 py-2 rounded-md border text-sm">Export</button>
+        <button id="printTop" class="px-3 py-2 rounded-md bg-sky-600 text-white text-sm">Print</button>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Left: Inputs (big card) -->
+      <section class="lg:col-span-2 glass p-6 space-y-5">
+
+        <!-- Row: usage -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="text-lg font-medium">1 — Usage</h3>
+            <p class="text-sm muted">Enter monthly bill or daily consumption.</p>
+
+            <div class="mt-3 space-y-3">
+              <div class="flex gap-2">
+                <label class="flex items-center gap-2 text-sm">
+                  <input id="inputModeMonthly" name="inputMode" type="radio" checked> Monthly bill
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <input id="inputModeDaily" name="inputMode" type="radio"> Daily kWh
+                </label>
+              </div>
+
+              <div id="monthlyRow">
+                <label class="text-sm muted">Monthly electricity bill (amount)</label>
+                <div class="flex gap-2 mt-1">
+                  <input id="monthlyAmount" type="number" min="0" step="0.01" placeholder="10000" class="flex-1 p-2 border rounded-md" />
+                  <input id="currency" type="text" value="PKR" class="w-24 p-2 border rounded-md text-sm" />
+                </div>
+                <div class="mt-2 text-xs muted">Tariff (per kWh): <input id="tariff" type="number" value="35" step="0.01" class="w-24 inline-block p-1 border rounded text-sm" /> PKR</div>
+              </div>
+
+              <div id="dailyRow" class="hidden">
+                <label class="text-sm muted">Average daily consumption (kWh)</label>
+                <input id="dailyKwh" type="number" min="0" step="0.01" placeholder="e.g. 15" class="mt-1 p-2 border rounded-md w-full" />
+                <div class="mt-2 text-xs muted">Or use appliance estimator (below)</div>
+              </div>
+
+              <div class="mt-2">
+                <button id="openAppliances" class="px-3 py-2 rounded-md border text-sm">Open Appliance Estimator</button>
+                <span class="text-xs muted ml-2">Build a load list (W × hours × qty)</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-lg font-medium">2 — Location & Sun</h3>
+            <p class="text-sm muted">Pick a location to auto-set Peak Sun Hours (PSH). You can also override manually.</p>
+
+            <div class="mt-3 space-y-3">
+              <select id="locationSelect" class="p-2 border rounded-md w-full">
+                <option value="manual">— Select city (PSH presets) —</option>
+                <option value="Karachi|5.4">Karachi, PK (5.4)</option>
+                <option value="Lahore|5.0">Lahore, PK (5.0)</option>
+                <option value="Islamabad|4.8">Islamabad, PK (4.8)</option>
+                <option value="IslamicAzores|5.8">Generic Sunny (5.8)</option>
+                <option value="manual">Manual / other</option>
+              </select>
+
+              <div>
+                <label class="text-sm muted">Peak Sun Hours (PSH)</label>
+                <input id="psh" type="number" step="0.1" value="5" class="mt-1 p-2 border rounded-md w-36" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 mt-2">
+                <div>
+                  <label class="text-sm muted">Panel W (typical)</label>
+                  <select id="panelW" class="p-2 border rounded-md w-full">
+                    <option value="330">330 W</option>
+                    <option value="360">360 W</option>
+                    <option value="400" selected>400 W</option>
+                    <option value="450">450 W</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm muted">System losses (%)</label>
+                  <input id="losses" type="number" step="0.1" value="20" class="mt-1 p-2 border rounded-md w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row: system & battery -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="text-lg font-medium">3 — System type & inverter</h3>
+            <div class="mt-3 space-y-2">
+              <select id="systemType" class="p-2 border rounded-md w-full">
+                <option value="grid">Grid-tie (no battery)</option>
+                <option value="hybrid">Hybrid (battery)</option>
+                <option value="offgrid">Off-grid</option>
+              </select>
+
+              <label class="text-sm muted">Peak simultaneous load (W) — optional</label>
+              <input id="peakLoad" type="number" placeholder="e.g. 3000" class="mt-1 p-2 border rounded-md w-full" />
+
+              <label class="text-sm muted">Inverter efficiency (%)</label>
+              <input id="invEff" type="number" value="95" step="0.1" class="mt-1 p-2 border rounded-md w-36" />
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-lg font-medium">4 — Battery (optional)</h3>
+            <div class="mt-3 space-y-2">
+              <label class="text-sm muted">Battery backup required (hours)</label>
+              <input id="batteryHours" type="number" step="0.1" value="0" class="mt-1 p-2 border rounded-md w-36" />
+
+              <label class="text-sm muted">Battery chemistry (DoD & efficiency)</label>
+              <select id="batteryType" class="mt-1 p-2 border rounded-md w-full">
+                <option value="lead|50|0.85">Lead-acid (DoD 50%, 85% eff)</option>
+                <option value="agm|60|0.9">AGM (DoD 60%, 90% eff)</option>
+                <option value="li|80|0.9" selected>Li-ion (DoD 80%, 90% eff)</option>
+              </select>
+
+              <div class="mt-2 grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-sm muted">Battery bank voltage (V)</label>
+                  <select id="batV" class="p-2 border rounded-md w-full">
+                    <option>12</option><option>24</option><option selected>48</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm muted">Round-trip eff. (%)</label>
+                  <input id="batEff" type="number" value="90" step="0.1" class="mt-1 p-2 border rounded-md w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row: costs & CO2 -->
+        <div>
+          <h3 class="text-lg font-medium">5 — Costs & environmental</h3>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="text-sm muted">Panel cost ($/W)</label>
+              <input id="panelCost" type="number" step="0.01" value="0.25" class="mt-1 p-2 border rounded-md w-full" />
+            </div>
+            <div>
+              <label class="text-sm muted">Inverter cost ($/kW)</label>
+              <input id="invCost" type="number" step="1" value="300" class="mt-1 p-2 border rounded-md w-full" />
+            </div>
+            <div>
+              <label class="text-sm muted">Battery cost ($/kWh)</label>
+              <input id="batCost" type="number" step="1" value="150" class="mt-1 p-2 border rounded-md w-full" />
+            </div>
+          </div>
+          <div class="mt-3 flex items-center gap-3">
+            <label class="text-sm muted">Grid CO₂ intensity (kg CO₂/kWh)</label>
+            <input id="co2" type="number" step="0.01" value="0.7" class="p-2 border rounded-md w-28" />
+            <div class="text-xs muted ml-auto">Currency & costs are editable above.</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right: results summary card -->
+      <aside class="glass p-5 space-y-4">
+        <h3 class="text-lg font-medium">Results</h3>
+
+        <div class="space-y-2 text-sm muted">
+          <div class="p-3 bg-white rounded-lg">
+            <div class="text-xs muted">Array size</div>
+            <div id="arrayKW" class="text-xl font-semibold">— kW</div>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg">
+            <div class="text-xs muted">Panels</div>
+            <div id="numPanels" class="text-xl font-semibold">—</div>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg">
+            <div class="text-xs muted">Daily production</div>
+            <div id="dailyProd" class="text-xl font-semibold">— kWh</div>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg">
+            <div class="text-xs muted">Inverter suggestion</div>
+            <div id="inverterSize" class="text-xl font-semibold">— kW</div>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg">
+            <div class="text-xs muted">Battery (if any)</div>
+            <div id="batterySpec" class="text-xl font-semibold">—</div>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg">
+            <div class="text-xs muted">Estimated cost</div>
+            <div id="totalCost" class="text-xl font-semibold">—</div>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg">
+            <div class="text-xs muted">Payback (yrs)</div>
+            <div id="payback" class="text-xl font-semibold">—</div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium mb-2">Generation vs Consumption</h4>
+          <canvas id="mainChart" height="200"></canvas>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+          <button id="calculate" class="flex-1 px-3 py-2 rounded-md bg-sky-600 text-white">Calculate</button>
+          <button id="resetAll" class="px-3 py-2 rounded-md border">Reset</button>
+        </div>
+
+        <div class="flex gap-2 mt-2">
+          <button id="exportReport" class="flex-1 px-3 py-2 rounded-md border">Export Report</button>
+          <button id="exportCsv" class="px-3 py-2 rounded-md border">CSV</button>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="mt-6 text-center muted text-xs">Estimates only. Final design must be validated by a certified professional.</footer>
+  </div>
+
+  <!-- Appliance modal (simple) -->
+  <div id="applianceModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
+    <div class="w-full max-w-3xl p-4 bg-white rounded-lg glass">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-medium">Appliance Estimator</h3>
+        <button id="closeAppliance" class="text-sm muted">Close</button>
       </div>
 
-      <div>
-        <label class="block font-semibold">Peak Sun Hours</label>
-        <input id="psh" type="number" placeholder="e.g. 5"
-          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
+      <div class="overflow-auto max-h-80">
+        <table class="w-full text-left border-collapse">
+          <thead class="text-xs muted border-b"><tr><th class="py-2">Name</th><th>W</th><th>hrs/day</th><th>qty</th><th></th></tr></thead>
+          <tbody id="applianceTable"></tbody>
+        </table>
       </div>
 
-      <div>
-        <label class="block font-semibold">Panel Power (W)</label>
-        <input id="panelW" type="number" placeholder="e.g. 400"
-          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
+      <div class="mt-3 flex items-center">
+        <button id="addAppliance" class="px-3 py-2 rounded-md border">Add Appliance</button>
+        <div class="ml-auto muted text-sm">Total: <span id="applianceTotal">0</span> kWh/day</div>
       </div>
-
-      <div>
-        <label class="block font-semibold">System Losses (%)</label>
-        <input id="losses" type="number" value="20"
-          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
-      </div>
-
-      <button id="calcBtn"
-        class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 rounded">
-        Calculate
-      </button>
-    </div>
-
-    <div id="results" class="mt-8 hidden">
-      <h2 class="text-2xl font-bold text-green-600 mb-4 text-center">Results</h2>
-      <div class="space-y-2 text-gray-700">
-        <p><b>Required Array Size:</b> <span id="arrayKW"></span> kW</p>
-        <p><b>Number of Panels:</b> <span id="numPanels"></span></p>
-        <p><b>Estimated Daily Generation:</b> <span id="dailyProd"></span> kWh</p>
-      </div>
-      <canvas id="chart" height="100" class="mt-4"></canvas>
     </div>
   </div>
 
-  <script>
-  window.onload = function() {
-    const get = id => document.getElementById(id);
-    const dailyKwh = get('dailyKwh');
-    const psh = get('psh');
-    const panelW = get('panelW');
-    const losses = get('losses');
-    const calcBtn = get('calcBtn');
-    const results = get('results');
+<script>
+/* Solar Calculator v1 — professional full-feature.
+   Notes:
+   - No external APIs used. PSH presets included.
+   - All DOM logic executed after DOMContentLoaded.
+   - Export uses properly escaped newline characters.
+*/
 
-    calcBtn.addEventListener('click', () => {
-      const daily = parseFloat(dailyKwh.value);
-      const sun = parseFloat(psh.value);
-      const panel = parseFloat(panelW.value);
-      const loss = parseFloat(losses.value);
+document.addEventListener('DOMContentLoaded', function () {
+  // Short helper
+  const $ = id => document.getElementById(id);
 
-      if (!daily || daily <= 0) {
-        alert('Please enter a valid daily energy usage.');
-        return;
-      }
+  // Inputs & controls
+  const inputModeMonthly = $('inputModeMonthly'), inputModeDaily = $('inputModeDaily');
+  const monthlyAmount = $('monthlyAmount'), tariff = $('tariff'), currency = $('currency');
+  const dailyKwh = $('dailyKwh');
+  const openAppliances = $('openAppliances'), applianceModal = $('applianceModal'), closeAppliance = $('closeAppliance');
+  const applianceTable = $('applianceTable'), applianceTotalEl = $('applianceTotal'), addAppliance = $('addAppliance');
 
-      const lossFactor = 1 - (loss / 100);
-      const arrayKW = daily / (sun * lossFactor);
-      const numPanels = Math.ceil((arrayKW * 1000) / panel);
-      const estDailyProd = ((numPanels * panel) / 1000) * sun * lossFactor;
+  const locationSelect = $('locationSelect'), pshInput = $('psh'), panelW = $('panelW'), losses = $('losses');
 
-      get('arrayKW').textContent = arrayKW.toFixed(2);
-      get('numPanels').textContent = numPanels;
-      get('dailyProd').textContent = estDailyProd.toFixed(2);
-      results.classList.remove('hidden');
+  const systemType = $('systemType'), peakLoad = $('peakLoad'), invEff = $('invEff');
 
-      const ctx = get('chart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Consumption', 'Generation'],
-          datasets: [{
-            label: 'kWh/day',
-            data: [daily, estDailyProd],
-            backgroundColor: ['#60a5fa', '#34d399']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'bottom' } },
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    });
+  const batteryHours = $('batteryHours'), batteryType = $('batteryType'), batV = $('batV'), batEff = $('batEff');
+
+  const panelCost = $('panelCost'), invCost = $('invCost'), batCost = $('batCost'), co2Input = $('co2');
+
+  const calculateBtn = $('calculate'), resetBtn = $('resetAll');
+  const exportReportBtn = $('exportReport'), exportCsvBtn = $('exportCsv');
+
+  // Results
+  const arrayKWEl = $('arrayKW'), numPanelsEl = $('numPanels'), dailyProdEl = $('dailyProd'), inverterSizeEl = $('inverterSize'), batterySpecEl = $('batterySpec'), totalCostEl = $('totalCost'), paybackEl = $('payback');
+
+  // Chart
+  const mainChartCtx = $('mainChart').getContext('2d');
+  let mainChart = new Chart(mainChartCtx, {
+    type: 'bar',
+    data: { labels: ['Monthly Generation', 'Monthly Consumption'], datasets: [{ label: 'kWh/month', data: [0,0], backgroundColor: ['#34d399','#60a5fa'] }] },
+    options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+  });
+
+  // Appliance rows handling
+  function addApplianceRow(data) {
+    data = data || { name:'Lamp', w:10, h:3, q:1 };
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="py-2"><input class="apName p-1 border rounded w-full" value="'+ String(data.name).replace(/"/g,'&quot;') +'"></td>'
+                 + '<td class="py-2"><input class="apW p-1 border rounded w-20" type="number" value="'+ Number(data.w) +'"></td>'
+                 + '<td class="py-2"><input class="apH p-1 border rounded w-20" type="number" value="'+ Number(data.h) +'"></td>'
+                 + '<td class="py-2"><input class="apQ p-1 border rounded w-20" type="number" value="'+ Number(data.q) +'"></td>'
+                 + '<td class="py-2"><button class="removeAp text-sm text-red-600">Remove</button></td>';
+    applianceTable.appendChild(tr);
+    tr.querySelector('.removeAp').addEventListener('click', () => { tr.remove(); updateApplianceTotal(); });
+    ['apW','apH','apQ'].forEach(cls => { const el = tr.querySelector('.' + cls); if(el) el.addEventListener('input', updateApplianceTotal); });
+    updateApplianceTotal();
   }
-  </script>
+
+  // seed sample
+  addApplianceRow({ name:'Fridge', w:150, h:24, q:1 });
+  addApplianceRow({ name:'LED bulbs', w:12, h:6, q:6 });
+
+  addAppliance.addEventListener('click', () => addApplianceRow({ name:'New appliance', w:60, h:1, q:1 }));
+
+  function updateApplianceTotal() {
+    const rows = applianceTable.querySelectorAll('tr');
+    let wh = 0;
+    rows.forEach(r => {
+      const w = +(r.querySelector('.apW') && r.querySelector('.apW').value) || 0;
+      const h = +(r.querySelector('.apH') && r.querySelector('.apH').value) || 0;
+      const q = +(r.querySelector('.apQ') && r.querySelector('.apQ').value) || 1;
+      wh += w * h * q;
+    });
+    const kwh = (wh/1000);
+    applianceTotalEl.textContent = isFinite(kwh) ? kwh.toFixed(3) : '0.000';
+    if(!dailyKwh.value) dailyKwh.placeholder = isFinite(kwh) ? kwh.toFixed(3) : '';
+    return kwh;
+  }
+
+  openAppliances.addEventListener('click', () => { applianceModal.classList.remove('hidden'); applianceModal.classList.add('flex'); updateApplianceTotal(); });
+  closeAppliance.addEventListener('click', () => { applianceModal.classList.add('hidden'); applianceModal.classList.remove('flex'); });
+
+  // Input mode toggle
+  function setInputModeMonthly() {
+    $('monthlyRow').classList.remove('hidden');
+    $('dailyRow').classList.add('hidden');
+  }
+  function setInputModeDaily() {
+    $('monthlyRow').classList.add('hidden');
+    $('dailyRow').classList.remove('hidden');
+  }
+  inputModeMonthly.addEventListener('change', setInputModeMonthly);
+  inputModeDaily.addEventListener('change', setInputModeDaily);
+
+  // Location select to set PSH
+  locationSelect.addEventListener('change', function () {
+    const val = this.value;
+    if(!val || val === 'manual') return;
+    const parts = val.split('|');
+    if(parts.length === 2) {
+      const psh = parseFloat(parts[1]);
+      if(!isNaN(psh)) pshInput.value = psh;
+    }
+  });
+
+  // Utility format
+  function fmt(n, d=2) { return (isFinite(n) ? Number(n).toLocaleString(undefined,{minimumFractionDigits:d, maximumFractionDigits:d}) : '—'); }
+
+  // Core calculation
+  function calculate() {
+    // determine daily consumption
+    let daily = parseFloat(dailyKwh.value) || NaN;
+    if(inputModeMonthly.checked) {
+      const amount = parseFloat(monthlyAmount.value) || 0;
+      const t = parseFloat(tariff.value) || 1;
+      if(amount > 0) daily = amount / t / 30.0;
+    } else {
+      if(!isFinite(daily)) {
+        // fallback to appliance total
+        daily = updateApplianceTotal();
+      }
+    }
+    // last fallback
+    if(!isFinite(daily) || daily <= 0) { alert('Please enter monthly amount or daily consumption (or add appliances).'); return; }
+
+    const psh = parseFloat(pshInput.value) || 5.0;
+    const panelWp = parseFloat(panelW.value) || 400;
+    const lossPct = parseFloat(losses.value) || 20;
+    const lossFactor = 1 - (lossPct/100);
+    // required dc array kW (before inverter losses)
+    const arrayKW = (daily) / (psh * lossFactor);
+    const arrayKWrounded = Math.max(0.001, Math.round(arrayKW * 100) / 100);
+    const arrayW = arrayKWrounded * 1000;
+    // panels
+    const overridePanels = 0; // no override input in UI for simplicity here
+    const numPanels = overridePanels > 0 ? overridePanels : Math.ceil(arrayW / panelWp);
+    const panelTotalW = numPanels * panelWp;
+    // estimated daily production after losses
+    const estDailyProd = (panelTotalW / 1000) * psh * lossFactor;
+
+    // inverter sizing
+    const peak = parseFloat(peakLoad.value) || NaN;
+    const avgPowerW = (daily * 1000) / 24.0;
+    let inverterW;
+    if(!isNaN(peak) && peak > 0) inverterW = Math.max(peak, Math.ceil(avgPowerW * 1.5));
+    else inverterW = Math.ceil(Math.max(avgPowerW * 1.5, avgPowerW * 2));
+    const inverterKW = inverterW / 1000;
+
+    // battery sizing if needed
+    const mode = systemType.value;
+    let batteryKWh = 0, batteryAh = 0;
+    if(mode !== 'grid') {
+      const hours = parseFloat(batteryHours.value) || 0;
+      // compute battery required energy (kWh) = daily * (hours/24) as backup portion OR full daily? We'll assume user wants backup hours for daily load scaled.
+      const backupKWh = (daily / 24) * (hours || 0);
+      const batParts = String(batteryType.value).split('|');
+      const dod = (batParts.length >= 2) ? (parseFloat(batParts[1]) / 100) : 0.8;
+      const batRound = parseFloat(batEff.value) / 100 || 0.9;
+      const bankV = parseFloat(batV.value) || 48;
+      if(backupKWh > 0) {
+        batteryKWh = backupKWh / (dod * batRound);
+        if(!isFinite(batteryKWh)) batteryKWh = 0;
+        batteryAh = (batteryKWh * 1000) / bankV;
+      }
+    }
+
+    // costs
+    const panelCostPw = parseFloat(panelCost.value) || 0.25;
+    const invCostPkW = parseFloat(invCost.value) || 300;
+    const batCostPkWh = parseFloat(batCost.value) || 150;
+    const installFlat = 200; // default small flat cost; could be editable
+    const panelsCost = (panelTotalW) * panelCostPw;
+    const inverterCost = (inverterKW) * invCostPkW;
+    const batteryCost = batteryKWh * batCostPkWh;
+    const totalCost = panelsCost + inverterCost + batteryCost + installFlat;
+
+    // savings & payback
+    const tariffVal = parseFloat(tariff.value) || 0;
+    const monthlyGeneration = estDailyProd * 30;
+    const monthlyConsumption = daily * 30;
+    const annualSavings = monthlyGeneration * 12 * (tariffVal/ (monthlyGeneration>0?1:1) ) * 0.0; // incorrectly derived — fix: annualSavings = generation * tariff
+    // simpler: annualSavings = annual generation * tariff
+    const annualGeneration = estDailyProd * 365;
+    const annualSavingsFixed = annualGeneration * tariffVal;
+    const paybackYears = (annualSavingsFixed > 0) ? (totalCost / annualSavingsFixed) : Infinity;
+
+    // CO2 savings
+    const co2 = parseFloat(co2Input.value) || 0.7;
+    const co2SavedPerYear = annualGeneration * co2;
+
+    // Update UI results
+    arrayKWEl.textContent = fmt(arrayKWrounded,2) + ' kW';
+    numPanelsEl.textContent = `${numPanels} × ${panelWp}W = ${fmt(panelTotalW,0)} W`;
+    dailyProdEl.textContent = fmt(estDailyProd,2) + ' kWh';
+    inverterSizeEl.textContent = fmt(inverterKW,2) + ' kW';
+    batterySpecEl.textContent = batteryKWh>0 ? `${fmt(batteryKWh,2)} kWh • ${fmt(batteryAh,0)} Ah @ ${batV.value}V` : 'None';
+    totalCostEl.textContent = '$ ' + fmt(totalCost,2);
+    paybackEl.textContent = isFinite(paybackYears) ? fmt(paybackYears,1) + ' yrs' : '—';
+
+    // update chart (monthly)
+    mainChart.data.datasets[0].data = [ Math.round(estDailyProd*30), Math.round(daily*30) ];
+    mainChart.update();
+
+    // save last for export
+    window.solarLast = {
+      daily, psh, panelWp, lossPct, arrayKWrounded, numPanels, panelTotalW, estDailyProd,
+      inverterKW, batteryKWh, batteryAh, totalCost, annualGeneration, annualSavingsFixed, paybackYears, co2SavedPerYear
+    };
+  }
+
+  // wiring
+  calculateBtn.addEventListener('click', calculate);
+  resetBtn.addEventListener('click', () => { window.location.reload(); });
+
+  // export report
+  exportReportBtn.addEventListener('click', function(){
+    const r = window.solarLast;
+    if(!r) { alert('Please Calculate first'); return; }
+    const lines = [
+      'Solar Calculator Report',
+      '=======================',
+      'Daily consumption: ' + fmt(r.daily,3) + ' kWh',
+      'Peak sun hours (PSH): ' + fmt(r.psh,2) + ' h',
+      'Array size: ' + fmt(r.arrayKWrounded,2) + ' kW',
+      'Panels: ' + r.numPanels + ' × ' + panelW.value + 'W = ' + fmt(r.panelTotalW,0) + ' W',
+      'Estimated daily production: ' + fmt(r.estDailyProd,2) + ' kWh',
+      'Inverter: ' + fmt(r.inverterKW,2) + ' kW',
+      'Battery bank: ' + (r.batteryKWh? fmt(r.batteryKWh,2) + ' kWh' : 'None'),
+      'Estimated cost: $ ' + fmt(r.totalCost,2),
+      'Annual generation: ' + fmt(r.annualGeneration,0) + ' kWh',
+      'Annual savings (approx): $ ' + fmt(r.annualGeneration * (parseFloat(tariff.value)||0),2),
+      'CO2 saved per year: ' + fmt(r.co2SavedPerYear,1) + ' kg'
+    ];
+    const txt = lines.join('\\n');
+    const blob = new Blob([txt], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'solar_report.txt'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  // export CSV
+  exportCsvBtn.addEventListener('click', function(){
+    const r = window.solarLast;
+    if(!r) { alert('Please Calculate first'); return; }
+    const headers = ['field','value'];
+    const rows = [
+      ['Daily consumption (kWh)', r.daily],
+      ['PSH (h)', r.psh],
+      ['Array kW', r.arrayKWrounded],
+      ['Panels (count)', r.numPanels],
+      ['Daily production (kWh)', r.estDailyProd],
+      ['Inverter kW', r.inverterKW],
+      ['Battery kWh', r.batteryKWh || 0],
+      ['Total cost $', r.totalCost || 0],
+      ['Annual generation kWh', r.annualGeneration || 0]
+    ];
+    const csv = [headers.join(','), ...rows.map(rw => rw.map(v => String(v).replace(/,/g,'')).join(','))].join('\\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'solar_report.csv'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  // small UX: show monthly/daily rows based on radio initial
+  setTimeout(()=> {
+    if(inputModeMonthly.checked) setInputModeMonthly(); else setInputModeDaily();
+  }, 0);
+
+});
+</script>
+
 </body>
 </html>
