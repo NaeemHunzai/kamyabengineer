@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solar Calculator — v3 (fixed)</title>
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --brand: #009688; }
+    body{ font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial; margin:0; background: linear-gradient(135deg,#e6fffa 0%,#ffffff 60%); }
+    .card{ backdrop-filter: blur(8px); background: rgba(255,255,255,0.92); border-radius:12px; box-shadow:0 8px 30px rgba(15,23,42,0.06); }
+    .muted{ color:#475569; }
+    .hidden{ display:none; }
+    .step-enter-active{ transform:none; opacity:1; transition:all .28s cubic-bezier(.2,.9,.2,1); }
+    /* ensure canvas scales well */
+    canvas{ width:100% !important; height:auto !important; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+  <div class="w-full max-w-4xl">
+    <header class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-800">Solar Calculator</h1>
+        <p class="text-sm muted">Clean, minimal solar sizing tool — professional and responsive.</p>
+      </div>
+      <div class="hidden sm:flex gap-2">
+        <button id="resetTop" class="px-3 py-2 rounded-lg border text-sm">Start Over</button>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <section class="lg:col-span-2 card p-6">
+        <div class="mb-4">
+          <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div id="progBar" class="h-2 bg-teal-600 rounded-full w-0" style="transition:width .35s"></div>
+          </div>
+          <div class="flex items-center justify-between mt-3 text-sm muted">
+            <div><strong id="stepLabel">1</strong> - Energy</div>
+            <div id="stepHint">Minimal inputs for fast planning</div>
+          </div>
+        </div>
+
+        <div id="stepContainer">
+          <!-- Step 1: Energy -->
+          <div class="step" data-step="1">
+            <h2 class="text-lg font-medium mb-3">Energy</h2>
+            <p class="text-sm muted mb-4">Enter monthly kWh or use the appliance estimator.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input id="monthlyKwh" type="number" placeholder="Monthly consumption (kWh) - e.g. 450" class="p-3 rounded-lg border" />
+              <input id="dailyKwh" type="number" placeholder="Daily consumption (kWh) - optional" class="p-3 rounded-lg border" />
+            </div>
+            <div class="mt-4 flex items-center gap-3">
+              <button id="openAppliance" class="px-4 py-2 rounded-lg bg-white border">Appliance estimator</button>
+              <div class="text-sm muted">Or leave empty to auto-calc from appliances.</div>
+            </div>
+          </div>
+
+          <!-- Step 2: System -->
+          <div class="step hidden" data-step="2">
+            <h2 class="text-lg font-medium mb-3">System</h2>
+            <p class="text-sm muted mb-4">Essential parameters only.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <select id="systemType" class="p-3 rounded-lg border">
+                <option value="grid">Grid-tie</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="offgrid">Off-grid</option>
+              </select>
+              <input id="psh" type="number" step="0.1" placeholder="Peak sun hours (PSH) - default 5" class="p-3 rounded-lg border" value="5" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+              <input id="panelW" type="number" placeholder="Panel W (e.g. 400)" class="p-3 rounded-lg border" value="400" />
+              <input id="losses" type="number" placeholder="Losses % (e.g. 20)" class="p-3 rounded-lg border" value="20" />
+              <input id="invEff" type="number" placeholder="Inverter eff %" class="p-3 rounded-lg border" value="95" />
+            </div>
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input id="peakLoad" type="number" placeholder="Peak load (W) - optional" class="p-3 rounded-lg border" />
+              <input id="panelCountOverride" type="number" placeholder="Panel count override - optional" class="p-3 rounded-lg border" />
+            </div>
+          </div>
+
+          <!-- Step 3: Results -->
+          <div class="step hidden" data-step="3">
+            <h2 class="text-lg font-medium mb-3">Results</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-4 bg-white rounded-lg">
+                <div class="text-sm muted">Array size</div>
+                <div id="arrayKW" class="text-2xl font-semibold mt-2">- kW</div>
+              </div>
+              <div class="p-4 bg-white rounded-lg">
+                <div class="text-sm muted">Panels</div>
+                <div id="numPanels" class="text-2xl font-semibold mt-2">-</div>
+              </div>
+              <div class="p-4 bg-white rounded-lg">
+                <div class="text-sm muted">Daily production</div>
+                <div id="dailyProd" class="text-2xl font-semibold mt-2">- kWh</div>
+              </div>
+              <div class="p-4 bg-white rounded-lg">
+                <div class="text-sm muted">Battery</div>
+                <div id="batterySpec" class="text-2xl font-semibold mt-2">-</div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <canvas id="resultChart" height="160"></canvas>
+            </div>
+
+            <div class="mt-4 flex gap-3">
+              <button id="exportBtn" class="px-4 py-2 rounded-lg border">Export</button>
+              <button id="printBtn" class="px-4 py-2 rounded-lg bg-teal-600 text-white">Print</button>
+              <button id="startOver" class="ml-auto px-4 py-2 rounded-lg border">Start Over</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-between">
+          <button id="backBtn" class="px-4 py-2 rounded-lg border hidden">Back</button>
+          <button id="nextBtn" class="px-6 py-3 rounded-xl bg-teal-600 text-white">Next</button>
+        </div>
+      </section>
+
+      <aside class="card p-6 hidden lg:block">
+        <h3 class="text-sm font-medium mb-3">Quick Inputs</h3>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs muted">Electricity price ($/kWh)</label>
+            <input id="elecPrice" type="number" step="0.01" value="0.18" class="w-full p-2 rounded-lg border" />
+          </div>
+          <div>
+            <label class="text-xs muted">Panel cost ($/W)</label>
+            <input id="panelCostPw" type="number" step="0.01" value="0.25" class="w-full p-2 rounded-lg border" />
+          </div>
+          <div>
+            <label class="text-xs muted">Battery cost ($/kWh)</label>
+            <input id="batCostPkWh" type="number" step="1" value="150" class="w-full p-2 rounded-lg border" />
+          </div>
+          <div>
+            <label class="text-xs muted">Install cost</label>
+            <input id="installCost" type="number" step="1" value="200" class="w-full p-2 rounded-lg border" />
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="mt-6 text-center muted">Estimates only. Validate with a certified designer.</footer>
+  </div>
+
+  <!-- Appliance modal -->
+  <div id="applianceModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
+    <div class="w-full max-w-2xl p-4 bg-white rounded-lg">
+      <div class="flex items-center justify-between mb-3">
+        <h4 class="font-medium">Appliance estimator</h4>
+        <button id="closeAppliance" class="text-sm muted">Close</button>
+      </div>
+      <div class="space-y-3">
+        <table class="w-full text-left">
+          <thead class="text-xs muted border-b"><tr><th>Name</th><th>W</th><th>hrs/day</th><th>qty</th><th></th></tr></thead>
+          <tbody id="applianceBody"></tbody>
+        </table>
+      </div>
+      <div class="mt-3 flex items-center">
+        <button id="addAppliance" class="px-3 py-2 rounded-lg border">Add</button>
+        <div class="ml-auto muted">Total: <span id="applianceTotal">0 kWh/day</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // All logic runs after DOM is ready
+  document.addEventListener('DOMContentLoaded', function () {
+    function $ (id) { return document.getElementById(id); }
+
+    var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+    var current = 0;
+    var prog = $('progBar');
+    var stepLabel = $('stepLabel');
+    var stepHint = $('stepHint');
+
+    function showStep(i) {
+      steps.forEach(function(s, idx){
+        if(idx === i){ s.classList.remove('hidden'); s.classList.add('step-enter-active'); }
+        else { s.classList.add('hidden'); s.classList.remove('step-enter-active'); }
+      });
+      current = i;
+      if(stepLabel) stepLabel.textContent = String(i+1);
+      if(prog) prog.style.width = ((i+1)/steps.length*100) + '%';
+      if($('backBtn')) $('backBtn').classList.toggle('hidden', i===0);
+      if($('nextBtn')) $('nextBtn').textContent = (i===steps.length-1) ? 'Calculate' : 'Next';
+      var hints = ['Enter consumption or use appliance estimator','Set PSH, panel and inverter parameters','Review results & export'];
+      if(stepHint) stepHint.textContent = hints[i] || '';
+    }
+
+    showStep(0);
+
+    if($('nextBtn')) $('nextBtn').addEventListener('click', function(){
+      if(current < steps.length - 1) { showStep(current + 1); }
+      else { doCalculate(); showStep(current + 1); }
+    });
+    if($('backBtn')) $('backBtn').addEventListener('click', function(){ showStep(Math.max(0, current - 1)); });
+
+    function resetAll(){ location.reload(); }
+    if($('resetTop')) $('resetTop').addEventListener('click', resetAll);
+    if($('startOver')) $('startOver').addEventListener('click', resetAll);
+
+    // Appliances
+    function addApplianceRow(data) {
+      data = data || { name: 'Lamp', w: 10, h: 4, q: 1 };
+      var tbody = $('applianceBody'); if(!tbody) return;
+      var tr = document.createElement('tr');
+      // escape single quotes in name
+      var safeName = String(data.name).replace(/'/g, '&#39;');
+      tr.innerHTML = '<td><input class="apName" value="'+ safeName +'"/></td>'
+        + '<td><input class="apW" type="number" value="'+ Number(data.w) +'"/></td>'
+        + '<td><input class="apH" type="number" value="'+ Number(data.h) +'"/></td>'
+        + '<td><input class="apQ" type="number" value="'+ Number(data.q) +'"/></td>'
+        + '<td><button class="remove text-sm">Remove</button></td>';
+      tbody.appendChild(tr);
+      var rem = tr.querySelector('.remove'); if(rem) rem.addEventListener('click', function(){ tr.remove(); updateApplianceTotal(); });
+      ['apW','apH','apQ'].forEach(function(cls){ var el = tr.querySelector('.'+cls); if(el) el.addEventListener('input', updateApplianceTotal); });
+      updateApplianceTotal();
+    }
+
+    // initial sample
+    addApplianceRow({ name: 'Fridge', w: 150, h: 24, q: 1 });
+    addApplianceRow({ name: 'LED bulbs', w: 12, h: 6, q: 6 });
+
+    if($('addAppliance')) $('addAppliance').addEventListener('click', function(){ addApplianceRow({ name: 'Appliance', w: 60, h: 1, q: 1 }); });
+    if($('openAppliance')) $('openAppliance').addEventListener('click', function(){ var m = $('applianceModal'); if(m){ m.classList.remove('hidden'); m.classList.add('flex'); } });
+    if($('closeAppliance')) $('closeAppliance').addEventListener('click', function(){ var m = $('applianceModal'); if(m){ m.classList.add('hidden'); m.classList.remove('flex'); } });
+
+    function updateApplianceTotal() {
+      var rows = document.querySelectorAll('#applianceBody tr');
+      var wh = 0;
+      Array.prototype.forEach.call(rows, function(r){
+        var w = +(r.querySelector('.apW') && r.querySelector('.apW').value) || 0;
+        var h = +(r.querySelector('.apH') && r.querySelector('.apH').value) || 0;
+        var q = +(r.querySelector('.apQ') && r.querySelector('.apQ').value) || 1;
+        wh += w * h * q;
+      });
+      var kwh = wh / 1000;
+      if($('applianceTotal')) $('applianceTotal').textContent = isFinite(kwh) ? kwh.toFixed(3) + ' kWh/day' : '0 kWh/day';
+      if($('dailyKwh') && !$('dailyKwh').value) $('dailyKwh').placeholder = isFinite(kwh) ? kwh.toFixed(3) : '';
+      return kwh;
+    }
+
+    // Chart setup
+    var resultChart = null;
+    var ctx = $('resultChart') ? $('resultChart').getContext('2d') : null;
+    if(ctx){
+      resultChart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: ['Monthly'], datasets: [ { label: 'Generation', data: [0], backgroundColor: '#34d399' }, { label: 'Consumption', data: [0], backgroundColor: '#60a5fa' } ] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    // Calculation
+    function doCalculate() {
+      var monthly = +($('monthlyKwh') && $('monthlyKwh').value) || NaN;
+      var dailyFromAppliances = updateApplianceTotal();
+      var daily = +($('dailyKwh') && $('dailyKwh').value);
+      if(!daily){ if(isFinite(monthly)) daily = monthly / 30; else daily = dailyFromAppliances; }
+      if(!isFinite(daily) || daily <= 0){ alert('Enter monthly or daily consumption or add appliances'); showStep(0); return; }
+
+      var psh = +($('psh') && $('psh').value) || 5;
+      var panelW = +($('panelW') && $('panelW').value) || 400;
+      var losses = +($('losses') && $('losses').value) || 20;
+      var lossFactor = 1 - (losses / 100);
+
+      var arrayKW = daily / (psh * lossFactor);
+      var arrayKWr = Math.max(0.001, Math.round(arrayKW * 100) / 100);
+      var arrayW = arrayKWr * 1000;
+      var panelCountOverride = +($('panelCountOverride') && $('panelCountOverride').value) || 0;
+      var numPanels = panelCountOverride > 0 ? panelCountOverride : Math.ceil(arrayW / panelW);
+      var panelTotalW = numPanels * panelW;
+      var estDailyProd = (panelTotalW / 1000) * psh * lossFactor;
+
+      var peakLoad = +($('peakLoad') && $('peakLoad').value) || NaN;
+      var avgPowerW = (daily * 1000) / 24;
+      var inverterW = peakLoad > 0 ? Math.max(peakLoad, Math.ceil(avgPowerW * 1.5)) : Math.ceil(Math.max(avgPowerW * 1.5, avgPowerW * 2));
+
+      var systemMode = ($('systemType') && $('systemType').value) || 'grid';
+      var batteryBankKWh = 0, batteryAh = 0;
+      if(systemMode !== 'grid'){
+        var autonomy = 1; var dod = 0.8; var batEff = 0.9; var batV = 48;
+        var usable = daily * autonomy;
+        batteryBankKWh = usable / (dod * batEff);
+        if(!isFinite(batteryBankKWh)) batteryBankKWh = 0;
+        batteryAh = batteryBankKWh * 1000 / batV;
+      }
+
+      var panelCostPw = +($('panelCostPw') && $('panelCostPw').value) || 0.25;
+      var invCostPkW = +($('invCostPkW') && $('invCostPkW').value) || 300;
+      var batCostPkWh = +($('batCostPkWh') && $('batCostPkWh').value) || 150;
+      var installCost = +($('installCost') && $('installCost').value) || 0;
+      var elecPrice = +($('elecPrice') && $('elecPrice').value) || 0.18;
+
+      var panelsCost = panelTotalW * panelCostPw;
+      var inverterCost = (inverterW / 1000) * invCostPkW;
+      var batteryCost = batteryBankKWh * batCostPkWh;
+      var totalCost = panelsCost + inverterCost + batteryCost + installCost;
+      var annualProd = estDailyProd * 365;
+      var annualSavings = annualProd * elecPrice;
+      var payback = annualSavings > 0 ? totalCost / annualSavings : Infinity;
+
+      if($('arrayKW')) $('arrayKW').textContent = arrayKWr.toFixed(2) + ' kW';
+      if($('numPanels')) $('numPanels').textContent = numPanels + ' x ' + panelW + 'W = ' + panelTotalW + ' W';
+      if($('dailyProd')) $('dailyProd').textContent = estDailyProd.toFixed(2) + ' kWh';
+      if($('batterySpec')) $('batterySpec').textContent = (batteryBankKWh > 0) ? batteryBankKWh.toFixed(2) + ' kWh' : 'None';
+
+      if(resultChart){
+        resultChart.data.datasets[0].data = [Math.round(estDailyProd * 30)];
+        resultChart.data.datasets[1].data = [Math.round(daily * 30)];
+        resultChart.update();
+      }
+
+      window.lastCalc = { daily: daily, arrayKW: arrayKWr, numPanels: numPanels, panelTotalW: panelTotalW, estDailyProd: estDailyProd, inverterW: inverterW, batteryBankKWh: batteryBankKWh, batteryAh: batteryAh, totalCost: totalCost, annualProd: annualProd, annualSavings: annualSavings, payback: payback };
+    }
+
+    if($('exportBtn')) $('exportBtn').addEventListener('click', function(){
+      if(!window.lastCalc){ alert('Calculate first'); return; }
+      var r = window.lastCalc;
+      var txtArr = [
+        'Solar Calculator Report',
+        '-------------------',
+        'Daily: ' + (r.daily || 0) + ' kWh',
+        'Array: ' + (r.arrayKW || 0) + ' kW',
+        'Panels: ' + (r.numPanels || 0),
+        'Daily prod: ' + (r.estDailyProd ? r.estDailyProd.toFixed(2) : 0) + ' kWh',
+        'Total est cost: $' + ((r.totalCost || 0).toFixed(2))
+      ];
+      var blob = new Blob([txtArr.join('
+')], { type: 'text/plain' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a'); a.href = url; a.download = 'solar_report.txt'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    if($('printBtn')) $('printBtn').addEventListener('click', function(){ window.print(); });
+  });
+  </script>
+</body>
+</html>
