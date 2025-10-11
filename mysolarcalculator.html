@@ -1,144 +1,111 @@
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  function $(id){ return document.getElementById(id); }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solar Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-start min-h-screen p-6">
 
-  var steps = Array.from(document.querySelectorAll('.step'));
-  var current = 0;
-  var prog = $('progBar');
-  var stepLabel = $('stepLabel');
-  var stepHint = $('stepHint');
+  <div class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl">
+    <h1 class="text-3xl font-bold text-center text-sky-600 mb-6">
+      ☀️ Solar Power Calculator
+    </h1>
 
-  function showStep(i){
-    steps.forEach((s, idx)=>{
-      s.classList.toggle('hidden', idx !== i);
-      s.classList.toggle('step-enter-active', idx === i);
+    <div class="space-y-4">
+      <div>
+        <label class="block font-semibold">Daily Energy Use (kWh)</label>
+        <input id="dailyKwh" type="number" placeholder="e.g. 15"
+          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
+      </div>
+
+      <div>
+        <label class="block font-semibold">Peak Sun Hours</label>
+        <input id="psh" type="number" placeholder="e.g. 5"
+          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
+      </div>
+
+      <div>
+        <label class="block font-semibold">Panel Power (W)</label>
+        <input id="panelW" type="number" placeholder="e.g. 400"
+          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
+      </div>
+
+      <div>
+        <label class="block font-semibold">System Losses (%)</label>
+        <input id="losses" type="number" value="20"
+          class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500">
+      </div>
+
+      <button id="calcBtn"
+        class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 rounded">
+        Calculate
+      </button>
+    </div>
+
+    <div id="results" class="mt-8 hidden">
+      <h2 class="text-2xl font-bold text-green-600 mb-4 text-center">Results</h2>
+      <div class="space-y-2 text-gray-700">
+        <p><b>Required Array Size:</b> <span id="arrayKW"></span> kW</p>
+        <p><b>Number of Panels:</b> <span id="numPanels"></span></p>
+        <p><b>Estimated Daily Generation:</b> <span id="dailyProd"></span> kWh</p>
+      </div>
+      <canvas id="chart" height="100" class="mt-4"></canvas>
+    </div>
+  </div>
+
+  <script>
+  window.onload = function() {
+    const get = id => document.getElementById(id);
+    const dailyKwh = get('dailyKwh');
+    const psh = get('psh');
+    const panelW = get('panelW');
+    const losses = get('losses');
+    const calcBtn = get('calcBtn');
+    const results = get('results');
+
+    calcBtn.addEventListener('click', () => {
+      const daily = parseFloat(dailyKwh.value);
+      const sun = parseFloat(psh.value);
+      const panel = parseFloat(panelW.value);
+      const loss = parseFloat(losses.value);
+
+      if (!daily || daily <= 0) {
+        alert('Please enter a valid daily energy usage.');
+        return;
+      }
+
+      const lossFactor = 1 - (loss / 100);
+      const arrayKW = daily / (sun * lossFactor);
+      const numPanels = Math.ceil((arrayKW * 1000) / panel);
+      const estDailyProd = ((numPanels * panel) / 1000) * sun * lossFactor;
+
+      get('arrayKW').textContent = arrayKW.toFixed(2);
+      get('numPanels').textContent = numPanels;
+      get('dailyProd').textContent = estDailyProd.toFixed(2);
+      results.classList.remove('hidden');
+
+      const ctx = get('chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Consumption', 'Generation'],
+          datasets: [{
+            label: 'kWh/day',
+            data: [daily, estDailyProd],
+            backgroundColor: ['#60a5fa', '#34d399']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
     });
-    current = i;
-    if(stepLabel) stepLabel.textContent = String(i + 1);
-    if(prog) prog.style.width = ((i + 1) / steps.length * 100) + '%';
-    $('backBtn').classList.toggle('hidden', i === 0);
-    $('nextBtn').textContent = (i === steps.length - 1) ? 'Calculate' : 'Next';
-    const hints = [
-      'Enter consumption or use appliance estimator',
-      'Set PSH, panel and inverter parameters',
-      'Review results & export'
-    ];
-    if(stepHint) stepHint.textContent = hints[i] || '';
   }
-
-  showStep(0);
-
-  $('nextBtn').addEventListener('click', function(){
-    if(current < steps.length - 1) showStep(current + 1);
-    else { doCalculate(); showStep(current + 1); }
-  });
-  $('backBtn').addEventListener('click', ()=> showStep(Math.max(0, current - 1)));
-  $('resetTop').addEventListener('click', ()=> location.reload());
-  $('startOver').addEventListener('click', ()=> location.reload());
-
-  // Appliance table
-  function addApplianceRow(data){
-    data = data || { name:'Lamp', w:10, h:4, q:1 };
-    const tbody = $('applianceBody');
-    const tr = document.createElement('tr');
-    const safeName = String(data.name).replace(/'/g, '&#39;');
-    tr.innerHTML = `
-      <td><input class="apName" value="${safeName}"/></td>
-      <td><input class="apW" type="number" value="${data.w}"/></td>
-      <td><input class="apH" type="number" value="${data.h}"/></td>
-      <td><input class="apQ" type="number" value="${data.q}"/></td>
-      <td><button class="remove text-sm">Remove</button></td>`;
-    tbody.appendChild(tr);
-    tr.querySelector('.remove').addEventListener('click', ()=>{ tr.remove(); updateApplianceTotal(); });
-    ['apW','apH','apQ'].forEach(cls=>{
-      tr.querySelector('.'+cls).addEventListener('input', updateApplianceTotal);
-    });
-    updateApplianceTotal();
-  }
-
-  addApplianceRow({ name:'Fridge', w:150, h:24, q:1 });
-  addApplianceRow({ name:'LED bulbs', w:12, h:6, q:6 });
-
-  $('addAppliance').addEventListener('click', ()=> addApplianceRow({ name:'Appliance', w:60, h:1, q:1 }));
-  $('openAppliance').addEventListener('click', ()=> $('applianceModal').classList.replace('hidden','flex'));
-  $('closeAppliance').addEventListener('click', ()=> $('applianceModal').classList.replace('flex','hidden'));
-
-  function updateApplianceTotal(){
-    let wh = 0;
-    document.querySelectorAll('#applianceBody tr').forEach(r=>{
-      const w = +r.querySelector('.apW').value || 0;
-      const h = +r.querySelector('.apH').value || 0;
-      const q = +r.querySelector('.apQ').value || 1;
-      wh += w*h*q;
-    });
-    const kwh = wh/1000;
-    $('applianceTotal').textContent = `${kwh.toFixed(3)} kWh/day`;
-    if(!$('dailyKwh').value) $('dailyKwh').placeholder = kwh.toFixed(3);
-    return kwh;
-  }
-
-  // Chart
-  const ctx = $('resultChart').getContext('2d');
-  const resultChart = new Chart(ctx, {
-    type:'bar',
-    data:{ labels:['Monthly'], datasets:[
-      { label:'Generation', data:[0], backgroundColor:'#34d399' },
-      { label:'Consumption', data:[0], backgroundColor:'#60a5fa' }
-    ]},
-    options:{ responsive:true, plugins:{ legend:{ position:'bottom' } }, scales:{ y:{ beginAtZero:true } } }
-  });
-
-  // Main calculation
-  function doCalculate(){
-    const monthly = +$('monthlyKwh').value || NaN;
-    const dailyAp = updateApplianceTotal();
-    let daily = +$('dailyKwh').value;
-    if(!daily) daily = isFinite(monthly) ? monthly/30 : dailyAp;
-    if(!isFinite(daily) || daily <= 0){ alert('Enter consumption or add appliances'); showStep(0); return; }
-
-    const psh = +$('psh').value || 5;
-    const panelW = +$('panelW').value || 400;
-    const losses = +$('losses').value || 20;
-    const lossFactor = 1 - losses/100;
-    const arrayKW = daily / (psh * lossFactor);
-    const arrayKWr = Math.round(arrayKW * 100) / 100;
-    const arrayW = arrayKWr * 1000;
-    const numPanels = Math.ceil(arrayW / panelW);
-    const panelTotalW = numPanels * panelW;
-    const estDailyProd = (panelTotalW / 1000) * psh * lossFactor;
-
-    $('arrayKW').textContent = `${arrayKWr.toFixed(2)} kW`;
-    $('numPanels').textContent = `${numPanels} × ${panelW}W = ${panelTotalW} W`;
-    $('dailyProd').textContent = `${estDailyProd.toFixed(2)} kWh`;
-    $('batterySpec').textContent = 'N/A';
-
-    resultChart.data.datasets[0].data = [Math.round(estDailyProd * 30)];
-    resultChart.data.datasets[1].data = [Math.round(daily * 30)];
-    resultChart.update();
-
-    window.lastCalc = { daily, arrayKW:arrayKWr, numPanels, panelTotalW, estDailyProd };
-  }
-
-  $('exportBtn').addEventListener('click', function(){
-    if(!window.lastCalc){ alert('Calculate first'); return; }
-    const r = window.lastCalc;
-    const txt = [
-      'Solar Calculator Report',
-      '------------------------',
-      `Daily consumption: ${r.daily} kWh`,
-      `Array size: ${r.arrayKW} kW`,
-      `Panels: ${r.numPanels}`,
-      `Estimated daily production: ${r.estDailyProd.toFixed(2)} kWh`
-    ].join('\\n'); // ✅ fixed newline
-    const blob = new Blob([txt], { type:'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'solar_report.txt';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  $('printBtn').addEventListener('click', ()=> window.print());
-});
-</script>
+  </script>
+</body>
+</html>
