@@ -1,111 +1,139 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Solar Calculator — Professional</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Solar Calculator — v4 Global</title>
 
-  <!-- Tailwind CSS CDN (no inline tailwind.config to avoid parser issues) -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    html,body { height: 100%; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
-    body { background: linear-gradient(180deg,#f3f9f9 0%, #ffffff 100%); }
-    .glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(6px); box-shadow: 0 8px 28px rgba(2,6,23,0.06); border-radius: 14px; }
-    .muted { color: #6b7280; } /* gray-500 */
-    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace; font-size: 0.8rem; background:#f1f5f9; padding:2px 6px; border-radius:6px; }
-    /* ensure chart layout */
-    canvas { width:100% !important; height: auto !important; }
+    :root{
+      --accent:#06b6d4; /* teal-400 */
+      --accent-2:#f6c84c; /* warm yellow */
+      --glass: rgba(255,255,255,0.88);
+    }
+    html,body{height:100%}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      margin:0;
+      background: linear-gradient(180deg,#fffdf8 0%, #f0fcff 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* App container */
+    .app {
+      width:100%;
+      max-width:1100px;
+      margin:28px auto;
+      padding:20px;
+    }
+
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      border-radius:14px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+    }
+
+    /* Virtual screens */
+    .screen { display:none; }
+    .screen.active { display:block; animation: screen-in .32s ease both; }
+    @keyframes screen-in { from { opacity:0; transform: translateY(8px) } to { opacity:1; transform:none } }
+
+    /* small niceties */
+    .muted{ color:#475569; }
+    .badge { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; padding:6px 10px; border-radius:999px; font-weight:600; box-shadow:0 6px 18px rgba(6,182,212,0.12) }
+    .card-title { font-weight:600; color:#0f172a; }
+    canvas { width:100% !important; height:auto !important; }
+
+    /* responsive */
+    @media (min-width:1024px) {
+      .cols-3 { display:grid; grid-template-columns: 1fr 420px; gap:20px; align-items:start; }
+    }
   </style>
 </head>
-<body class="min-h-screen flex items-start justify-center p-6">
+<body>
+  <div class="app">
 
-  <div class="w-full max-w-6xl space-y-6">
-
-    <!-- Header -->
-    <header class="flex items-center justify-between">
+    <!-- header -->
+    <header class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-semibold text-slate-800">Solar Calculator</h1>
-        <p class="text-sm muted mt-1">Professional solar system estimator — residential & commercial</p>
+        <div class="flex items-center gap-3">
+          <div class="badge">Solar v4</div>
+          <h1 class="text-2xl font-semibold">Global Solar Designer</h1>
+        </div>
+        <p class="text-sm muted mt-1">Clean, app-like flow — choose a city, enter usage, get system design & visuals. Currency: USD ($)</p>
       </div>
-      <div class="flex gap-2 items-center">
-        <button id="exportTxtTop" class="px-3 py-2 rounded-md border text-sm">Export</button>
-        <button id="printTop" class="px-3 py-2 rounded-md bg-sky-600 text-white text-sm">Print</button>
+
+      <div class="flex items-center gap-3">
+        <button id="startOver" class="px-3 py-2 rounded-md border">Start Over</button>
+        <button id="helpBtn" class="px-3 py-2 rounded-md bg-white">Help</button>
       </div>
     </header>
 
-    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Virtual screens container -->
+    <main class="glass p-6">
 
-      <!-- Left: Inputs (big card) -->
-      <section class="lg:col-span-2 glass p-6 space-y-5">
+      <!-- top progress -->
+      <div class="flex items-center gap-4 mb-6">
+        <div id="step1pill" class="px-3 py-1 rounded-full bg-white shadow text-sm">1 • Inputs</div>
+        <div id="step2pill" class="px-3 py-1 rounded-full bg-white/60 text-sm muted">2 • Results</div>
+        <div id="step3pill" class="px-3 py-1 rounded-full bg-white/60 text-sm muted">3 • Visuals</div>
+        <div class="ml-auto text-xs muted">Currency: USD ($)</div>
+      </div>
 
-        <!-- Row: usage -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h3 class="text-lg font-medium">1 — Usage</h3>
-            <p class="text-sm muted">Enter monthly bill or daily consumption.</p>
+      <!-- SCREEN 1: INPUTS -->
+      <section id="screen-1" class="screen active">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <div class="mt-3 space-y-3">
-              <div class="flex gap-2">
-                <label class="flex items-center gap-2 text-sm">
-                  <input id="inputModeMonthly" name="inputMode" type="radio" checked> Monthly bill
-                </label>
-                <label class="flex items-center gap-2 text-sm">
-                  <input id="inputModeDaily" name="inputMode" type="radio"> Daily kWh
-                </label>
+          <!-- Input card -->
+          <div class="p-5 bg-white rounded-lg shadow">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <div class="card-title">Your Site & Consumption</div>
+                <div class="text-xs muted">Quickly enter what you pay or how much energy you use.</div>
               </div>
-
-              <div id="monthlyRow">
-                <label class="text-sm muted">Monthly electricity bill (amount)</label>
-                <div class="flex gap-2 mt-1">
-                  <input id="monthlyAmount" type="number" min="0" step="0.01" placeholder="10000" class="flex-1 p-2 border rounded-md" />
-                  <input id="currency" type="text" value="PKR" class="w-24 p-2 border rounded-md text-sm" />
-                </div>
-                <div class="mt-2 text-xs muted">Tariff (per kWh): <input id="tariff" type="number" value="35" step="0.01" class="w-24 inline-block p-1 border rounded text-sm" /> PKR</div>
-              </div>
-
-              <div id="dailyRow" class="hidden">
-                <label class="text-sm muted">Average daily consumption (kWh)</label>
-                <input id="dailyKwh" type="number" min="0" step="0.01" placeholder="e.g. 15" class="mt-1 p-2 border rounded-md w-full" />
-                <div class="mt-2 text-xs muted">Or use appliance estimator (below)</div>
-              </div>
-
-              <div class="mt-2">
-                <button id="openAppliances" class="px-3 py-2 rounded-md border text-sm">Open Appliance Estimator</button>
-                <span class="text-xs muted ml-2">Build a load list (W × hours × qty)</span>
-              </div>
+              <div class="text-xs muted">App flow • 1/3</div>
             </div>
-          </div>
 
-          <div>
-            <h3 class="text-lg font-medium">2 — Location & Sun</h3>
-            <p class="text-sm muted">Pick a location to auto-set Peak Sun Hours (PSH). You can also override manually.</p>
-
-            <div class="mt-3 space-y-3">
-              <select id="locationSelect" class="p-2 border rounded-md w-full">
-                <option value="manual">— Select city (PSH presets) —</option>
-                <option value="Karachi|5.4">Karachi, PK (5.4)</option>
-                <option value="Lahore|5.0">Lahore, PK (5.0)</option>
-                <option value="Islamabad|4.8">Islamabad, PK (4.8)</option>
-                <option value="IslamicAzores|5.8">Generic Sunny (5.8)</option>
-                <option value="manual">Manual / other</option>
+            <div class="space-y-3 mt-3">
+              <label class="text-xs muted">Choose city (auto PSH)</label>
+              <select id="citySelect" class="w-full p-3 border rounded-md">
+                <!-- populated by JS -->
               </select>
 
-              <div>
-                <label class="text-sm muted">Peak Sun Hours (PSH)</label>
-                <input id="psh" type="number" step="0.1" value="5" class="mt-1 p-2 border rounded-md w-36" />
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs muted">Monthly electricity bill (USD)</label>
+                  <input id="monthlyUSD" type="number" step="0.01" min="0" placeholder="e.g. 120" class="mt-1 p-3 border rounded-md w-full">
+                </div>
+                <div>
+                  <label class="text-xs muted">Or daily consumption (kWh)</label>
+                  <input id="dailyKwhInput" type="number" step="0.01" min="0" placeholder="e.g. 15" class="mt-1 p-3 border rounded-md w-full">
+                </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-2 mt-2">
+              <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="text-sm muted">Panel W (typical)</label>
-                  <select id="panelW" class="p-2 border rounded-md w-full">
+                  <label class="text-xs muted">Electric rate ($/kWh)</label>
+                  <input id="tariffUSD" type="number" step="0.001" value="0.12" class="mt-1 p-3 border rounded-md w-full">
+                </div>
+                <div>
+                  <label class="text-xs muted">Peak Sun Hours (PSH)</label>
+                  <input id="pshInput" type="number" step="0.1" value="5" class="mt-1 p-3 border rounded-md w-full">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+                <div>
+                  <label class="text-xs muted">Panel watt (W)</label>
+                  <select id="panelWp" class="w-full p-3 border rounded-md">
                     <option value="330">330 W</option>
                     <option value="360">360 W</option>
                     <option value="400" selected>400 W</option>
@@ -113,235 +141,321 @@
                   </select>
                 </div>
                 <div>
-                  <label class="text-sm muted">System losses (%)</label>
-                  <input id="losses" type="number" step="0.1" value="20" class="mt-1 p-2 border rounded-md w-full" />
+                  <label class="text-xs muted">System losses (%)</label>
+                  <input id="lossPct" type="number" step="0.1" value="20" class="mt-1 p-3 border rounded-md w-full">
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Row: system & battery -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h3 class="text-lg font-medium">3 — System type & inverter</h3>
-            <div class="mt-3 space-y-2">
-              <select id="systemType" class="p-2 border rounded-md w-full">
-                <option value="grid">Grid-tie (no battery)</option>
-                <option value="hybrid">Hybrid (battery)</option>
-                <option value="offgrid">Off-grid</option>
-              </select>
-
-              <label class="text-sm muted">Peak simultaneous load (W) — optional</label>
-              <input id="peakLoad" type="number" placeholder="e.g. 3000" class="mt-1 p-2 border rounded-md w-full" />
-
-              <label class="text-sm muted">Inverter efficiency (%)</label>
-              <input id="invEff" type="number" value="95" step="0.1" class="mt-1 p-2 border rounded-md w-36" />
-            </div>
-          </div>
-
-          <div>
-            <h3 class="text-lg font-medium">4 — Battery (optional)</h3>
-            <div class="mt-3 space-y-2">
-              <label class="text-sm muted">Battery backup required (hours)</label>
-              <input id="batteryHours" type="number" step="0.1" value="0" class="mt-1 p-2 border rounded-md w-36" />
-
-              <label class="text-sm muted">Battery chemistry (DoD & efficiency)</label>
-              <select id="batteryType" class="mt-1 p-2 border rounded-md w-full">
-                <option value="lead|50|0.85">Lead-acid (DoD 50%, 85% eff)</option>
-                <option value="agm|60|0.9">AGM (DoD 60%, 90% eff)</option>
-                <option value="li|80|0.9" selected>Li-ion (DoD 80%, 90% eff)</option>
-              </select>
-
-              <div class="mt-2 grid grid-cols-2 gap-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="text-sm muted">Battery bank voltage (V)</label>
-                  <select id="batV" class="p-2 border rounded-md w-full">
-                    <option>12</option><option>24</option><option selected>48</option>
+                  <label class="text-xs muted">System type</label>
+                  <select id="sysType" class="w-full p-3 border rounded-md">
+                    <option value="grid">Grid-tie</option>
+                    <option value="hybrid">Hybrid (battery)</option>
+                    <option value="offgrid">Off-grid</option>
                   </select>
                 </div>
                 <div>
-                  <label class="text-sm muted">Round-trip eff. (%)</label>
-                  <input id="batEff" type="number" value="90" step="0.1" class="mt-1 p-2 border rounded-md w-full" />
+                  <label class="text-xs muted">Battery backup (hrs)</label>
+                  <input id="batteryHoursInput" type="number" step="0.1" value="0" class="mt-1 p-3 border rounded-md w-full">
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Row: costs & CO2 -->
-        <div>
-          <h3 class="text-lg font-medium">5 — Costs & environmental</h3>
-          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-              <label class="text-sm muted">Panel cost ($/W)</label>
-              <input id="panelCost" type="number" step="0.01" value="0.25" class="mt-1 p-2 border rounded-md w-full" />
-            </div>
-            <div>
-              <label class="text-sm muted">Inverter cost ($/kW)</label>
-              <input id="invCost" type="number" step="1" value="300" class="mt-1 p-2 border rounded-md w-full" />
-            </div>
-            <div>
-              <label class="text-sm muted">Battery cost ($/kWh)</label>
-              <input id="batCost" type="number" step="1" value="150" class="mt-1 p-2 border rounded-md w-full" />
-            </div>
-          </div>
-          <div class="mt-3 flex items-center gap-3">
-            <label class="text-sm muted">Grid CO₂ intensity (kg CO₂/kWh)</label>
-            <input id="co2" type="number" step="0.01" value="0.7" class="p-2 border rounded-md w-28" />
-            <div class="text-xs muted ml-auto">Currency & costs are editable above.</div>
-          </div>
-        </div>
+              <div class="flex items-center gap-3 mt-3">
+                <button id="goResults" class="px-4 py-3 bg-gradient-to-r from-teal-400 to-yellow-400 rounded-lg font-semibold text-white">Next • Calculate</button>
+                <button id="openAppl" class="px-4 py-3 border rounded-lg">Appliance estimator</button>
+                <button id="clearInputs" class="px-3 py-3 ml-auto border rounded-lg">Clear</button>
+              </div>
 
+              <div class="text-sm muted mt-2">Tip: Select city to auto-fill PSH; you can override PSH manually.</div>
+            </div>
+          </div>
+
+          <!-- Mini result preview card -->
+          <aside class="p-5 bg-white rounded-lg shadow space-y-3">
+            <div class="card-title">Quick Preview</div>
+            <div class="text-sm muted">Live preview updates as you type</div>
+
+            <div class="grid grid-cols-1 gap-3 mt-3">
+              <div class="p-3 border rounded-md">
+                <div class="text-xs muted">Array size</div>
+                <div id="previewArray" class="text-lg font-semibold">— kW</div>
+              </div>
+              <div class="p-3 border rounded-md">
+                <div class="text-xs muted">Panels</div>
+                <div id="previewPanels" class="text-lg font-semibold">—</div>
+              </div>
+              <div class="p-3 border rounded-md">
+                <div class="text-xs muted">Daily gen</div>
+                <div id="previewGen" class="text-lg font-semibold">— kWh</div>
+              </div>
+            </div>
+
+          </aside>
+
+        </div>
       </section>
 
-      <!-- Right: results summary card -->
-      <aside class="glass p-5 space-y-4">
-        <h3 class="text-lg font-medium">Results</h3>
+      <!-- SCREEN 2: RESULTS -->
+      <section id="screen-2" class="screen">
+        <div class="cols-3">
 
-        <div class="space-y-2 text-sm muted">
-          <div class="p-3 bg-white rounded-lg">
-            <div class="text-xs muted">Array size</div>
-            <div id="arrayKW" class="text-xl font-semibold">— kW</div>
+          <div class="p-5 bg-white rounded-lg shadow mb-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="card-title">Design Summary</div>
+                <div class="text-xs muted">Review suggested system and costs</div>
+              </div>
+              <div class="text-xs muted">2/3</div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 gap-3">
+              <div class="p-3 border rounded-lg">
+                <div class="text-xs muted">Array</div>
+                <div id="resArray" class="text-2xl font-semibold">— kW</div>
+              </div>
+
+              <div class="p-3 border rounded-lg">
+                <div class="text-xs muted">Panels</div>
+                <div id="resPanels" class="text-2xl font-semibold">—</div>
+              </div>
+
+              <div class="p-3 border rounded-lg">
+                <div class="text-xs muted">Daily Production</div>
+                <div id="resDaily" class="text-2xl font-semibold">— kWh</div>
+              </div>
+
+              <div class="p-3 border rounded-lg">
+                <div class="text-xs muted">Battery</div>
+                <div id="resBattery" class="text-2xl font-semibold">—</div>
+              </div>
+
+              <div class="p-3 border rounded-lg">
+                <div class="text-xs muted">Inverter</div>
+                <div id="resInverter" class="text-2xl font-semibold">— kW</div>
+              </div>
+
+              <div class="p-3 border rounded-lg">
+                <div class="text-xs muted">Estimated Cost</div>
+                <div id="resCost" class="text-2xl font-semibold">—</div>
+              </div>
+
+              <div class="p-3 border rounded-lg">
+                <div class="text-xs muted">Payback</div>
+                <div id="resPayback" class="text-2xl font-semibold">— yrs</div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex gap-3">
+              <button id="backToInputs" class="px-3 py-2 border rounded-md">Back</button>
+              <button id="goVisuals" class="px-3 py-2 bg-gradient-to-r from-teal-400 to-yellow-400 rounded-md text-white ml-auto">View Visuals</button>
+            </div>
           </div>
 
-          <div class="p-3 bg-white rounded-lg">
-            <div class="text-xs muted">Panels</div>
-            <div id="numPanels" class="text-xl font-semibold">—</div>
-          </div>
+          <!-- Right column summary card -->
+          <aside class="p-5 bg-white rounded-lg shadow">
+            <div class="card-title">Savings & Emissions</div>
+            <div class="mt-3 space-y-3 text-sm muted">
+              <div>
+                <div class="text-xs">Monthly generation</div>
+                <div id="resMonthlyGen" class="font-semibold">— kWh</div>
+              </div>
+              <div>
+                <div class="text-xs">Estimated monthly savings</div>
+                <div id="resMonthlySavings" class="font-semibold">— $</div>
+              </div>
+              <div>
+                <div class="text-xs">Annual CO2 reduction</div>
+                <div id="resCO2" class="font-semibold">— kg</div>
+              </div>
+            </div>
+          </aside>
 
-          <div class="p-3 bg-white rounded-lg">
-            <div class="text-xs muted">Daily production</div>
-            <div id="dailyProd" class="text-xl font-semibold">— kWh</div>
-          </div>
-
-          <div class="p-3 bg-white rounded-lg">
-            <div class="text-xs muted">Inverter suggestion</div>
-            <div id="inverterSize" class="text-xl font-semibold">— kW</div>
-          </div>
-
-          <div class="p-3 bg-white rounded-lg">
-            <div class="text-xs muted">Battery (if any)</div>
-            <div id="batterySpec" class="text-xl font-semibold">—</div>
-          </div>
-
-          <div class="p-3 bg-white rounded-lg">
-            <div class="text-xs muted">Estimated cost</div>
-            <div id="totalCost" class="text-xl font-semibold">—</div>
-          </div>
-
-          <div class="p-3 bg-white rounded-lg">
-            <div class="text-xs muted">Payback (yrs)</div>
-            <div id="payback" class="text-xl font-semibold">—</div>
-          </div>
         </div>
+      </section>
 
-        <div>
-          <h4 class="text-sm font-medium mb-2">Generation vs Consumption</h4>
-          <canvas id="mainChart" height="200"></canvas>
-        </div>
+      <!-- SCREEN 3: VISUALS -->
+      <section id="screen-3" class="screen">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <div class="flex gap-2 mt-3">
-          <button id="calculate" class="flex-1 px-3 py-2 rounded-md bg-sky-600 text-white">Calculate</button>
-          <button id="resetAll" class="px-3 py-2 rounded-md border">Reset</button>
-        </div>
+          <div class="p-5 bg-white rounded-lg shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="card-title">Monthly Energy Balance</div>
+                <div class="text-xs muted">Estimated monthly generation vs consumption</div>
+              </div>
+              <div class="text-xs muted">3/3</div>
+            </div>
 
-        <div class="flex gap-2 mt-2">
-          <button id="exportReport" class="flex-1 px-3 py-2 rounded-md border">Export Report</button>
-          <button id="exportCsv" class="px-3 py-2 rounded-md border">CSV</button>
+            <div class="mt-4">
+              <canvas id="monthlyBar" height="220"></canvas>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white rounded-lg shadow">
+            <div class="card-title">Costs Breakdown</div>
+            <div class="text-sm muted mt-2">Panel / inverter / battery cost split</div>
+
+            <div class="mt-4">
+              <canvas id="costDonut" height="220"></canvas>
+            </div>
+
+            <div class="mt-4 flex gap-3">
+              <button id="exportTxt" class="px-3 py-2 border rounded-md">Export TXT</button>
+              <button id="exportCsv" class="px-3 py-2 border rounded-md">Export CSV</button>
+              <button id="printView" class="ml-auto px-3 py-2 bg-teal-600 text-white rounded-md">Print</button>
+            </div>
+          </div>
+
         </div>
-      </aside>
+      </section>
+
     </main>
-
-    <footer class="mt-6 text-center muted text-xs">Estimates only. Final design must be validated by a certified professional.</footer>
   </div>
 
-  <!-- Appliance modal (simple) -->
+  <!-- Appliance Modal -->
   <div id="applianceModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
     <div class="w-full max-w-3xl p-4 bg-white rounded-lg glass">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-lg font-medium">Appliance Estimator</h3>
-        <button id="closeAppliance" class="text-sm muted">Close</button>
+      <div class="flex items-center justify-between">
+        <h3 class="card-title">Appliance Estimator</h3>
+        <button id="closeApplianceX" class="text-sm muted">Close</button>
       </div>
 
-      <div class="overflow-auto max-h-80">
-        <table class="w-full text-left border-collapse">
-          <thead class="text-xs muted border-b"><tr><th class="py-2">Name</th><th>W</th><th>hrs/day</th><th>qty</th><th></th></tr></thead>
-          <tbody id="applianceTable"></tbody>
+      <div class="mt-3 overflow-auto max-h-72">
+        <table class="w-full text-left">
+          <thead class="text-xs muted border-b"><tr><th>Name</th><th>W</th><th>hrs/day</th><th>qty</th><th></th></tr></thead>
+          <tbody id="applianceBody"></tbody>
         </table>
       </div>
 
       <div class="mt-3 flex items-center">
-        <button id="addAppliance" class="px-3 py-2 rounded-md border">Add Appliance</button>
-        <div class="ml-auto muted text-sm">Total: <span id="applianceTotal">0</span> kWh/day</div>
+        <button id="addApplianceRow" class="px-3 py-2 rounded-md border">Add</button>
+        <div class="ml-auto muted">Total: <span id="applianceTotal">0.000</span> kWh/day</div>
       </div>
     </div>
   </div>
 
 <script>
-/* Solar Calculator v1 — professional full-feature.
-   Notes:
-   - No external APIs used. PSH presets included.
-   - All DOM logic executed after DOMContentLoaded.
-   - Export uses properly escaped newline characters.
+/* Solar Calculator v4 — single-file app
+   - Static cities dataset (PSH) built-in for offline use
+   - Virtual screens: inputs -> results -> visuals
+   - Currency USD
 */
 
 document.addEventListener('DOMContentLoaded', function () {
-  // Short helper
+  // Helpers
   const $ = id => document.getElementById(id);
+  const showScreen = n => {
+    ['screen-1','screen-2','screen-3'].forEach(id => {
+      const el = $(id);
+      if(!el) return;
+      if(id === 'screen-'+n) { el.classList.add('active'); } else { el.classList.remove('active'); }
+    });
+    // pill states
+    $('step1pill').classList.toggle('bg-white', n===1); $('step1pill').classList.toggle('text-sm', false);
+    $('step2pill').classList.toggle('bg-white/60', n!==2); $('step2pill').classList.toggle('bg-white', n===2);
+    $('step3pill').classList.toggle('bg-white/60', n!==3); $('step3pill').classList.toggle('bg-white', n===3);
+  };
 
-  // Inputs & controls
-  const inputModeMonthly = $('inputModeMonthly'), inputModeDaily = $('inputModeDaily');
-  const monthlyAmount = $('monthlyAmount'), tariff = $('tariff'), currency = $('currency');
-  const dailyKwh = $('dailyKwh');
-  const openAppliances = $('openAppliances'), applianceModal = $('applianceModal'), closeAppliance = $('closeAppliance');
-  const applianceTable = $('applianceTable'), applianceTotalEl = $('applianceTotal'), addAppliance = $('addAppliance');
+  // city dataset (sample of major cities with approximate PSH)
+  // Note: PSH approximate average daily peak sun hours for typical sites.
+  const CITIES = [
+    {city:'New York, US', psh:4.5},{city:'Los Angeles, US', psh:5.8},{city:'Chicago, US', psh:4.2},
+    {city:'Houston, US', psh:5.2},{city:'Phoenix, US', psh:6.2},{city:'Philadelphia, US', psh:4.6},
+    {city:'San Antonio, US', psh:5.5},{city:'San Diego, US', psh:6.0},{city:'Dallas, US', psh:5.4},
+    {city:'San Jose, US', psh:5.7},{city:'London, UK', psh:3.5},{city:'Paris, FR', psh:4.0},
+    {city:'Berlin, DE', psh:3.8},{city:'Madrid, ES', psh:5.6},{city:'Rome, IT', psh:5.0},
+    {city:'Lisbon, PT', psh:5.8},{city:'Amsterdam, NL', psh:3.6},{city:'Stockholm, SE', psh:3.1},
+    {city:'Cairo, EG', psh:6.0},{city:'Dubai, AE', psh:6.3},{city:'Istanbul, TR', psh:4.5},
+    {city:'Mumbai, IN', psh:5.2},{city:'Delhi, IN', psh:5.0},{city:'Bengaluru, IN', psh:4.8},
+    {city:'Karachi, PK', psh:5.4},{city:'Lahore, PK', psh:5.0},{city:'Islamabad, PK', psh:4.8},
+    {city:'Jakarta, ID', psh:4.9},{city:'Bangkok, TH', psh:4.7},{city:'Manila, PH', psh:4.9},
+    {city:'Beijing, CN', psh:4.3},{city:'Shanghai, CN', psh:4.5},{city:'Seoul, KR', psh:4.0},
+    {city:'Tokyo, JP', psh:4.6},{city:'Toronto, CA', psh:3.9},{city:'Vancouver, CA', psh:3.3},
+    {city:'Sydney, AU', psh:5.7},{city:'Melbourne, AU', psh:4.9},{city:'Brisbane, AU', psh:5.8},
+    {city:'Auckland, NZ', psh:4.2},{city:'Cape Town, ZA', psh:5.6},{city:'Johannesburg, ZA', psh:5.2},
+    {city:'Sao Paulo, BR', psh:4.8},{city:'Buenos Aires, AR', psh:4.6},{city:'Lima, PE', psh:5.2},
+    {city:'Mexico City, MX', psh:5.1},{city:'Monterrey, MX', psh:5.4},{city:'Bogota, CO', psh:4.2},
+    {city:'Santiago, CL', psh:5.0},{city:'Lagos, NG', psh:5.1},{city:'Nairobi, KE', psh:5.6},
+    {city:'Riyadh, SA', psh:6.0},{city:'Tehran, IR', psh:5.1},{city:'Baghdad, IQ', psh:6.1},
+    {city:'Moscow, RU', psh:2.8},{city:'Kiev, UA', psh:3.2},{city:'Warsaw, PL', psh:3.7},
+    {city:'Budapest, HU', psh:4.0},{city:'Prague, CZ', psh:3.8},{city:'Athens, GR', psh:5.4},
+    {city:'Hong Kong, HK', psh:4.4},{city:'Taipei, TW', psh:4.6},{city:'Zagreb, HR', psh:4.0},
+    {city:'Belgrade, RS', psh:4.1},{city:'Kuala Lumpur, MY', psh:4.5},{city:'Hanoi, VN', psh:4.6},
+    {city:'Rabat, MA', psh:5.5},{city:'Algiers, DZ', psh:5.6},{city:'Tunis, TN', psh:5.1},
+    {city:'Honolulu, US', psh:5.9},{city:'Anchorage, US', psh:3.0},{city:'Montreal, CA', psh:3.5},
+    {city:'Islamabad, PK', psh:4.8},{city:'Krakow, PL', psh:3.5},{city:'Porto, PT', psh:4.9},
+    {city:'Valparaiso, CL', psh:5.0},{city:'Casablanca, MA', psh:5.2},{city:'Accra, GH', psh:5.3},
+    {city:'Kuwait City, KW', psh:6.2},{city:'Doha, QA', psh:6.1},{city:'Muscat, OM', psh:6.0},
+    {city:'Baku, AZ', psh:5.2},{city:'Yerevan, AM', psh:4.8},{city:'Tbilisi, GE', psh:4.6},
+    {city:'Riga, LV', psh:3.2},{city:'Vilnius, LT', psh:3.3},{city:'Tallinn, EE', psh:3.0},
+    {city:'Sofia, BG', psh:4.0},{city:'Belmopan, BZ', psh:5.1},{city:'San Jose, CR', psh:5.0},
+    {city:'Havana, CU', psh:5.4},{city:'Kingston, JM', psh:5.6},{city:'Port-au-Prince, HT', psh:5.3},
+    {city:'San Salvador, SV', psh:5.1},{city:'Guatemala City, GT', psh:5.0},{city:'Quito, EC', psh:4.8},
+    {city:'La Paz, BO', psh:4.6},{city:'Asuncion, PY', psh:5.2},{city:'Montevideo, UY', psh:4.7}
+  ];
 
-  const locationSelect = $('locationSelect'), pshInput = $('psh'), panelW = $('panelW'), losses = $('losses');
+  // Fill city select
+  const citySelect = $('citySelect');
+  CITIES.forEach(obj => {
+    const opt = document.createElement('option');
+    opt.value = obj.psh;
+    opt.textContent = obj.city + ' (PSH ' + obj.psh + ')';
+    citySelect.appendChild(opt);
+  });
+  // add manual option
+  const manualOpt = document.createElement('option'); manualOpt.value = ''; manualOpt.textContent = 'Manual / other (enter PSH)'; citySelect.appendChild(manualOpt);
 
-  const systemType = $('systemType'), peakLoad = $('peakLoad'), invEff = $('invEff');
-
-  const batteryHours = $('batteryHours'), batteryType = $('batteryType'), batV = $('batV'), batEff = $('batEff');
-
-  const panelCost = $('panelCost'), invCost = $('invCost'), batCost = $('batCost'), co2Input = $('co2');
-
-  const calculateBtn = $('calculate'), resetBtn = $('resetAll');
-  const exportReportBtn = $('exportReport'), exportCsvBtn = $('exportCsv');
-
-  // Results
-  const arrayKWEl = $('arrayKW'), numPanelsEl = $('numPanels'), dailyProdEl = $('dailyProd'), inverterSizeEl = $('inverterSize'), batterySpecEl = $('batterySpec'), totalCostEl = $('totalCost'), paybackEl = $('payback');
-
-  // Chart
-  const mainChartCtx = $('mainChart').getContext('2d');
-  let mainChart = new Chart(mainChartCtx, {
-    type: 'bar',
-    data: { labels: ['Monthly Generation', 'Monthly Consumption'], datasets: [{ label: 'kWh/month', data: [0,0], backgroundColor: ['#34d399','#60a5fa'] }] },
-    options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+  // Chart setups
+  const monthlyBarCtx = $('monthlyBar').getContext('2d');
+  const barChart = new Chart(monthlyBarCtx, {
+    type:'bar',
+    data:{ labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], datasets:[
+      { label:'Generation (kWh)', data: new Array(12).fill(0), backgroundColor: 'rgba(52,211,153,0.9)' },
+      { label:'Consumption (kWh)', data: new Array(12).fill(0), backgroundColor: 'rgba(96,165,250,0.9)' }
+    ]},
+    options:{ responsive:true, scales:{ y:{ beginAtZero:true } }, plugins:{ legend:{ position:'bottom' } } }
   });
 
-  // Appliance rows handling
-  function addApplianceRow(data) {
-    data = data || { name:'Lamp', w:10, h:3, q:1 };
+  const donutCtx = $('costDonut').getContext('2d');
+  const donutChart = new Chart(donutCtx, {
+    type:'doughnut',
+    data:{ labels:['Panels','Inverter','Battery','Install'], datasets:[{ data:[1,1,1,1], backgroundColor:['#f6c84c','#06b6d4','#f97316','#94a3b8'] }] },
+    options:{ responsive:true, plugins:{ legend:{ position:'bottom' } } }
+  });
+
+  // Preview elements
+  const previewArray = $('previewArray'), previewPanels = $('previewPanels'), previewGen = $('previewGen');
+
+  // Result elements
+  const resArray = $('resArray'), resPanels = $('resPanels'), resDaily = $('resDaily'), resBattery = $('resBattery'),
+        resInverter = $('resInverter'), resCost = $('resCost'), resPayback = $('resPayback'),
+        resMonthlyGen = $('resMonthlyGen'), resMonthlySavings = $('resMonthlySavings'), resCO2 = $('resCO2');
+
+  // Appliance modal handling
+  const applianceModal = $('applianceModal'), applianceBody = $('applianceBody'), applianceTotal = $('applianceTotal');
+  function addAppliance(data) {
+    data = data || {name:'Lamp', w:10, h:3, q:1};
     const tr = document.createElement('tr');
     tr.innerHTML = '<td class="py-2"><input class="apName p-1 border rounded w-full" value="'+ String(data.name).replace(/"/g,'&quot;') +'"></td>'
-                 + '<td class="py-2"><input class="apW p-1 border rounded w-20" type="number" value="'+ Number(data.w) +'"></td>'
-                 + '<td class="py-2"><input class="apH p-1 border rounded w-20" type="number" value="'+ Number(data.h) +'"></td>'
-                 + '<td class="py-2"><input class="apQ p-1 border rounded w-20" type="number" value="'+ Number(data.q) +'"></td>'
+                 + '<td class="py-2"><input class="apW p-1 border rounded w-20" type="number" value="'+ (Number(data.w)||0) +'"></td>'
+                 + '<td class="py-2"><input class="apH p-1 border rounded w-20" type="number" value="'+ (Number(data.h)||0) +'"></td>'
+                 + '<td class="py-2"><input class="apQ p-1 border rounded w-20" type="number" value="'+ (Number(data.q)||1) +'"></td>'
                  + '<td class="py-2"><button class="removeAp text-sm text-red-600">Remove</button></td>';
-    applianceTable.appendChild(tr);
-    tr.querySelector('.removeAp').addEventListener('click', () => { tr.remove(); updateApplianceTotal(); });
-    ['apW','apH','apQ'].forEach(cls => { const el = tr.querySelector('.' + cls); if(el) el.addEventListener('input', updateApplianceTotal); });
+    applianceBody.appendChild(tr);
+    tr.querySelector('.removeAp').addEventListener('click', ()=>{ tr.remove(); updateApplianceTotal(); });
+    ['apW','apH','apQ'].forEach(cls => {
+      const el = tr.querySelector('.' + cls);
+      if(el) el.addEventListener('input', updateApplianceTotal);
+    });
     updateApplianceTotal();
   }
-
-  // seed sample
-  addApplianceRow({ name:'Fridge', w:150, h:24, q:1 });
-  addApplianceRow({ name:'LED bulbs', w:12, h:6, q:6 });
-
-  addAppliance.addEventListener('click', () => addApplianceRow({ name:'New appliance', w:60, h:1, q:1 }));
+  // seed
+  addAppliance({name:'Fridge', w:150, h:24, q:1});
+  addAppliance({name:'LED bulbs', w:12, h:6, q:6});
 
   function updateApplianceTotal() {
-    const rows = applianceTable.querySelectorAll('tr');
+    const rows = applianceBody.querySelectorAll('tr');
     let wh = 0;
     rows.forEach(r => {
       const w = +(r.querySelector('.apW') && r.querySelector('.apW').value) || 0;
@@ -349,201 +463,218 @@ document.addEventListener('DOMContentLoaded', function () {
       const q = +(r.querySelector('.apQ') && r.querySelector('.apQ').value) || 1;
       wh += w * h * q;
     });
-    const kwh = (wh/1000);
-    applianceTotalEl.textContent = isFinite(kwh) ? kwh.toFixed(3) : '0.000';
-    if(!dailyKwh.value) dailyKwh.placeholder = isFinite(kwh) ? kwh.toFixed(3) : '';
+    const kwh = wh/1000;
+    applianceTotal.textContent = isFinite(kwh) ? kwh.toFixed(3) : '0.000';
     return kwh;
   }
 
-  openAppliances.addEventListener('click', () => { applianceModal.classList.remove('hidden'); applianceModal.classList.add('flex'); updateApplianceTotal(); });
-  closeAppliance.addEventListener('click', () => { applianceModal.classList.add('hidden'); applianceModal.classList.remove('flex'); });
-
-  // Input mode toggle
-  function setInputModeMonthly() {
-    $('monthlyRow').classList.remove('hidden');
-    $('dailyRow').classList.add('hidden');
-  }
-  function setInputModeDaily() {
-    $('monthlyRow').classList.add('hidden');
-    $('dailyRow').classList.remove('hidden');
-  }
-  inputModeMonthly.addEventListener('change', setInputModeMonthly);
-  inputModeDaily.addEventListener('change', setInputModeDaily);
-
-  // Location select to set PSH
-  locationSelect.addEventListener('change', function () {
-    const val = this.value;
-    if(!val || val === 'manual') return;
-    const parts = val.split('|');
-    if(parts.length === 2) {
-      const psh = parseFloat(parts[1]);
-      if(!isNaN(psh)) pshInput.value = psh;
-    }
-  });
-
   // Utility format
-  function fmt(n, d=2) { return (isFinite(n) ? Number(n).toLocaleString(undefined,{minimumFractionDigits:d, maximumFractionDigits:d}) : '—'); }
+  function fmt(n, d=2) { return (isFinite(n) ? Number(n).toLocaleString(undefined, { minimumFractionDigits:d, maximumFractionDigits:d }) : '—'); }
 
-  // Core calculation
-  function calculate() {
-    // determine daily consumption
-    let daily = parseFloat(dailyKwh.value) || NaN;
-    if(inputModeMonthly.checked) {
-      const amount = parseFloat(monthlyAmount.value) || 0;
-      const t = parseFloat(tariff.value) || 1;
-      if(amount > 0) daily = amount / t / 30.0;
-    } else {
-      if(!isFinite(daily)) {
-        // fallback to appliance total
-        daily = updateApplianceTotal();
-      }
-    }
-    // last fallback
-    if(!isFinite(daily) || daily <= 0) { alert('Please enter monthly amount or daily consumption (or add appliances).'); return; }
-
-    const psh = parseFloat(pshInput.value) || 5.0;
-    const panelWp = parseFloat(panelW.value) || 400;
-    const lossPct = parseFloat(losses.value) || 20;
+  // Core calculation function
+  function computeAll() {
+    // read inputs
+    const monthlyUSD = parseFloat($('monthlyUSD').value) || 0;
+    const dailyInput = parseFloat($('dailyKwhInput').value) || NaN;
+    const tariff = parseFloat($('tariffUSD').value) || 0.12;
+    const pshVal = parseFloat($('pshInput').value) || 5;
+    const panelWp = parseFloat($('panelWp').value) || 400;
+    const lossPct = parseFloat($('lossPct').value) || 20;
     const lossFactor = 1 - (lossPct/100);
-    // required dc array kW (before inverter losses)
-    const arrayKW = (daily) / (psh * lossFactor);
-    const arrayKWrounded = Math.max(0.001, Math.round(arrayKW * 100) / 100);
-    const arrayW = arrayKWrounded * 1000;
-    // panels
-    const overridePanels = 0; // no override input in UI for simplicity here
-    const numPanels = overridePanels > 0 ? overridePanels : Math.ceil(arrayW / panelWp);
-    const panelTotalW = numPanels * panelWp;
-    // estimated daily production after losses
-    const estDailyProd = (panelTotalW / 1000) * psh * lossFactor;
+    const sysType = $('sysType').value;
+    const batteryHours = parseFloat($('batteryHoursInput').value) || 0;
+    const co2Intensity = 0.5; // kg CO2 per kWh (default)
+    // determine daily consumption
+    let daily = NaN;
+    if(!isNaN(dailyInput)) daily = dailyInput;
+    else if(monthlyUSD > 0) {
+      // convert dollars to kWh using tariff
+      daily = (monthlyUSD / tariff) / 30;
+    } else {
+      // fallback to appliance
+      daily = updateApplianceTotal();
+    }
+    if(!isFinite(daily) || daily <= 0) return null;
 
-    // inverter sizing
-    const peak = parseFloat(peakLoad.value) || NaN;
-    const avgPowerW = (daily * 1000) / 24.0;
-    let inverterW;
-    if(!isNaN(peak) && peak > 0) inverterW = Math.max(peak, Math.ceil(avgPowerW * 1.5));
-    else inverterW = Math.ceil(Math.max(avgPowerW * 1.5, avgPowerW * 2));
+    // array sizing
+    const arrayKW = daily / (pshVal * lossFactor);
+    const arrayKWr = Math.max(0.001, Math.round(arrayKW * 100) / 100);
+    const arrayW = arrayKWr * 1000;
+    const panels = Math.ceil(arrayW / panelWp);
+    const panelTotalW = panels * panelWp;
+    const estDailyGen = (panelTotalW/1000) * pshVal * lossFactor;
+
+    // inverter guess
+    const avgPowerW = (daily * 1000) / 24;
+    const inverterW = Math.ceil(Math.max(avgPowerW * 1.5, avgPowerW * 2));
     const inverterKW = inverterW / 1000;
 
-    // battery sizing if needed
-    const mode = systemType.value;
+    // battery sizing if hybrid/offgrid
     let batteryKWh = 0, batteryAh = 0;
-    if(mode !== 'grid') {
-      const hours = parseFloat(batteryHours.value) || 0;
-      // compute battery required energy (kWh) = daily * (hours/24) as backup portion OR full daily? We'll assume user wants backup hours for daily load scaled.
-      const backupKWh = (daily / 24) * (hours || 0);
-      const batParts = String(batteryType.value).split('|');
-      const dod = (batParts.length >= 2) ? (parseFloat(batParts[1]) / 100) : 0.8;
-      const batRound = parseFloat(batEff.value) / 100 || 0.9;
-      const bankV = parseFloat(batV.value) || 48;
-      if(backupKWh > 0) {
-        batteryKWh = backupKWh / (dod * batRound);
-        if(!isFinite(batteryKWh)) batteryKWh = 0;
-        batteryAh = (batteryKWh * 1000) / bankV;
-      }
+    if(sysType !== 'grid') {
+      // use backup hours times average power as required usable energy
+      const requiredUsable = (daily/24) * batteryHours;
+      // default DOD & eff
+      const dod = 0.8, batEff = 0.9, bankV = 48;
+      batteryKWh = requiredUsable/(dod*batEff);
+      if(!isFinite(batteryKWh)) batteryKWh = 0;
+      batteryAh = (batteryKWh * 1000) / bankV;
     }
 
-    // costs
-    const panelCostPw = parseFloat(panelCost.value) || 0.25;
-    const invCostPkW = parseFloat(invCost.value) || 300;
-    const batCostPkWh = parseFloat(batCost.value) || 150;
-    const installFlat = 200; // default small flat cost; could be editable
-    const panelsCost = (panelTotalW) * panelCostPw;
-    const inverterCost = (inverterKW) * invCostPkW;
-    const batteryCost = batteryKWh * batCostPkWh;
-    const totalCost = panelsCost + inverterCost + batteryCost + installFlat;
+    // costs (USD)
+    const panelCostPerW = 0.25; // $/W
+    const invCostPerKw = 300; // $/kW
+    const batCostPerKwh = 150; // $/kWh
+    const installFlat = 400; // rough install & BOS
+    const costPanels = panelTotalW * panelCostPerW;
+    const costInv = inverterKW * invCostPerKw;
+    const costBat = batteryKWh * batCostPerKwh;
+    const totalCost = costPanels + costInv + costBat + installFlat;
 
     // savings & payback
-    const tariffVal = parseFloat(tariff.value) || 0;
-    const monthlyGeneration = estDailyProd * 30;
-    const monthlyConsumption = daily * 30;
-    const annualSavings = monthlyGeneration * 12 * (tariffVal/ (monthlyGeneration>0?1:1) ) * 0.0; // incorrectly derived — fix: annualSavings = generation * tariff
-    // simpler: annualSavings = annual generation * tariff
-    const annualGeneration = estDailyProd * 365;
-    const annualSavingsFixed = annualGeneration * tariffVal;
-    const paybackYears = (annualSavingsFixed > 0) ? (totalCost / annualSavingsFixed) : Infinity;
+    const monthlyGeneration = estDailyGen * 30;
+    const annualGeneration = estDailyGen * 365;
+    const annualSavings = annualGeneration * tariff;
+    const paybackYears = annualSavings > 0 ? (totalCost / annualSavings) : Infinity;
 
     // CO2 savings
-    const co2 = parseFloat(co2Input.value) || 0.7;
-    const co2SavedPerYear = annualGeneration * co2;
+    const co2PerYear = annualGeneration * co2Intensity;
 
-    // Update UI results
-    arrayKWEl.textContent = fmt(arrayKWrounded,2) + ' kW';
-    numPanelsEl.textContent = `${numPanels} × ${panelWp}W = ${fmt(panelTotalW,0)} W`;
-    dailyProdEl.textContent = fmt(estDailyProd,2) + ' kWh';
-    inverterSizeEl.textContent = fmt(inverterKW,2) + ' kW';
-    batterySpecEl.textContent = batteryKWh>0 ? `${fmt(batteryKWh,2)} kWh • ${fmt(batteryAh,0)} Ah @ ${batV.value}V` : 'None';
-    totalCostEl.textContent = '$ ' + fmt(totalCost,2);
-    paybackEl.textContent = isFinite(paybackYears) ? fmt(paybackYears,1) + ' yrs' : '—';
+    // update preview elements (live)
+    previewArray.textContent = fmt(arrayKWr,2) + ' kW';
+    previewPanels.textContent = panels;
+    previewGen.textContent = fmt(estDailyGen,2) + ' kWh';
 
-    // update chart (monthly)
-    mainChart.data.datasets[0].data = [ Math.round(estDailyProd*30), Math.round(daily*30) ];
-    mainChart.update();
-
-    // save last for export
-    window.solarLast = {
-      daily, psh, panelWp, lossPct, arrayKWrounded, numPanels, panelTotalW, estDailyProd,
-      inverterKW, batteryKWh, batteryAh, totalCost, annualGeneration, annualSavingsFixed, paybackYears, co2SavedPerYear
+    // return object
+    return {
+      daily, pshVal, panelWp, lossPct, arrayKWr, panels, panelTotalW, estDailyGen,
+      inverterKW, batteryKWh, batteryAh, totalCost, monthlyGeneration, annualGeneration, annualSavings, paybackYears, co2PerYear,
+      costs: { panels: costPanels, inverter: costInv, battery: costBat, install: installFlat }
     };
   }
 
-  // wiring
-  calculateBtn.addEventListener('click', calculate);
-  resetBtn.addEventListener('click', () => { window.location.reload(); });
+  // wire preview: on input change compute preview
+  ['monthlyUSD','dailyKwhInput','tariffUSD','pshInput','panelWp','lossPct'].forEach(id => {
+    const el = $(id);
+    if(el) el.addEventListener('input', () => { computeAll(); });
+  });
+  citySelect.addEventListener('change', () => {
+    const val = parseFloat(citySelect.value);
+    if(isFinite(val) && val>0) $('pshInput').value = val;
+    computeAll();
+  });
 
-  // export report
-  exportReportBtn.addEventListener('click', function(){
-    const r = window.solarLast;
-    if(!r) { alert('Please Calculate first'); return; }
+  // navigation
+  $('goResults').addEventListener('click', ()=> {
+    const r = computeAll();
+    if(!r) { alert('Please enter monthly bill, daily consumption, or appliances first.'); return; }
+    // populate results
+    $('resArray').textContent = fmt(r.arrayKWr,2) + ' kW';
+    $('resPanels').textContent = r.panels + ' × ' + r.panelWp + 'W = ' + fmt(r.panelTotalW,0) + ' W';
+    $('resDaily').textContent = fmt(r.estDailyGen,2) + ' kWh';
+    $('resBattery').textContent = r.batteryKWh>0 ? fmt(r.batteryKWh,2) + ' kWh' : 'None';
+    $('resInverter').textContent = fmt(r.inverterKW,2) + ' kW';
+    $('resCost').textContent = '$ ' + fmt(r.totalCost,2);
+    $('resPayback').textContent = isFinite(r.paybackYears) ? fmt(r.paybackYears,1) : '—';
+    $('resMonthlyGen').textContent = fmt(r.monthlyGeneration,0) + ' kWh';
+    $('resMonthlySavings').textContent = '$ ' + fmt(r.annualSavings? r.annualSavings/12 : (r.monthlyGeneration * parseFloat($('tariffUSD').value||0)),2);
+    $('resCO2').textContent = fmt(r.co2PerYear,0) + ' kg/year';
+
+    // store last
+    window.solarLast = r;
+
+    showScreen(2);
+  });
+
+  $('backToInputs').addEventListener('click', ()=> showScreen(1));
+
+  $('goVisuals').addEventListener('click', ()=> {
+    const r = window.solarLast || computeAll();
+    if(!r) { alert('Calculate first'); return; }
+
+    // populate charts: monthly generation vs consumption (approx scaled by seasonality using a simple factor array)
+    // Seasonality factors for hemisphere approximate monthly variation (north hemisphere)
+    const monthlyFactors = [0.8,0.85,0.95,1.05,1.1,1.12,1.15,1.12,1.05,0.98,0.9,0.85];
+    const genData = monthlyFactors.map(f => Math.round(r.estDailyGen * 30 * f));
+    // consumption equal spread
+    const consData = new Array(12).fill(Math.round(r.daily*30));
+
+    barChart.data.datasets[0].data = genData;
+    barChart.data.datasets[1].data = consData;
+    barChart.update();
+
+    // donut costs
+    const cPanels = r.costs.panels || 0, cInv = r.costs.inverter || 0, cBat = r.costs.battery || 0, cInst = r.costs.install || 0;
+    donutChart.data.datasets[0].data = [cPanels, cInv, cBat, cInst];
+    donutChart.update();
+
+    showScreen(3);
+  });
+
+  // start over
+  $('startOver').addEventListener('click', ()=> { location.reload(); });
+  $('clearInputs').addEventListener('click', ()=> {
+    ['monthlyUSD','dailyKwhInput','tariffUSD','pshInput','panelWp','lossPct','batteryHoursInput'].forEach(id => { if($(id)) $(id).value = ''; });
+    // reset defaults
+    $('panelWp').value = 400; $('lossPct').value = 20; $('tariffUSD').value = 0.12; $('pshInput').value = 5;
+    computeAll();
+  });
+
+  // appliance modal
+  $('openAppl').addEventListener('click', ()=> { applianceModal.classList.remove('hidden'); applianceModal.classList.add('flex'); updateApplianceTotal(); });
+  $('closeApplianceX').addEventListener('click', ()=> { applianceModal.classList.add('hidden'); applianceModal.classList.remove('flex'); });
+
+  $('addApplianceRow').addEventListener('click', ()=> addAppliance({name:'New', w:60, h:1, q:1}));
+
+  // export text
+  $('exportTxt').addEventListener('click', ()=> {
+    const r = window.solarLast || computeAll();
+    if(!r) { alert('Calculate first'); return; }
     const lines = [
-      'Solar Calculator Report',
-      '=======================',
-      'Daily consumption: ' + fmt(r.daily,3) + ' kWh',
-      'Peak sun hours (PSH): ' + fmt(r.psh,2) + ' h',
-      'Array size: ' + fmt(r.arrayKWrounded,2) + ' kW',
-      'Panels: ' + r.numPanels + ' × ' + panelW.value + 'W = ' + fmt(r.panelTotalW,0) + ' W',
-      'Estimated daily production: ' + fmt(r.estDailyProd,2) + ' kWh',
-      'Inverter: ' + fmt(r.inverterKW,2) + ' kW',
-      'Battery bank: ' + (r.batteryKWh? fmt(r.batteryKWh,2) + ' kWh' : 'None'),
-      'Estimated cost: $ ' + fmt(r.totalCost,2),
-      'Annual generation: ' + fmt(r.annualGeneration,0) + ' kWh',
-      'Annual savings (approx): $ ' + fmt(r.annualGeneration * (parseFloat(tariff.value)||0),2),
-      'CO2 saved per year: ' + fmt(r.co2SavedPerYear,1) + ' kg'
+      'Solar Designer Report',
+      '---------------------',
+      'Daily consumption (kWh): ' + fmt(r.daily,3),
+      'Peak sun hours (PSH): ' + fmt(r.pshVal,2),
+      'Array size (kW): ' + fmt(r.arrayKWr,2),
+      'Panels: ' + r.panels,
+      'Daily production (kWh): ' + fmt(r.estDailyGen,2),
+      'Battery (kWh): ' + (r.batteryKWh? fmt(r.batteryKWh,2) : 'None'),
+      'Estimated cost (USD): $' + fmt(r.totalCost,2),
+      'Payback (yrs): ' + (isFinite(r.paybackYears)? fmt(r.paybackYears,1) : '—'),
     ];
     const txt = lines.join('\\n');
-    const blob = new Blob([txt], { type: 'text/plain' });
+    const blob = new Blob([txt], { type:'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'solar_report.txt'; a.click(); URL.revokeObjectURL(url);
   });
 
-  // export CSV
-  exportCsvBtn.addEventListener('click', function(){
-    const r = window.solarLast;
-    if(!r) { alert('Please Calculate first'); return; }
+  $('exportCsv').addEventListener('click', ()=> {
+    const r = window.solarLast || computeAll();
+    if(!r) { alert('Calculate first'); return; }
     const headers = ['field','value'];
     const rows = [
-      ['Daily consumption (kWh)', r.daily],
-      ['PSH (h)', r.psh],
-      ['Array kW', r.arrayKWrounded],
-      ['Panels (count)', r.numPanels],
-      ['Daily production (kWh)', r.estDailyProd],
-      ['Inverter kW', r.inverterKW],
-      ['Battery kWh', r.batteryKWh || 0],
-      ['Total cost $', r.totalCost || 0],
-      ['Annual generation kWh', r.annualGeneration || 0]
+      ['daily_kwh', r.daily],
+      ['psh', r.pshVal],
+      ['array_kw', r.arrayKWr],
+      ['panels', r.panels],
+      ['daily_production_kwh', r.estDailyGen],
+      ['battery_kwh', r.batteryKWh || 0],
+      ['total_cost_usd', r.totalCost || 0],
+      ['payback_years', isFinite(r.paybackYears)? r.paybackYears : '']
     ];
     const csv = [headers.join(','), ...rows.map(rw => rw.map(v => String(v).replace(/,/g,'')).join(','))].join('\\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const blob = new Blob([csv], { type:'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'solar_report.csv'; a.click(); URL.revokeObjectURL(url);
   });
 
-  // small UX: show monthly/daily rows based on radio initial
-  setTimeout(()=> {
-    if(inputModeMonthly.checked) setInputModeMonthly(); else setInputModeDaily();
-  }, 0);
+  // print buttons
+  $('printView').addEventListener('click', ()=> window.print());
+  $('printTop')?.addEventListener('click', ()=> window.print());
 
+  // initial compute
+  computeAll();
 });
 </script>
-
 </body>
 </html>
