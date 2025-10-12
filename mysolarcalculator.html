@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Solar Designer v5 — Dark Theme</title>
+  <title>Solar Calculator — Light Professional</title>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,66 +13,60 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg-1: #021f2f;
-      --bg-2: #053543;
-      --accent: #06b6d4;
-      --accent-2: #f6c84c;
-      --glass: rgba(255,255,255,0.04);
-      --muted: #9ca3af;
+    :root{
+      --bg:#f7fbfc;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#0ea5a3; /* teal */
+      --accent-2:#60a5fa; /* light blue */
+      --soft-border: rgba(15,23,42,0.06);
     }
     html,body { height:100%; }
     body {
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
       margin:0;
-      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
-      color: #e6f6f6;
+      background: linear-gradient(180deg,var(--bg) 0%, #ffffff 60%);
+      color: #0f172a;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
 
-    /* App container fits screen */
+    /* app container fits the screen */
     .app {
       max-width:1100px;
-      margin: 18px auto;
-      min-height: calc(100vh - 36px);
+      margin:20px auto;
+      padding:18px;
+      min-height: calc(100vh - 40px);
       display:flex;
       flex-direction:column;
-      gap:18px;
-      padding:18px;
+      gap:16px;
     }
 
     .glass {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border-radius:14px;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-      padding:18px;
-      border: 1px solid rgba(255,255,255,0.04);
+      background: var(--card);
+      border-radius:12px;
+      box-shadow: 0 6px 22px rgba(2,6,23,0.06);
+      border: 1px solid var(--soft-border);
     }
 
-    /* Virtual screens */
-    .screen { display:none; height: calc(100% - 120px); overflow:auto; padding:8px; }
-    .screen.active { display:block; animation: screenIn .28s ease both; }
-    @keyframes screenIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:none; } }
+    /* virtual screens */
+    .screen { display:none; height: calc(100% - 120px); overflow:auto; padding:12px; }
+    .screen.active { display:block; animation: fadeIn .26s ease both; }
+    @keyframes fadeIn { from{ opacity:0; transform: translateY(6px) } to{ opacity:1; transform:none } }
 
-    /* Cards */
-    .card { border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px; border:1px solid rgba(255,255,255,0.03); }
-    .small-muted { color:var(--muted); font-size:0.9rem; }
+    .small-muted { color:var(--muted); font-size:0.92rem; }
+    .card-title { font-weight:600; color:#0f172a; }
 
-    /* Buttons */
-    .btn-primary { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#042028; font-weight:600; }
-    .btn-ghost { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#e6eef0; }
-
-    /* responsive fit adjustments */
-    @media (max-width:1024px){
-      .app { padding:12px; margin: 8px; min-height: calc(100vh - 16px); }
-      .screen { height: calc(100% - 140px); }
+    /* responsive helpers */
+    @media (min-width:1024px){
+      .two-col { display:grid; grid-template-columns:1fr 320px; gap:18px; align-items:start; }
+      .three-col { display:grid; grid-template-columns: 1fr 360px; gap:18px; align-items:start; }
     }
 
-    /* tiny helpers */
-    .muted { color:var(--muted); }
-    .kbd { background: rgba(255,255,255,0.03); padding:4px 8px; border-radius:8px; font-size:0.85rem; }
+    input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     canvas { width:100% !important; height:auto !important; }
+    .btn-primary { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; font-weight:600; }
+    .btn-ghost { background:transparent; border:1px solid var(--soft-border); color: #0f172a; }
   </style>
 </head>
 <body>
@@ -81,75 +75,58 @@
     <!-- Header -->
     <header class="flex items-center justify-between">
       <div>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" class="rounded-full" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#f6c84c"/></linearGradient></defs>
-            <circle cx="12" cy="12" r="11" fill="url(#g)"></circle>
-            <path d="M12 7v8l4 2" stroke="#021d22" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div>
-            <h1 class="text-2xl font-semibold">Solar Designer</h1>
-            <div class="small-muted">Dark theme — app-style wizard • USD</div>
-          </div>
-        </div>
+        <h1 class="text-2xl font-semibold">Solar Calculator</h1>
+        <p class="small-muted mt-1">Professional light theme — global currency auto-switch. Mobile-first wizard.</p>
       </div>
 
-      <div class="flex items-center gap-3">
-        <button id="helpBtn" class="px-3 py-2 btn-ghost rounded-md">Help</button>
-        <button id="startOver" class="px-3 py-2 btn-ghost rounded-md">Restart</button>
+      <div class="flex items-center gap-2">
+        <button id="helpOpen" class="px-3 py-2 btn-ghost rounded-md">Help</button>
+        <button id="resetAll" class="px-3 py-2 btn-ghost rounded-md">Reset</button>
       </div>
     </header>
 
     <main class="glass flex-1 flex flex-col">
 
-      <!-- top progress -->
-      <div class="flex items-center gap-4 mb-4">
-        <div id="p1" class="px-3 py-1 rounded-full bg-white/6">1 • Inputs</div>
-        <div id="p2" class="px-3 py-1 rounded-full bg-white/6">2 • Review</div>
-        <div id="p3" class="px-3 py-1 rounded-full bg-white/6">3 • Visuals</div>
-        <div class="ml-auto small-muted">USD ($)</div>
+      <!-- Progress -->
+      <div class="flex items-center gap-3 px-4 pt-4">
+        <div id="step1" class="px-3 py-1 rounded-full bg-white text-sm">1. Solar</div>
+        <div id="step2" class="px-3 py-1 rounded-full bg-white/80 text-sm small-muted">2. Appliances</div>
+        <div id="step3" class="px-3 py-1 rounded-full bg-white/80 text-sm small-muted">3. Financial</div>
+        <div class="ml-auto small-muted">Currency: <span id="currencyLabel">USD</span></div>
       </div>
 
-      <!-- Screen 1: Inputs (app-like big card + side preview) -->
-      <section id="screen-1" class="screen active">
-        <div class="lg:flex lg:gap-6 h-full">
-          <!-- Left: main inputs -->
-          <div class="lg:flex-1 card">
+      <!-- SCREENS -->
+      <section id="screen1" class="screen active">
+        <div class="two-col p-4">
+
+          <!-- Left: Inputs -->
+          <div class="p-4">
             <div class="flex items-center justify-between mb-3">
-              <div><div class="text-lg font-semibold">Site & Consumption</div><div class="small-muted">Enter your usage — city PSH auto-fill</div></div>
-              <div class="small-muted">Step 1/3</div>
+              <div><div class="card-title">Solar Sizing</div><div class="small-muted">Enter consumption and system preferences</div></div>
+              <div class="small-muted text-sm">Step 1 of 3</div>
             </div>
 
-            <div class="grid gap-3 grid-cols-1 md:grid-cols-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label class="small-muted">City (starts with country) — autocomplete</label>
-                <input id="cityInput" list="cityList" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6" placeholder="e.g. Los Angeles, US">
-                <datalist id="cityList"></datalist>
+                <label class="small-muted">Country (auto currency)</label>
+                <select id="countrySelect" class="mt-1 p-3 border rounded-md w-full">
+                  <!-- populated by JS -->
+                </select>
+              </div>
+
+              <div>
+                <label class="small-muted">City (optional — sets PSH)</label>
+                <input id="cityInput" type="text" placeholder="Optional city" class="mt-1 p-3 border rounded-md w-full">
               </div>
 
               <div>
                 <label class="small-muted">Peak Sun Hours (PSH)</label>
-                <input id="psh" type="number" step="0.1" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6" value="5.0">
-              </div>
-
-              <div>
-                <label class="small-muted">Monthly bill (USD)</label>
-                <input id="monthly" type="number" step="0.01" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6" placeholder="e.g. 120">
-              </div>
-
-              <div>
-                <label class="small-muted">Or daily consumption (kWh)</label>
-                <input id="daily" type="number" step="0.01" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6" placeholder="e.g. 15">
-              </div>
-
-              <div>
-                <label class="small-muted">Electric rate ($/kWh)</label>
-                <input id="rate" type="number" step="0.001" value="0.12" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6">
+                <input id="psh" type="number" step="0.1" min="0" class="mt-1 p-3 border rounded-md w-full" value="5">
               </div>
 
               <div>
                 <label class="small-muted">Panel W (typical)</label>
-                <select id="panelWp" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6">
+                <select id="panelWp" class="mt-1 p-3 border rounded-md w-full">
                   <option value="330">330 W</option>
                   <option value="360">360 W</option>
                   <option value="400" selected>400 W</option>
@@ -158,13 +135,28 @@
               </div>
 
               <div>
+                <label class="small-muted">Monthly bill (local currency)</label>
+                <input id="monthly" type="number" step="0.01" min="0" placeholder="e.g. 120" class="mt-1 p-3 border rounded-md w-full">
+              </div>
+
+              <div>
+                <label class="small-muted">Or daily consumption (kWh)</label>
+                <input id="daily" type="number" step="0.01" min="0" placeholder="e.g. 15" class="mt-1 p-3 border rounded-md w-full">
+              </div>
+
+              <div>
+                <label class="small-muted">Electric rate (per kWh)</label>
+                <input id="tariff" type="number" step="0.001" min="0" class="mt-1 p-3 border rounded-md w-full" value="0.12">
+              </div>
+
+              <div>
                 <label class="small-muted">System losses (%)</label>
-                <input id="losses" value="20" type="number" step="0.1" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6">
+                <input id="losses" type="number" step="0.1" min="0" class="mt-1 p-3 border rounded-md w-full" value="20">
               </div>
 
               <div>
                 <label class="small-muted">System type</label>
-                <select id="sysType" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6">
+                <select id="sysType" class="mt-1 p-3 border rounded-md w-full">
                   <option value="grid">Grid-tie</option>
                   <option value="hybrid">Hybrid (battery)</option>
                   <option value="offgrid">Off-grid</option>
@@ -172,153 +164,147 @@
               </div>
 
               <div>
-                <label class="small-muted">Battery backup (hrs)</label>
-                <input id="batHours" value="0" type="number" step="0.1" class="mt-1 p-3 rounded-md w-full bg-transparent border border-white/6">
+                <label class="small-muted">Battery backup hours</label>
+                <input id="batHours" type="number" step="0.1" min="0" class="mt-1 p-3 border rounded-md w-full" value="0">
               </div>
             </div>
 
             <div class="mt-4 flex gap-3">
-              <button id="nextBtn" class="btn-primary px-5 py-3 rounded-md">Next — Review</button>
-              <button id="applBtn" class="btn-ghost px-4 py-3 rounded-md">Appliances</button>
-              <button id="clearBtn" class="btn-ghost px-4 py-3 rounded-md ml-auto">Clear</button>
+              <button id="toAppliance" class="btn-primary px-5 py-3 rounded-md">Next — Appliances</button>
+              <button id="clear1" class="btn-ghost px-4 py-3 rounded-md">Clear</button>
+              <div class="ml-auto small-muted self-center">All inputs validated</div>
             </div>
           </div>
 
-          <!-- Right: live preview card -->
-          <aside class="w-full lg:w-80 mt-4 lg:mt-0 card">
-            <div class="flex items-center justify-between mb-2">
-              <div class="text-md font-semibold">Live Preview</div>
-              <div class="small-muted text-xs">Updates as you type</div>
-            </div>
+          <!-- Right: Live preview -->
+          <aside class="p-4 border-l hidden md:block">
+            <div class="card-title">Live preview</div>
+            <div class="small-muted text-sm mb-3">Updates as you type</div>
 
             <div class="space-y-3">
-              <div class="p-3 rounded-md border border-white/6">
+              <div class="p-3 bg-white rounded-md border">
                 <div class="small-muted text-xs">Array size</div>
                 <div id="previewArray" class="text-lg font-semibold">— kW</div>
               </div>
-              <div class="p-3 rounded-md border border-white/6">
+              <div class="p-3 bg-white rounded-md border">
                 <div class="small-muted text-xs">Panels</div>
                 <div id="previewPanels" class="text-lg font-semibold">—</div>
               </div>
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted text-xs">Daily gen</div>
+              <div class="p-3 bg-white rounded-md border">
+                <div class="small-muted text-xs">Daily generation</div>
                 <div id="previewGen" class="text-lg font-semibold">— kWh</div>
               </div>
+              <div class="p-3 bg-white rounded-md border">
+                <div class="small-muted text-xs">Currency</div>
+                <div id="previewCurrency" class="text-lg font-semibold">USD $</div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </section>
+
+      <!-- Screen 2: Appliance manager -->
+      <section id="screen2" class="screen">
+        <div class="three-col p-4">
+          <div class="p-4 card">
+            <div class="flex items-center justify-between mb-3">
+              <div><div class="card-title">Appliance Manager</div><div class="small-muted">Build your load list (W × hrs × qty)</div></div>
+              <div class="small-muted text-sm">Step 2 of 3</div>
             </div>
 
-            <div class="mt-4">
-              <div class="small-muted text-xs">Quick tips</div>
-              <ul class="text-sm mt-2 muted" style="color:var(--muted);">
-                <li>✔ Select a city to auto-fill PSH</li>
-                <li>✔ Use monthly bill or daily kWh</li>
-                <li>✔ Tap “Appliances” to build load</li>
-              </ul>
+            <div class="overflow-auto" style="max-height:44vh;">
+              <table class="w-full text-left border-collapse">
+                <thead class="small-muted text-xs"><tr><th class="py-2">Name</th><th>W</th><th>hrs/day</th><th>qty</th><th></th></tr></thead>
+                <tbody id="applianceBody"></tbody>
+              </table>
+            </div>
+
+            <div class="mt-3 flex gap-2">
+              <button id="addAppliance" class="btn-ghost px-3 py-2 rounded-md">Add appliance</button>
+              <div class="ml-auto small-muted self-center">Total daily: <span id="applianceTotal">0.000</span> kWh</div>
+            </div>
+
+            <div class="mt-4 flex gap-3">
+              <button id="backToSolar" class="btn-ghost px-4 py-3 rounded-md">Back</button>
+              <button id="toFinancial" class="btn-primary px-4 py-3 rounded-md ml-auto">Next — Financial</button>
+            </div>
+          </div>
+
+          <!-- Right column summary -->
+          <aside class="p-4 card">
+            <div class="card-title">Appliance quick add</div>
+            <div class="small-muted mt-2">Add common items quickly</div>
+
+            <div class="grid grid-cols-1 gap-2 mt-3">
+              <button class="quickAdd px-3 py-2 rounded-md border" data-name="Fridge" data-w="150" data-h="24" data-q="1">Fridge (150W)</button>
+              <button class="quickAdd px-3 py-2 rounded-md border" data-name="LED 10W" data-w="10" data-h="6" data-q="6">LED bulbs</button>
+              <button class="quickAdd px-3 py-2 rounded-md border" data-name="AC 1.5T" data-w="1400" data-h="6" data-q="1">AC 1.5T</button>
+              <button class="quickAdd px-3 py-2 rounded-md border" data-name="TV 50in" data-w="120" data-h="4" data-q="1">TV</button>
             </div>
           </aside>
         </div>
       </section>
 
-      <!-- Screen 2: Review -->
-      <section id="screen-2" class="screen">
-        <div class="h-full lg:flex lg:gap-6">
-          <div class="lg:flex-1 card">
+      <!-- Screen 3: Financial & Visuals -->
+      <section id="screen3" class="screen">
+        <div class="two-col p-4">
+          <div class="p-4 card">
             <div class="flex items-center justify-between mb-3">
-              <div><div class="text-lg font-semibold">Design Review</div><div class="small-muted">Confirm before viewing visuals</div></div>
-              <div class="small-muted">Step 2/3</div>
+              <div><div class="card-title">Financial & Results</div><div class="small-muted">Cost, payback and generation</div></div>
+              <div class="small-muted text-sm">Step 3 of 3</div>
             </div>
 
-            <div class="grid gap-3 sm:grid-cols-2">
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Array</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="p-3 rounded-md border">
+                <div class="small-muted text-xs">Array size</div>
                 <div id="resArray" class="text-lg font-semibold">— kW</div>
               </div>
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Panels</div>
+
+              <div class="p-3 rounded-md border">
+                <div class="small-muted text-xs">Panels</div>
                 <div id="resPanels" class="text-lg font-semibold">—</div>
               </div>
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Daily production</div>
+
+              <div class="p-3 rounded-md border">
+                <div class="small-muted text-xs">Daily generation</div>
                 <div id="resDaily" class="text-lg font-semibold">— kWh</div>
               </div>
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Battery</div>
+
+              <div class="p-3 rounded-md border">
+                <div class="small-muted text-xs">Battery</div>
                 <div id="resBattery" class="text-lg font-semibold">—</div>
               </div>
 
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Inverter suggestion</div>
-                <div id="resInverter" class="text-lg font-semibold">— kW</div>
-              </div>
-
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Est. total cost</div>
+              <div class="p-3 rounded-md border">
+                <div class="small-muted text-xs">Estimated cost</div>
                 <div id="resCost" class="text-lg font-semibold">—</div>
               </div>
 
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Payback</div>
+              <div class="p-3 rounded-md border">
+                <div class="small-muted text-xs">Payback</div>
                 <div id="resPayback" class="text-lg font-semibold">— yrs</div>
-              </div>
-
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Monthly gen</div>
-                <div id="resMonthlyGen" class="text-lg font-semibold">— kWh</div>
               </div>
             </div>
 
             <div class="mt-4 flex gap-3">
-              <button id="backBtn" class="btn-ghost px-4 py-3 rounded-md">Back</button>
-              <button id="toVisualsBtn" class="btn-primary px-4 py-3 rounded-md ml-auto">View Visuals</button>
+              <button id="backToAppliance" class="btn-ghost px-4 py-3 rounded-md">Back</button>
+              <button id="downloadTxt" class="btn-ghost px-4 py-3 rounded-md">Export TXT</button>
+              <button id="downloadCsv" class="btn-ghost px-4 py-3 rounded-md">Export CSV</button>
+              <button id="print" class="btn-primary px-4 py-3 rounded-md ml-auto">Print</button>
             </div>
           </div>
 
-          <aside class="w-full lg:w-80 mt-6 lg:mt-0 card">
-            <div class="text-md font-semibold">Savings & CO2</div>
-            <div class="mt-3 small-muted">Monthly & annual impact</div>
+          <aside class="p-4 card">
+            <div class="card-title">Visuals</div>
+            <div class="small-muted mt-2">Monthly generation vs consumption</div>
 
-            <div class="mt-4 space-y-3">
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Monthly savings</div>
-                <div id="resMonthlySavings" class="text-lg font-semibold">— $</div>
-              </div>
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Annual CO₂ saved</div>
-                <div id="resCO2" class="text-lg font-semibold">— kg</div>
-              </div>
-              <div class="p-3 rounded-md border border-white/6">
-                <div class="small-muted">Estimated lifetime savings (10y)</div>
-                <div id="resLifetime" class="text-lg font-semibold">— $</div>
-              </div>
+            <div class="mt-4">
+              <canvas id="monthlyChart" height="260"></canvas>
             </div>
-          </aside>
-        </div>
-      </section>
-
-      <!-- Screen 3: Visuals -->
-      <section id="screen-3" class="screen">
-        <div class="lg:flex lg:gap-6 h-full">
-          <div class="lg:flex-1 card">
-            <div class="flex items-center justify-between mb-3">
-              <div><div class="text-lg font-semibold">Monthly Energy Balance</div><div class="small-muted">Generation vs consumption (12 months)</div></div>
-              <div class="small-muted">Step 3/3</div>
-            </div>
-            <div>
-              <canvas id="monthlyChart" height="220"></canvas>
-            </div>
-          </div>
-
-          <aside class="w-full lg:w-80 mt-6 lg:mt-0 card">
-            <div class="text-md font-semibold">Cost Breakdown</div>
-            <div class="small-muted mt-2">Panels / Inverter / Battery / Install</div>
 
             <div class="mt-4">
               <canvas id="costChart" height="220"></canvas>
-            </div>
-
-            <div class="mt-4 flex gap-2">
-              <button id="exportTxt" class="btn-ghost px-3 py-2 rounded-md">Export TXT</button>
-              <button id="exportCsv" class="btn-ghost px-3 py-2 rounded-md">Export CSV</button>
-              <button id="printBtn2" class="btn-primary px-3 py-2 rounded-md ml-auto">Print</button>
             </div>
           </aside>
         </div>
@@ -326,274 +312,359 @@
 
     </main>
 
-    <footer class="text-xs small-muted text-center mt-2">Estimates only — validate with a certified designer.</footer>
+    <footer class="text-xs small-muted text-center mt-2">Estimates only — verify with a certified designer.</footer>
   </div>
 
-  <!-- Help Modal -->
-  <div id="helpModal" class="fixed inset-0 hidden items-center justify-center bg-black/50 z-50">
-    <div class="w-full max-w-2xl p-6 bg-gradient-to-br from-[#042b30] to-[#083b47] rounded-xl border border-white/6">
-      <div class="flex items-start justify-between gap-4">
+  <!-- Help modal -->
+  <div id="helpModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
+    <div class="w-full max-w-2xl p-5 glass">
+      <div class="flex items-start justify-between">
         <div>
-          <h3 class="text-xl font-semibold">Help — How to use</h3>
-          <p class="small-muted mt-2">Quick guide to main inputs and terms.</p>
-          <ul class="mt-4 small-muted space-y-2">
-            <li><strong>City / PSH:</strong> Pick your city to auto-fill average Peak Sun Hours (PSH). You can fine-tune PSH.</li>
-            <li><strong>Monthly or daily:</strong> Enter either monthly bill (USD) or daily kWh; app converts for you.</li>
-            <li><strong>Panel W:</strong> Typical panel peak watt rating (e.g., 400 W).</li>
-            <li><strong>Losses:</strong> System losses (soiling, wiring, inverter, etc.) — default 20%.</li>
+          <h3 class="text-lg font-semibold">Help — How to use</h3>
+          <p class="small-muted mt-2">Follow the wizard: Solar sizing → Appliances → Financial. All currency values auto-convert based on selected country; you can edit the local tariff if needed.</p>
+          <ul class="small-muted mt-3 space-y-1">
+            <li><strong>PSH:</strong> Peak Sun Hours — affects generation estimate.</li>
+            <li><strong>System losses:</strong> Default 20% to account for inverter/wiring/soiling.</li>
             <li><strong>Battery hours:</strong> Hours of backup required (for hybrid/off-grid).</li>
-            <li><strong>Review:</strong> Confirm values on Review screen before viewing Visuals.</li>
+            <li><strong>Appliances:</strong> Add items to build accurate daily kWh.</li>
           </ul>
         </div>
-        <div class="text-right">
-          <button id="closeHelp" class="px-3 py-2 btn-ghost rounded-md">Close</button>
+        <div>
+          <button id="helpClose" class="btn-ghost px-3 py-2 rounded-md">Close</button>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  // helpers
-  const $ = id => document.getElementById(id);
-  const show = n => {
-    ['screen-1','screen-2','screen-3'].forEach(s => {
-      const el = $(s);
-      if(!el) return;
-      if(s === 'screen-' + n) el.classList.add('active'); else el.classList.remove('active');
-    });
-    // pills styling
-    ['p1','p2','p3'].forEach((p,i)=> {
-      const el = $(p);
-      if(!el) return;
-      el.style.background = (i+1 === n) ? 'linear-gradient(90deg,var(--accent),var(--accent-2))' : 'transparent';
-      el.style.color = (i+1 === n) ? '#021f22' : '#e6f6f6';
-    });
-    // ensure screen-fit: scroll top for new screen on mobile
-    const s = document.querySelector('.screen.active');
-    if(s) s.scrollTop = 0;
-  };
+/* Solar Calculator — Light Professional v1
+   - 3 virtual screens (solar sizing, appliances, financial)
+   - Appliance manager working
+   - Input validation (no negative values)
+   - Currency auto switch using country selection (with example exchange rates)
+   - Chart.js visualizations
+*/
 
-  // city dataset (subset but can be expanded easily)
-  const CITIES = [
-    {name:'Los Angeles, US', psh:5.8}, {name:'New York, US', psh:4.5}, {name:'London, UK', psh:3.5},
-    {name:'Madrid, ES', psh:5.6}, {name:'Rome, IT', psh:5.0}, {name:'Berlin, DE', psh:3.8},
-    {name:'Paris, FR', psh:4.0}, {name:'Karachi, PK', psh:5.4}, {name:'Lahore, PK', psh:5.0},
-    {name:'Islamabad, PK', psh:4.8}, {name:'Mumbai, IN', psh:5.2}, {name:'Delhi, IN', psh:5.0},
-    {name:'Sydney, AU', psh:5.7}, {name:'Melbourne, AU', psh:4.9}, {name:'Cape Town, ZA', psh:5.6},
-    {name:'Dubai, AE', psh:6.3}, {name:'Cairo, EG', psh:6.0}, {name:'Tokyo, JP', psh:4.6},
-    {name:'Toronto, CA', psh:3.9}, {name:'Sao Paulo, BR', psh:4.8}, {name:'Mexico City, MX', psh:5.1},
-    {name:'Buenos Aires, AR', psh:4.6}, {name:'Lima, PE', psh:5.2}, {name:'Jakarta, ID', psh:4.9}
+document.addEventListener('DOMContentLoaded', function () {
+  // short helper
+  const $ = id => document.getElementById(id);
+
+  // Countries & currencies with example exchange rates (USD base). You can edit rates in future.
+  const COUNTRIES = [
+    {code:'US', name:'United States', currency:'USD', symbol:'$', rate:1},
+    {code:'CA', name:'Canada', currency:'CAD', symbol:'CA$', rate:1.35},
+    {code:'GB', name:'United Kingdom', currency:'GBP', symbol:'£', rate:0.79},
+    {code:'EU', name:'Eurozone', currency:'EUR', symbol:'€', rate:0.92},
+    {code:'PK', name:'Pakistan', currency:'PKR', symbol:'PKR', rate:280},
+    {code:'IN', name:'India', currency:'INR', symbol:'₹', rate:83},
+    {code:'AU', name:'Australia', currency:'AUD', symbol:'A$', rate:1.5},
+    {code:'NZ', name:'New Zealand', currency:'NZ$', symbol:'NZ$', rate:1.6},
+    {code:'SA', name:'Saudi Arabia', currency:'SAR', symbol:'SAR', rate:3.75},
+    {code:'AE', name:'UAE', currency:'AED', symbol:'AED', rate:3.67},
+    {code:'PK', name:'Pakistan', currency:'PKR', symbol:'PKR', rate:280},
+    {code:'ZA', name:'South Africa', currency:'ZAR', symbol:'R', rate:18},
+    {code:'JP', name:'Japan', currency:'JPY', symbol:'¥', rate:150},
+    {code:'CN', name:'China', currency:'CNY', symbol:'¥', rate:7.2},
+    {code:'BR', name:'Brazil', currency:'BRL', symbol:'R$', rate:5.2},
+    {code:'MX', name:'Mexico', currency:'MXN', symbol:'MX$', rate:18},
+    {code:'NG', name:'Nigeria', currency:'NGN', symbol:'₦', rate:775},
+    {code:'EG', name:'Egypt', currency:'EGP', symbol:'E£', rate:30},
+    {code:'TR', name:'Turkey', currency:'TRY', symbol:'₺', rate:31},
+    {code:'ID', name:'Indonesia', currency:'IDR', symbol:'Rp', rate:15500}
   ];
-  // populate datalist
-  const list = $('cityList');
-  CITIES.forEach(c => {
+
+  // populate country select
+  const countrySelect = $('countrySelect');
+  COUNTRIES.forEach(c => {
     const opt = document.createElement('option');
-    opt.value = c.name + ' (PSH ' + c.psh + ')';
-    opt.dataset.psh = c.psh;
-    list.appendChild(opt);
+    opt.value = JSON.stringify({currency:c.currency, symbol:c.symbol, rate:c.rate});
+    opt.textContent = c.name + ' — ' + c.currency;
+    countrySelect.appendChild(opt);
+  });
+  // default to US
+  countrySelect.selectedIndex = 0;
+  updateCurrencyPreview();
+
+  // prevent negative values globally for number inputs
+  document.querySelectorAll('input[type="number"]').forEach(el => {
+    el.addEventListener('input', function () {
+      if(this.value === '') return;
+      const v = parseFloat(this.value);
+      if(isNaN(v) || v < 0){ this.value = ''; }
+    });
   });
 
-  // charts
+  // chart setups
   const monthlyCtx = $('monthlyChart').getContext('2d');
   const monthlyChart = new Chart(monthlyCtx, {
     type:'bar',
     data:{ labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-           datasets:[
-             { label:'Generation (kWh)', data:new Array(12).fill(0), backgroundColor:'rgba(52,211,153,0.95)' },
-             { label:'Consumption (kWh)', data:new Array(12).fill(0), backgroundColor:'rgba(96,165,250,0.95)' }
-           ]},
+      datasets:[
+        { label:'Generation (kWh)', data:new Array(12).fill(0), backgroundColor:'rgba(96,165,250,0.9)' },
+        { label:'Consumption (kWh)', data:new Array(12).fill(0), backgroundColor:'rgba(16,185,129,0.9)' }
+      ]},
     options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } }, plugins:{ legend:{ position:'bottom' } } }
   });
 
   const costCtx = $('costChart').getContext('2d');
   const costChart = new Chart(costCtx, {
     type:'doughnut',
-    data:{ labels:['Panels','Inverter','Battery','Install'], datasets:[{ data:[1,1,1,1], backgroundColor:['#f6c84c','#06b6d4','#f97316','#94a3b8'] }]},
+    data:{ labels:['Panels','Inverter','Battery','Install'], datasets:[{ data:[1,1,1,1], backgroundColor:['#60a5fa','#06b6d4','#f97316','#94a3b8'] }]},
     options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
   });
 
-  // UI elements
-  const inputs = ['cityInput','psh','monthly','daily','rate','panelWp','losses','sysType','batHours'];
-  const els = {};
-  inputs.forEach(id => els[id] = $(id));
+  // appliance manager
+  const applianceBody = $('applianceBody');
+  const applianceTotal = $('applianceTotal');
 
-  // preview & results nodes
-  const previewArray = $('previewArray'), previewPanels = $('previewPanels'), previewGen = $('previewGen');
-  const resArray = $('resArray'), resPanels = $('resPanels'), resDaily = $('resDaily'), resBattery = $('resBattery'),
-        resInverter = $('resInverter'), resCost = $('resCost'), resPayback = $('resPayback'),
-        resMonthlyGen = $('resMonthlyGen'), resMonthlySavings = $('resMonthlySavings'), resCO2 = $('resCO2'), resLifetime = $('resLifetime');
+  function addApplianceRow(item) {
+    const data = Object.assign({name:'New', w:60, h:1, q:1}, item || {});
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="py-2"><input class="apName p-1 border rounded w-full" value="'+ String(data.name).replace(/"/g,'&quot;') +'"></td>'
+                 + '<td class="py-2"><input class="apW p-1 border rounded w-20" type="number" min="0" value="'+ Number(data.w) +'"></td>'
+                 + '<td class="py-2"><input class="apH p-1 border rounded w-20" type="number" min="0" value="'+ Number(data.h) +'"></td>'
+                 + '<td class="py-2"><input class="apQ p-1 border rounded w-20" type="number" min="0" value="'+ Number(data.q) +'"></td>'
+                 + '<td class="py-2"><button class="removeAp text-sm text-red-600">Remove</button></td>';
+    applianceBody.appendChild(tr);
+    tr.querySelector('.removeAp').addEventListener('click', ()=> { tr.remove(); updateApplianceTotal(); });
+    ['apW','apH','apQ'].forEach(cls => {
+      const el = tr.querySelector('.' + cls);
+      if(el) el.addEventListener('input', updateApplianceTotal);
+    });
+    updateApplianceTotal();
+  }
 
-  // utility
-  function fmt(n,d=2){ return (isFinite(n) ? Number(n).toLocaleString(undefined,{minimumFractionDigits:d, maximumFractionDigits:d}) : '—'); }
+  // seed common items
+  addApplianceRow({name:'Fridge', w:150, h:24, q:1});
+  addApplianceRow({name:'LED bulbs', w:10, h:6, q:6});
 
-  // Compute function returns object or null
-  function compute() {
-    const monthlyUSD = parseFloat(els.monthly.value) || 0;
-    const dailyInput = parseFloat(els.daily.value) || NaN;
-    const rate = parseFloat(els.rate.value) || 0.12;
-    let pshVal = parseFloat(els.psh.value) || 5;
-    // try to detect city list selection: if user typed option from datalist, parse PSH inside parentheses
-    const cityVal = els.cityInput.value || '';
-    const match = cityVal.match(/PSH\s*([\d.]+)/);
-    if(match) pshVal = parseFloat(match[1]) || pshVal;
-    const panelWp = parseFloat(els.panelWp.value) || 400;
-    const lossPct = parseFloat(els.losses.value) || 20;
-    const lossFactor = 1 - (lossPct/100);
-    const sysType = els.sysType.value;
-    const batHours = parseFloat(els.batHours.value) || 0;
-    // determine daily usage
+  $('addAppliance').addEventListener('click', ()=> addApplianceRow());
+
+  // quick add buttons
+  document.querySelectorAll('.quickAdd').forEach(btn => {
+    btn.addEventListener('click', ()=> {
+      const name = btn.dataset.name, w=btn.dataset.w, h=btn.dataset.h, q=btn.dataset.q;
+      addApplianceRow({name, w, h, q});
+    });
+  });
+
+  function updateApplianceTotal() {
+    const rows = applianceBody.querySelectorAll('tr');
+    let wh = 0;
+    rows.forEach(r => {
+      const w = +(r.querySelector('.apW') && r.querySelector('.apW').value) || 0;
+      const h = +(r.querySelector('.apH') && r.querySelector('.apH').value) || 0;
+      const q = +(r.querySelector('.apQ') && r.querySelector('.apQ').value) || 1;
+      wh += w * h * q;
+    });
+    const kwh = wh / 1000;
+    applianceTotal.textContent = isFinite(kwh) ? kwh.toFixed(3) : '0.000';
+    return kwh;
+  }
+
+  // get currency preview
+  function updateCurrencyPreview() {
+    const val = countrySelect.value;
+    if(!val) return;
+    try {
+      const obj = JSON.parse(val);
+      $('currencyLabel').textContent = obj.currency + ' (' + obj.symbol + ')';
+      $('previewCurrency').textContent = obj.symbol + ' ' + obj.currency;
+      return obj;
+    } catch(e){ return null; }
+  }
+
+  countrySelect.addEventListener('change', ()=> {
+    const curr = updateCurrencyPreview();
+    // convert monthly input value from previous currency to new one using stored conversion if possible
+    // for now leave monthly as-is; user can edit tariff/manual conversion
+  });
+
+  // compute core logic
+  function computeDesign() {
+    // read currency object
+    let curr = {currency:'USD', symbol:'$', rate:1};
+    try { curr = JSON.parse(countrySelect.value); } catch(e){ curr = {currency:'USD', symbol:'$', rate:1}; }
+
+    // inputs & validation
+    const monthlyRaw = parseFloat($('monthly').value);
+    const dailyRaw = parseFloat($('daily').value);
+    const tariffLocal = parseFloat($('tariff').value) || 0.12; // local currency per kWh
+    const psh = parseFloat($('psh').value) || 5;
+    const panelWp = parseFloat($('panelWp').value) || 400;
+    const losses = parseFloat($('losses').value) || 20;
+    const sysType = $('sysType').value;
+    const batHours = parseFloat($('batHours').value) || 0;
+
+    // compute daily consumption:
+    // if daily given use it; else try monthly / tariff; else use appliances
     let daily = NaN;
-    if(!isNaN(dailyInput)) daily = dailyInput;
-    else if(monthlyUSD > 0) daily = (monthlyUSD / rate) / 30;
-    else {
-      // fallback 0
-      daily = NaN;
+    if(isFinite(dailyRaw) && dailyRaw > 0) daily = dailyRaw;
+    else if(isFinite(monthlyRaw) && monthlyRaw > 0) {
+      // monthlyRaw is in local currency; convert to USD equivalent via rate? We keep tariff in local currency, so daily in kWh = monthly / tariff / 30
+      daily = (monthlyRaw / tariffLocal) / 30;
+    } else {
+      // fallback to appliance total
+      daily = updateApplianceTotal();
     }
-    if(!isFinite(daily) || daily <= 0) {
-      // update preview placeholders
-      previewArray.textContent = '— kW';
-      previewPanels.textContent = '—';
-      previewGen.textContent = '— kWh';
-      return null;
-    }
+    if(!isFinite(daily) || daily <= 0) return null;
 
-    // array kW
-    const arrayKW = daily / (pshVal * lossFactor);
+    // sizing
+    const lossFactor = 1 - (losses/100);
+    const arrayKW = daily / (psh * lossFactor);
     const arrayKWr = Math.max(0.001, Math.round(arrayKW * 100) / 100);
     const arrayW = arrayKWr * 1000;
     const panels = Math.ceil(arrayW / panelWp);
     const panelTotalW = panels * panelWp;
-    const estDailyGen = (panelTotalW/1000) * pshVal * lossFactor;
+    const estDailyGen = (panelTotalW / 1000) * psh * lossFactor;
 
-    // inverter sizing
+    // inverter
     const avgPowerW = (daily * 1000) / 24;
     const inverterW = Math.ceil(Math.max(avgPowerW * 1.5, avgPowerW * 2));
     const inverterKW = inverterW / 1000;
 
-    // battery if hybrid
+    // battery sizing
     let batteryKWh = 0, batteryAh = 0;
-    if(sysType !== 'grid') {
-      const usableNeeded = (daily/24) * batHours;
+    if(sysType !== 'grid' && batHours > 0) {
+      const usable = (daily / 24) * batHours;
       const dod = 0.8, batEff = 0.9, bankV = 48;
-      batteryKWh = usableNeeded / (dod * batEff);
+      batteryKWh = usable / (dod * batEff);
       if(!isFinite(batteryKWh)) batteryKWh = 0;
       batteryAh = (batteryKWh * 1000) / bankV;
     }
 
-    // costs
-    const panelCostPerW = 0.25; // $/W
-    const invCostPerKw = 300; // $/kW
-    const batCostPerKwh = 150; // $/kWh
-    const installFlat = 400;
-    const costPanels = panelTotalW * panelCostPerW;
-    const costInv = inverterKW * invCostPerKw;
-    const costBat = batteryKWh * batCostPerKwh;
-    const totalCost = costPanels + costInv + costBat + installFlat;
+    // costs (in USD) — then present in local currency by multiplying rate
+    const panelCostPerWUsd = 0.25; // $/W
+    const invCostPerKwUsd = 300;
+    const batCostPerKwhUsd = 150;
+    const installUsd = 400;
+    const costPanelsUsd = panelTotalW * panelCostPerWUsd;
+    const costInvUsd = inverterKW * invCostPerKwUsd;
+    const costBatUsd = batteryKWh * batCostPerKwhUsd;
+    const totalUsd = costPanelsUsd + costInvUsd + costBatUsd + installUsd;
 
+    // convert to local currency if needed
+    const totalLocal = totalUsd * curr.rate;
+    const costBreakdownLocal = {
+      panels: costPanelsUsd * curr.rate,
+      inverter: costInvUsd * curr.rate,
+      battery: costBatUsd * curr.rate,
+      install: installUsd * curr.rate
+    };
+
+    // savings & payback
     const monthlyGeneration = estDailyGen * 30;
     const annualGeneration = estDailyGen * 365;
-    const annualSavings = annualGeneration * rate;
-    const payback = annualSavings > 0 ? (totalCost / annualSavings) : Infinity;
-    // CO2 default intensity
-    const co2Intensity = 0.5; // kg CO2/kWh
-    const co2Saved = annualGeneration * co2Intensity;
-    // lifetime (10y) estimate
-    const lifetimeSavings = annualSavings * 10;
+    const annualSavingsLocal = annualGeneration * tariffLocal; // local currency
+    const paybackYears = annualSavingsLocal > 0 ? (totalLocal / annualSavingsLocal) : Infinity;
 
-    // update preview live
-    previewArray.textContent = fmt(arrayKWr,2) + ' kW';
-    previewPanels.textContent = panels;
-    previewGen.textContent = fmt(estDailyGen,2) + ' kWh';
+    // CO2 (assume 0.5 kg CO2 per kWh)
+    const co2PerYear = annualGeneration * 0.5;
 
-    return {
-      daily, pshVal, panelWp, lossPct, arrayKWr, panels, panelTotalW, estDailyGen,
-      inverterKW, batteryKWh, batteryAh, totalCost, monthlyGeneration, annualGeneration, annualSavings, payback,
-      costBreakdown:{ panels: costPanels, inverter: costInv, battery: costBat, install: installFlat },
-      co2Saved, lifetimeSavings
-    };
-  }
+    // update preview elements
+    $('previewArray').textContent = arrayKWr.toFixed(2) + ' kW';
+    $('previewPanels').textContent = panels;
+    $('previewGen').textContent = estDailyGen.toFixed(2) + ' kWh';
+    $('previewCurrency').textContent = curr.symbol + ' ' + curr.currency;
 
-  // live preview on inputs
-  ['cityInput','psh','monthly','daily','rate','panelWp','losses','sysType','batHours'].forEach(id => {
-    const el = $(id);
-    if(!el) return;
-    el.addEventListener('input', () => compute());
-  });
+    // fill result nodes
+    $('resArray').textContent = arrayKWr.toFixed(2) + ' kW';
+    $('resPanels').textContent = panels + ' × ' + panelWp + 'W = ' + panelTotalW + ' W';
+    $('resDaily').textContent = estDailyGen.toFixed(2) + ' kWh';
+    $('resBattery').textContent = batteryKWh > 0 ? batteryKWh.toFixed(2) + ' kWh' : 'None';
+    $('resCost').textContent = curr.symbol + ' ' + Number(totalLocal).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    $('resPayback').textContent = isFinite(paybackYears) ? paybackYears.toFixed(1) + ' yrs' : '—';
+    $('resMonthly').textContent = monthlyGeneration.toFixed(0);
 
-  // navigation & actions
-  $('nextBtn').addEventListener('click', ()=> {
-    const r = compute();
-    if(!r) { alert('Please enter monthly amount or daily consumption (or select appliances).'); return; }
-    // populate review
-    $('resArray').textContent = fmt(r.arrayKWr,2) + ' kW';
-    $('resPanels').textContent = r.panels + ' × ' + r.panelWp + 'W = ' + fmt(r.panelTotalW,0) + ' W';
-    $('resDaily').textContent = fmt(r.estDailyGen,2) + ' kWh';
-    $('resBattery').textContent = r.batteryKWh > 0 ? fmt(r.batteryKWh,2)+' kWh' : 'None';
-    $('resInverter').textContent = fmt(r.inverterKW,2) + ' kW';
-    $('resCost').textContent = '$ ' + fmt(r.totalCost,2);
-    $('resPayback').textContent = isFinite(r.payback) ? fmt(r.payback,1) : '—';
-    $('resMonthlyGen').textContent = fmt(r.monthlyGeneration,0) + ' kWh';
-    $('resMonthlySavings').textContent = '$ ' + fmt(r.annualSavings? r.annualSavings/12 : 0,2);
-    $('resCO2').textContent = fmt(r.co2Saved,0) + ' kg';
-    $('resLifetime').textContent = '$ ' + fmt(r.lifetimeSavings,0);
+    // resMonthlyGen / resMonthlySavings / resCO2 / resLifetime
+    $('resMonthlyGen').textContent = monthlyGeneration.toFixed(0) + ' kWh';
+    $('resMonthlySavings').textContent = curr.symbol + ' ' + (annualSavingsLocal/12).toFixed(2);
+    $('resCO2').textContent = Math.round(co2PerYear) + ' kg';
+    $('resLifetime').textContent = curr.symbol + ' ' + (annualSavingsLocal * 10).toFixed(0);
 
-    window.solarLast = r;
-    show(2);
-  });
-
-  $('backBtn').addEventListener('click', ()=> show(1));
-
-  $('toVisualsBtn').addEventListener('click', ()=> {
-    const r = window.solarLast || compute();
-    if(!r) { alert('Please compute design first'); return; }
-    // monthly chart (seasonal factor approx)
+    // update charts
     const monthlyFactors = [0.85,0.9,1.0,1.05,1.1,1.12,1.15,1.12,1.05,0.98,0.92,0.88];
-    const genData = monthlyFactors.map(f => Math.round(r.estDailyGen * 30 * f));
-    const consData = new Array(12).fill(Math.round(r.daily * 30));
-    monthlyChart.data.datasets[0].data = genData;
-    monthlyChart.data.datasets[1].data = consData;
+    monthlyChart.data.datasets[0].data = monthlyFactors.map(f => Math.round(estDailyGen * 30 * f));
+    monthlyChart.data.datasets[1].data = new Array(12).fill(Math.round(daily * 30));
     monthlyChart.update();
 
-    // cost donut
-    const cb = r.costBreakdown;
-    costChart.data.datasets[0].data = [cb.panels, cb.inverter, cb.battery, cb.install];
+    costChart.data.datasets[0].data = [costBreakdownLocal.panels, costBreakdownLocal.inverter, costBreakdownLocal.battery, costBreakdownLocal.install];
     costChart.update();
 
-    show(3);
+    // return object saved for export
+    const out = {
+      daily, psh, panelWp, losses, arrayKWr, panels, panelTotalW, estDailyGen,
+      inverterKW, batteryKWh, batteryAh, totalLocal, costBreakdownLocal, annualSavingsLocal, paybackYears, co2PerYear
+    };
+    window.lastSolar = out;
+    return out;
+  }
+
+  // wire navigation buttons
+  $('toAppliance').addEventListener('click', ()=> {
+    const r = computeDesign();
+    if(!r){ alert('Please enter monthly amount or daily consumption (or add appliances)'); return; }
+    // mark step pills
+    $('step1').classList.remove('bg-white'); $('step2').classList.add('bg-white');
+    $('screen1').classList.remove('active'); $('screen2').classList.add('active');
   });
 
-  // help modal wiring
-  $('helpBtn').addEventListener('click', ()=> {
-    $('helpModal').classList.remove('hidden'); $('helpModal').classList.add('flex');
-  });
-  $('closeHelp').addEventListener('click', ()=> {
-    $('helpModal').classList.add('hidden'); $('helpModal').classList.remove('flex');
+  $('backToSolar').addEventListener('click', ()=> {
+    $('step2').classList.remove('bg-white'); $('step1').classList.add('bg-white');
+    $('screen2').classList.remove('active'); $('screen1').classList.add('active');
   });
 
-  // startover/clear
-  $('startOver').addEventListener('click', ()=> location.reload());
-  $('clearBtn').addEventListener('click', ()=> {
-    ['cityInput','psh','monthly','daily','rate','panelWp','losses','sysType','batHours'].forEach(id => { const el=$(id); if(el) el.value=''; });
-    $('panelWp').value = 400; $('losses').value = 20; $('rate').value = 0.12; $('psh').value = 5.0;
-    compute();
+  $('toFinancial').addEventListener('click', ()=> {
+    // compute design including appliances
+    const r = computeDesign();
+    if(!r){ alert('Please ensure consumption is entered or appliances added'); return; }
+    // incorporate appliances
+    const applDaily = updateApplianceTotal();
+    const finalDaily = (isFinite(r.daily) && r.daily > 0) ? r.daily : applDaily;
+    // recompute with appliances if needed by setting daily field then compute again
+    if(!isFinite(r.daily) || r.daily <= 0) {
+      $('daily').value = applDaily.toFixed(3);
+    }
+    const final = computeDesign();
+    if(!final){ alert('Calculation failed'); return; }
+
+    // mark pills & screens
+    $('step2').classList.remove('bg-white'); $('step3').classList.add('bg-white');
+    $('screen2').classList.remove('active'); $('screen3').classList.add('active');
+  });
+
+  $('backToAppliance').addEventListener('click', ()=> {
+    $('step3').classList.remove('bg-white'); $('step2').classList.add('bg-white');
+    $('screen3').classList.remove('active'); $('screen2').classList.add('active');
+  });
+
+  // reset / clear handlers
+  $('clear1').addEventListener('click', ()=> {
+    ['psh','monthly','daily','tariff','losses','batHours'].forEach(id => { const el=$(id); if(el) el.value=''; });
+    updateApplianceTotal();
+    computeDesign();
+  });
+
+  $('resetAll').addEventListener('click', ()=> {
+    location.reload();
   });
 
   // export & print
-  $('exportTxt').addEventListener('click', ()=> {
-    const r = window.solarLast || compute();
-    if(!r) { alert('Calculate first'); return; }
+  $('downloadTxt').addEventListener('click', ()=> {
+    const r = window.lastSolar || computeDesign();
+    if(!r){ alert('Please compute first'); return; }
+    const curr = JSON.parse(countrySelect.value);
     const lines = [
-      'Solar Designer Report',
-      '---------------------',
-      'Daily consumption (kWh): ' + fmt(r.daily,3),
-      'PSH (h): ' + fmt(r.pshVal,2),
-      'Array: ' + fmt(r.arrayKWr,2) + ' kW',
+      'Solar Report',
+      '============',
+      'Daily consumption (kWh): ' + Number(r.daily).toFixed(3),
+      'PSH: ' + r.psh,
+      'Array: ' + r.arrayKWr + ' kW',
       'Panels: ' + r.panels,
-      'Daily prod: ' + fmt(r.estDailyGen,2) + ' kWh',
-      'Battery: ' + (r.batteryKWh? fmt(r.batteryKWh,2)+' kWh' : 'None'),
-      'Total est cost: $' + fmt(r.totalCost,2),
-      'Payback (yrs): ' + (isFinite(r.payback)? fmt(r.payback,1) : '—')
+      'Daily generation: ' + r.estDailyGen.toFixed(2) + ' kWh',
+      'Battery: ' + (r.batteryKWh ? r.batteryKWh.toFixed(2) + ' kWh' : 'None'),
+      'Total est cost: ' + curr.symbol + ' ' + Number(r.totalLocal || 0).toFixed(2),
+      'Payback (yrs): ' + (isFinite(r.paybackYears) ? r.paybackYears.toFixed(1) : '—')
     ];
     const txt = lines.join('\\n');
     const blob = new Blob([txt], { type:'text/plain' });
@@ -601,18 +672,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const a = document.createElement('a'); a.href = url; a.download = 'solar_report.txt'; a.click(); URL.revokeObjectURL(url);
   });
 
-  $('exportCsv').addEventListener('click', ()=> {
-    const r = window.solarLast || compute();
-    if(!r) { alert('Calculate first'); return; }
+  $('downloadCsv').addEventListener('click', ()=> {
+    const r = window.lastSolar || computeDesign();
+    if(!r){ alert('Please compute first'); return; }
     const rows = [
       ['field','value'],
       ['daily_kwh', r.daily],
-      ['psh', r.pshVal],
+      ['psh', r.psh],
       ['array_kw', r.arrayKWr],
       ['panels', r.panels],
-      ['daily_prod_kwh', r.estDailyGen],
+      ['daily_gen_kwh', r.estDailyGen],
       ['battery_kwh', r.batteryKWh || 0],
-      ['total_cost_usd', r.totalCost || 0]
+      ['total_cost_local', r.totalLocal || 0]
     ];
     const csv = rows.map(rw => rw.map(c => String(c).replace(/,/g,'')).join(',')).join('\\n');
     const blob = new Blob([csv], { type:'text/csv' });
@@ -620,11 +691,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const a = document.createElement('a'); a.href = url; a.download = 'solar_report.csv'; a.click(); URL.revokeObjectURL(url);
   });
 
-  $('printBtn2').addEventListener('click', ()=> window.print());
-  $('printBtn')?.addEventListener('click', ()=> window.print());
+  $('print').addEventListener('click', ()=> window.print());
 
-  // initial compute
-  compute();
+  // help modal
+  $('helpOpen').addEventListener('click', ()=> { $('helpModal').classList.remove('hidden'); $('helpModal').classList.add('flex'); });
+  $('helpClose').addEventListener('click', ()=> { $('helpModal').classList.add('hidden'); $('helpModal').classList.remove('flex'); });
+
+  // initial compute / preview
+  computeDesign();
 });
 </script>
 </body>
