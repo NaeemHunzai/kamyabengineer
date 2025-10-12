@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Solar Calculator — Dashboard (Single Screen)</title>
+<title>Solar Calculator — Wizard (Full Features)</title>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,293 +11,337 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-  :root{
-    --bg:#f6f9fb;
-    --card:#ffffff;
-    --muted:#6b7280;
-    --accent:#0b6bff;
-    --accent-2:#60a5fa;
-    --border: rgba(15,23,42,0.06);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;}
-  body{background:linear-gradient(180deg,var(--bg) 0%, #ffffff 60%); color:#0f172a; -webkit-font-smoothing:antialiased;}
-  .app { max-width:1200px; margin:18px auto; padding:12px; min-height:100vh; display:flex; flex-direction:column; gap:14px; }
+:root{
+  --bg:#f6f9fb;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent:#0b6bff;
+  --accent-2:#60a5fa;
+  --border: rgba(15,23,42,0.06);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;}
+body{background:linear-gradient(180deg,var(--bg) 0%, #ffffff 60%); color:#0f172a; -webkit-font-smoothing:antialiased;}
+.app { max-width:1100px; margin:18px auto; padding:14px; min-height:100vh; display:flex; flex-direction:column; gap:14px; }
 
-  header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:linear-gradient(90deg,rgba(11,107,255,0.08),rgba(96,165,250,0.05)); border-radius:10px; border:1px solid var(--border); }
-  .brand { display:flex; align-items:center; gap:12px; }
-  .logo { width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; font-size:20px; }
-  h1{margin:0;font-size:18px}
-  .subtitle{font-size:12px;color:var(--muted)}
+/* header */
+.header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; background:linear-gradient(90deg,rgba(11,107,255,0.05),rgba(96,165,250,0.02)); border-radius:10px; border:1px solid var(--border); }
+.brand { display:flex; align-items:center; gap:12px; }
+.logo { width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; font-size:18px; }
 
-  /* Layout: three vertical columns on wide screens, stacked on mobile */
-  .dashboard { display:grid; grid-template-columns: 1fr; gap:12px; }
-  @media(min-width:1100px){ .dashboard { grid-template-columns: 420px 1fr 360px; align-items:start; } }
+/* wizard container */
+.wizard { display:grid; grid-template-columns: 1fr; gap:12px; }
+@media(min-width:1100px){ .wizard { grid-template-columns: 1fr 420px; } }
 
-  .card { background:var(--card); border-radius:12px; padding:14px; border:1px solid var(--border); box-shadow:0 6px 20px rgba(2,6,23,0.04); }
+.card { background:var(--card); border-radius:12px; padding:14px; border:1px solid var(--border); box-shadow:0 6px 20px rgba(2,6,23,0.04); }
 
-  label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
-  input[type="text"], input[type="number"], select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:transparent; font-size:14px; }
-  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.stepper { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+.pill { padding:8px 12px; border-radius:999px; background:rgba(0,0,0,0.03); color:var(--muted); font-weight:600; font-size:13px; }
+.pill.active { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#012; box-shadow:0 10px 28px rgba(11,107,255,0.12); }
 
-  .row { display:flex; gap:10px; }
-  .row > *{ flex:1; }
+.steps { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:12px; }
 
-  .small-muted { color:var(--muted); font-size:13px; }
+.container-steps { display:flex; flex-direction:column; gap:12px; }
 
-  .btn { padding:10px 12px; border-radius:10px; cursor:pointer; border:none; font-weight:600; font-size:14px; }
-  .btn.primary { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; box-shadow:0 8px 24px rgba(11,107,255,0.12); }
-  .btn.ghost { background:transparent; border:1px solid var(--border); color:#0f172a; }
+/* step panels (cards shown one at a time) */
+.panel { display:none; animation:fadeIn .28s ease both; }
+.panel.active { display:block; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
 
-  .appliance-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
-  .appliance-row input { width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); }
+label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+input[type="text"], input[type="number"], select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:transparent; font-size:14px; }
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 
-  .appliance-list { max-height:260px; overflow:auto; margin-bottom:8px; }
+.row { display:flex; gap:10px; }
+.row > *{ flex:1; }
 
-  .muted { color:var(--muted); }
+.small-muted { color:var(--muted); font-size:13px; }
 
-  footer { text-align:center; font-size:12px; color:var(--muted); margin-top:6px; }
+.btn { padding:10px 12px; border-radius:10px; cursor:pointer; border:none; font-weight:600; font-size:14px; }
+.btn.primary { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; box-shadow:0 8px 24px rgba(11,107,255,0.12); }
+.btn.ghost { background:transparent; border:1px solid var(--border); color:#0f172a; }
 
-  canvas { width:100% !important; height:auto !important; border-radius:8px; }
+/* appliance list */
+.appliance-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+.appliance-row input { width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); }
 
-  .sticky-calc { position:sticky; bottom:18px; display:flex; gap:10px; align-items:center; justify-content:space-between; padding:10px; background:transparent; }
-  @media(min-width:1100px){ .sticky-calc { position:static; } }
+.appliance-list { max-height:260px; overflow:auto; margin-bottom:8px; }
 
-  .small-card { padding:10px; border-radius:10px; border:1px solid var(--border); background:linear-gradient(180deg,#fff,#fbfdff); }
+canvas { width:100% !important; height:auto !important; border-radius:8px; }
 
-  .label-lg { font-size:13px; color:var(--muted); margin-bottom:6px; }
-  .value-lg { font-weight:700; font-size:18px; color:#06263a; }
+.footer-actions { display:flex; gap:8px; align-items:center; margin-top:12px; }
 
-  .actions { display:flex; gap:8px; align-items:center; }
-  .kbd { background:#f1f5f9; padding:6px 10px; border-radius:8px; font-weight:600; font-size:13px; }
+.help-modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(2,6,23,0.45); z-index:9999; }
+.help-modal .dialog { width:min(920px,94%); background:white; border-radius:12px; padding:18px; border:1px solid var(--border); }
+
+.kv { font-weight:700; color:#052133; font-size:16px; }
+.small-card { padding:10px; border-radius:10px; border:1px solid var(--border); background:linear-gradient(180deg,#fff,#fbfdff); }
+
+@media(max-width:1100px){
+  .wizard { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
   <div class="app">
 
-    <header>
+    <div class="header">
       <div class="brand">
         <div class="logo">☀️</div>
         <div>
-          <h1>Solar Calculator — General & Technical Modes</h1>
-          <div class="subtitle">All features included • Appliance estimator • Charts • Export • Print</div>
+          <div style="font-weight:700">Solar Calculator — General & Technical Modes</div>
+          <div class="small-muted">All features — Appliance estimator, PSH cities, charts, export & print</div>
         </div>
       </div>
 
-      <div class="actions">
+      <div style="display:flex;gap:10px;align-items:center;">
         <div class="small-muted">Currency: USD ($)</div>
         <button id="helpBtn" class="btn ghost">Help</button>
+        <button id="resetBtnTop" class="btn ghost">Reset</button>
       </div>
-    </header>
+    </div>
 
-    <main class="dashboard" role="main">
-      <!-- LEFT: Inputs -->
-      <section class="card" id="panel-inputs" aria-labelledby="inputs-title">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <div style="font-weight:700" id="inputs-title">Inputs</div>
-            <div class="small-muted">Site, consumption & system parameters</div>
+    <div class="wizard">
+      <!-- LEFT: wizard panels -->
+      <div class="card container-steps">
+        <div class="steps">
+          <div class="stepper">
+            <div id="pill1" class="pill active">1. Inputs</div>
+            <div id="pill2" class="pill">2. Appliances</div>
+            <div id="pill3" class="pill">3. Results</div>
           </div>
-          <div class="small-muted">Inputs</div>
+          <div class="small-muted" id="stepHint">Enter consumption or use appliance estimator</div>
         </div>
 
-        <div style="margin-top:12px;display:grid;gap:12px">
-          <div>
-            <label for="citySelect">City (auto PSH)</label>
-            <select id="citySelect" aria-label="City PSH select">
-              <option value="">— Select city (optional) —</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <div>
-              <label for="pshInput">Peak Sun Hours (PSH)</label>
-              <input id="pshInput" type="number" step="0.1" min="0" value="5" />
-            </div>
-            <div>
-              <label for="panelWp">Panel W (typical)</label>
-              <select id="panelWp">
-                <option value="330">330 W</option>
-                <option value="360">360 W</option>
-                <option value="400" selected>400 W</option>
-                <option value="450">450 W</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label for="monthlyInput">Monthly electricity bill (USD)</label>
-              <input id="monthlyInput" type="number" step="0.01" min="0" placeholder="e.g. 120" />
-            </div>
-            <div>
-              <label for="dailyInput">Daily consumption (kWh) — optional</label>
-              <input id="dailyInput" type="number" step="0.01" min="0" placeholder="e.g. 15" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label for="tariffInput">Electric rate ($/kWh)</label>
-              <input id="tariffInput" type="number" step="0.001" min="0" value="0.12" />
-            </div>
-            <div>
-              <label for="lossesInput">Losses (%)</label>
-              <input id="lossesInput" type="number" step="0.1" min="0" value="20" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label for="systemType">System type</label>
-              <select id="systemType">
-                <option value="grid">Grid-tie</option>
-                <option value="hybrid">Hybrid (battery)</option>
-                <option value="offgrid">Off-grid</option>
-              </select>
-            </div>
-            <div>
-              <label for="batteryHours">Battery backup (hrs)</label>
-              <input id="batteryHours" type="number" step="0.1" min="0" value="0" />
-            </div>
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center">
-            <button id="calculateBtn" class="btn primary" title="Run calculation for all sections">Calculate</button>
-            <button id="resetBtn" class="btn ghost">Reset</button>
-            <div class="small-muted" style="margin-left:auto">Tip: select city to auto-fill PSH</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- MIDDLE: Appliances & Charts -->
-      <section style="display:flex;flex-direction:column;gap:12px;">
-
-        <div class="card" id="panel-appliances">
+        <!-- Panel 1: Inputs -->
+        <div id="panel-1" class="panel active">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div style="font-weight:700">Appliance Estimator</div>
-              <div class="small-muted">Add items to auto-calc daily consumption</div>
-            </div>
-            <div class="small-muted">Appliances</div>
+            <div style="font-weight:700">Site & System Inputs</div>
+            <div class="small-muted">Step 1/3</div>
           </div>
 
-          <div style="margin-top:12px;display:grid;gap:10px">
-            <div class="appliance-list" id="applianceList" aria-live="polite"></div>
+          <div style="margin-top:12px; display:grid; gap:12px;">
+            <div>
+              <label for="citySelect">City (auto PSH)</label>
+              <select id="citySelect"><option value="">— Select city (optional) —</option></select>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="pshInput">Peak Sun Hours (PSH)</label>
+                <input id="pshInput" type="number" step="0.1" min="0" value="5" />
+              </div>
+              <div>
+                <label for="panelWp">Panel W (typical)</label>
+                <select id="panelWp">
+                  <option value="330">330 W</option>
+                  <option value="360">360 W</option>
+                  <option value="400" selected>400 W</option>
+                  <option value="450">450 W</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="monthlyInput">Monthly electricity bill (USD)</label>
+                <input id="monthlyInput" type="number" step="0.01" min="0" placeholder="e.g. 120" />
+              </div>
+              <div>
+                <label for="dailyInput">Daily consumption (kWh) — optional</label>
+                <input id="dailyInput" type="number" step="0.01" min="0" placeholder="e.g. 15" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="tariffInput">Electric rate ($/kWh)</label>
+                <input id="tariffInput" type="number" step="0.001" min="0" value="0.12" />
+              </div>
+              <div>
+                <label for="lossesInput">Losses (%)</label>
+                <input id="lossesInput" type="number" step="0.1" min="0" value="20" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="systemType">System type</label>
+                <select id="systemType">
+                  <option value="grid">Grid-tie</option>
+                  <option value="hybrid">Hybrid</option>
+                  <option value="offgrid">Off-grid</option>
+                </select>
+              </div>
+              <div>
+                <label for="batteryHours">Battery backup (hrs)</label>
+                <input id="batteryHours" type="number" step="0.1" min="0" value="0" />
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:center">
+              <div style="flex:1"></div>
+              <div style="display:flex;gap:8px">
+                <button id="nextBtn" class="btn primary">Next →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Appliances -->
+        <div id="panel-2" class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-weight:700">Appliance Estimator</div>
+            <div class="small-muted">Step 2/3</div>
+          </div>
+
+          <div style="margin-top:12px; display:grid; gap:12px;">
+            <div class="appliance-list card" id="applianceList" aria-live="polite" style="padding:10px; max-height:220px; overflow:auto;"></div>
 
             <div style="display:grid;gap:8px;">
               <div class="row">
-                <input id="apName" type="text" placeholder="Name (e.g. Fridge)" aria-label="Appliance name" />
-                <input id="apW" type="number" step="1" min="0" placeholder="W" aria-label="Appliance wattage" />
+                <input id="apName" type="text" placeholder="Name (e.g. Fridge)" />
+                <input id="apW" type="number" step="1" min="0" placeholder="W" />
               </div>
               <div class="row">
-                <input id="apH" type="number" step="0.1" min="0" placeholder="hrs/day" aria-label="Appliance hours per day" />
-                <input id="apQ" type="number" step="1" min="0" placeholder="qty" aria-label="Appliance quantity" />
+                <input id="apH" type="number" step="0.1" min="0" placeholder="hrs/day" />
+                <input id="apQ" type="number" step="1" min="0" placeholder="qty" />
               </div>
 
-              <div style="display:flex;gap:8px">
+              <div style="display:flex;gap:8px;align-items:center">
                 <button id="addApplianceBtn" class="btn primary">Add Appliance</button>
                 <button id="clearAppliances" class="btn ghost">Clear All</button>
                 <div style="margin-left:auto" class="small-muted">Total daily: <span id="applianceTotal">0.000</span> kWh</div>
               </div>
+
+              <div style="display:flex;gap:8px">
+                <div class="small-muted">Quick add:</div>
+                <button class="btn ghost quick-add" data-name="Fridge" data-w="150" data-h="24" data-q="1">Fridge</button>
+                <button class="btn ghost quick-add" data-name="LED bulbs" data-w="10" data-h="6" data-q="6">LEDs</button>
+                <button class="btn ghost quick-add" data-name="AC 1.5T" data-w="1400" data-h="6" data-q="1">AC</button>
+                <button class="btn ghost quick-add" data-name="TV" data-w="120" data-h="4" data-q="1">TV</button>
+              </div>
             </div>
 
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <div class="small-muted">Quick add:</div>
-              <button class="btn ghost quick-add" data-name="Fridge" data-w="150" data-h="24" data-q="1">Fridge</button>
-              <button class="btn ghost quick-add" data-name="LED 10W" data-w="10" data-h="6" data-q="6">LEDs</button>
-              <button class="btn ghost quick-add" data-name="AC 1.5T" data-w="1400" data-h="6" data-q="1">AC</button>
-              <button class="btn ghost quick-add" data-name="TV" data-w="120" data-h="4" data-q="1">TV</button>
+            <div style="display:flex;gap:10px;align-items:center">
+              <button id="backBtn" class="btn ghost">← Back</button>
+              <div style="flex:1"></div>
+              <button id="nextToResults" class="btn primary">Next →</button>
             </div>
           </div>
         </div>
 
-        <div class="card" id="panel-charts">
+        <!-- Panel 3: Results -->
+        <div id="panel-3" class="panel">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div style="font-weight:700">Monthly & Cost Visuals</div>
-              <div class="small-muted">Generation vs consumption and cost breakdown</div>
-            </div>
-            <div class="small-muted">Visuals</div>
+            <div style="font-weight:700">Results & Financial</div>
+            <div class="small-muted">Step 3/3</div>
           </div>
 
-          <div style="display:grid;gap:10px;margin-top:12px">
-            <div style="height:250px">
-              <canvas id="monthlyChart"></canvas>
+          <div style="margin-top:12px; display:grid; gap:12px;">
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+              <div class="small-card">
+                <div class="small-muted">Array</div>
+                <div id="resArray" class="kv">— kW</div>
+              </div>
+              <div class="small-card">
+                <div class="small-muted">Panels</div>
+                <div id="resPanels" class="kv">—</div>
+              </div>
             </div>
-            <div style="height:200px">
-              <canvas id="costChart"></canvas>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+              <div class="small-card">
+                <div class="small-muted">Daily production</div>
+                <div id="resDaily" class="kv">— kWh</div>
+              </div>
+              <div class="small-card">
+                <div class="small-muted">Battery</div>
+                <div id="resBattery" class="kv">—</div>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+              <div class="small-card">
+                <div class="small-muted">Estimated cost</div>
+                <div id="resCost" class="kv">—</div>
+              </div>
+              <div class="small-card">
+                <div class="small-muted">Estimated payback</div>
+                <div id="resPayback" class="kv">— yrs</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button id="exportTxt" class="btn ghost">Export TXT</button>
+              <button id="exportCsv" class="btn ghost">Export CSV</button>
+              <button id="printBtn" class="btn primary" style="margin-left:auto">Print</button>
+            </div>
+
+            <div style="display:grid;gap:10px;margin-top:6px">
+              <div style="height:220px" class="card">
+                <div class="small-muted">Monthly generation vs consumption</div>
+                <canvas id="monthlyChart"></canvas>
+              </div>
+              <div style="height:220px" class="card">
+                <div class="small-muted">Cost breakdown</div>
+                <canvas id="costChart"></canvas>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button id="backFromResults" class="btn ghost">← Back</button>
             </div>
           </div>
         </div>
 
-      </section>
+      </div>
 
-      <!-- RIGHT: Results summary -->
-      <section class="card" id="panel-results">
+      <!-- RIGHT column: summary / quick preview -->
+      <aside class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <div style="font-weight:700">Results & Financial</div>
-            <div class="small-muted">Sizing, costs and payback</div>
-          </div>
-          <div class="small-muted">Results</div>
+          <div style="font-weight:700">Quick Summary</div>
+          <div class="small-muted">Live</div>
         </div>
 
         <div style="margin-top:12px;display:grid;gap:10px">
           <div class="small-card">
-            <div class="label-lg">Array</div>
-            <div id="resArray" class="value-lg">— kW</div>
+            <div class="small-muted">Preview Array</div>
+            <div id="previewArray" class="kv">— kW</div>
           </div>
-
           <div class="small-card">
-            <div class="label-lg">Panels</div>
-            <div id="resPanels" class="value-lg">—</div>
+            <div class="small-muted">Preview Panels</div>
+            <div id="previewPanels" class="kv">—</div>
           </div>
-
           <div class="small-card">
-            <div class="label-lg">Daily production</div>
-            <div id="resDaily" class="value-lg">— kWh</div>
+            <div class="small-muted">Preview Daily Prod</div>
+            <div id="previewDaily" class="kv">— kWh</div>
           </div>
 
-          <div class="small-card">
-            <div class="label-lg">Battery</div>
-            <div id="resBattery" class="value-lg">—</div>
-          </div>
-
-          <div class="small-card">
-            <div class="label-lg">Estimated cost</div>
-            <div id="resCost" class="value-lg">—</div>
-          </div>
-
-          <div class="small-card">
-            <div class="label-lg">Estimated payback</div>
-            <div id="resPayback" class="value-lg">— yrs</div>
-          </div>
-
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-            <button id="exportTxt" class="btn ghost">Export TXT</button>
-            <button id="exportCsv" class="btn ghost">Export CSV</button>
-            <button id="printBtn" class="btn primary" style="margin-left:auto">Print</button>
+          <div style="margin-top:6px" class="small-muted">Actions</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+            <button id="calcSticky" class="btn primary">Calculate</button>
+            <button id="helpBtn2" class="btn ghost">Help</button>
           </div>
         </div>
-      </section>
+      </aside>
 
-    </main>
+    </div>
 
-    <footer>Estimates only — validate with a certified designer.</footer>
+    <footer style="text-align:center;font-size:12px;color:var(--muted)">Estimates only — validate with a certified designer.</footer>
   </div>
 
   <!-- HELP MODAL -->
-  <div id="helpModal" style="position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:center;justify-content:center;z-index:2000">
-    <div style="width:min(920px,94%);background:white;border-radius:12px;padding:18px;border:1px solid var(--border);">
+  <div id="helpModal" class="help-modal">
+    <div class="dialog">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <h3 style="margin:0 0 6px 0">Help — How to use</h3>
-          <div class="small-muted">Use the calculator by entering your site inputs, or build a detailed load using appliances. Click Calculate to refresh results and visuals.</div>
-          <ul class="small-muted" style="margin-top:10px">
-            <li>Daily consumption can be provided directly or calculated from monthly bill and tariff.</li>
-            <li>Add appliances for a more accurate estimate.</li>
-            <li>Charts and exports work after you press Calculate.</li>
+          <h3 style="margin:0">Help — How to use</h3>
+          <p class="small-muted">Use the wizard: fill Inputs → add Appliances (optional) → Calculate. All results show in step 3.</p>
+          <ul class="small-muted">
+            <li>Daily consumption can be entered directly or derived from monthly bill and tariff.</li>
+            <li>Add appliances for a detailed load — the calculator will use this when daily is empty.</li>
+            <li>Charts and exports appear after calculation.</li>
           </ul>
         </div>
         <div>
@@ -308,16 +352,42 @@
   </div>
 
 <script>
-/* Single-screen professional dashboard implementation
-   - All original features preserved (calculations, export, print, appliances, charts)
-   - Validation + no-negative inputs + accessible wiring
+/* Wizard + Full feature logic
+   - Maintains all calculations and exports from previous full version
+   - Adds Next/Back step navigation and live preview
 */
 
 document.addEventListener('DOMContentLoaded', function () {
   const $ = id => document.getElementById(id);
   const toNum = v => { const n = parseFloat(v); return isFinite(n) ? n : NaN; };
 
-  // City list with PSH
+  // Step navigation
+  let step = 1;
+  function showStep(n){
+    step = n;
+    [1,2,3].forEach(i => {
+      const panel = $('panel-' + i);
+      const pill = $('pill' + i);
+      if(panel) panel.classList.toggle('active', i === n);
+      if(pill) pill.classList.toggle('active', i === n);
+    });
+    const hints = [
+      'Enter consumption or use appliance estimator',
+      'Add appliances or quick-add common items',
+      'Review results, charts and export'
+    ];
+    const hintEl = document.getElementById('stepHint');
+    if(hintEl) hintEl.textContent = hints[n-1] || '';
+    // scroll top of container for better UX on mobile
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  $('nextBtn').addEventListener('click', function(){ showStep(2); });
+  $('backBtn').addEventListener('click', function(){ showStep(1); });
+  $('nextToResults').addEventListener('click', function(){ showStep(3); });
+  $('backFromResults').addEventListener('click', function(){ showStep(2); });
+
+  // city list with PSH
   const CITIES = [
     {name:'New York, US', psh:4.5},{name:'Los Angeles, US', psh:5.8},{name:'Chicago, US', psh:4.2},
     {name:'Houston, US', psh:5.2},{name:'Phoenix, US', psh:6.2},{name:'Philadelphia, US', psh:4.6},
@@ -334,20 +404,17 @@ document.addEventListener('DOMContentLoaded', function () {
     {name:'Lima, PE', psh:5.2},{name:'Toronto, CA', psh:3.9},{name:'Vancouver, CA', psh:3.3},
     {name:'Auckland, NZ', psh:4.2},{name:'Honolulu, US', psh:5.9}
   ];
-  const citySelect = $('citySelect');
-  CITIES.forEach(c=> {
-    const opt = document.createElement('option');
-    opt.value = c.psh;
-    opt.textContent = `${c.name} (PSH ${c.psh})`;
-    citySelect.appendChild(opt);
+  CITIES.forEach(c => {
+    const opt = document.createElement('option'); opt.value = c.psh; opt.textContent = `${c.name} (PSH ${c.psh})`;
+    $('citySelect').appendChild(opt);
   });
-  const manualOpt = document.createElement('option'); manualOpt.value=''; manualOpt.textContent='Manual / other (enter PSH)'; citySelect.appendChild(manualOpt);
+  const manualOpt = document.createElement('option'); manualOpt.value = ''; manualOpt.textContent = 'Manual / other (enter PSH)'; $('citySelect').appendChild(manualOpt);
 
-  // Validation: prevent negative values on number inputs
+  // Validation attach
   function attachValidation(scope = document) {
     scope.querySelectorAll('input[type="number"]').forEach(inp=>{
       inp.setAttribute('min','0');
-      inp.addEventListener('input', function () {
+      inp.addEventListener('input', function(){
         if(this.value === '') return;
         const n = Number(this.value);
         if(!isFinite(n) || n < 0) this.value = '';
@@ -364,91 +431,62 @@ document.addEventListener('DOMContentLoaded', function () {
   function renderAppliances() {
     applianceListEl.innerHTML = '';
     appliances.forEach((a, idx) => {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'appliance-row';
-      wrapper.innerHTML = `
+      const row = document.createElement('div');
+      row.className = 'appliance-row';
+      row.innerHTML = `
         <input type="text" value="${a.name}" data-idx="${idx}" class="ap-name" />
         <input type="number" value="${a.w}" min="0" data-idx="${idx}" class="ap-w" />
         <input type="number" value="${a.h}" min="0" data-idx="${idx}" class="ap-h" />
         <input type="number" value="${a.q}" min="0" data-idx="${idx}" class="ap-q" />
         <button class="btn ghost remove-ap" data-idx="${idx}">Remove</button>
       `;
-      applianceListEl.appendChild(wrapper);
+      applianceListEl.appendChild(row);
     });
 
-    // wire inline edits & removals
-    applianceListEl.querySelectorAll('.ap-name').forEach(el=>{
-      el.addEventListener('input', function(){ const i = Number(this.dataset.idx); appliances[i].name = this.value; });
-    });
-    applianceListEl.querySelectorAll('.ap-w').forEach(el=>{
-      el.addEventListener('input', function(){ const i = Number(this.dataset.idx); const v = toNum(this.value); appliances[i].w = isFinite(v)?v:0; updateApplianceTotal(); });
-    });
-    applianceListEl.querySelectorAll('.ap-h').forEach(el=>{
-      el.addEventListener('input', function(){ const i = Number(this.dataset.idx); const v = toNum(this.value); appliances[i].h = isFinite(v)?v:0; updateApplianceTotal(); });
-    });
-    applianceListEl.querySelectorAll('.ap-q').forEach(el=>{
-      el.addEventListener('input', function(){ const i = Number(this.dataset.idx); const v = toNum(this.value); appliances[i].q = isFinite(v)?v:0; updateApplianceTotal(); });
-    });
-    applianceListEl.querySelectorAll('.remove-ap').forEach(btn=>{
-      btn.addEventListener('click', function(){ const i = Number(this.dataset.idx); appliances.splice(i,1); renderAppliances(); updateApplianceTotal(); });
-    });
+    // inline editing + remove
+    applianceListEl.querySelectorAll('.ap-name').forEach(el => el.addEventListener('input', function(){ const i=Number(this.dataset.idx); appliances[i].name=this.value; }));
+    applianceListEl.querySelectorAll('.ap-w').forEach(el => el.addEventListener('input', function(){ const i=Number(this.dataset.idx); const v=toNum(this.value); appliances[i].w = isFinite(v)?v:0; updateApplianceTotal(); }));
+    applianceListEl.querySelectorAll('.ap-h').forEach(el => el.addEventListener('input', function(){ const i=Number(this.dataset.idx); const v=toNum(this.value); appliances[i].h = isFinite(v)?v:0; updateApplianceTotal(); }));
+    applianceListEl.querySelectorAll('.ap-q').forEach(el => el.addEventListener('input', function(){ const i=Number(this.dataset.idx); const v=toNum(this.value); appliances[i].q = isFinite(v)?v:0; updateApplianceTotal(); }));
+    applianceListEl.querySelectorAll('.remove-ap').forEach(btn => btn.addEventListener('click', function(){ const i=Number(this.dataset.idx); appliances.splice(i,1); renderAppliances(); updateApplianceTotal(); }));
 
     attachValidation(applianceListEl);
   }
 
-  function updateApplianceTotal() {
+  function updateApplianceTotal(){
     let wh = 0;
-    appliances.forEach(a => {
-      const w = Number(a.w) || 0;
-      const h = Number(a.h) || 0;
-      const q = Number(a.q) || 0;
-      wh += w * h * q;
-    });
-    const kwh = wh / 1000;
+    appliances.forEach(a => { const w=Number(a.w)||0; const h=Number(a.h)||0; const q=Number(a.q)||0; wh += w*h*q; });
+    const kwh = wh/1000;
     applianceTotalEl.textContent = isFinite(kwh) ? kwh.toFixed(3) : '0.000';
     return kwh;
   }
 
-  // Add appliance button
+  // add appliance
   $('addApplianceBtn').addEventListener('click', function(){
-    const name = ( $('apName').value || '' ).trim();
+    const name = ($('apName').value || '').trim();
     const w = toNum($('apW').value);
     const h = toNum($('apH').value);
     const q = toNum($('apQ').value) || 1;
-    if(!name || !isFinite(w) || w <= 0 || !isFinite(h) || h <= 0 || !isFinite(q) || q <= 0) {
-      alert('Please enter valid appliance details (name, W, hrs/day, qty).');
-      return;
-    }
+    if(!name || !isFinite(w) || w<=0 || !isFinite(h) || h<=0 || !isFinite(q) || q<=0) { alert('Please enter valid appliance details (name, W, hrs/day, qty).'); return; }
     appliances.push({ name, w, h, q });
     $('apName').value=''; $('apW').value=''; $('apH').value=''; $('apQ').value='';
     renderAppliances(); updateApplianceTotal();
   });
 
-  // Quick add
-  document.querySelectorAll('.quick-add').forEach(btn=>{
-    btn.addEventListener('click', function(){
-      const name = this.dataset.name;
-      const w = Number(this.dataset.w) || 0;
-      const h = Number(this.dataset.h) || 0;
-      const q = Number(this.dataset.q) || 1;
-      appliances.push({ name, w, h, q });
-      renderAppliances(); updateApplianceTotal();
-    });
-  });
+  // quick-adds
+  document.querySelectorAll('.quick-add').forEach(btn => btn.addEventListener('click', function(){
+    const name = this.dataset.name; const w = Number(this.dataset.w) || 0; const h = Number(this.dataset.h) || 0; const q = Number(this.dataset.q) || 1;
+    appliances.push({ name, w, h, q }); renderAppliances(); updateApplianceTotal();
+  }));
 
-  // Clear all
-  $('clearAppliances').addEventListener('click', function(){
-    if(!confirm('Clear all appliances?')) return;
-    appliances.length = 0;
-    renderAppliances(); updateApplianceTotal();
-  });
+  $('clearAppliances').addEventListener('click', function(){ if(!confirm('Clear all appliances?')) return; appliances.length=0; renderAppliances(); updateApplianceTotal(); });
 
-  // City select change -> set PSH
-  citySelect.addEventListener('change', function(){ const p = parseFloat(this.value); if(isFinite(p) && p>0) $('pshInput').value = p; computePreview(); });
+  // city change -> PSH
+  $('citySelect').addEventListener('change', function(){ const p = parseFloat(this.value); if(isFinite(p) && p>0) $('pshInput').value = p; computePreview(); });
 
-  // Charts
+  // charts
   let monthlyChart = null, costChart = null;
-  function createCharts() {
+  function createCharts(){
     try {
       const mctx = $('monthlyChart').getContext('2d');
       monthlyChart = new Chart(mctx, {
@@ -467,14 +505,12 @@ document.addEventListener('DOMContentLoaded', function () {
         data:{ labels:['Panels','Inverter','Battery','Install'], datasets:[{ data:[1,1,1,1], backgroundColor:['#60a5fa','#06b6d4','#f97316','#94a3b8'] }]},
         options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
       });
-    } catch(e) {
-      console.error('Chart creation failed', e);
-    }
+    } catch(e){ console.error('Chart creation failed', e); }
   }
   createCharts();
 
-  // Core compute (unchanged formulas)
-  function computeDesign() {
+  // core calculate (same formulas)
+  function computeDesign(){
     const psh = toNum($('pshInput').value) || 5;
     const panelWp = toNum($('panelWp').value) || 400;
     const monthly = toNum($('monthlyInput').value);
@@ -484,19 +520,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const sysType = $('systemType').value;
     const batHours = toNum($('batteryHours').value) || 0;
 
-    // Determine daily consumption
+    // determine daily
     let daily = NaN;
-    if(isFinite(dailyInput) && dailyInput > 0) daily = dailyInput;
-    else if(isFinite(monthly) && monthly > 0) daily = (monthly / tariff) / 30;
+    if(isFinite(dailyInput) && dailyInput>0) daily = dailyInput;
+    else if(isFinite(monthly) && monthly>0) daily = (monthly / tariff) / 30;
     else {
       const fromAppliances = updateApplianceTotal();
       if(isFinite(fromAppliances) && fromAppliances > 0) daily = fromAppliances;
     }
-    if(!isFinite(daily) || daily <= 0) {
-      return null;
-    }
+    if(!isFinite(daily) || daily<=0) return null;
 
-    const lossFactor = 1 - (lossesPct / 100);
+    const lossFactor = 1 - (lossesPct/100);
     const arrayKW = daily / (psh * lossFactor);
     const arrayKWRounded = Math.max(0.001, Math.round(arrayKW * 100) / 100);
     const arrayW = arrayKWRounded * 1000;
@@ -532,46 +566,43 @@ document.addEventListener('DOMContentLoaded', function () {
     const co2PerKwh = 0.5;
     const annualCO2 = annualProd * co2PerKwh;
 
-    const out = {
-      daily, psh, panelWp, lossesPct,
-      arrayKWRounded, panels, panelTotalW, estDailyGen,
-      inverterKW, batteryKWh, batteryAh, totalCost, costPanels, costInv, costBat, installFlat,
-      annualProd, annualSavings, payback, annualCO2
-    };
+    const out = { daily, psh, panelWp, lossesPct, arrayKWRounded, panels, panelTotalW, estDailyGen, inverterKW, batteryKWh, batteryAh, totalCost, costPanels, costInv, costBat, installFlat, annualProd, annualSavings, payback, annualCO2 };
     window.solarResult = out;
     return out;
   }
 
-  // Update preview (live)
-  function computePreview() {
+  // preview
+  function computePreview(){
     const r = computeDesign();
-    if(!r) {
-      $('resArray').textContent = '— kW';
-      $('previewArray') && ($('previewArray').textContent = '— kW');
-      $('previewPanels') && ($('previewPanels').textContent = '—');
-      $('previewDaily') && ($('previewDaily').textContent = '— kWh');
+    if(!r){
+      $('previewArray').textContent='— kW';
+      $('previewPanels').textContent='—';
+      $('previewDaily').textContent='— kWh';
       return;
     }
-    $('resArray').textContent = r.arrayKWRounded.toFixed(2) + ' kW';
-    $('previewArray') && ($('previewArray').textContent = r.arrayKWRounded.toFixed(2) + ' kW');
-    $('previewPanels') && ($('previewPanels').textContent = r.panels);
-    $('previewDaily') && ($('previewDaily').textContent = r.estDailyGen.toFixed(2) + ' kWh');
+    $('previewArray').textContent = r.arrayKWRounded.toFixed(2) + ' kW';
+    $('previewPanels').textContent = r.panels;
+    $('previewDaily').textContent = r.estDailyGen.toFixed(2) + ' kWh';
   }
 
-  // Calculate button action: compute and update all sections & charts
-  $('calculateBtn').addEventListener('click', function(){
-    // ensure appliances are considered if daily empty
+  // wire preview inputs
+  ['pshInput','panelWp','monthlyInput','dailyInput','tariffInput','lossesInput','systemType','batteryHours'].forEach(id=>{
+    const el = $(id); if(!el) return; el.addEventListener('input', computePreview);
+  });
+
+  // calculate main action (Calculate button + sticky)
+  function calculateAndUpdate(){
     let r = computeDesign();
     if(!r) {
       const appl = updateApplianceTotal();
-      if(appl > 0) {
+      if(appl>0) {
         $('dailyInput').value = appl.toFixed(3);
         r = computeDesign();
       }
     }
     if(!r) { alert('Please enter monthly bill, daily consumption, or add appliances before calculating.'); return; }
 
-    // fill results
+    // update results
     $('resArray').textContent = r.arrayKWRounded.toFixed(2) + ' kW';
     $('resPanels').textContent = r.panels + ' × ' + r.panelWp + 'W = ' + r.panelTotalW + ' W';
     $('resDaily').textContent = r.estDailyGen.toFixed(2) + ' kWh';
@@ -579,7 +610,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('resCost').textContent = '$ ' + Number(r.totalCost).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
     $('resPayback').textContent = isFinite(r.payback) ? (r.payback.toFixed(1) + ' yrs') : '—';
 
-    // update monthly chart
+    // update charts
     const monthlyFactors = [0.85,0.9,1.0,1.05,1.1,1.12,1.15,1.12,1.05,0.98,0.92,0.88];
     if(monthlyChart){
       monthlyChart.data.datasets[0].data = monthlyFactors.map(f => Math.round(r.estDailyGen * 30 * f));
@@ -590,12 +621,46 @@ document.addEventListener('DOMContentLoaded', function () {
       costChart.data.datasets[0].data = [r.costPanels, r.costInv, r.costBat, r.installFlat];
       costChart.update();
     }
+
+    // go to results step
+    showStep(3);
+  }
+
+  $('calcSticky').addEventListener('click', calculateAndUpdate);
+  $('calculateBtn')?.addEventListener('click', calculateAndUpdate); // in case id exists
+
+  // wire Next/Back also to validate when moving forward
+  $('nextBtn').addEventListener('click', function(){
+    // If no inputs & no appliances, block
+    const r = computeDesign();
+    if(!r && updateApplianceTotal() === 0) {
+      alert('Enter monthly or daily consumption OR add appliances before proceeding.');
+      return;
+    }
+    showStep(2);
   });
 
-  // Reset
-  $('resetBtn').addEventListener('click', function(){ if(confirm('Reset inputs and appliances?')) location.reload(); });
+  $('nextToResults').addEventListener('click', function(){
+    const r = computeDesign();
+    if(!r && updateApplianceTotal() === 0) {
+      alert('Please enter consumption or add appliances before proceeding.');
+      return;
+    }
+    // if daily input empty but appliances exist, set dailyInput for clarity
+    if(!(isFinite(toNum($('dailyInput').value)) && toNum($('dailyInput').value) > 0)) {
+      const appl = updateApplianceTotal();
+      if(appl>0) $('dailyInput').value = appl.toFixed(3);
+    }
+    calculateAndUpdate();
+  });
 
-  // Export & print
+  $('backBtn').addEventListener('click', function(){ showStep(1); });
+  $('backFromResults').addEventListener('click', function(){ showStep(2); });
+
+  // reset
+  $('resetBtnTop').addEventListener('click', function(){ if(confirm('Reset inputs and appliances?')) location.reload(); });
+
+  // exports and print
   $('exportTxt').addEventListener('click', function(){
     const r = window.solarResult || computeDesign();
     if(!r){ alert('Please calculate first'); return; }
@@ -637,27 +702,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   $('printBtn').addEventListener('click', function(){ window.print(); });
 
-  // Help modal
+  // help modal
   $('helpBtn').addEventListener('click', function(){ $('helpModal').style.display='flex'; });
+  $('helpBtn2').addEventListener('click', function(){ $('helpModal').style.display='flex'; });
   $('helpClose').addEventListener('click', function(){ $('helpModal').style.display='none'; });
 
-  // Live preview bindings
-  ['pshInput','panelWp','monthlyInput','dailyInput','tariffInput','lossesInput','systemType','batteryHours'].forEach(id=>{
-    const el = $(id); if(!el) return; el.addEventListener('input', computePreview);
-  });
-
-  // Accessibility Enter to add appliance
+  // accessibility: Enter to add appliance
   ['apName','apW','apH','apQ'].forEach(id => {
-    const el = $(id);
-    if(!el) return;
+    const el = $(id); if(!el) return;
     el.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); $('addApplianceBtn').click(); } });
   });
 
-  // Initial seeds
+  // initial seeds and preview
   appliances.push({name:'Fridge', w:150, h:24, q:1});
   appliances.push({name:'LED bulbs', w:10, h:6, q:6});
-  renderAppliances(); updateApplianceTotal();
-  computePreview();
+  renderAppliances(); updateApplianceTotal(); computePreview();
+
+  // Utility: safe numeric parse
+  function toNum(v){ const n = parseFloat(v); return isFinite(n) ? n : NaN; }
+
 });
 </script>
 </body>
