@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Solar Calculator — Light Professional</title>
+  <title>Solar Calculator — Light Professional (fixed)</title>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,8 +17,8 @@
       --bg:#f7fbfc;
       --card:#ffffff;
       --muted:#6b7280;
-      --accent:#0ea5a3; /* teal */
-      --accent-2:#60a5fa; /* light blue */
+      --accent:#0ea5a3;
+      --accent-2:#60a5fa;
       --soft-border: rgba(15,23,42,0.06);
     }
     html,body { height:100%; }
@@ -30,43 +30,19 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
-
-    /* app container fits the screen */
-    .app {
-      max-width:1100px;
-      margin:20px auto;
-      padding:18px;
-      min-height: calc(100vh - 40px);
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-
-    .glass {
-      background: var(--card);
-      border-radius:12px;
-      box-shadow: 0 6px 22px rgba(2,6,23,0.06);
-      border: 1px solid var(--soft-border);
-    }
-
-    /* virtual screens */
+    .app { max-width:1100px; margin:20px auto; padding:18px; min-height: calc(100vh - 40px); display:flex; flex-direction:column; gap:16px; }
+    .glass { background: var(--card); border-radius:12px; box-shadow: 0 6px 22px rgba(2,6,23,0.06); border: 1px solid var(--soft-border); }
     .screen { display:none; height: calc(100% - 120px); overflow:auto; padding:12px; }
     .screen.active { display:block; animation: fadeIn .26s ease both; }
     @keyframes fadeIn { from{ opacity:0; transform: translateY(6px) } to{ opacity:1; transform:none } }
-
     .small-muted { color:var(--muted); font-size:0.92rem; }
     .card-title { font-weight:600; color:#0f172a; }
-
-    /* responsive helpers */
-    @media (min-width:1024px){
-      .two-col { display:grid; grid-template-columns:1fr 320px; gap:18px; align-items:start; }
-      .three-col { display:grid; grid-template-columns: 1fr 360px; gap:18px; align-items:start; }
-    }
-
+    @media (min-width:1024px){ .two-col { display:grid; grid-template-columns:1fr 320px; gap:18px; align-items:start; } .three-col { display:grid; grid-template-columns: 1fr 360px; gap:18px; align-items:start; } }
     input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     canvas { width:100% !important; height:auto !important; }
     .btn-primary { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; font-weight:600; }
     .btn-ghost { background:transparent; border:1px solid var(--soft-border); color: #0f172a; }
+    .card { padding:14px; border-radius:10px; background:var(--card); }
   </style>
 </head>
 <body>
@@ -76,7 +52,7 @@
     <header class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-semibold">Solar Calculator</h1>
-        <p class="small-muted mt-1">Professional light theme — global currency auto-switch. Mobile-first wizard.</p>
+        <p class="small-muted mt-1">Light theme — mobile-first wizard. USD default; currency auto-switch available.</p>
       </div>
 
       <div class="flex items-center gap-2">
@@ -86,8 +62,6 @@
     </header>
 
     <main class="glass flex-1 flex flex-col">
-
-      <!-- Progress -->
       <div class="flex items-center gap-3 px-4 pt-4">
         <div id="step1" class="px-3 py-1 rounded-full bg-white text-sm">1. Solar</div>
         <div id="step2" class="px-3 py-1 rounded-full bg-white/80 text-sm small-muted">2. Appliances</div>
@@ -95,12 +69,10 @@
         <div class="ml-auto small-muted">Currency: <span id="currencyLabel">USD</span></div>
       </div>
 
-      <!-- SCREENS -->
+      <!-- Screen 1 -->
       <section id="screen1" class="screen active">
         <div class="two-col p-4">
-
-          <!-- Left: Inputs -->
-          <div class="p-4">
+          <div class="card">
             <div class="flex items-center justify-between mb-3">
               <div><div class="card-title">Solar Sizing</div><div class="small-muted">Enter consumption and system preferences</div></div>
               <div class="small-muted text-sm">Step 1 of 3</div>
@@ -109,9 +81,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label class="small-muted">Country (auto currency)</label>
-                <select id="countrySelect" class="mt-1 p-3 border rounded-md w-full">
-                  <!-- populated by JS -->
-                </select>
+                <select id="countrySelect" class="mt-1 p-3 border rounded-md w-full"></select>
               </div>
 
               <div>
@@ -172,12 +142,11 @@
             <div class="mt-4 flex gap-3">
               <button id="toAppliance" class="btn-primary px-5 py-3 rounded-md">Next — Appliances</button>
               <button id="clear1" class="btn-ghost px-4 py-3 rounded-md">Clear</button>
-              <div class="ml-auto small-muted self-center">All inputs validated</div>
+              <div class="ml-auto small-muted self-center">Validated input</div>
             </div>
           </div>
 
-          <!-- Right: Live preview -->
-          <aside class="p-4 border-l hidden md:block">
+          <aside class="p-4 border-l hidden md:block card">
             <div class="card-title">Live preview</div>
             <div class="small-muted text-sm mb-3">Updates as you type</div>
 
@@ -204,10 +173,10 @@
         </div>
       </section>
 
-      <!-- Screen 2: Appliance manager -->
+      <!-- Screen 2 -->
       <section id="screen2" class="screen">
         <div class="three-col p-4">
-          <div class="p-4 card">
+          <div class="card p-4">
             <div class="flex items-center justify-between mb-3">
               <div><div class="card-title">Appliance Manager</div><div class="small-muted">Build your load list (W × hrs × qty)</div></div>
               <div class="small-muted text-sm">Step 2 of 3</div>
@@ -231,11 +200,9 @@
             </div>
           </div>
 
-          <!-- Right column summary -->
-          <aside class="p-4 card">
-            <div class="card-title">Appliance quick add</div>
+          <aside class="card p-4">
+            <div class="card-title">Quick add</div>
             <div class="small-muted mt-2">Add common items quickly</div>
-
             <div class="grid grid-cols-1 gap-2 mt-3">
               <button class="quickAdd px-3 py-2 rounded-md border" data-name="Fridge" data-w="150" data-h="24" data-q="1">Fridge (150W)</button>
               <button class="quickAdd px-3 py-2 rounded-md border" data-name="LED 10W" data-w="10" data-h="6" data-q="6">LED bulbs</button>
@@ -246,10 +213,10 @@
         </div>
       </section>
 
-      <!-- Screen 3: Financial & Visuals -->
+      <!-- Screen 3 -->
       <section id="screen3" class="screen">
         <div class="two-col p-4">
-          <div class="p-4 card">
+          <div class="card p-4">
             <div class="flex items-center justify-between mb-3">
               <div><div class="card-title">Financial & Results</div><div class="small-muted">Cost, payback and generation</div></div>
               <div class="small-muted text-sm">Step 3 of 3</div>
@@ -260,27 +227,22 @@
                 <div class="small-muted text-xs">Array size</div>
                 <div id="resArray" class="text-lg font-semibold">— kW</div>
               </div>
-
               <div class="p-3 rounded-md border">
                 <div class="small-muted text-xs">Panels</div>
                 <div id="resPanels" class="text-lg font-semibold">—</div>
               </div>
-
               <div class="p-3 rounded-md border">
                 <div class="small-muted text-xs">Daily generation</div>
                 <div id="resDaily" class="text-lg font-semibold">— kWh</div>
               </div>
-
               <div class="p-3 rounded-md border">
                 <div class="small-muted text-xs">Battery</div>
                 <div id="resBattery" class="text-lg font-semibold">—</div>
               </div>
-
               <div class="p-3 rounded-md border">
                 <div class="small-muted text-xs">Estimated cost</div>
                 <div id="resCost" class="text-lg font-semibold">—</div>
               </div>
-
               <div class="p-3 rounded-md border">
                 <div class="small-muted text-xs">Payback</div>
                 <div id="resPayback" class="text-lg font-semibold">— yrs</div>
@@ -295,10 +257,9 @@
             </div>
           </div>
 
-          <aside class="p-4 card">
+          <aside class="card p-4">
             <div class="card-title">Visuals</div>
             <div class="small-muted mt-2">Monthly generation vs consumption</div>
-
             <div class="mt-4">
               <canvas id="monthlyChart" height="260"></canvas>
             </div>
@@ -321,13 +282,7 @@
       <div class="flex items-start justify-between">
         <div>
           <h3 class="text-lg font-semibold">Help — How to use</h3>
-          <p class="small-muted mt-2">Follow the wizard: Solar sizing → Appliances → Financial. All currency values auto-convert based on selected country; you can edit the local tariff if needed.</p>
-          <ul class="small-muted mt-3 space-y-1">
-            <li><strong>PSH:</strong> Peak Sun Hours — affects generation estimate.</li>
-            <li><strong>System losses:</strong> Default 20% to account for inverter/wiring/soiling.</li>
-            <li><strong>Battery hours:</strong> Hours of backup required (for hybrid/off-grid).</li>
-            <li><strong>Appliances:</strong> Add items to build accurate daily kWh.</li>
-          </ul>
+          <p class="small-muted mt-2">Follow the wizard: Solar sizing → Appliances → Financial. Currency auto-convert available via the country dropdown.</p>
         </div>
         <div>
           <button id="helpClose" class="btn-ghost px-3 py-2 rounded-md">Close</button>
@@ -337,19 +292,10 @@
   </div>
 
 <script>
-/* Solar Calculator — Light Professional v1
-   - 3 virtual screens (solar sizing, appliances, financial)
-   - Appliance manager working
-   - Input validation (no negative values)
-   - Currency auto switch using country selection (with example exchange rates)
-   - Chart.js visualizations
-*/
-
 document.addEventListener('DOMContentLoaded', function () {
-  // short helper
   const $ = id => document.getElementById(id);
 
-  // Countries & currencies with example exchange rates (USD base). You can edit rates in future.
+  // Countries (clean list)
   const COUNTRIES = [
     {code:'US', name:'United States', currency:'USD', symbol:'$', rate:1},
     {code:'CA', name:'Canada', currency:'CAD', symbol:'CA$', rate:1.35},
@@ -358,45 +304,51 @@ document.addEventListener('DOMContentLoaded', function () {
     {code:'PK', name:'Pakistan', currency:'PKR', symbol:'PKR', rate:280},
     {code:'IN', name:'India', currency:'INR', symbol:'₹', rate:83},
     {code:'AU', name:'Australia', currency:'AUD', symbol:'A$', rate:1.5},
-    {code:'NZ', name:'New Zealand', currency:'NZ$', symbol:'NZ$', rate:1.6},
-    {code:'SA', name:'Saudi Arabia', currency:'SAR', symbol:'SAR', rate:3.75},
-    {code:'AE', name:'UAE', currency:'AED', symbol:'AED', rate:3.67},
-    {code:'PK', name:'Pakistan', currency:'PKR', symbol:'PKR', rate:280},
     {code:'ZA', name:'South Africa', currency:'ZAR', symbol:'R', rate:18},
     {code:'JP', name:'Japan', currency:'JPY', symbol:'¥', rate:150},
     {code:'CN', name:'China', currency:'CNY', symbol:'¥', rate:7.2},
     {code:'BR', name:'Brazil', currency:'BRL', symbol:'R$', rate:5.2},
-    {code:'MX', name:'Mexico', currency:'MXN', symbol:'MX$', rate:18},
-    {code:'NG', name:'Nigeria', currency:'NGN', symbol:'₦', rate:775},
-    {code:'EG', name:'Egypt', currency:'EGP', symbol:'E£', rate:30},
-    {code:'TR', name:'Turkey', currency:'TRY', symbol:'₺', rate:31},
-    {code:'ID', name:'Indonesia', currency:'IDR', symbol:'Rp', rate:15500}
+    {code:'MX', name:'Mexico', currency:'MXN', symbol:'MX$', rate:18}
   ];
 
-  // populate country select
+  // populate country select (store JSON per option)
   const countrySelect = $('countrySelect');
   COUNTRIES.forEach(c => {
     const opt = document.createElement('option');
     opt.value = JSON.stringify({currency:c.currency, symbol:c.symbol, rate:c.rate});
-    opt.textContent = c.name + ' — ' + c.currency;
+    opt.textContent = `${c.name} — ${c.currency}`;
     countrySelect.appendChild(opt);
   });
-  // default to US
+  // default
   countrySelect.selectedIndex = 0;
+  function updateCurrencyPreview(){
+    try {
+      const obj = JSON.parse(countrySelect.value);
+      $('currencyLabel').textContent = obj.currency;
+      $('previewCurrency').textContent = obj.symbol + ' ' + obj.currency;
+      return obj;
+    } catch(e){
+      return {currency:'USD', symbol:'$', rate:1};
+    }
+  }
   updateCurrencyPreview();
+  countrySelect.addEventListener('change', updateCurrencyPreview);
 
-  // prevent negative values globally for number inputs
-  document.querySelectorAll('input[type="number"]').forEach(el => {
-    el.addEventListener('input', function () {
-      if(this.value === '') return;
-      const v = parseFloat(this.value);
-      if(isNaN(v) || v < 0){ this.value = ''; }
+  // prevent negative numbers gently
+  function attachNumberValidation(root=document){
+    root.querySelectorAll('input[type="number"]').forEach(el=>{
+      el.setAttribute('min','0');
+      el.addEventListener('input', function(){
+        if(this.value === '') return;
+        const v = Number(this.value);
+        if(isNaN(v) || v < 0) this.value = '';
+      });
     });
-  });
+  }
+  attachNumberValidation();
 
-  // chart setups
-  const monthlyCtx = $('monthlyChart').getContext('2d');
-  const monthlyChart = new Chart(monthlyCtx, {
+  // Charts
+  const monthlyChart = new Chart($('monthlyChart').getContext('2d'), {
     type:'bar',
     data:{ labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
       datasets:[
@@ -406,17 +358,15 @@ document.addEventListener('DOMContentLoaded', function () {
     options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } }, plugins:{ legend:{ position:'bottom' } } }
   });
 
-  const costCtx = $('costChart').getContext('2d');
-  const costChart = new Chart(costCtx, {
+  const costChart = new Chart($('costChart').getContext('2d'), {
     type:'doughnut',
     data:{ labels:['Panels','Inverter','Battery','Install'], datasets:[{ data:[1,1,1,1], backgroundColor:['#60a5fa','#06b6d4','#f97316','#94a3b8'] }]},
     options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
   });
 
-  // appliance manager
+  // Appliance manager
   const applianceBody = $('applianceBody');
   const applianceTotal = $('applianceTotal');
-
   function addApplianceRow(item) {
     const data = Object.assign({name:'New', w:60, h:1, q:1}, item || {});
     const tr = document.createElement('tr');
@@ -431,85 +381,54 @@ document.addEventListener('DOMContentLoaded', function () {
       const el = tr.querySelector('.' + cls);
       if(el) el.addEventListener('input', updateApplianceTotal);
     });
+    attachNumberValidation(tr);
     updateApplianceTotal();
   }
 
-  // seed common items
+  // seed
   addApplianceRow({name:'Fridge', w:150, h:24, q:1});
   addApplianceRow({name:'LED bulbs', w:10, h:6, q:6});
 
   $('addAppliance').addEventListener('click', ()=> addApplianceRow());
-
-  // quick add buttons
   document.querySelectorAll('.quickAdd').forEach(btn => {
-    btn.addEventListener('click', ()=> {
-      const name = btn.dataset.name, w=btn.dataset.w, h=btn.dataset.h, q=btn.dataset.q;
-      addApplianceRow({name, w, h, q});
-    });
+    btn.addEventListener('click', ()=> addApplianceRow({name:btn.dataset.name, w:btn.dataset.w, h:btn.dataset.h, q:btn.dataset.q}));
   });
 
-  function updateApplianceTotal() {
+  function updateApplianceTotal(){
     const rows = applianceBody.querySelectorAll('tr');
     let wh = 0;
-    rows.forEach(r => {
+    rows.forEach(r=>{
       const w = +(r.querySelector('.apW') && r.querySelector('.apW').value) || 0;
       const h = +(r.querySelector('.apH') && r.querySelector('.apH').value) || 0;
       const q = +(r.querySelector('.apQ') && r.querySelector('.apQ').value) || 1;
-      wh += w * h * q;
+      wh += w*h*q;
     });
-    const kwh = wh / 1000;
+    const kwh = wh/1000;
     applianceTotal.textContent = isFinite(kwh) ? kwh.toFixed(3) : '0.000';
     return kwh;
   }
 
-  // get currency preview
-  function updateCurrencyPreview() {
-    const val = countrySelect.value;
-    if(!val) return;
-    try {
-      const obj = JSON.parse(val);
-      $('currencyLabel').textContent = obj.currency + ' (' + obj.symbol + ')';
-      $('previewCurrency').textContent = obj.symbol + ' ' + obj.currency;
-      return obj;
-    } catch(e){ return null; }
-  }
-
-  countrySelect.addEventListener('change', ()=> {
-    const curr = updateCurrencyPreview();
-    // convert monthly input value from previous currency to new one using stored conversion if possible
-    // for now leave monthly as-is; user can edit tariff/manual conversion
-  });
-
-  // compute core logic
-  function computeDesign() {
-    // read currency object
+  // compute design
+  function fmt(n,d=2){ return isFinite(n) ? Number(n).toLocaleString(undefined,{minimumFractionDigits:d, maximumFractionDigits:d}) : '—'; }
+  function computeDesign(){
     let curr = {currency:'USD', symbol:'$', rate:1};
-    try { curr = JSON.parse(countrySelect.value); } catch(e){ curr = {currency:'USD', symbol:'$', rate:1}; }
+    try { curr = JSON.parse(countrySelect.value); } catch(e) { curr = {currency:'USD', symbol:'$', rate:1}; }
 
-    // inputs & validation
     const monthlyRaw = parseFloat($('monthly').value);
     const dailyRaw = parseFloat($('daily').value);
-    const tariffLocal = parseFloat($('tariff').value) || 0.12; // local currency per kWh
+    const tariffLocal = parseFloat($('tariff').value) || 0.12;
     const psh = parseFloat($('psh').value) || 5;
     const panelWp = parseFloat($('panelWp').value) || 400;
     const losses = parseFloat($('losses').value) || 20;
     const sysType = $('sysType').value;
     const batHours = parseFloat($('batHours').value) || 0;
 
-    // compute daily consumption:
-    // if daily given use it; else try monthly / tariff; else use appliances
     let daily = NaN;
     if(isFinite(dailyRaw) && dailyRaw > 0) daily = dailyRaw;
-    else if(isFinite(monthlyRaw) && monthlyRaw > 0) {
-      // monthlyRaw is in local currency; convert to USD equivalent via rate? We keep tariff in local currency, so daily in kWh = monthly / tariff / 30
-      daily = (monthlyRaw / tariffLocal) / 30;
-    } else {
-      // fallback to appliance total
-      daily = updateApplianceTotal();
-    }
+    else if(isFinite(monthlyRaw) && monthlyRaw > 0) daily = (monthlyRaw / tariffLocal) / 30;
+    else daily = updateApplianceTotal();
     if(!isFinite(daily) || daily <= 0) return null;
 
-    // sizing
     const lossFactor = 1 - (losses/100);
     const arrayKW = daily / (psh * lossFactor);
     const arrayKWr = Math.max(0.001, Math.round(arrayKW * 100) / 100);
@@ -518,14 +437,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const panelTotalW = panels * panelWp;
     const estDailyGen = (panelTotalW / 1000) * psh * lossFactor;
 
-    // inverter
     const avgPowerW = (daily * 1000) / 24;
     const inverterW = Math.ceil(Math.max(avgPowerW * 1.5, avgPowerW * 2));
     const inverterKW = inverterW / 1000;
 
-    // battery sizing
     let batteryKWh = 0, batteryAh = 0;
-    if(sysType !== 'grid' && batHours > 0) {
+    if(sysType !== 'grid' && batHours > 0){
       const usable = (daily / 24) * batHours;
       const dod = 0.8, batEff = 0.9, bankV = 48;
       batteryKWh = usable / (dod * batEff);
@@ -533,8 +450,7 @@ document.addEventListener('DOMContentLoaded', function () {
       batteryAh = (batteryKWh * 1000) / bankV;
     }
 
-    // costs (in USD) — then present in local currency by multiplying rate
-    const panelCostPerWUsd = 0.25; // $/W
+    const panelCostPerWUsd = 0.25;
     const invCostPerKwUsd = 300;
     const batCostPerKwhUsd = 150;
     const installUsd = 400;
@@ -543,7 +459,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const costBatUsd = batteryKWh * batCostPerKwhUsd;
     const totalUsd = costPanelsUsd + costInvUsd + costBatUsd + installUsd;
 
-    // convert to local currency if needed
     const totalLocal = totalUsd * curr.rate;
     const costBreakdownLocal = {
       panels: costPanelsUsd * curr.rate,
@@ -552,46 +467,37 @@ document.addEventListener('DOMContentLoaded', function () {
       install: installUsd * curr.rate
     };
 
-    // savings & payback
     const monthlyGeneration = estDailyGen * 30;
     const annualGeneration = estDailyGen * 365;
-    const annualSavingsLocal = annualGeneration * tariffLocal; // local currency
+    const annualSavingsLocal = annualGeneration * tariffLocal;
     const paybackYears = annualSavingsLocal > 0 ? (totalLocal / annualSavingsLocal) : Infinity;
-
-    // CO2 (assume 0.5 kg CO2 per kWh)
     const co2PerYear = annualGeneration * 0.5;
 
-    // update preview elements
+    // preview
     $('previewArray').textContent = arrayKWr.toFixed(2) + ' kW';
     $('previewPanels').textContent = panels;
     $('previewGen').textContent = estDailyGen.toFixed(2) + ' kWh';
     $('previewCurrency').textContent = curr.symbol + ' ' + curr.currency;
 
-    // fill result nodes
+    // results
     $('resArray').textContent = arrayKWr.toFixed(2) + ' kW';
     $('resPanels').textContent = panels + ' × ' + panelWp + 'W = ' + panelTotalW + ' W';
     $('resDaily').textContent = estDailyGen.toFixed(2) + ' kWh';
     $('resBattery').textContent = batteryKWh > 0 ? batteryKWh.toFixed(2) + ' kWh' : 'None';
     $('resCost').textContent = curr.symbol + ' ' + Number(totalLocal).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
     $('resPayback').textContent = isFinite(paybackYears) ? paybackYears.toFixed(1) + ' yrs' : '—';
-    $('resMonthly').textContent = monthlyGeneration.toFixed(0);
+    $('resMonthlyGen')?.textContent = monthlyGeneration.toFixed(0);
 
-    // resMonthlyGen / resMonthlySavings / resCO2 / resLifetime
-    $('resMonthlyGen').textContent = monthlyGeneration.toFixed(0) + ' kWh';
-    $('resMonthlySavings').textContent = curr.symbol + ' ' + (annualSavingsLocal/12).toFixed(2);
-    $('resCO2').textContent = Math.round(co2PerYear) + ' kg';
-    $('resLifetime').textContent = curr.symbol + ' ' + (annualSavingsLocal * 10).toFixed(0);
-
+    // some extra displays (not required but useful)
     // update charts
     const monthlyFactors = [0.85,0.9,1.0,1.05,1.1,1.12,1.15,1.12,1.05,0.98,0.92,0.88];
     monthlyChart.data.datasets[0].data = monthlyFactors.map(f => Math.round(estDailyGen * 30 * f));
-    monthlyChart.data.datasets[1].data = new Array(12).fill(Math.round(daily * 30));
+    monthlyChart.data.datasets[1].data = new Array(12).fill(Math.round(daily*30));
     monthlyChart.update();
 
     costChart.data.datasets[0].data = [costBreakdownLocal.panels, costBreakdownLocal.inverter, costBreakdownLocal.battery, costBreakdownLocal.install];
     costChart.update();
 
-    // return object saved for export
     const out = {
       daily, psh, panelWp, losses, arrayKWr, panels, panelTotalW, estDailyGen,
       inverterKW, batteryKWh, batteryAh, totalLocal, costBreakdownLocal, annualSavingsLocal, paybackYears, co2PerYear
@@ -600,11 +506,10 @@ document.addEventListener('DOMContentLoaded', function () {
     return out;
   }
 
-  // wire navigation buttons
+  // navigation handlers
   $('toAppliance').addEventListener('click', ()=> {
     const r = computeDesign();
     if(!r){ alert('Please enter monthly amount or daily consumption (or add appliances)'); return; }
-    // mark step pills
     $('step1').classList.remove('bg-white'); $('step2').classList.add('bg-white');
     $('screen1').classList.remove('active'); $('screen2').classList.add('active');
   });
@@ -615,20 +520,13 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   $('toFinancial').addEventListener('click', ()=> {
-    // compute design including appliances
     const r = computeDesign();
-    if(!r){ alert('Please ensure consumption is entered or appliances added'); return; }
-    // incorporate appliances
+    if(!r){ alert('Please ensure consumption or appliances are entered'); return; }
+    // use appliance total to override daily if daily empty
     const applDaily = updateApplianceTotal();
-    const finalDaily = (isFinite(r.daily) && r.daily > 0) ? r.daily : applDaily;
-    // recompute with appliances if needed by setting daily field then compute again
-    if(!isFinite(r.daily) || r.daily <= 0) {
-      $('daily').value = applDaily.toFixed(3);
-    }
+    if(!(isFinite(r.daily) && r.daily > 0) && applDaily > 0) $('daily').value = applDaily.toFixed(3);
     const final = computeDesign();
     if(!final){ alert('Calculation failed'); return; }
-
-    // mark pills & screens
     $('step2').classList.remove('bg-white'); $('step3').classList.add('bg-white');
     $('screen2').classList.remove('active'); $('screen3').classList.add('active');
   });
@@ -638,36 +536,30 @@ document.addEventListener('DOMContentLoaded', function () {
     $('screen3').classList.remove('active'); $('screen2').classList.add('active');
   });
 
-  // reset / clear handlers
+  // Clear/Reset
   $('clear1').addEventListener('click', ()=> {
     ['psh','monthly','daily','tariff','losses','batHours'].forEach(id => { const el=$(id); if(el) el.value=''; });
-    updateApplianceTotal();
-    computeDesign();
+    updateApplianceTotal(); computeDesign();
   });
+  $('resetAll').addEventListener('click', ()=> location.reload());
 
-  $('resetAll').addEventListener('click', ()=> {
-    location.reload();
-  });
-
-  // export & print
+  // Export/print
   $('downloadTxt').addEventListener('click', ()=> {
     const r = window.lastSolar || computeDesign();
     if(!r){ alert('Please compute first'); return; }
     const curr = JSON.parse(countrySelect.value);
     const lines = [
-      'Solar Report',
-      '============',
+      'Solar Report','============',
       'Daily consumption (kWh): ' + Number(r.daily).toFixed(3),
       'PSH: ' + r.psh,
       'Array: ' + r.arrayKWr + ' kW',
       'Panels: ' + r.panels,
       'Daily generation: ' + r.estDailyGen.toFixed(2) + ' kWh',
-      'Battery: ' + (r.batteryKWh ? r.batteryKWh.toFixed(2) + ' kWh' : 'None'),
-      'Total est cost: ' + curr.symbol + ' ' + Number(r.totalLocal || 0).toFixed(2),
+      'Battery: ' + (r.batteryKWh ? r.batteryKWh.toFixed(2)+' kWh' : 'None'),
+      'Total est cost: ' + curr.symbol + ' ' + (r.totalLocal || 0).toFixed(2),
       'Payback (yrs): ' + (isFinite(r.paybackYears) ? r.paybackYears.toFixed(1) : '—')
     ];
-    const txt = lines.join('\\n');
-    const blob = new Blob([txt], { type:'text/plain' });
+    const blob = new Blob([lines.join('\\n')], { type:'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'solar_report.txt'; a.click(); URL.revokeObjectURL(url);
   });
@@ -697,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function () {
   $('helpOpen').addEventListener('click', ()=> { $('helpModal').classList.remove('hidden'); $('helpModal').classList.add('flex'); });
   $('helpClose').addEventListener('click', ()=> { $('helpModal').classList.add('hidden'); $('helpModal').classList.remove('flex'); });
 
-  // initial compute / preview
+  // initial preview compute
   computeDesign();
 });
 </script>
