@@ -1,125 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>USA Electricity Bill Calculator</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .section { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
-    .appliance-row { margin-bottom: 8px; }
-    input[type="number"] { width: 80px; }
-    table { border-collapse: collapse; }
-    th, td { padding: 6px 12px; border: 1px solid #aaa; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universal Electricity Bill Calculator</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(120deg, #0078d7, #00b894);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 850px;
+    margin: 40px auto;
+    background: rgba(255,255,255,0.1);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  label {
+    display: block;
+    margin: 8px 0 4px;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+  }
+  .section {
+    background: rgba(255,255,255,0.15);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+  }
+  button {
+    background: #00cec9;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: #0984e3;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  th, td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  th {
+    background: rgba(0,0,0,0.2);
+  }
+  .result {
+    text-align: center;
+    background: rgba(0,0,0,0.2);
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 1.2em;
+  }
+</style>
 </head>
 <body>
-  <h1>Electricity Bill Estimator (USA)</h1>
+  <div class="container">
+    <h1>⚡ Universal Electricity Bill Calculator ⚡</h1>
 
-  <div class="section">
-    <h2>Simple Total Usage</h2>
-    <label>
-      Total usage (kWh): 
-      <input id="totalKwh" type="number" step="0.1" />
-    </label>
-    <label>
-      Rate ($/kWh): 
-      <input id="rate" type="number" step="0.0001" />
-    </label>
-    <label>
-      Fixed monthly fee ($): 
-      <input id="fixedFee" type="number" step="0.01" value="0" />
-    </label>
-    <p>
-      Estimated Bill: <strong id="simpleResult">$0.00</strong>
-    </p>
+    <!-- Simple Usage -->
+    <div class="section">
+      <h2>Step 1: Basic Information</h2>
+      <label>Electricity Rate ($ or your currency per kWh):</label>
+      <input id="rate" type="number" step="0.0001" placeholder="e.g. 0.12">
+      
+      <label>Fixed Monthly Charge:</label>
+      <input id="fixed" type="number" step="0.01" placeholder="e.g. 10">
+      
+      <label>Total Units Consumed (kWh):</label>
+      <input id="units" type="number" step="0.01" placeholder="e.g. 250">
+      
+      <button onclick="calculateSimple()">Calculate Bill</button>
+      
+      <p class="result" id="simpleResult">Total Bill: —</p>
+    </div>
+
+    <!-- Appliance Section -->
+    <div class="section">
+      <h2>Step 2: Appliance-wise Consumption (Optional)</h2>
+      <table id="applianceTable">
+        <thead>
+          <tr>
+            <th>Appliance</th>
+            <th>Wattage (W)</th>
+            <th>Hours/Day</th>
+            <th>Days</th>
+            <th>Cost</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="applianceBody"></tbody>
+      </table>
+      <button onclick="addAppliance()">+ Add Appliance</button>
+      <p class="result" id="applianceTotal">Total Appliance Cost: —</p>
+    </div>
+
+    <!-- Combined -->
+    <div class="section">
+      <h2>Step 3: Combined Result</h2>
+      <div class="result" id="finalBill">Your Final Estimated Bill: —</div>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>Appliance Breakdown</h2>
-    <div id="appliancesContainer"></div>
-    <button id="addApplianceBtn">Add Appliance</button>
-    <p>
-      Total from appliances: <strong id="applianceTotal">$0.00</strong>
-    </p>
-    <p>
-      Combined bill (fixed + appliances): <strong id="combinedTotal">$0.00</strong>
-    </p>
-  </div>
+<script>
+  // Calculate total from Step 1
+  function calculateSimple() {
+    const rate = parseFloat(document.getElementById('rate').value) || 0;
+    const fixed = parseFloat(document.getElementById('fixed').value) || 0;
+    const units = parseFloat(document.getElementById('units').value) || 0;
+    const total = rate * units + fixed;
+    document.getElementById('simpleResult').innerText = `Total Bill: ${format(total)}`;
+    updateFinalBill();
+  }
 
-  <script>
-    function formatDollar(val) {
-      return '$' + val.toFixed(2);
-    }
+  // Add appliance row
+  function addAppliance() {
+    const tbody = document.getElementById('applianceBody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="text" placeholder="Name"></td>
+      <td><input type="number" step="1" class="watt" value="100"></td>
+      <td><input type="number" step="0.1" class="hour" value="1"></td>
+      <td><input type="number" step="1" class="day" value="30"></td>
+      <td class="cost">—</td>
+      <td><button onclick="removeRow(this)">❌</button></td>
+    `;
+    tbody.appendChild(row);
 
-    // Simple usage → cost
-    function computeSimple() {
-      const kwh = parseFloat(document.getElementById('totalKwh').value) || 0;
-      const rate = parseFloat(document.getElementById('rate').value) || 0;
-      const fee = parseFloat(document.getElementById('fixedFee').value) || 0;
-      const cost = kwh * rate + fee;
-      document.getElementById('simpleResult').innerText = formatDollar(cost);
-    }
+    const inputs = row.querySelectorAll('input');
+    inputs.forEach(i => i.addEventListener('input', calculateAppliances));
+  }
 
-    document.getElementById('totalKwh').addEventListener('input', computeSimple);
-    document.getElementById('rate').addEventListener('input', computeSimple);
-    document.getElementById('fixedFee').addEventListener('input', computeSimple);
+  // Remove appliance
+  function removeRow(btn) {
+    btn.parentNode.parentNode.remove();
+    calculateAppliances();
+  }
 
-    // Appliance breakdown
-    let applianceCount = 0;
-    function addApplianceRow() {
-      applianceCount++;
-      const container = document.getElementById('appliancesContainer');
-      const div = document.createElement('div');
-      div.className = 'appliance-row';
-      div.id = 'appRow' + applianceCount;
-      div.innerHTML = `
-        <label>Wattage (W): <input class="app-watt" type="number" step="1" /></label>
-        <label>Hours/day: <input class="app-hours" type="number" step="0.1" /></label>
-        <label>Days in billing period: <input class="app-days" type="number" step="1" value="30" /></label>
-        <button onclick="removeAppliance(${applianceCount})">Remove</button>
-      `;
-      container.appendChild(div);
+  // Calculate appliance total
+  function calculateAppliances() {
+    const rate = parseFloat(document.getElementById('rate').value) || 0;
+    let total = 0;
+    document.querySelectorAll('#applianceBody tr').forEach(row => {
+      const watt = parseFloat(row.querySelector('.watt').value) || 0;
+      const hour = parseFloat(row.querySelector('.hour').value) || 0;
+      const day = parseFloat(row.querySelector('.day').value) || 0;
+      const kwh = (watt * hour * day) / 1000;
+      const cost = kwh * rate;
+      row.querySelector('.cost').innerText = format(cost);
+      total += cost;
+    });
+    document.getElementById('applianceTotal').innerText = `Total Appliance Cost: ${format(total)}`;
+    updateFinalBill();
+  }
 
-      // add event listeners
-      div.querySelector('.app-watt').addEventListener('input', computeApplianceTotal);
-      div.querySelector('.app-hours').addEventListener('input', computeApplianceTotal);
-      div.querySelector('.app-days').addEventListener('input', computeApplianceTotal);
+  // Combine results
+  function updateFinalBill() {
+    const rate = parseFloat(document.getElementById('rate').value) || 0;
+    const fixed = parseFloat(document.getElementById('fixed').value) || 0;
+    const units = parseFloat(document.getElementById('units').value) || 0;
+    const simple = rate * units + fixed;
 
-      computeApplianceTotal();
-    }
-    function removeAppliance(id) {
-      const row = document.getElementById('appRow' + id);
-      if (row) {
-        row.remove();
-        computeApplianceTotal();
-      }
-    }
+    let applianceTotal = 0;
+    document.querySelectorAll('#applianceBody tr').forEach(row => {
+      const text = row.querySelector('.cost').innerText.replace(/[^0-9.]/g, '');
+      applianceTotal += parseFloat(text) || 0;
+    });
 
-    function computeApplianceTotal() {
-      const rate = parseFloat(document.getElementById('rate').value) || 0;
-      let totalCost = 0;
-      const rows = document.querySelectorAll('.appliance-row');
-      rows.forEach(row => {
-        const watt = parseFloat(row.querySelector('.app-watt').value) || 0;
-        const hrs = parseFloat(row.querySelector('.app-hours').value) || 0;
-        const days = parseFloat(row.querySelector('.app-days').value) || 0;
-        // kWh = (W × hrs × days) / 1000
-        const kwh = watt * hrs * days / 1000;
-        const cost = kwh * rate;
-        totalCost += cost;
-      });
-      document.getElementById('applianceTotal').innerText = formatDollar(totalCost);
+    const final = Math.max(simple, fixed + applianceTotal);
+    document.getElementById('finalBill').innerText = `Your Final Estimated Bill: ${format(final)}`;
+  }
 
-      // add fixed fee
-      const fee = parseFloat(document.getElementById('fixedFee').value) || 0;
-      document.getElementById('combinedTotal').innerText = formatDollar(totalCost + fee);
-    }
-
-    document.getElementById('addApplianceBtn').addEventListener('click', addApplianceRow);
-
-    // Initial
-    computeSimple();
-  </script>
+  // Utility format
+  function format(num) {
+    return isNaN(num) ? "—" : `$${num.toFixed(2)}`;
+  }
+</script>
 </body>
 </html>
