@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USA Electricity Bill Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .section { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+    .appliance-row { margin-bottom: 8px; }
+    input[type="number"] { width: 80px; }
+    table { border-collapse: collapse; }
+    th, td { padding: 6px 12px; border: 1px solid #aaa; }
+  </style>
+</head>
+<body>
+  <h1>Electricity Bill Estimator (USA)</h1>
+
+  <div class="section">
+    <h2>Simple Total Usage</h2>
+    <label>
+      Total usage (kWh): 
+      <input id="totalKwh" type="number" step="0.1" />
+    </label>
+    <label>
+      Rate ($/kWh): 
+      <input id="rate" type="number" step="0.0001" />
+    </label>
+    <label>
+      Fixed monthly fee ($): 
+      <input id="fixedFee" type="number" step="0.01" value="0" />
+    </label>
+    <p>
+      Estimated Bill: <strong id="simpleResult">$0.00</strong>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Appliance Breakdown</h2>
+    <div id="appliancesContainer"></div>
+    <button id="addApplianceBtn">Add Appliance</button>
+    <p>
+      Total from appliances: <strong id="applianceTotal">$0.00</strong>
+    </p>
+    <p>
+      Combined bill (fixed + appliances): <strong id="combinedTotal">$0.00</strong>
+    </p>
+  </div>
+
+  <script>
+    function formatDollar(val) {
+      return '$' + val.toFixed(2);
+    }
+
+    // Simple usage → cost
+    function computeSimple() {
+      const kwh = parseFloat(document.getElementById('totalKwh').value) || 0;
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
+      const fee = parseFloat(document.getElementById('fixedFee').value) || 0;
+      const cost = kwh * rate + fee;
+      document.getElementById('simpleResult').innerText = formatDollar(cost);
+    }
+
+    document.getElementById('totalKwh').addEventListener('input', computeSimple);
+    document.getElementById('rate').addEventListener('input', computeSimple);
+    document.getElementById('fixedFee').addEventListener('input', computeSimple);
+
+    // Appliance breakdown
+    let applianceCount = 0;
+    function addApplianceRow() {
+      applianceCount++;
+      const container = document.getElementById('appliancesContainer');
+      const div = document.createElement('div');
+      div.className = 'appliance-row';
+      div.id = 'appRow' + applianceCount;
+      div.innerHTML = `
+        <label>Wattage (W): <input class="app-watt" type="number" step="1" /></label>
+        <label>Hours/day: <input class="app-hours" type="number" step="0.1" /></label>
+        <label>Days in billing period: <input class="app-days" type="number" step="1" value="30" /></label>
+        <button onclick="removeAppliance(${applianceCount})">Remove</button>
+      `;
+      container.appendChild(div);
+
+      // add event listeners
+      div.querySelector('.app-watt').addEventListener('input', computeApplianceTotal);
+      div.querySelector('.app-hours').addEventListener('input', computeApplianceTotal);
+      div.querySelector('.app-days').addEventListener('input', computeApplianceTotal);
+
+      computeApplianceTotal();
+    }
+    function removeAppliance(id) {
+      const row = document.getElementById('appRow' + id);
+      if (row) {
+        row.remove();
+        computeApplianceTotal();
+      }
+    }
+
+    function computeApplianceTotal() {
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
+      let totalCost = 0;
+      const rows = document.querySelectorAll('.appliance-row');
+      rows.forEach(row => {
+        const watt = parseFloat(row.querySelector('.app-watt').value) || 0;
+        const hrs = parseFloat(row.querySelector('.app-hours').value) || 0;
+        const days = parseFloat(row.querySelector('.app-days').value) || 0;
+        // kWh = (W × hrs × days) / 1000
+        const kwh = watt * hrs * days / 1000;
+        const cost = kwh * rate;
+        totalCost += cost;
+      });
+      document.getElementById('applianceTotal').innerText = formatDollar(totalCost);
+
+      // add fixed fee
+      const fee = parseFloat(document.getElementById('fixedFee').value) || 0;
+      document.getElementById('combinedTotal').innerText = formatDollar(totalCost + fee);
+    }
+
+    document.getElementById('addApplianceBtn').addEventListener('click', addApplianceRow);
+
+    // Initial
+    computeSimple();
+  </script>
+</body>
+</html>
